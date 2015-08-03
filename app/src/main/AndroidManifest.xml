@@ -6,9 +6,9 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/MyMaterialTheme" >
         <activity
-            android:name=".ActivitySplashScreen"
+            android:name=".Activity.ActivitySplashScreen"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -18,7 +18,13 @@
         </activity>
         <activity
             android:name=".Activity.ActivityLogin"
-            android:label="@string/title_activity_activity_login" >
+            android:label="@string/title_activity_activity_login"
+            android:windowSoftInputMode="adjustResize">
+        </activity>
+        <activity
+            android:name=".Activity.ActivityRegister"
+            android:label="@string/title_activity_activity_register"
+            android:windowSoftInputMode="adjustResize">
         </activity>
     </application>
 

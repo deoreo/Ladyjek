@@ -1,24 +1,42 @@
 package ladyjek.twiscode.com.ladyjek.Activity;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 import ladyjek.twiscode.com.ladyjek.R;
 
-public class ActivityLogin extends AppCompatActivity {
+public class ActivityLogin extends Activity {
+
+    Button btnRegister;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        btnRegister = (Button) findViewById(R.id.btnRegister);
+
+        btnRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i=new Intent(getBaseContext(),ActivityRegister.class);
+                startActivity(i);
+
+                //Remove activity
+            }
+        });
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_activity_login, menu);
+        getMenuInflater().inflate(R.menu.menu_activity_splash_screen, menu);
         return true;
     }
 
