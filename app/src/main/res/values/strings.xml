@@ -6,7 +6,7 @@
     <string name="title_activity_activity_confirm">Confirm Booking</string>
     <string name="title_activity_activity_rate">Rate Driver</string>
     <string name="action_settings">Setting</string>
-
+    <string name="api_key">AIzaSyDYz9r1BDO7ZprULDFPwrQF9uaCGKC_lg4</string>
     <string-array name="payList">
         <item>Credit Card</item>
         <item>Ladyjek Wallet</item>
