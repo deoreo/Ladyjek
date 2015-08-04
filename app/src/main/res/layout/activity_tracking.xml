@@ -1,0 +1,111 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:focusable="true" android:focusableInTouchMode="true"
+    tools:context="ladyjek.twiscode.com.ladyjek.Activity.ActivityTransport"
+    >
+    <include
+        android:id="@+id/tool_bar"
+        layout="@layout/toolbar"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_marginTop="20dp"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical"
+            >
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="350dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="150dp"
+                >
+                <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/mapView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    class="com.google.android.gms.maps.SupportMapFragment" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:paddingBottom="20dp"
+                android:layout_marginBottom="20dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/imgDriver"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            app:border_width="0dp"
+                            android:layout_centerHorizontal="true"
+                            android:src="@drawable/images"
+                            app:border_overlay="true"
+                            />
+                        <RatingBar
+                            style="?android:attr/ratingBarStyle"
+                            android:id="@+id/rateDriver"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/imgDriver"
+                            android:layout_marginTop="-25dp"
+                            android:numStars="5"
+                            android:stepSize="1"
+                            android:layout_centerHorizontal="true"
+                            android:isIndicator="true"
+                            android:rating="3"
+                            />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_below="@id/rateDriver"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginRight="20dp">
+                            <Button
+                                android:id="@+id/btnCall"
+                                android:layout_width="match_parent"
+                                android:layout_height="50dp"
+                                android:text="Emergency contact"
+                                android:textAllCaps="false"
+                                android:background="@drawable/rounded_primary_color"
+                                android:textStyle="bold"
+                                android:textSize="16dp"
+                                android:textColor="@color/white_color"
+                                android:layout_weight="1"
+                                />
+
+                        </LinearLayout>
+                    </RelativeLayout>
+                </LinearLayout>
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+
+    </ScrollView>
+
+
+</LinearLayout>

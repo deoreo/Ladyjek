@@ -2,7 +2,130 @@
 <items version="2" >
 
     <item
+<<<<<<< HEAD
         jar="C:\ladyjek_user\app\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.0\jars\classes.jar"
+=======
+        jar="A:\repo\ladyjek\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-drive\7.5.0\jars\classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="f44d03c138cb6488fdbaa65e3a7e5878861a56d8">
+        <dex dex="A:\repo\ladyjek\app\build\intermediates\pre-dexed\debug\classes-5d179f7113b22d6347cdc34e4f7e63b996c6c046.jar" />
+    </item>
+    <item
+        jar="A:\repo\ladyjek\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-appindexing\7.5.0\jars\classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="f02127a85abd52a2cd526d4c2409f21969f80ee8">
+        <dex dex="A:\repo\ladyjek\app\build\intermediates\pre-dexed\debug\classes-901038fbe5642702d8b9b45dd9969fd8297a7f7e.jar" />
+    </item>
+    <item
+        jar="A:\repo\ladyjek\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-maps\7.5.0\jars\classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="06a42becc33232ec0ee125161da68c1829c9f8fd">
+        <dex dex="A:\repo\ladyjek\app\build\intermediates\pre-dexed\debug\classes-0987872add89fa2ffeecb93e39e68117c1133704.jar" />
+    </item>
+    <item
+        jar="A:\repo\ladyjek\app\build\intermediates\exploded-aar\com.android.support\mediarouter-v7\22.0.0\jars\classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="a1372c17fccacca753d3951d3ad820571cbce075">
+        <dex dex="A:\repo\ladyjek\app\build\intermediates\pre-dexed\debug\classes-4983e3f66c36fe5b2d6130a7edd7557199d25ee1.jar" />
+    </item>
+    <item
+        jar="A:\repo\ladyjek\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-appinvite\7.5.0\jars\classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="63ec6e9f4fe5482a7447d0f3091b8e543a02554c">
+        <dex dex="A:\repo\ladyjek\app\build\intermediates\pre-dexed\debug\classes-76ad1a41f8ab5ca06cbf371f975d16088d52b4dd.jar" />
+    </item>
+    <item
+        jar="A:\repo\ladyjek\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-wearable\7.5.0\jars\classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="69dd177337ead693c408c8dddc9546bb6f1244fa">
+        <dex dex="A:\repo\ladyjek\app\build\intermediates\pre-dexed\debug\classes-382e18295afa3e2a50d5a92eb1c91c4afaa809cd.jar" />
+    </item>
+    <item
+        jar="A:\repo\ladyjek\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-identity\7.5.0\jars\classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="d405025c600055237c171a0bbabaa49d69696573">
+        <dex dex="A:\repo\ladyjek\app\build\intermediates\pre-dexed\debug\classes-f2ac78bc3ec02983c6c1282d0581189c71560172.jar" />
+    </item>
+    <item
+        jar="A:\repo\ladyjek\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-panorama\7.5.0\jars\classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="ba207be21987c11b37d9f8faa08ed6e722569f30">
+        <dex dex="A:\repo\ladyjek\app\build\intermediates\pre-dexed\debug\classes-61383f15ee8a1218c574ade0c2d39cd7c32c3947.jar" />
+    </item>
+    <item
+        jar="A:\repo\ladyjek\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-base\7.5.0\jars\classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="a78183f30e769a98ab4820794f597763088d3065">
+        <dex dex="A:\repo\ladyjek\app\build\intermediates\pre-dexed\debug\classes-1466b5e60b24b0aba420287acc12a501e9179daa.jar" />
+    </item>
+    <item
+        jar="A:\repo\ladyjek\app\build\intermediates\exploded-aar\com.android.support\mediarouter-v7\22.0.0\jars\libs\internal_impl-22.0.0.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="ba3df4eb0a630d7de294f0e48d3f9267d279b784">
+        <dex dex="A:\repo\ladyjek\app\build\intermediates\pre-dexed\debug\internal_impl-22.0.0-49d64f7510b3279cddfe94509bb57a51f3aebb86.jar" />
+    </item>
+    <item
+        jar="A:\repo\ladyjek\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-cast\7.5.0\jars\classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="8e3a972f28b8bae817e382257ba177a31bcadbbc">
+        <dex dex="A:\repo\ladyjek\app\build\intermediates\pre-dexed\debug\classes-0490c20b8031ad96db6cf399689c7ba751df93b4.jar" />
+    </item>
+    <item
+        jar="A:\repo\ladyjek\app\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.0\jars\classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="1ee588ff2c4daf7b97c1cbf922a6c7f027285c2f">
+        <dex dex="A:\repo\ladyjek\app\build\intermediates\pre-dexed\debug\classes-b903b5b7e3ca1618c776afdcc570bdc18cee0adc.jar" />
+    </item>
+    <item
+        jar="A:\repo\ladyjek\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-games\7.5.0\jars\classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="02bac2dc792d78241077861566f2c82da955e7fa">
+        <dex dex="A:\repo\ladyjek\app\build\intermediates\pre-dexed\debug\classes-16cbb41d26160c0426c6d5ba488a6a0d16dc7007.jar" />
+    </item>
+    <item
+        jar="A:\repo\ladyjek\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-ads\7.5.0\jars\classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="29ebc7e04d877062317c8cc0e68b20f0c1fcda66">
+        <dex dex="A:\repo\ladyjek\app\build\intermediates\pre-dexed\debug\classes-4e0b79287edaf700346f023e4db6ea4d33759f25.jar" />
+    </item>
+    <item
+        jar="A:\repo\ladyjek\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-nearby\7.5.0\jars\classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="6440e5e5cfe368f9bff3c537fb8988048069cb33">
+        <dex dex="A:\repo\ladyjek\app\build\intermediates\pre-dexed\debug\classes-889d0103f3c8ccce88b19d05262432f34cfcad06.jar" />
+    </item>
+    <item
+        jar="A:\repo\ladyjek\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-analytics\7.5.0\jars\classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="e7b35244f50663b3f8d150714bca9ecd7a290da1">
+        <dex dex="A:\repo\ladyjek\app\build\intermediates\pre-dexed\debug\classes-a5949f4977ee746691c362250e317246d0b4a9a3.jar" />
+    </item>
+    <item
+        jar="A:\repo\ladyjek\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-fitness\7.5.0\jars\classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="a172852a35ff919e85b9b7f14bbc15c5bee25520">
+        <dex dex="A:\repo\ladyjek\app\build\intermediates\pre-dexed\debug\classes-19561a828cfdc07754900cd0dbc326a4da5ac09b.jar" />
+    </item>
+    <item
+        jar="A:\repo\ladyjek\app\build\intermediates\exploded-aar\de.hdodenhof\circleimageview\1.3.0\jars\classes.jar"
+>>>>>>> 23580076b4599b58d09fcd5c220905317d76cdff
         jumboMode="false"
         revision="22.0.1"
         sha1="1ee588ff2c4daf7b97c1cbf922a6c7f027285c2f">
@@ -30,7 +153,32 @@
         <dex dex="C:\ladyjek_user\app\build\intermediates\pre-dexed\debug\classes-8c093a367b354480bbb0ff3f3ae7f75f5d1cdd4f.jar" />
     </item>
     <item
+<<<<<<< HEAD
         jar="C:\ladyjek_user\app\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.0\jars\libs\internal_impl-22.2.0.jar"
+=======
+        jar="A:\repo\ladyjek\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-location\7.5.0\jars\classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="1e98ef3f124bb7a11f8575f9ff5dfea330b61b6f">
+        <dex dex="A:\repo\ladyjek\app\build\intermediates\pre-dexed\debug\classes-c9a273d8c674a30f9ea5b24f500891c16e20639f.jar" />
+    </item>
+    <item
+        jar="A:\repo\ladyjek\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\22.2.0\jars\classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="73753982da6bde518f3a4c6b372749981d14d1a0">
+        <dex dex="A:\repo\ladyjek\app\build\intermediates\pre-dexed\debug\classes-329d135ed70f674a2d453f833469736ef991ba98.jar" />
+    </item>
+    <item
+        jar="A:\repo\ladyjek\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-gcm\7.5.0\jars\classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="8d736fefa22d896e84a268354b3ed48a42663150">
+        <dex dex="A:\repo\ladyjek\app\build\intermediates\pre-dexed\debug\classes-27fc17a590f6f25e6ad148323180ce844b73e453.jar" />
+    </item>
+    <item
+        jar="A:\repo\ladyjek\app\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.0\jars\libs\internal_impl-22.2.0.jar"
+>>>>>>> 23580076b4599b58d09fcd5c220905317d76cdff
         jumboMode="false"
         revision="22.0.1"
         sha1="57f2ab85c164ff1676ec64dee787981c046fab79">
@@ -44,6 +192,7 @@
         <dex dex="C:\ladyjek_user\app\build\intermediates\pre-dexed\debug\classes-8a59b22a2c5480bff786bd39f0344a7ab1560aa2.jar" />
     </item>
     <item
+<<<<<<< HEAD
         jar="C:\ladyjek_user\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-ads\7.5.0\jars\classes.jar"
         jumboMode="false"
         revision="22.0.1"
@@ -189,6 +338,34 @@
         revision="22.0.1"
         sha1="06a42becc33232ec0ee125161da68c1829c9f8fd">
         <dex dex="C:\ladyjek_user\app\build\intermediates\pre-dexed\debug\classes-9fcc72c8bb2432ceeaf9debd218fe11b07e4851b.jar" />
+=======
+        jar="A:\repo\ladyjek\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-plus\7.5.0\jars\classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="272bc5d7063f24bc3a33ea1d318cde8f31f5ec4c">
+        <dex dex="A:\repo\ladyjek\app\build\intermediates\pre-dexed\debug\classes-18bf9bf433a34a69aedc7a8354ed60584961b550.jar" />
+    </item>
+    <item
+        jar="A:\repo\ladyjek\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-appstate\7.5.0\jars\classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="68c140702c7242d914655bcb3164d9e8c45b84cb">
+        <dex dex="A:\repo\ladyjek\app\build\intermediates\pre-dexed\debug\classes-ca18721cc4568f8a8103f9ac1f0668d8e761a397.jar" />
+    </item>
+    <item
+        jar="A:\repo\ladyjek\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-safetynet\7.5.0\jars\classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="1a6411087ab88ce5542f593e63a2752b6b0d6f1a">
+        <dex dex="A:\repo\ladyjek\app\build\intermediates\pre-dexed\debug\classes-68850d6c7364be72719b1802059928e6ec3d8efe.jar" />
+    </item>
+    <item
+        jar="A:\repo\ladyjek\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-wallet\7.5.0\jars\classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="6836d188602ec5382d1967c58b00960eb8ff8773">
+        <dex dex="A:\repo\ladyjek\app\build\intermediates\pre-dexed\debug\classes-e3bf8ac0b9415aec1cb5622cdd8dd60a910b1ffc.jar" />
+>>>>>>> 23580076b4599b58d09fcd5c220905317d76cdff
     </item>
 
 </items>
