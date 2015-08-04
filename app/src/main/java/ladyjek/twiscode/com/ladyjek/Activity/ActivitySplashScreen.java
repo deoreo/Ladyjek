@@ -50,7 +50,7 @@ public class ActivitySplashScreen extends Activity {
                     sleep(2*1000);
 
                     // After 5 seconds redirect to another intent
-                    Intent i=new Intent(getBaseContext(),ActivityTransport.class);
+                    Intent i=new Intent(getBaseContext(),ActivityLogin.class);
                     startActivity(i);
 
                     //Remove activity

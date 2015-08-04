@@ -8,12 +8,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 import ladyjek.twiscode.com.ladyjek.R;
 
 public class ActivityLogin extends Activity {
 
-    Button btnRegister;
+    Button btnRegister, btnLogin;
+    EditText txtEmail, txtPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,16 +23,20 @@ public class ActivityLogin extends Activity {
         setContentView(R.layout.activity_login);
 
         btnRegister = (Button) findViewById(R.id.btnRegister);
+        btnLogin = (Button) findViewById(R.id.btnLogin);
+        txtEmail = (EditText) findViewById(R.id.txtEmail);
 
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i=new Intent(getBaseContext(),ActivityRegister.class);
                 startActivity(i);
-
                 //Remove activity
             }
         });
+
+
+
     }
 
     @Override
