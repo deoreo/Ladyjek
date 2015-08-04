@@ -26,6 +26,16 @@
             android:label="@string/title_activity_activity_register"
             android:windowSoftInputMode="adjustResize">
         </activity>
+        <activity
+            android:name=".Activity.ActivityConfirm"
+            android:label="@string/title_activity_activity_confirm"
+            android:windowSoftInputMode="adjustResize">
+        </activity>
+        <activity
+            android:name=".Activity.ActivityRate"
+            android:label="@string/title_activity_activity_rate"
+            android:windowSoftInputMode="adjustResize">
+        </activity>
     </application>
 
 </manifest>

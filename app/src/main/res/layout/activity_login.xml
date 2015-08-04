@@ -14,10 +14,11 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/imgIcon"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
             app:border_width="2dp"
-            android:background="@color/grey_color"
+            android:src="@drawable/images"
+            app:border_overlay="true"
             android:layout_centerHorizontal="true"
             />
 

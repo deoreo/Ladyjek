@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/grey_color_smooth">
+    <include
+        android:id="@+id/tool_bar"
+        layout="@layout/toolbar"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        />
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        xmlns:android="http://schemas.android.com/apk/res/android" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:minHeight="320dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true">
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/imgDriver"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    app:border_width="0dp"
+                    android:layout_centerHorizontal="true"
+                    android:src="@drawable/images"
+                    app:border_overlay="true"
+                    />
+                <TextView
+                    android:id="@+id/nameDriver"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_below="@id/imgDriver"
+                    android:layout_centerHorizontal="true"
+                    android:textAllCaps="false"
+                    android:text="Full Name"
+                    android:textColor="@color/primary_color_dark"
+                    android:textStyle="bold"
+                    android:textSize="16dp"/>
+
+                <RatingBar
+                    style="?android:attr/ratingBarStyle"
+                    android:id="@+id/rateDriver"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/nameDriver"
+                    android:layout_marginTop="15dp"
+                    android:numStars="5"
+                    android:stepSize="1"
+                    android:layout_centerHorizontal="true"/>
+
+                <EditText
+                    android:id="@+id/feedbackDriver"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:hint="feedback"
+                    android:padding="10dp"
+                    android:layout_below="@id/rateDriver"
+                    android:layout_marginTop="15dp"
+                    android:background="@drawable/rounded_white_grey"
+                    android:textColor="@color/primary_color_dark"
+                    android:gravity="top"
+                    android:maxLines="7"
+                    />
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_below="@id/feedbackDriver"
+                    android:layout_marginTop="50dp"
+                    android:layout_marginBottom="20dp"
+                    android:text="rate your experience"
+                    android:textAllCaps="false"
+                    android:background="@drawable/rounded_primary_color"
+                    android:textStyle="bold"
+                    android:textSize="16dp"
+                    android:textColor="@color/white_color"/>
+            </RelativeLayout>
+
+
+
+        </RelativeLayout>
+
+
+
+    </ScrollView>
+
+
+</LinearLayout>

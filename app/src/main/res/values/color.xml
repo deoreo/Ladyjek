@@ -6,6 +6,7 @@
     <color name="colorAccent">#afffdc</color>
     <color name="white_color">#fff</color>
     <color name="grey_color">#ddd</color>
+    <color name="grey_color_smooth">#eee</color>
 
 
 </resources>

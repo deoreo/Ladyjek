@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:focusable="true">
+    android:background="@color/grey_color_smooth">
     <include
         android:id="@+id/tool_bar"
         layout="@layout/toolbar"
@@ -27,11 +27,12 @@
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/imgIcon"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 app:border_width="2dp"
-                android:background="@color/grey_color"
                 android:layout_centerHorizontal="true"
+                android:src="@drawable/images"
+                app:border_overlay="true"
                 />
 
             <RelativeLayout

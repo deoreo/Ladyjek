@@ -3,7 +3,14 @@
 
     <string name="title_activity_activity_login">Sign-In</string>
     <string name="title_activity_activity_register">Sign-Up</string>
+    <string name="title_activity_activity_confirm">Confirm Booking</string>
+    <string name="title_activity_activity_rate">Rate Driver</string>
     <string name="action_settings">Setting</string>
+
+    <string-array name="payList">
+        <item>Credit Card</item>
+        <item>Ladyjek Wallet</item>
+    </string-array>
 
 
 
