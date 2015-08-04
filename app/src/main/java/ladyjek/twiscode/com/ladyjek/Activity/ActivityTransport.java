@@ -1,5 +1,8 @@
 package ladyjek.twiscode.com.ladyjek.Activity;
 
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -7,20 +10,28 @@ import android.view.MenuItem;
 import ladyjek.twiscode.com.ladyjek.R;
 
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
 
-public class ActivityOrder extends AppCompatActivity {
+public class ActivityTransport extends AppCompatActivity {
     private MapView mMapView;
+    GoogleMap googleMap;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_order);
+        setContentView(R.layout.activity_transport);
         // Getting Google Play availability status
         int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());
 
         mMapView = (MapView) findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
+        mMapView.getMap();
+
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

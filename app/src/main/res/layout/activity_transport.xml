@@ -1,0 +1,78 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="ladyjek.twiscode.com.ladyjek.Activity.ActivityOrder"
+    android:weightSum="1">
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="150dp"
+        android:padding="30dp"
+        >
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:background="#ffffff"
+        android:hint="From"
+        android:paddingLeft="5dp"
+        android:id="@+id/textviewFrom"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="2dp"
+        android:textSize="15sp"
+        android:gravity="center_vertical"
+        android:layout_alignParentEnd="true" />
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:background="#ffffff"
+        android:paddingLeft="5dp"
+        android:hint="Destination"
+        android:id="@+id/textviewTo"
+        android:textSize="15sp"
+        android:gravity="center_vertical"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/textviewFrom"
+        android:layout_alignParentStart="true" />
+
+</RelativeLayout>
+
+<RelativeLayout
+    android:layout_width="wrap_content"
+    android:layout_height="270dp"
+    android:layout_gravity="center"
+    android:padding="30dp"
+    >
+<com.google.android.gms.maps.MapView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/mapView"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:padding="30dp"
+    >
+    </com.google.android.gms.maps.MapView>
+</RelativeLayout>
+
+
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="25dp">
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:text="request ride"
+            android:id="@+id/button"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            />
+
+    </RelativeLayout>
+
+
+
+
+</LinearLayout>
