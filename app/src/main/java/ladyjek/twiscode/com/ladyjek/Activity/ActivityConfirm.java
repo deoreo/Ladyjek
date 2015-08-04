@@ -1,6 +1,7 @@
 package ladyjek.twiscode.com.ladyjek.Activity;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -9,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -25,6 +27,7 @@ public class ActivityConfirm extends ActionBarActivity {
     private Toolbar mToolbar;
     Spinner pay;
     ArrayAdapter<CharSequence> adapterPay;
+    Button btnConfirm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,9 +37,15 @@ public class ActivityConfirm extends ActionBarActivity {
         SetActionBar();
         SetPaySpinner();
 
-
-
-
+        btnConfirm = (Button) findViewById(R.id.btnConfirm);
+        btnConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getBaseContext(), ActivityPickUp.class);
+                startActivity(i);
+                finish();
+            }
+        });
 
 
     }
