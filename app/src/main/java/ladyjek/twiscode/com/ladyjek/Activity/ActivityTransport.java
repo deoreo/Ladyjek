@@ -1,6 +1,7 @@
 package ladyjek.twiscode.com.ladyjek.Activity;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -8,16 +9,31 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.location.Address;
 import android.location.Criteria;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.opengl.Visibility;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import ladyjek.twiscode.com.ladyjek.R;
 
@@ -34,17 +50,30 @@ import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class ActivityTransport extends FragmentActivity implements LocationListener {
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
-    GoogleMap googleMap;
-    Button btnRequestRide;
-    private static final double EARTH_RADIUS = 6378100.0;
-    private int offset;
+public class ActivityTransport extends ActionBarActivity implements LocationListener {
+    private Toolbar mToolbar;
+    private GoogleMap googleMap;
+    private Button btnRequestRide;
+    private EditText txtFrom, txtDestination;
+    private LinearLayout layoutMarkerFrom, layoutMarkerDestination;
+    private boolean mMapIsTouched;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_transport);
+        setContentView(R.layout.activity_transport2);
+        SetActionBar();
         btnRequestRide = (Button)findViewById(R.id.btnRequestRide);
+        txtFrom = (EditText)findViewById(R.id.txtFrom);
+        txtDestination = (EditText)findViewById(R.id.txtDestination);
+        layoutMarkerFrom = (LinearLayout)findViewById(R.id.layoutMarkerFrom);
+        layoutMarkerDestination = (LinearLayout)findViewById(R.id.layoutMarkerDestination);
+
         // Getting Google Play availability status
         int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());
 
@@ -57,32 +86,20 @@ public class ActivityTransport extends FragmentActivity implements LocationListe
 
         }else { // Google Play Services are available
 
-            // Getting reference to the SupportMapFragment of activity_main.xml
             SupportMapFragment fm = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapView);
-
-            // Getting GoogleMap object from the fragment
             googleMap = fm.getMap();
-
-            // Enabling MyLocation Layer of Google Map
             googleMap.setMyLocationEnabled(true);
+            googleMap.getUiSettings().setZoomControlsEnabled(true);
+            googleMap.getUiSettings().setCompassEnabled(true);
 
-            // Getting LocationManager object from System Service LOCATION_SERVICE
             LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
-            // Creating a criteria object to retrieve provider
             Criteria criteria = new Criteria();
-
-            // Getting the name of the best provider
             String provider = locationManager.getBestProvider(criteria, true);
-
-            // Getting Current Location
             Location location = locationManager.getLastKnownLocation(provider);
-
             if(location!=null){
                 onLocationChanged(location);
             }
-            locationManager.requestLocationUpdates(provider, 20000, 0, this);
-
+            locationManager.requestLocationUpdates(provider, 120000, 0, this);
 
 
         }
@@ -95,27 +112,40 @@ public class ActivityTransport extends FragmentActivity implements LocationListe
             }
         });
 
+        txtFrom.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                layoutMarkerFrom.setVisibility(View.VISIBLE);
+                layoutMarkerDestination.setVisibility(View.GONE);
+
+            }
+        });
+
+        txtDestination.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                layoutMarkerFrom.setVisibility(View.GONE);
+                layoutMarkerDestination.setVisibility(View.VISIBLE);
+
+            }
+        });
 
     }
 
 
+
+
     @Override
     public void onLocationChanged(Location location) {
+        googleMap.clear();
 
-
-        // Getting latitude of the current location
         double latitude = location.getLatitude();
-
-        // Getting longitude of the current location
         double longitude = location.getLongitude();
-
-        // Creating a LatLng object for the current location
         LatLng latLng = new LatLng(latitude, longitude);
 
-        // Showing the current location in Google Map
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-
-        // Zoom in the Google Map
         googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
         CircleOptions circleOptions = new CircleOptions()
                 .center(latLng)
@@ -123,14 +153,7 @@ public class ActivityTransport extends FragmentActivity implements LocationListe
                 .strokeWidth(2)
                 .strokeColor(Color.BLUE)
                 .fillColor(Color.parseColor("#500084d3"));
-        // Supported formats are: #RRGGBB #AARRGGBB
-        //   #AA is the alpha, or amount of transparency
        googleMap.addCircle(circleOptions);
-        //googleMap.addTileOverlay();
-        GroundOverlayOptions newarkMap = new GroundOverlayOptions()
-                .image(BitmapDescriptorFactory.fromResource(R.drawable.green));
-
-
     }
 
     @Override
@@ -149,100 +172,40 @@ public class ActivityTransport extends FragmentActivity implements LocationListe
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_activity_transport, menu);
-        return true;
+
+
+    private void SetActionBar() {
+        mToolbar = (Toolbar) findViewById(R.id.tool_bar);
+        setSupportActionBar(mToolbar);
+        mToolbar.setNavigationIcon(R.drawable.ic_back);
+        getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+    public void getAddress(LatLng latlng) {
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        double lat = latlng.latitude;
+        double lng = latlng.longitude;
+        try {
+            List<Address> addresses = geocoder.getFromLocation(lat, lng, 1);
+            Address obj = addresses.get(0);
+            String add = obj.getAddressLine(0);
+            add = add + "\n" + obj.getCountryName();
+            add = add + "\n" + obj.getCountryCode();
+            add = add + "\n" + obj.getAdminArea();
+            add = add + "\n" + obj.getPostalCode();
+            add = add + "\n" + obj.getSubAdminArea();
+            add = add + "\n" + obj.getLocality();
+            add = add + "\n" + obj.getSubThoroughfare();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+            Log.v("IGA", "Address" + add);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
-
-        return super.onOptionsItemSelected(item);
     }
-
-    private int convertMetersToPixels(double lat, double lng, double radiusInMeters) {
-
-        double lat1 = radiusInMeters / EARTH_RADIUS;
-        double lng1 = radiusInMeters / (EARTH_RADIUS * Math.cos((Math.PI * lat / 180)));
-
-        double lat2 = lat + lat1 * 180 / Math.PI;
-        double lng2 = lng + lng1 * 180 / Math.PI;
-
-        Point p1 = googleMap.getProjection().toScreenLocation(new LatLng(lat, lng));
-        Point p2 = googleMap.getProjection().toScreenLocation(new LatLng(lat2, lng2));
-
-        return Math.abs(p1.x - p2.x);
-    }
-
-    private Bitmap getBitmap(int lat, int lng) {
-
-        // fill color
-        Paint paint1 = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint1.setColor(0x110000FF);
-        paint1.setStyle(Paint.Style.FILL);
-
-        // stroke color
-        Paint paint2 = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint2.setColor(0xFF0000FF);
-        paint2.setStyle(Paint.Style.STROKE);
-
-        // icon
-        Bitmap icon = BitmapFactory.decodeResource(this.getResources(), R.drawable.blue);
-
-        // circle radius - 200 meters
-        int radius = offset = convertMetersToPixels(lat, lng, 200);
-
-        // if zoom too small
-        if (radius < icon.getWidth() / 2) {
-
-            radius = icon.getWidth() / 2;
-        }
-
-        // create empty bitmap
-        Bitmap b = Bitmap.createBitmap(radius * 2, radius * 2, Bitmap.Config.ARGB_8888);
-        Canvas c = new Canvas(b);
-
-        // draw blue area if area > icon size
-        if (radius != icon.getWidth() / 2) {
-
-            c.drawCircle(radius, radius, radius, paint1);
-            c.drawCircle(radius, radius, radius, paint2);
-        }
-
-        // draw icon
-        c.drawBitmap(icon, radius - icon.getWidth() / 2, radius - icon.getHeight() / 2, new Paint());
-
-        return b;
-    }
-
-    private LatLng getCoords(double lat, double lng) {
-
-        LatLng latLng = new LatLng(lat, lng);
-
-        Projection proj = googleMap.getProjection();
-        Point p = proj.toScreenLocation(latLng);
-        p.set(p.x, p.y + offset);
-
-        MarkerOptions options = new MarkerOptions();
-        options.position(getCoords(lat, lng));
-
-
-        //marker = googleMap.addMarker(options);
-
-        return proj.fromScreenLocation(p);
-    }
-
 
 
 }
