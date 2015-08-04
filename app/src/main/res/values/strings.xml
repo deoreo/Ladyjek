@@ -11,7 +11,7 @@
         <item>Credit Card</item>
         <item>Ladyjek Wallet</item>
     </string-array>
-    <string name="title_activity_activity_transport">ActivityTransport</string>
+    <string name="title_activity_activity_transport">Transport</string>
 
     <string name="hello_world">Hello world!</string>
 
