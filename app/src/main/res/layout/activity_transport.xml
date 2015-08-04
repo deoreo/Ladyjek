@@ -3,13 +3,31 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="ladyjek.twiscode.com.ladyjek.Activity.ActivityOrder"
-    android:weightSum="1">
+    tools:context="ladyjek.twiscode.com.ladyjek.Activity.ActivityTransport"
+    >
+    <include
+        android:id="@+id/tool_bar"
+        layout="@layout/toolbar"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <LinearLayout
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    >
 
     <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="150dp"
-        android:padding="30dp"
+        android:layout_height="120dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="10dp"
         >
 
         <EditText
@@ -53,8 +71,6 @@
 
     </RelativeLayout>
 
-
-
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -71,5 +87,11 @@
             />
 
     </RelativeLayout>
+
+</LinearLayout>
+
+
+    </ScrollView>
+
 
 </LinearLayout>
