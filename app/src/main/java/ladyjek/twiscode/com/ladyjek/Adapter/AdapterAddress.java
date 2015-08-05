@@ -18,32 +18,23 @@ import ladyjek.twiscode.com.ladyjek.Utilities.PlaceAPI;
 /**
  * Created by User on 8/5/2015.
  */
-public class AdapterAddress extends ArrayAdapter<String> implements Filterable {
+public class AdapterAddress extends ArrayAdapter implements Filterable {
+    private ArrayList resultList;
 
-    ArrayList<String> resultList;
-
-    Context mContext;
-    int mResource;
-    String mTag;
-
-    PlaceAPI mPlaceAPI = new PlaceAPI();
-
-    public AdapterAddress(Context context, int resource, String tag ) {
-        super(context, resource);
-        mContext = context;
-        mTag = tag;
+    public AdapterAddress(Context context, int textViewResourceId) {
+        super(context, textViewResourceId);
     }
 
     @Override
     public int getCount() {
-        // Last item will be the footer
         return resultList.size();
     }
 
     @Override
-    public String getItem(int position) {
-        return resultList.get(position);
+    public String getItem(int index) {
+        return resultList.get(index).toString();
     }
+
     @Override
     public Filter getFilter() {
         Filter filter = new Filter() {
@@ -51,7 +42,10 @@ public class AdapterAddress extends ArrayAdapter<String> implements Filterable {
             protected FilterResults performFiltering(CharSequence constraint) {
                 FilterResults filterResults = new FilterResults();
                 if (constraint != null) {
-                    resultList = mPlaceAPI.autocomplete(constraint.toString());
+                    // Retrieve the autocomplete results.
+                    resultList = PlaceAPI.autocomplete(constraint.toString());
+
+                    // Assign the data to the FilterResults
                     filterResults.values = resultList;
                     filterResults.count = resultList.size();
                 }
@@ -59,39 +53,15 @@ public class AdapterAddress extends ArrayAdapter<String> implements Filterable {
             }
 
             @Override
-            protected void publishResults(CharSequence constraint, Filter.FilterResults results) {
+            protected void publishResults(CharSequence constraint, FilterResults results) {
                 if (results != null && results.count > 0) {
                     notifyDataSetChanged();
-                }
-                else {
+                } else {
                     notifyDataSetInvalidated();
                 }
             }
         };
-
         return filter;
     }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        View view = null;
-        AutoCompleteTextView autocompleteTextView=null;
-        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-        if (position != (resultList.size() - 1))
-            view = inflater.inflate(R.layout.auto_complete_list_item, null);
-
-
-        if (position != (resultList.size() - 1)) {
-            if(mTag.equals("FROM"))
-                autocompleteTextView = (AutoCompleteTextView) view.findViewById(R.id.txtFrom);
-            else if(mTag.equals("DESTINATION"))
-                autocompleteTextView = (AutoCompleteTextView) view.findViewById(R.id.txtDestination);
-            autocompleteTextView.setText(resultList.get(position));
-        }
-
-        return view;
-    }
-
 
 }

@@ -19,6 +19,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -46,7 +47,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeoutException;
 
-public class ActivityTransport extends ActionBarActivity implements LocationListener {
+public class ActivityTransport extends ActionBarActivity implements LocationListener, AdapterView.OnItemClickListener {
     private Toolbar mToolbar;
     private GoogleMap googleMap;
     private Button btnLocationFrom, btnLocationDestination, btnRequestRide;
@@ -165,10 +166,11 @@ public class ActivityTransport extends ActionBarActivity implements LocationList
             }
         });
 
-        txtFrom.setAdapter(new AdapterAddress(this, R.layout.auto_complete_list_item, TAG_FROM));
-        txtDestination.setAdapter(new AdapterAddress(this, R.layout.auto_complete_list_item, TAG_DESTINATION));
+        txtFrom.setAdapter(new AdapterAddress(this, R.layout.auto_complete_list_item));
+        txtFrom.setOnItemClickListener(this);
 
-
+        txtDestination.setAdapter(new AdapterAddress(this, R.layout.auto_complete_list_item));
+        txtDestination.setOnItemClickListener(this);
     }
 
 
@@ -240,6 +242,12 @@ public class ActivityTransport extends ActionBarActivity implements LocationList
             Log.w("ActivityTransport", "Canont get Address!");
         }
         return addressLine;
+    }
+
+    @Override
+    public void onItemClick(AdapterView adapterView, View view, int position, long id) {
+        String str = (String) adapterView.getItemAtPosition(position);
+        Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
     }
 
 
