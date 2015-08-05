@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Ladyjek</string>
+    <string name="app_name">LADYJEK</string>
 
     <string name="title_activity_activity_login">Sign-In</string>
     <string name="title_activity_activity_register">Sign-Up</string>
@@ -15,7 +15,11 @@
 
     <string name="hello_world">Hello world!</string>
 
+    <string name="lbl_register">Baru disini?</string>
+    <string name="lbl_login">Lets do this!</string>
+    <string name="register"><u>Daftar sekarang</u></string>
+    <string name="login"><u>Sign in</u></string>
 
 
 
-</resources>
+    </resources>
