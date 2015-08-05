@@ -8,5 +8,9 @@
     <color name="grey_color">#ddd</color>
     <color name="grey_color_smooth">#eee</color>
 
+    <color name="bg_grad_1">#814a9f</color>
+    <color name="bg_grad_2">#bd3b97</color>
+    <color name="bg_grad_3">#ffb1e8</color>
+
 
 </resources>

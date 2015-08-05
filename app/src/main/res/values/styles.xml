@@ -7,9 +7,9 @@
     <style name="MyMaterialTheme.Base" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="colorPrimary">@color/primary_color</item>
-        <item name="colorPrimaryDark">@color/primary_color_dark</item>
-        <item name="colorAccent">@color/primary_color_dark</item>
+        <item name="colorPrimary">@color/bg_grad_2</item>
+        <item name="colorPrimaryDark">@color/bg_grad_1</item>
+        <item name="colorAccent">@color/bg_grad_1</item>
     </style>
 
 </resources>

@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.app.ProgressDialog;
+import android.widget.TextView;
 
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.Utilities;
@@ -20,7 +21,7 @@ import ladyjek.twiscode.com.ladyjek.Utilities.Utilities;
 public class ActivityLogin extends Activity {
 
     Activity act;
-    Button btnRegister, btnLogin;
+    TextView btnRegister, btnLogin;
     EditText txtEmail, txtPassword;
 
     @Override
@@ -29,8 +30,8 @@ public class ActivityLogin extends Activity {
         setContentView(R.layout.activity_login);
 
         act = this;
-        btnRegister = (Button) findViewById(R.id.btnRegister);
-        btnLogin = (Button) findViewById(R.id.btnLogin);
+        btnRegister = (TextView) findViewById(R.id.btnRegister);
+        btnLogin = (TextView) findViewById(R.id.btnLogin);
         txtEmail = (EditText) findViewById(R.id.txtEmail);
         txtPassword = (EditText) findViewById(R.id.txtPassword);
 
@@ -45,6 +46,7 @@ public class ActivityLogin extends Activity {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                /*
                 String email = txtEmail.getText().toString();
                 String password = txtPassword.getText().toString();
                 if (email == null || password == null || email.trim().isEmpty() || password.trim().isEmpty()) {
@@ -64,7 +66,10 @@ public class ActivityLogin extends Activity {
                     );
                 }
 
-
+                */
+                Intent i=new Intent(getBaseContext(),ActivityTransport.class);
+                startActivity(i);
+                finish();
             }
         });
 
