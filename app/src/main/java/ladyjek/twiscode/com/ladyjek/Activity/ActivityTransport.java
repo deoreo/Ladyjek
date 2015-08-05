@@ -46,6 +46,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
@@ -63,6 +64,7 @@ public class ActivityTransport extends ActionBarActivity implements LocationList
     private LinearLayout layoutMarkerFrom, layoutMarkerDestination;
     private ProgressBar progressMapFrom, progressMapDestination;
     private boolean mMapIsTouched;
+    LatLng center;
 
 
     @Override
@@ -103,6 +105,14 @@ public class ActivityTransport extends ActionBarActivity implements LocationList
                 onLocationChanged(location);
             }
             locationManager.requestLocationUpdates(provider, 120000, 0, this);
+
+            googleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+                @Override
+                public void onCameraChange(CameraPosition cameraPosition) {
+                    center = googleMap.getCameraPosition().target;
+                    Log.d("center map",center.toString());
+                }
+            });
 
 
         }
