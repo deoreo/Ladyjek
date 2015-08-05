@@ -29,9 +29,9 @@ public class ActivityRegister extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        txtAge = (TextView) findViewById(R.id.editAge);
-        SetActionBar();
-        SetDate();
+        //txtAge = (TextView) findViewById(R.id.editAge);
+        //SetActionBar();
+        //SetDate();
 
 
 
@@ -62,7 +62,7 @@ public class ActivityRegister extends ActionBarActivity {
         }
 
     }
-
+/*
     private void SetActionBar() {
         mToolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(mToolbar);
@@ -98,5 +98,6 @@ public class ActivityRegister extends ActionBarActivity {
         },newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
 
     }
+    */
 
 }
