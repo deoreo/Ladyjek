@@ -32,6 +32,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,20 +61,22 @@ public class ActivityTransport extends ActionBarActivity implements LocationList
     private Button btnRequestRide;
     private EditText txtFrom, txtDestination;
     private LinearLayout layoutMarkerFrom, layoutMarkerDestination;
+    private ProgressBar progressMapFrom, progressMapDestination;
     private boolean mMapIsTouched;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_transport2);
+        setContentView(R.layout.activity_transport);
         SetActionBar();
         btnRequestRide = (Button)findViewById(R.id.btnRequestRide);
         txtFrom = (EditText)findViewById(R.id.txtFrom);
         txtDestination = (EditText)findViewById(R.id.txtDestination);
         layoutMarkerFrom = (LinearLayout)findViewById(R.id.layoutMarkerFrom);
         layoutMarkerDestination = (LinearLayout)findViewById(R.id.layoutMarkerDestination);
-
+        progressMapFrom = (ProgressBar)findViewById(R.id.progressMapFrom);
+        progressMapDestination = (ProgressBar)findViewById(R.id.progressMapDestination);
         // Getting Google Play availability status
         int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());
 
@@ -153,7 +156,7 @@ public class ActivityTransport extends ActionBarActivity implements LocationList
                 .strokeWidth(2)
                 .strokeColor(Color.BLUE)
                 .fillColor(Color.parseColor("#500084d3"));
-       googleMap.addCircle(circleOptions);
+        googleMap.addCircle(circleOptions);
     }
 
     @Override
