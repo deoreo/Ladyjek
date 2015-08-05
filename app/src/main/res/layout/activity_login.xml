@@ -73,7 +73,7 @@
                                     android:id="@+id/txtEmail"
                                     android:layout_width="match_parent"
                                     android:layout_height="50dp"
-                                    android:hint="Email"
+                                    android:hint="alamat e-mail"
                                     android:textColorHint="@color/white_color"
                                     android:padding="10dp"
                                     android:background="@null"
@@ -96,7 +96,7 @@
                                     android:id="@+id/txtPassword"
                                     android:layout_width="match_parent"
                                     android:layout_height="50dp"
-                                    android:hint="Password"
+                                    android:hint="kata sandi"
                                     android:textColorHint="@color/white_color"
                                     android:padding="10dp"
                                     android:background="@null"
@@ -129,18 +129,32 @@
                         android:textSize="18dp"
                         android:layout_centerHorizontal="true"
                         />
-                    <TextView
-                        android:id="@+id/btnRegister"
-                        android:layout_marginTop="5dp"
+                    <RelativeLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/bg_grad_2"
-                        android:text="@string/register"
-                        android:textSize="18dp"
-                        android:layout_centerHorizontal="true"
                         android:layout_below="@id/txtLabel"
+                        android:layout_centerHorizontal="true">
+                        <TextView
+                            android:id="@+id/btnRegister"
+                            android:layout_marginTop="5dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/bg_grad_2"
+                            android:text="@string/register"
+                            android:textSize="18dp"
+                            android:layout_centerHorizontal="true"
 
-                        />
+                            />
+                        <ImageView
+                            android:layout_width="34dp"
+                            android:layout_height="38dp"
+                            android:src="@drawable/right_arrow"
+                            android:layout_toRightOf="@id/btnRegister"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="-8dp"/>
+                    </RelativeLayout>
+
                 </RelativeLayout>
                 <RelativeLayout
                     android:id="@+id/wrapperLogin"
@@ -159,18 +173,32 @@
                         android:textSize="18dp"
                         android:layout_centerHorizontal="true"
                         />
-                    <TextView
-                        android:id="@+id/btnLogin"
-                        android:layout_marginTop="5dp"
+                    <RelativeLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/bg_grad_2"
-                        android:text="@string/login"
-                        android:textSize="18dp"
-                        android:layout_centerHorizontal="true"
                         android:layout_below="@id/txtLabelLogin"
+                        android:layout_centerHorizontal="true">
+                        <TextView
+                            android:id="@+id/btnLogin"
+                            android:layout_marginTop="5dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/bg_grad_2"
+                            android:text="@string/login"
+                            android:textSize="18dp"
+                            android:layout_centerHorizontal="true"
 
-                        />
+                            />
+                        <ImageView
+                            android:layout_width="34dp"
+                            android:layout_height="38dp"
+                            android:src="@drawable/right_arrow"
+                            android:layout_toRightOf="@id/btnLogin"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="-8dp"/>
+                    </RelativeLayout>
+
                 </RelativeLayout>
             </LinearLayout>
 

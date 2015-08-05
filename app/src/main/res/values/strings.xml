@@ -16,8 +16,10 @@
     <string name="hello_world">Hello world!</string>
 
     <string name="lbl_register">Baru disini?</string>
+    <string name="lbl_register2">Great Job!</string>
     <string name="lbl_login">Lets do this!</string>
     <string name="register"><u>Daftar sekarang</u></string>
+    <string name="register2"><u>Daftar saya</u></string>
     <string name="login"><u>Sign in</u></string>
 
 

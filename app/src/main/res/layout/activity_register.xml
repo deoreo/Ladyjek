@@ -1,185 +1,238 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:focusable="true" android:focusableInTouchMode="true"
+    tools:context="ladyjek.twiscode.com.ladyjek.Activity.ActivityLogin"
+    android:background="@drawable/plain_gradient_bg"
     android:orientation="vertical"
-    android:background="@color/grey_color_smooth">
+    >
+    <TextView
+        android:padding="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white_color"
+        android:textStyle="bold"
+        android:text="LADYJEK"
+        android:textSize="24dp"
+        android:layout_centerHorizontal="true"
+        />
+    <!--
     <include
         android:id="@+id/tool_bar"
         layout="@layout/toolbar"
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        />
+        android:layout_height="wrap_content" />
+-->
     <ScrollView
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        xmlns:android="http://schemas.android.com/apk/res/android" >
-
-        <RelativeLayout
+        android:fillViewport="true"
+        >
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="20dp">
-
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/imgIcon"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                app:border_width="2dp"
-                android:layout_centerHorizontal="true"
-                android:src="@drawable/images"
-                app:border_overlay="true"
-                />
-
+            android:orientation="vertical">
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="60dp"
-                android:layout_below="@id/imgIcon"
-                >
-                <LinearLayout
+                android:layout_height="0dp"
+                android:layout_weight="1"
+
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp">
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <EditText
-                        android:id="@+id/txtName"
+                    android:layout_centerInParent="true">
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:hint="Name"
-                        android:padding="10dp"
-                        android:background="@drawable/rounded_white_grey"
-                        android:textColor="@color/primary_color_dark"/>
-                    <EditText
-                        android:layout_marginTop="5dp"
-                        android:id="@+id/txtEmail"
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:hint="Email"
-                        android:inputType="textEmailAddress"
-                        android:padding="10dp"
-                        android:background="@drawable/rounded_white_grey"
-                        android:textColor="@color/primary_color_dark"/>
-                    <EditText
-                        android:id="@+id/txtPassword"
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:hint="Password"
-                        android:inputType="textPassword"
-                        android:padding="10dp"
-                        android:layout_marginTop="5dp"
-                        android:background="@drawable/rounded_white_grey"
-                        android:textColor="@color/primary_color_dark"/>
-                    <EditText
-                        android:id="@+id/txtConfirmPassword"
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:hint="Confirm Password"
-                        android:inputType="textPassword"
-                        android:padding="10dp"
-                        android:layout_marginTop="5dp"
-                        android:background="@drawable/rounded_white_grey"
-                        android:textColor="@color/primary_color_dark"/>
-
-                    <EditText
-                        android:id="@+id/txtPhone"
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:hint="Phone"
-                        android:inputType="number"
-                        android:padding="10dp"
-                        android:layout_marginTop="5dp"
-                        android:background="@drawable/rounded_white_grey"
-                        android:textColor="@color/primary_color_dark"/>
-
-                    <TextView
-                        android:layout_marginTop="5dp"
-                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Birthday"
-                        android:paddingLeft="4dp"
-                        android:paddingRight="4dp"/>
+                        android:orientation="vertical">
 
-
-                    <TextView
-                        android:id="@+id/editAge"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="15dp"
-                        android:paddingLeft="4dp"
-                        android:textColor="@color/primary_color_dark"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="20dp"
-                        android:text="Gender"
-                        android:paddingLeft="4dp"
-                        android:paddingRight="4dp"/>
-
-                    <RadioGroup
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        android:id="@+id/radiosex"
-                        android:orientation="horizontal"
-                        android:layout_marginBottom="25dp"
-                        android:layout_marginTop="5dp">
-
-                        <RadioButton
-                            android:id="@+id/settingRadioMale"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Male"
-                            android:textSize="12sp"
-                            android:layout_marginRight="4dp"
-                            android:textColor="@color/primary_color_dark"
-                            android:checked="true"/>
-
-                        <RadioButton
-                            android:id="@+id/settingRadioFemale"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Female"
-                            android:textSize="12sp"
-                            android:textColor="@color/primary_color_dark"/>
-
-                    </RadioGroup>
-
-
-
-                    <RelativeLayout
-                        android:layout_marginTop="10dp"
-                        android:layout_marginBottom="30dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        >
-
-
-                            <Button
-                                android:id="@+id/btnRegister"
-                                android:layout_width="match_parent"
-                                android:layout_height="40dp"
-                                android:background="@drawable/rounded_primary_color"
-                                android:text="sign-up"
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
                                 android:textColor="@color/white_color"
-                                android:textAllCaps="false"
-                                android:layout_alignParentRight="true"/>
-                    </RelativeLayout>
+                                android:textStyle="bold"
+                                android:text="Welcome, Ladies"
+                                android:textSize="22dp"
 
-                </LinearLayout>
+                                />
+                            <TextView
+                                android:layout_marginTop="2dp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/white_color"
+                                android:textStyle="bold"
+                                android:text="Saatnya daftar Ladyjek!"
+                                android:textSize="22dp"
+                                />
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_marginTop="20dp">
+                            <EditText
+                                android:id="@+id/txtEmail"
+                                android:layout_width="match_parent"
+                                android:layout_height="50dp"
+                                android:hint="alamat e-mail"
+                                android:textColorHint="@color/white_color"
+                                android:padding="10dp"
+                                android:background="@null"
+                                android:textColor="@color/white_color"
+                                android:inputType="textEmailAddress"
+                                android:textStyle="bold"/>
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="2dp"
+                                android:background="@color/white_color"
+                                />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_marginTop="5dp">
+                            <EditText
+                                android:id="@+id/txtPassword"
+                                android:layout_width="match_parent"
+                                android:layout_height="50dp"
+                                android:hint="kata sandi"
+                                android:textColorHint="@color/white_color"
+                                android:padding="10dp"
+                                android:background="@null"
+                                android:textColor="@color/white_color"
+                                android:inputType="textEmailAddress"
+                                android:textStyle="bold"/>
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="2dp"
+                                android:background="@color/white_color"
+                                />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_marginTop="5dp">
+                            <EditText
+                                android:id="@+id/txtConfitmPassword"
+                                android:layout_width="match_parent"
+                                android:layout_height="50dp"
+                                android:hint="konfirmasi kata sandi"
+                                android:textColorHint="@color/white_color"
+                                android:padding="10dp"
+                                android:background="@null"
+                                android:textColor="@color/white_color"
+                                android:inputType="textEmailAddress"
+                                android:textStyle="bold"/>
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="2dp"
+                                android:background="@color/white_color"
+                                />
+                        </LinearLayout>
+
+                    </LinearLayout>
+                </RelativeLayout>
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/wrapperRegister"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="20dp"
+                android:background="@color/white_color">
+                <TextView
+                    android:id="@+id/txtLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/bg_grad_2"
+                    android:textStyle="bold"
+                    android:text="@string/lbl_register2"
+                    android:textSize="18dp"
+                    android:layout_centerHorizontal="true"
+                    />
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/txtLabel"
+                    android:layout_centerHorizontal="true">
+                    <TextView
+                        android:id="@+id/btnRegister"
+                        android:layout_marginTop="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/bg_grad_2"
+                        android:text="@string/register2"
+                        android:textSize="18dp"
+                        android:layout_centerHorizontal="true"
+
+                        />
+                    <ImageView
+                        android:layout_width="34dp"
+                        android:layout_height="38dp"
+                        android:src="@drawable/right_arrow"
+                        android:layout_toRightOf="@id/btnRegister"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="-8dp"/>
+                </RelativeLayout>
 
             </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/wrapperLogin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="20dp"
+                android:background="@color/white_color"
+                android:visibility="gone">
+                <TextView
+                    android:id="@+id/txtLabelLogin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/bg_grad_2"
+                    android:textStyle="bold"
+                    android:text="Let's do this !"
+                    android:textSize="18dp"
+                    android:layout_centerHorizontal="true"
+                    />
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/txtLabelLogin"
+                    android:layout_centerHorizontal="true">
+                    <TextView
+                        android:id="@+id/btnLogin"
+                        android:layout_marginTop="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/bg_grad_2"
+                        android:text="@string/login"
+                        android:textSize="18dp"
+                        android:layout_centerHorizontal="true"
 
-        </RelativeLayout>
+                        />
+                    <ImageView
+                        android:layout_width="34dp"
+                        android:layout_height="38dp"
+                        android:src="@drawable/right_arrow"
+                        android:layout_toRightOf="@id/btnLogin"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="-8dp"/>
+                </RelativeLayout>
 
-
+            </RelativeLayout>
+        </LinearLayout>
 
     </ScrollView>
+
 
 
 </LinearLayout>
