@@ -2,6 +2,7 @@ package ladyjek.twiscode.com.ladyjek.Utilities;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.text.Html;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -72,7 +73,14 @@ public class PlaceAPI {
 
             // Extract the Place descriptions from the results
             resultList = new ArrayList(predsJsonArray.length());
-
+            for (int i = 0; i < predsJsonArray.length(); i++) {
+                //System.out.println(predsJsonArray.getJSONObject(i).getString("description"));
+                //System.out.println("============================================================");
+                String description = predsJsonArray.getJSONObject(i).getString("description");
+                String[] separated = description.split(",");
+                String detailLocation = separated[1].trim()+","+separated[2].trim();
+                resultList.add(separated[0].trim()+"\n"+ Html.fromHtml(detailLocation));
+            }
         } catch (JSONException e) {
             Log.e(TAG, "Cannot process JSON results", e);
         }

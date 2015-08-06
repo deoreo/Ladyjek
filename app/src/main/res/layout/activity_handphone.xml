@@ -88,6 +88,7 @@
                                     android:orientation="vertical">
 
                                     <TextView
+                                        android:id="@+id/txtCountryCode"
                                         android:layout_width="wrap_content"
                                         android:layout_height="50dp"
                                         android:hint="+62"
@@ -108,7 +109,7 @@
                                     android:orientation="vertical">
 
                                     <EditText
-                                        android:id="@+id/txtHP"
+                                        android:id="@+id/txtPhoneNumber"
                                         android:layout_width="match_parent"
                                         android:layout_height="50dp"
                                         android:background="@null"
@@ -116,7 +117,7 @@
                                         android:paddingTop="10dp"
                                         android:paddingBottom="10dp"
                                         android:paddingRight="10dp"
-                                        android:paddingLeft="5dp"
+                                        android:paddingLeft="2dp"
                                         android:textColor="@color/white_color"
                                         android:textColorHint="@color/white_color"
                                         android:textStyle="bold" />
@@ -159,7 +160,7 @@
                         android:layout_centerHorizontal="true">
 
                         <TextView
-                            android:id="@+id/btnRegister"
+                            android:id="@+id/txtRegisterHandphone"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerHorizontal="true"
@@ -176,7 +177,7 @@
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="10dp"
                             android:layout_marginTop="-8dp"
-                            android:layout_toRightOf="@id/btnRegister"
+                            android:layout_toRightOf="@id/txtRegisterHandphone"
                             android:src="@drawable/right_arrow" />
                     </RelativeLayout>
 

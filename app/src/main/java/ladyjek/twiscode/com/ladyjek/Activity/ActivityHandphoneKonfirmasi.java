@@ -1,9 +1,11 @@
 package ladyjek.twiscode.com.ladyjek.Activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -13,9 +15,8 @@ import ladyjek.twiscode.com.ladyjek.R;
 public class ActivityHandphoneKonfirmasi extends Activity {
 
     private Activity act;
-    private TextView btnRegister, btnLogin;
-    private EditText txtEmail, txtPassword;
-    private RelativeLayout wrapperLogin, wrapperRegister;
+    private TextView txtConfirmSmsCode;
+    private EditText txtSmsCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +24,17 @@ public class ActivityHandphoneKonfirmasi extends Activity {
         setContentView(R.layout.activity_handphone_konfirmasi);
 
         act = this;
+        txtConfirmSmsCode = (TextView)findViewById(R.id.txtConfirmSmsCode);
+        txtSmsCode = (EditText) findViewById(R.id.txtSmsCode);
 
+        txtConfirmSmsCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getBaseContext(), ActivityTransport.class);
+                startActivity(i);
+                finish();
+            }
+        });
 
     }
 

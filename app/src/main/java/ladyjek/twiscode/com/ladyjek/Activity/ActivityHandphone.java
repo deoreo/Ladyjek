@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -21,9 +22,9 @@ import ladyjek.twiscode.com.ladyjek.Utilities.Utilities;
 public class ActivityHandphone extends Activity {
 
     private Activity act;
-    private TextView btnRegister, btnLogin;
-    private EditText txtEmail, txtPassword;
-    private RelativeLayout wrapperLogin, wrapperRegister;
+    private TextView txtRegisterHandphone, txtCountryCode;
+    private EditText txtPhoneNumber;
+    private String countryCode, phNum, strPhoneNumber="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +32,23 @@ public class ActivityHandphone extends Activity {
         setContentView(R.layout.activity_handphone);
 
         act = this;
+        txtCountryCode = (TextView)findViewById(R.id.txtCountryCode);
+        txtRegisterHandphone = (TextView)findViewById(R.id.txtRegisterHandphone);
+        txtPhoneNumber = (EditText) findViewById(R.id.txtPhoneNumber);
+        countryCode = txtCountryCode.getText().toString();
+        phNum = txtPhoneNumber.getText().toString();
+        strPhoneNumber = countryCode+phNum;
+
+        txtRegisterHandphone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getBaseContext(), ActivityHandphoneKonfirmasi.class);
+                startActivity(i);
+                finish();
+            }
+        });
+
+
 
 
     }
