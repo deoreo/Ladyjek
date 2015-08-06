@@ -27,17 +27,17 @@ public class ActivityConfirm extends ActionBarActivity {
     private Toolbar mToolbar;
     Spinner pay;
     ArrayAdapter<CharSequence> adapterPay;
-    Button btnConfirm;
+    TextView btnConfirm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm);
 
-        SetActionBar();
+        //SetActionBar();
         SetPaySpinner();
 
-        btnConfirm = (Button) findViewById(R.id.btnConfirm);
+        btnConfirm = (TextView) findViewById(R.id.btnConfirm);
         btnConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -8,8 +8,8 @@
     <string name="action_settings">Setting</string>
     <string name="api_key">AIzaSyDAESTL66smDnO97geMWtdRJZhGIX3WGbk</string>
     <string-array name="payList">
-        <item>Credit Card</item>
-        <item>Ladyjek Wallet</item>
+        <item>Tunai</item>
+        <item>Dompet</item>
     </string-array>
     <string name="title_activity_activity_transport">Transport</string>
 
@@ -19,12 +19,15 @@
     <string name="lbl_register2">Great Job!</string>
     <string name="lbl_login">Lets do this!</string>
     <string name="lbl_hp">safety first!</string>
-    <string name="lbl_konfirmasi">Terima kasiht!</string>
+    <string name="lbl_konfirmasi">Terima kasih!</string>
+    <string name="lbl_review">Estimasi waktu menunggu : <b> 5 min </b></string>
+
     <string name="register"><u>Daftar sekarang</u></string>
     <string name="register2"><u>Daftar saya</u></string>
     <string name="login"><u>Sign in</u></string>
     <string name="hp"><u>Kirim kode verifikasi</u></string>
     <string name="konfirmasi"><u>Sign in</u></string>
+    <string name="review"><u>Jemput</u></string>
 
 
 
