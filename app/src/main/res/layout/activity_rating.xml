@@ -6,38 +6,58 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:focusable="true" android:focusableInTouchMode="true"
-    android:background="@color/grey_color_smooth">
-    <include
-        android:id="@+id/tool_bar"
-        layout="@layout/toolbar"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        />
+    android:background="@color/white_color">
+
     <ScrollView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        xmlns:android="http://schemas.android.com/apk/res/android" >
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:fillViewport="true">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:minHeight="320dp"
-            android:layout_marginTop="50dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp">
+            android:layout_height="match_parent">
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true">
+
+                <TextView
+                    android:id="@+id/lblThx"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_centerHorizontal="true"
+                    android:textAllCaps="false"
+                    android:text="Terima kasih!"
+                    android:textColor="@color/black_color"
+                    android:textStyle="bold"
+                    android:textSize="36dp"/>
+
+                <TextView
+                    android:id="@+id/txtTotal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_centerHorizontal="true"
+                    android:textAllCaps="false"
+                    android:text="Total : Rp. 25.000"
+                    android:textColor="@color/black_color"
+                    android:textStyle="bold"
+                    android:textSize="18dp"
+                    android:layout_below="@id/lblThx"/>
+
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/imgDriver"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
                     app:border_width="0dp"
                     android:layout_centerHorizontal="true"
                     android:src="@drawable/images"
                     app:border_overlay="true"
+                    android:layout_below="@id/txtTotal"
+                    android:layout_marginTop="10dp"
                     />
                 <TextView
                     android:id="@+id/nameDriver"
@@ -48,47 +68,108 @@
                     android:layout_centerHorizontal="true"
                     android:textAllCaps="false"
                     android:text="Full Name"
-                    android:textColor="@color/primary_color_dark"
+                    android:textColor="@color/black_color"
                     android:textStyle="bold"
-                    android:textSize="16dp"/>
+                    android:textSize="20dp"/>
 
                 <RatingBar
-                    style="?android:attr/ratingBarStyle"
+                    style="@style/CustomRatingBar"
                     android:id="@+id/rateDriver"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="250dp"
+                    android:layout_height="42dp"
                     android:layout_below="@id/nameDriver"
                     android:layout_marginTop="15dp"
                     android:numStars="5"
                     android:stepSize="1"
                     android:layout_centerHorizontal="true"/>
 
+                <TextView
+                    android:layout_marginLeft="20dp"
+                    android:id="@+id/lblFeedback"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:textAllCaps="false"
+                    android:text="Feedback untuk dewi"
+                    android:textColor="@color/black_color"
+                    android:textSize="18dp"
+                    android:layout_below="@id/rateDriver"/>
+
                 <EditText
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginBottom="5dp"
                     android:id="@+id/feedbackDriver"
                     android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    android:hint="feedback"
+                    android:layout_height="wrap_content"
+                    android:minHeight="40dp"
                     android:padding="10dp"
-                    android:layout_below="@id/rateDriver"
-                    android:layout_marginTop="15dp"
-                    android:background="@drawable/rounded_white_grey"
-                    android:textColor="@color/primary_color_dark"
+                    android:layout_below="@id/lblFeedback"
+                    android:layout_marginTop="10dp"
+                    android:background="@null"
+                    android:textColor="@color/black_color"
                     android:gravity="top"
                     android:maxLines="7"
                     />
 
-                <Button
+                <View
+                    android:id="@+id/line"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="2dp"
+                    android:background="@color/grey_color_dark"
                     android:layout_below="@id/feedbackDriver"
-                    android:layout_marginTop="50dp"
-                    android:layout_marginBottom="20dp"
-                    android:text="rate your experience"
-                    android:textAllCaps="false"
-                    android:background="@drawable/rounded_primary_color"
-                    android:textStyle="bold"
-                    android:textSize="16dp"
-                    android:textColor="@color/white_color"/>
+                    android:layout_marginBottom="30dp"/>
+
+                <RelativeLayout
+                    android:id="@+id/wrapperRegister"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/plain_gradient_bg_btn"
+                    android:padding="20dp"
+                    android:layout_below="@id/line">
+
+                    <TextView
+                        android:id="@+id/txtLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:text="@string/lbl_feedback"
+                        android:textColor="@color/white_color"
+                        android:textSize="18dp"
+                        android:textStyle="bold" />
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/txtLabel"
+                        android:layout_centerHorizontal="true">
+
+                        <TextView
+                            android:id="@+id/btnSaran"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="5dp"
+                            android:text="@string/feedback"
+                            android:textColor="@color/white_color"
+                            android:textSize="18dp"
+
+                            />
+
+                        <ImageView
+                            android:layout_width="34dp"
+                            android:layout_height="38dp"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="-8dp"
+                            android:layout_toRightOf="@id/btnSaran"
+                            android:src="@drawable/right_arrow_white" />
+                    </RelativeLayout>
+
+                </RelativeLayout>
+
             </RelativeLayout>
 
 
