@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">LADYJEK</string>
+    <string name="app_name">Ladyjek</string>
 
     <string name="title_activity_activity_login">Sign-In</string>
     <string name="title_activity_activity_register">Sign-Up</string>
@@ -20,9 +20,11 @@
     <string name="lbl_register">Baru disini?</string>
     <string name="lbl_register2">Great Job!</string>
     <string name="lbl_login">Lets do this!</string>
-    <string name="lbl_hp">safety first!</string>
+    <string name="lbl_hp">Safety first!</string>
     <string name="lbl_konfirmasi">Terima kasih!</string>
     <string name="lbl_review">Estimasi waktu menunggu : <b> 5 min </b></string>
+    <string name="lbl_tracking">Kontak darurat</string>
+    <string name="lbl_tracking_2">Anda sedang berjalan menuju tujuan</string>
 
     <string name="register"><u>Daftar sekarang</u></string>
     <string name="register2"><u>Daftar saya</u></string>
@@ -30,7 +32,7 @@
     <string name="hp"><u>Kirim kode verifikasi</u></string>
     <string name="konfirmasi"><u>Sign in</u></string>
     <string name="review"><u>Jemput</u></string>
-
+    <string name="tracking"><u>Panggil bantuan</u></string>
 
 
 
