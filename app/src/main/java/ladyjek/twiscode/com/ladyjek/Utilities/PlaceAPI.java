@@ -17,6 +17,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import ladyjek.twiscode.com.ladyjek.R;
 
@@ -30,12 +31,11 @@ public class PlaceAPI {
     private static final String PLACES_API_BASE = "https://maps.googleapis.com/maps/api/place";
     private static final String TYPE_AUTOCOMPLETE = "/autocomplete";
     private static final String OUT_JSON = "/json";
-
     private static final String API_KEY = "AIzaSyAJ6wF29SmwinrHoyJ-KjWwlZ3IFtVz0vY";
+    private static HashMap<String, String> place;
 
     public static ArrayList autocomplete(String input) {
         ArrayList resultList = null;
-
         HttpURLConnection conn = null;
         StringBuilder jsonResults = new StringBuilder();
         try {
@@ -74,12 +74,10 @@ public class PlaceAPI {
             // Extract the Place descriptions from the results
             resultList = new ArrayList(predsJsonArray.length());
             for (int i = 0; i < predsJsonArray.length(); i++) {
-                //System.out.println(predsJsonArray.getJSONObject(i).getString("description"));
-                //System.out.println("============================================================");
                 String description = predsJsonArray.getJSONObject(i).getString("description");
-                String[] separated = description.split(",");
-                String detailLocation = separated[1].trim()+","+separated[2].trim();
-                resultList.add(separated[0].trim()+"\n"+ Html.fromHtml(detailLocation));
+                String[] descSplit = description.split(",");
+                String placeId = predsJsonArray.getJSONObject(i).getString("place_id");
+                resultList.add(descSplit);
             }
         } catch (JSONException e) {
             Log.e(TAG, "Cannot process JSON results", e);
@@ -87,5 +85,6 @@ public class PlaceAPI {
 
         return resultList;
     }
+
 
 }

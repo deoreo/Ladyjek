@@ -46,18 +46,19 @@
     android:paddingBottom="10dp"
     android:background="#b6e4e4e4"
     >
-
     <AutoCompleteTextView
         android:id="@+id/txtFrom"
         android:layout_width="fill_parent"
         android:layout_height="40dp"
-        android:background="@drawable/rounded_white_primary_color"
         android:gravity="center_vertical"
         android:singleLine="true"
         android:lines="1"
         android:hint="From"
         android:paddingLeft="15dp"
         android:textSize="15sp"
+        android:background="@drawable/rounded_white_primary_color"
+
+        android:textColorHint="#111111"
         android:selectAllOnFocus="true"
 
         />
@@ -69,14 +70,15 @@
         android:layout_alignParentStart="true"
         android:layout_below="@+id/txtFrom"
         android:layout_marginTop="5dp"
-        android:background="@drawable/rounded_white_primary_color"
         android:gravity="center_vertical"
         android:singleLine="true"
         android:lines="1"
         android:hint="Destination"
         android:paddingLeft="15dp"
         android:selectAllOnFocus="true"
+        android:background="@drawable/rounded_white_primary_color"
 
+        android:textColorHint="#111111"
         android:textSize="15sp" />
 
 </RelativeLayout>
@@ -90,7 +92,7 @@
                     android:layout_marginBottom="0dp"
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
-                    android:background="@color/primary_color_dark"
+                    android:background="@drawable/plain_gradient_bg_btn"
                     android:text="Request ride"
                     android:textColor="@color/white_color" />
 
@@ -108,7 +110,7 @@
                     android:id="@+id/btnLocationFrom"
                     android:layout_width="230dp"
                     android:layout_height="50dp"
-                    android:background="@color/primary_color_dark"
+                    android:background="@drawable/plain_gradient_bg_btn"
                     android:text="Use This Location"
                     android:textSize="12sp"
                     android:textColor="#ffffff"
@@ -157,7 +159,7 @@
                     android:id="@+id/btnLocationDestination"
                     android:layout_width="230dp"
                     android:layout_height="50dp"
-                    android:background="@color/primary_color_dark"
+                    android:background="@drawable/plain_gradient_bg_btn"
                     android:text="Use This Location"
                     android:textSize="12sp"
                     android:textColor="#ffffff"
