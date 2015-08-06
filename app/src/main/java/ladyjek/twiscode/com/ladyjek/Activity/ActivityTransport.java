@@ -2,10 +2,7 @@ package ladyjek.twiscode.com.ladyjek.Activity;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Criteria;
@@ -22,7 +19,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -30,7 +26,6 @@ import android.widget.Toast;
 
 import ladyjek.twiscode.com.ladyjek.Adapter.AdapterAddress;
 import ladyjek.twiscode.com.ladyjek.R;
-import ladyjek.twiscode.com.ladyjek.Utilities.Utilities;
 
 
 import com.google.android.gms.common.ConnectionResult;
@@ -45,7 +40,6 @@ import com.google.android.gms.maps.model.LatLng;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.TimeoutException;
 
 public class ActivityTransport extends ActionBarActivity implements LocationListener, AdapterView.OnItemClickListener {
     private Toolbar mToolbar;
@@ -58,7 +52,7 @@ public class ActivityTransport extends ActionBarActivity implements LocationList
     private String add, tagLocation = "";
     private final String TAG_FROM = "FROM";
     private final String TAG_DESTINATION = "DESTINATION";
-    LatLng center;
+    private LatLng mapCenter;
 
 
     @Override
@@ -77,6 +71,7 @@ public class ActivityTransport extends ActionBarActivity implements LocationList
         progressMapDestination = (ProgressBar) findViewById(R.id.progressMapDestination);
         txtLocationDestinton = (TextView) findViewById(R.id.txtLocationDestination);
         txtLocationFrom = (TextView) findViewById(R.id.txtLocationFrom);
+
         // Getting Google Play availability status
         int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());
 
@@ -92,8 +87,6 @@ public class ActivityTransport extends ActionBarActivity implements LocationList
             SupportMapFragment fm = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapView);
             googleMap = fm.getMap();
             googleMap.setMyLocationEnabled(true);
-            //googleMap.getUiSettings().setZoomControlsEnabled(true);
-            //googleMap.getUiSettings().setCompassEnabled(true);
 
             LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
             Criteria criteria = new Criteria();
@@ -104,17 +97,18 @@ public class ActivityTransport extends ActionBarActivity implements LocationList
             }
             locationManager.requestLocationUpdates(provider, 120000, 0, this);
 
+            mapCenter = googleMap.getCameraPosition().target;
+            txtFrom.setText(getAddress(mapCenter));
+
             googleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
                 @Override
                 public void onCameraChange(CameraPosition cameraPosition) {
-                    center = googleMap.getCameraPosition().target;
-                    add = getAddress(center);
+                    mapCenter = googleMap.getCameraPosition().target;
+                    add = getAddress(mapCenter);
                     txtLocationFrom.setText(add);
                     txtLocationDestinton.setText(add);
                     progressMapFrom.setVisibility(View.GONE);
                     progressMapDestination.setVisibility(View.GONE);
-
-                    //new DoChangeLocation(tagLocation).execute(center);
                 }
             });
 
@@ -227,15 +221,6 @@ public class ActivityTransport extends ActionBarActivity implements LocationList
             List<Address> addresses = geocoder.getFromLocation(lat, lng, 1);
             Address obj = addresses.get(0);
             addressLine = obj.getAddressLine(0);
-           /* add = add + "\n" + obj.getCountryName();
-            add = add + "\n" + obj.getCountryCode();
-            add = add + "\n" + obj.getAdminArea();
-            add = add + "\n" + obj.getPostalCode();
-            add = add + "\n" + obj.getSubAdminArea();
-            add = add + "\n" + obj.getLocality();
-            add = add + "\n" + obj.getSubThoroughfare();*/
-
-            // Log.v("map center", "Address: " + addressLine);
 
         } catch (IOException e) {
         } catch (Exception e) {
@@ -275,7 +260,7 @@ public class ActivityTransport extends ActionBarActivity implements LocationList
         @Override
         protected String doInBackground(String... params) {
             try {
-                add = getAddress(center);
+                add = getAddress(mapCenter);
 
                 return "OK";
             } catch (Exception e) {
