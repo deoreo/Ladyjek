@@ -19,6 +19,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import ladyjek.twiscode.com.ladyjek.Model.ModelPlace;
 import ladyjek.twiscode.com.ladyjek.R;
 
 /**
@@ -77,7 +78,9 @@ public class PlaceAPI {
                 String description = predsJsonArray.getJSONObject(i).getString("description");
                 String[] descSplit = description.split(",");
                 String placeId = predsJsonArray.getJSONObject(i).getString("place_id");
-                resultList.add(descSplit);
+                resultList.add(new ModelPlace(placeId, description));
+
+                //resultList.add(descSplit);
             }
         } catch (JSONException e) {
             Log.e(TAG, "Cannot process JSON results", e);

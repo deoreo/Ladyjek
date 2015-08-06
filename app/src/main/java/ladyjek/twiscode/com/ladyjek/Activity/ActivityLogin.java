@@ -53,8 +53,11 @@ public class ActivityLogin extends Activity implements DetectSoftwareKeyboard.Li
 
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                wrapperLogin.setVisibility(View.VISIBLE);
-                wrapperRegister.setVisibility(View.GONE);
+                String email = txtEmail.getText().toString();
+                if(!email.isEmpty()) {
+                    wrapperLogin.setVisibility(View.VISIBLE);
+                    wrapperRegister.setVisibility(View.GONE);
+                }
             }
         });
 
@@ -131,7 +134,9 @@ public class ActivityLogin extends Activity implements DetectSoftwareKeyboard.Li
 
     @Override
     public void onSoftKeyboardShown(boolean isShowing) {
-        if (isShowing) {
+        String email = txtEmail.getText().toString();
+        String password = txtPassword.getText().toString();
+        if (isShowing || !email.isEmpty()|| !password.isEmpty()) {
             wrapperLogin.setVisibility(View.VISIBLE);
             wrapperRegister.setVisibility(View.GONE);
         } else {
