@@ -29,7 +29,7 @@ public class ActivityTracking extends ActionBarActivity implements LocationListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tracking);
 
-        SetActionBar();
+
         // Getting Google Play availability status
         int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());
 

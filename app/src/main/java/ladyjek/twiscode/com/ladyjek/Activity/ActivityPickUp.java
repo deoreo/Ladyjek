@@ -30,7 +30,7 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pickup);
 
-        SetActionBar();
+
         // Getting Google Play availability status
         int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());
 
