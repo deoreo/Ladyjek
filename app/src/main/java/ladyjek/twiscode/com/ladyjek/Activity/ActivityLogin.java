@@ -7,22 +7,30 @@ import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.app.ProgressDialog;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import ladyjek.twiscode.com.ladyjek.R;
+import ladyjek.twiscode.com.ladyjek.Utilities.DetectSoftwareKeyboard;
 import ladyjek.twiscode.com.ladyjek.Utilities.Utilities;
 
-public class ActivityLogin extends Activity {
+public class ActivityLogin extends Activity implements DetectSoftwareKeyboard.Listener {
 
-    Activity act;
-    TextView btnRegister, btnLogin;
-    EditText txtEmail, txtPassword;
+    private Activity act;
+    private TextView btnRegister, btnLogin;
+    private EditText txtEmail, txtPassword;
+    private RelativeLayout wrapperLogin, wrapperRegister;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +42,30 @@ public class ActivityLogin extends Activity {
         btnLogin = (TextView) findViewById(R.id.btnLogin);
         txtEmail = (EditText) findViewById(R.id.txtEmail);
         txtPassword = (EditText) findViewById(R.id.txtPassword);
+        wrapperLogin = (RelativeLayout) findViewById(R.id.wrapperLogin);
+        wrapperRegister = (RelativeLayout) findViewById(R.id.wrapperRegister);
+
+
+        DetectSoftwareKeyboard mainLayout = (DetectSoftwareKeyboard) findViewById(R.id.layoutLogin);
+        mainLayout.setListener(this);
+
+        txtEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                wrapperLogin.setVisibility(View.VISIBLE);
+                wrapperRegister.setVisibility(View.GONE);
+            }
+        });
+
+        txtPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                wrapperLogin.setVisibility(View.VISIBLE);
+                wrapperRegister.setVisibility(View.GONE);
+            }
+        });
 
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,13 +99,14 @@ public class ActivityLogin extends Activity {
                 }
 
                 */
-                Intent i=new Intent(getBaseContext(),ActivityTransport.class);
+                Intent i = new Intent(getBaseContext(), ActivityTransport.class);
                 startActivity(i);
                 finish();
             }
         });
 
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -95,6 +128,17 @@ public class ActivityLogin extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onSoftKeyboardShown(boolean isShowing) {
+        if (isShowing) {
+            wrapperLogin.setVisibility(View.VISIBLE);
+            wrapperRegister.setVisibility(View.GONE);
+        } else {
+            wrapperLogin.setVisibility(View.GONE);
+            wrapperRegister.setVisibility(View.VISIBLE);
+        }
     }
 
 
@@ -134,7 +178,7 @@ public class ActivityLogin extends Activity {
                 String password = params[1];
 
                 //Process login
-                if(email.equals("edo@gmail.com") && password.equals("abcd1234")) {
+                if (email.equals("edo@gmail.com") && password.equals("abcd1234")) {
                     return "OK";
                 }
 
@@ -154,7 +198,7 @@ public class ActivityLogin extends Activity {
                     Utilities.showDialog(activity, "Warning", "Login Failed!");
                     break;
                 case "OK":
-                    Intent i=new Intent(getBaseContext(),ActivityTransport.class);
+                    Intent i = new Intent(getBaseContext(), ActivityTransport.class);
                     startActivity(i);
                     finish();
                     break;
