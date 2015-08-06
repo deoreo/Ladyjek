@@ -97,9 +97,8 @@ public class ActivityLogin extends Activity implements DetectSoftwareKeyboard.Li
                             password
                     );
                 }
-
                 */
-                Intent i = new Intent(getBaseContext(), ActivityTransport.class);
+                Intent i = new Intent(getBaseContext(), ActivityHandphone.class);
                 startActivity(i);
                 finish();
             }

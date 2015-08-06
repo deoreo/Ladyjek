@@ -97,8 +97,8 @@ public class ActivityTransport extends ActionBarActivity implements LocationList
             }
             locationManager.requestLocationUpdates(provider, 120000, 0, this);
 
-            mapCenter = googleMap.getCameraPosition().target;
-            txtFrom.setText(getAddress(mapCenter));
+            //mapCenter = googleMap.getCameraPosition().target;
+            //txtFrom.setText(getAddress(mapCenter));
 
             googleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
                 @Override
@@ -144,8 +144,6 @@ public class ActivityTransport extends ActionBarActivity implements LocationList
                 layoutMarkerFrom.setVisibility(View.VISIBLE);
                 layoutMarkerDestination.setVisibility(View.GONE);
                 tagLocation = TAG_FROM;
-
-
             }
         });
 
@@ -231,8 +229,8 @@ public class ActivityTransport extends ActionBarActivity implements LocationList
 
     @Override
     public void onItemClick(AdapterView adapterView, View view, int position, long id) {
-        String str = (String) adapterView.getItemAtPosition(position);
-        Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
+        String address = (String) adapterView.getItemAtPosition(position);
+        Toast.makeText(this, address, Toast.LENGTH_SHORT).show();
     }
 
 
