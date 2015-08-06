@@ -48,6 +48,14 @@
             android:windowSoftInputMode="adjustResize" >
         </activity>
         <activity
+            android:name=".Activity.ActivityHandphone"
+            android:label="@string/title_activity_activity_transport" >
+        </activity>
+        <activity
+            android:name=".Activity.ActivityHandphoneKonfirmasi"
+            android:label="@string/title_activity_activity_transport" >
+        </activity>
+        <activity
             android:name=".Activity.ActivityConfirm"
             android:label="@string/title_activity_activity_confirm"
             android:windowSoftInputMode="adjustResize" >
