@@ -5,8 +5,10 @@
     <color name="primary_color_dark">#017542</color>
     <color name="colorAccent">#afffdc</color>
     <color name="white_color">#fff</color>
+    <color name="black_color">#000</color>
     <color name="grey_color">#ddd</color>
     <color name="grey_color_smooth">#eee</color>
+    <color name="grey_color_dark">#aaa</color>
 
     <color name="bg_grad_1">#814a9f</color>
     <color name="bg_grad_2">#bd3b97</color>

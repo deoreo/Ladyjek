@@ -1,87 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:focusable="true" android:focusableInTouchMode="true"
-    android:background="@color/grey_color_smooth"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:background="@color/white_color"
     >
-    <include
-        android:id="@+id/tool_bar"
-        layout="@layout/toolbar"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        />
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        xmlns:android="http://schemas.android.com/apk/res/android" >
+        android:fillViewport="true">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical">
+            <TextView
+                android:padding="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Review pesanan"
+                android:textSize="18dp"
+                android:textStyle="bold"
+                android:textColor="@color/bg_grad_2"
+                />
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="120dp"
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:layout_margin="20dp">
                 <LinearLayout
-                    android:layout_width="20dp"
-                    android:layout_height="120dp"
-                    android:orientation="vertical">
-                    <de.hdodenhof.circleimageview.CircleImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/ic_submenu"
-                        />
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="80dp">
-                        <View
-                            android:layout_width="2dp"
-                            android:layout_height="match_parent"
-                            android:background="@color/primary_color_dark"
-                            android:layout_centerInParent="true"
-                            />
-                    </RelativeLayout>
-                    <de.hdodenhof.circleimageview.CircleImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/ic_submenu"
-                        />
-                </LinearLayout>
-                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="10dp"
-                    android:orientation="vertical">
-                    <TextView
-                        android:id="@+id/txtAddressFrom"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/primary_color_dark"
-                        android:text="Address 1"
-                        android:textStyle="bold"
-                        android:textSize="16dp"
-                        />
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
                     <RelativeLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="36dp"
                         android:layout_height="match_parent">
+                        <ImageView
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:src="@drawable/current_location"
+                            android:layout_centerInParent="true"/>
+                    </RelativeLayout>
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginLeft="10dp"
+                        >
                         <TextView
-                            android:id="@+id/txtAddressDestination"
+                            android:id="@+id/txtFrom"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/primary_color_dark"
-                            android:text="Address 2"
-                            android:textStyle="bold"
                             android:textSize="16dp"
-                            android:layout_alignParentBottom="true"
+                            android:textStyle="bold"
+                            android:textColor="@color/black_color"
+                            android:text="Current Location"
                             />
+                        <TextView
+                            android:id="@+id/txtFromAddress"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="14dp"
+                            android:text="Current Location"
+                            />
+                    </LinearLayout>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_marginTop="30dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <RelativeLayout
+                        android:layout_width="36dp"
+                        android:layout_height="match_parent">
+                        <ImageView
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:src="@drawable/destination"
+                            android:layout_centerInParent="true"/>
                     </RelativeLayout>
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginLeft="10dp"
+                        >
+                        <TextView
+                            android:id="@+id/txtdestination"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="16dp"
+                            android:textStyle="bold"
+                            android:textColor="@color/black_color"
+                            android:text="Destination Location"
+                            />
+                        <TextView
+                            android:id="@+id/txtDestinationAddress"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="14dp"
+                            android:text="destination Location"
+                            />
+                    </LinearLayout>
                 </LinearLayout>
 
             </LinearLayout>
+            <View
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/grey_color_dark" />
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -99,9 +131,8 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/primary_color_dark"
-                        android:text="Distance"
-                        android:textStyle="bold"
+                        android:textColor="@color/black_color"
+                        android:text="jarak"
                         android:textSize="16dp"
                         android:layout_alignParentBottom="true"
                         />
@@ -112,9 +143,8 @@
                             android:id="@+id/txtDistance"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/primary_color_dark"
+                            android:textColor="@color/black_color"
                             android:text="xx km"
-                            android:textStyle="bold"
                             android:textSize="16dp"
                             android:layout_alignParentRight="true"
                             />
@@ -129,9 +159,8 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/primary_color_dark"
-                        android:text="Time"
-                        android:textStyle="bold"
+                        android:textColor="@color/black_color"
+                        android:text="Waktu perjalanan"
                         android:textSize="16dp"
                         android:layout_alignParentBottom="true"
                         />
@@ -142,9 +171,8 @@
                             android:id="@+id/txtTime"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/primary_color_dark"
+                            android:textColor="@color/black_color"
                             android:text="xx min"
-                            android:textStyle="bold"
                             android:textSize="16dp"
                             android:layout_alignParentRight="true"
                             />
@@ -159,9 +187,8 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/primary_color_dark"
-                        android:text="Total"
-                        android:textStyle="bold"
+                        android:textColor="@color/black_color"
+                        android:text="Total harga"
                         android:textSize="16dp"
                         android:layout_alignParentBottom="true"
                         />
@@ -172,7 +199,7 @@
                             android:id="@+id/txtTotal"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/primary_color_dark"
+                            android:textColor="@color/black_color"
                             android:text="Rp. xx"
                             android:textStyle="bold"
                             android:textSize="16dp"
@@ -180,80 +207,97 @@
                             />
                     </RelativeLayout>
                 </LinearLayout>
+                <View
+                   android:layout_marginTop="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/grey_color_dark" />
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_marginTop="20dp"
                     >
-                    <TextView
+                    <RelativeLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/primary_color_dark"
-                        android:text="Promo Code : "
-                        android:textStyle="bold"
-                        android:textSize="16dp"
-                        android:layout_alignParentBottom="true"
-                        />
+                        android:layout_height="match_parent">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/black_color"
+                            android:text="Bayar dengan : "
+                            android:textSize="16dp"
+                            android:layout_centerInParent="true"
+                            />
+                    </RelativeLayout>
+
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
-                        <EditText
-                            android:padding="5dp"
-                            android:id="@+id/txtPromo"
-                            android:layout_width="150dp"
-                            android:layout_height="30dp"
-                            android:hint="code"
-                            android:layout_alignParentRight="true"
-                            android:background="@drawable/plain_grey_primary_dark"
-                            android:gravity="center"/>
-
-                    </RelativeLayout>
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginTop="20dp"
-                    >
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/primary_color_dark"
-                        android:text="Pay with : "
-                        android:textStyle="bold"
-                        android:textSize="16dp"
-                        android:layout_marginBottom="10dp"
-                        />
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        >
                         <Spinner
                             android:id="@+id/txtPay"
-                            android:layout_width="match_parent"
-                            android:layout_height="50dp"
-                            android:textColor="@color/primary_color_dark"
-                            android:text="BCA ...........6123"
+                            android:layout_width="175dp"
+                            android:layout_height="40dp"
+                            android:textColor="@color/black_color"
                             android:layout_centerVertical="true"
                             android:textStyle="bold"
                             android:textSize="16dp"
-                            android:background="@drawable/rounded_white_dark"
+                            android:background="@drawable/rounded_grey_smooth"
+                            android:layout_alignParentRight="true"
                             />
+
                     </RelativeLayout>
-                    <Button
-                        android:id="@+id/btnConfirm"
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:layout_marginTop="10dp"
-                        android:text="Confirm Booking"
-                        android:textAllCaps="false"
-                        android:background="@drawable/rounded_primary_color"
-                        android:textStyle="bold"
-                        android:textSize="16dp"
-                        android:textColor="@color/white_color"/>
                 </LinearLayout>
+
             </LinearLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <RelativeLayout
+                    android:id="@+id/wrapperRegister"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="20dp"
+                    android:background="@drawable/plain_gradient_bg_btn"
+                    android:layout_alignParentBottom="true">
+                    <TextView
+                        android:id="@+id/txtLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white_color"
+                        android:textStyle="bold"
+                        android:text="@string/lbl_review"
+                        android:textSize="18dp"
+                        android:layout_centerHorizontal="true"
+                        />
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/txtLabel"
+                        android:layout_centerHorizontal="true">
+                        <TextView
+                            android:id="@+id/btnConfirm"
+                            android:layout_marginTop="5dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/white_color"
+                            android:text="@string/review"
+                            android:textSize="18dp"
+                            android:layout_centerHorizontal="true"
+
+                            />
+                        <ImageView
+                            android:layout_width="34dp"
+                            android:layout_height="38dp"
+                            android:src="@drawable/right_arrow_white"
+                            android:layout_toRightOf="@id/btnConfirm"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="-8dp"/>
+                    </RelativeLayout>
+
+                </RelativeLayout>
+            </RelativeLayout>
         </LinearLayout>
 
     </ScrollView>
