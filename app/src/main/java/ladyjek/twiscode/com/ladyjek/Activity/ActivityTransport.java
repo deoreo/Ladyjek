@@ -61,6 +61,7 @@ public class ActivityTransport extends ActionBarActivity implements
     private TextView txtLocationFrom, txtLocationDestinton;
     private ProgressBar progressMapFrom, progressMapDestination;
     private String add, tagLocation = "";
+    private String placeId="", description="";
     private final String TAG_FROM = "FROM";
     private final String TAG_DESTINATION = "DESTINATION";
     private LatLng mapCenter;
@@ -236,27 +237,12 @@ public class ActivityTransport extends ActionBarActivity implements
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             final ModelPlace item = mPlaceArrayAdapter.getItem(position);
-            final String placeId = String.valueOf(item.placeId);
-            final String desciption = String.valueOf(item.description);
-            txtLocationFrom.setText(desciption);
+            placeId = String.valueOf(item.placeId);
+            description = String.valueOf(item.description);
+            txtLocationFrom.setText(description);
         }
     };
 
-    private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsCallback
-            = new ResultCallback<PlaceBuffer>() {
-        @Override
-        public void onResult(PlaceBuffer places) {
-            if (!places.getStatus().isSuccess()) {
-                return;
-            }
-            // Selecting the first object buffer.
-            final Place place = places.get(0);
-            CharSequence attributions = places.getAttributions();
-
-            txtLocationFrom.setText(Html.fromHtml(place.getAddress() + ""));
-
-        }
-    };
 
 
 
