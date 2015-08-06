@@ -108,7 +108,7 @@
                                     android:layout_height="50dp"
                                     android:background="@null"
                                     android:hint="kata sandi"
-                                    android:inputType="textEmailAddress"
+                                    android:inputType="textPassword"
                                     android:padding="10dp"
                                     android:textColor="@color/white_color"
                                     android:textColorHint="@color/white_color"

@@ -107,7 +107,7 @@
                                 android:padding="10dp"
                                 android:background="@null"
                                 android:textColor="@color/white_color"
-                                android:inputType="textEmailAddress"
+                                android:inputType="textPassword"
                                 android:textStyle="bold"/>
                             <View
                                 android:layout_width="match_parent"
@@ -130,7 +130,7 @@
                                 android:padding="10dp"
                                 android:background="@null"
                                 android:textColor="@color/white_color"
-                                android:inputType="textEmailAddress"
+                                android:inputType="textPassword"
                                 android:textStyle="bold"/>
                             <View
                                 android:layout_width="match_parent"

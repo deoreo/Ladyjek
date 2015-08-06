@@ -57,13 +57,13 @@
                     android:src="@drawable/images"
                     app:border_overlay="true"
                     android:layout_below="@id/txtTotal"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="15dp"
                     />
                 <TextView
                     android:id="@+id/nameDriver"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="15dp"
                     android:layout_below="@id/imgDriver"
                     android:layout_centerHorizontal="true"
                     android:textAllCaps="false"
@@ -75,8 +75,8 @@
                 <RatingBar
                     style="@style/CustomRatingBar"
                     android:id="@+id/rateDriver"
-                    android:layout_width="250dp"
-                    android:layout_height="42dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_below="@id/nameDriver"
                     android:layout_marginTop="15dp"
                     android:numStars="5"
@@ -98,7 +98,6 @@
                 <EditText
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
-                    android:layout_marginBottom="5dp"
                     android:id="@+id/feedbackDriver"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
