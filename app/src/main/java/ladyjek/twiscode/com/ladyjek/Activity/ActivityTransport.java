@@ -51,9 +51,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class ActivityTransport extends ActionBarActivity implements
-        LocationListener,
-        GoogleApiClient.OnConnectionFailedListener,
-        GoogleApiClient.ConnectionCallbacks
+        LocationListener
 {
     private Toolbar mToolbar;
     private GoogleMap googleMap;
@@ -67,10 +65,6 @@ public class ActivityTransport extends ActionBarActivity implements
     private final String TAG_DESTINATION = "DESTINATION";
     private LatLng mapCenter;
     private AdapterAddress mPlaceArrayAdapter;
-    private static final int GOOGLE_API_CLIENT_ID = 0;
-    private GoogleApiClient mGoogleApiClient;
-    private static final LatLngBounds BOUNDS_MOUNTAIN_VIEW = new LatLngBounds(
-            new LatLng(37.398160, -122.180831), new LatLng(37.430610, -121.972090));
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,11 +81,6 @@ public class ActivityTransport extends ActionBarActivity implements
         progressMapDestination = (ProgressBar) findViewById(R.id.progressMapDestination);
         txtLocationDestinton = (TextView) findViewById(R.id.txtLocationDestination);
         txtLocationFrom = (TextView) findViewById(R.id.txtLocationFrom);
-        mGoogleApiClient = new GoogleApiClient.Builder(ActivityTransport.this)
-                .addApi(Places.GEO_DATA_API)
-                .enableAutoManage(this, GOOGLE_API_CLIENT_ID, this)
-                .addConnectionCallbacks(this)
-                .build();
         int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());
 
         if (status != ConnectionResult.SUCCESS) {
@@ -113,6 +102,7 @@ public class ActivityTransport extends ActionBarActivity implements
 
             mapCenter = googleMap.getCameraPosition().target;
             txtFrom.setText(getAddress(mapCenter));
+
 
             googleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
                 @Override
@@ -173,8 +163,7 @@ public class ActivityTransport extends ActionBarActivity implements
         });
 
 
-        mPlaceArrayAdapter = new AdapterAddress(this, android.R.layout.simple_list_item_1,
-                BOUNDS_MOUNTAIN_VIEW, null);
+        mPlaceArrayAdapter = new AdapterAddress(this, android.R.layout.simple_list_item_1);
         txtFrom.setAdapter(mPlaceArrayAdapter);
         txtDestination.setAdapter(mPlaceArrayAdapter);
     }
@@ -248,10 +237,8 @@ public class ActivityTransport extends ActionBarActivity implements
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             final ModelPlace item = mPlaceArrayAdapter.getItem(position);
             final String placeId = String.valueOf(item.placeId);
-            PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi
-                    .getPlaceById(mGoogleApiClient, placeId);
-            placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
-            
+            final String desciption = String.valueOf(item.description);
+            txtLocationFrom.setText(desciption);
         }
     };
 
@@ -271,23 +258,7 @@ public class ActivityTransport extends ActionBarActivity implements
         }
     };
 
-    @Override
-    public void onConnected(Bundle bundle) {
-        mPlaceArrayAdapter.setGoogleApiClient(mGoogleApiClient);
-    }
 
-    @Override
-    public void onConnectionSuspended(int i) {
-        mPlaceArrayAdapter.setGoogleApiClient(null);
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        Toast.makeText(this,
-                "Google Places API connection failed with error code:" +
-                        connectionResult.getErrorCode(),
-                Toast.LENGTH_LONG).show();
-    }
 
 
     private class DoChangeLocation extends AsyncTask<String, Void, String> {

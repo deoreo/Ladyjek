@@ -40,20 +40,10 @@ public class AdapterAddress extends ArrayAdapter<ModelPlace> implements Filterab
     private LatLngBounds mBounds;
     private ArrayList<ModelPlace> mResultList;
 
-    public AdapterAddress(Context context, int resource, LatLngBounds bounds,
-                          AutocompleteFilter filter) {
+    public AdapterAddress(Context context, int resource) {
         super(context, resource);
-        mBounds = bounds;
-        mPlaceFilter = filter;
     }
 
-    public void setGoogleApiClient(GoogleApiClient googleApiClient) {
-        if (googleApiClient == null || !googleApiClient.isConnected()) {
-            mGoogleApiClient = null;
-        } else {
-            mGoogleApiClient = googleApiClient;
-        }
-    }
 
     @Override
     public int getCount() {
@@ -64,13 +54,10 @@ public class AdapterAddress extends ArrayAdapter<ModelPlace> implements Filterab
     public ModelPlace getItem(int index) {
         return mResultList.get(index);
     }
-
+/*
     private ArrayList<ModelPlace> getPredictions(CharSequence constraint) {
         if (mGoogleApiClient != null) {
-            PendingResult<AutocompletePredictionBuffer> results =
-                    Places.GeoDataApi
-                            .getAutocompletePredictions(mGoogleApiClient, constraint.toString(),
-                                    mBounds, mPlaceFilter);
+            PendingResult<AutocompletePredictionBuffer> results = Places.GeoDataApi.getAutocompletePredictions(mGoogleApiClient, constraint.toString(), mBounds, mPlaceFilter);
             // Wait for predictions, set the timeout.
             AutocompletePredictionBuffer autocompletePredictions = results
                     .await(60, TimeUnit.SECONDS);
@@ -98,39 +85,6 @@ public class AdapterAddress extends ArrayAdapter<ModelPlace> implements Filterab
         Log.e(TAG, "Google API client is not connected.");
         return null;
     }
-
-    /*
-
-    @Override
-    public Filter getFilter() {
-        Filter filter = new Filter() {
-            @Override
-            protected FilterResults performFiltering(CharSequence constraint) {
-                FilterResults filterResults = new FilterResults();
-                if (constraint != null) {
-                    // Retrieve the autocomplete results.
-                    resultList = PlaceAPI.autocomplete(constraint.toString());
-
-                    // Assign the data to the FilterResults
-                    filterResults.values = resultList;
-                    filterResults.count = resultList.size();
-                }
-                return filterResults;
-            }
-
-            @Override
-            protected void publishResults(CharSequence constraint, FilterResults results) {
-                if (results != null && results.count > 0) {
-                    notifyDataSetChanged();
-                } else {
-                    notifyDataSetInvalidated();
-                }
-            }
-        };
-        return filter;
-    }
-*/
-
     @Override
     public Filter getFilter() {
         Filter filter = new Filter() {
@@ -162,5 +116,37 @@ public class AdapterAddress extends ArrayAdapter<ModelPlace> implements Filterab
         };
         return filter;
     }
+*/
+
+    @Override
+    public Filter getFilter() {
+        Filter filter = new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                FilterResults filterResults = new FilterResults();
+                if (constraint != null) {
+                    // Retrieve the autocomplete results.
+                    mResultList = PlaceAPI.autocomplete(constraint.toString());
+                    // Assign the data to the FilterResults
+                    filterResults.values = mResultList;
+                    filterResults.count = mResultList.size();
+                }
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                if (results != null && results.count > 0) {
+                    notifyDataSetChanged();
+                } else {
+                    notifyDataSetInvalidated();
+                }
+            }
+        };
+        return filter;
+    }
+
+
+
 
 }
