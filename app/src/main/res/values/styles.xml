@@ -11,5 +11,10 @@
         <item name="colorPrimaryDark">@color/bg_grad_1</item>
         <item name="colorAccent">@color/bg_grad_1</item>
     </style>
+    <style name="CustomRatingBar" parent="@android:style/Widget.RatingBar">
+        <item name="android:progressDrawable">@drawable/custom_ratingbar</item>
+                <item name="android:minHeight">40dip</item>
+                <item name="android:maxHeight">40dip</item>
+</style>
 
 </resources>
