@@ -112,12 +112,13 @@
                                         android:id="@+id/txtPhoneNumber"
                                         android:layout_width="match_parent"
                                         android:layout_height="50dp"
-                                        android:background="@null"
+
                                         android:inputType="number"
                                         android:paddingTop="10dp"
                                         android:paddingBottom="10dp"
                                         android:paddingRight="10dp"
                                         android:paddingLeft="2dp"
+                                        android:background="@null"
                                         android:textColor="@color/white_color"
                                         android:textColorHint="@color/white_color"
                                         android:textStyle="bold" />

@@ -14,6 +14,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -25,23 +26,35 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import ladyjek.twiscode.com.ladyjek.Adapter.AdapterAddress;
+import ladyjek.twiscode.com.ladyjek.Model.ModelPlace;
 import ladyjek.twiscode.com.ladyjek.R;
 
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlaceBuffer;
+import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-public class ActivityTransport extends ActionBarActivity implements LocationListener, AdapterView.OnItemClickListener {
+public class ActivityTransport extends ActionBarActivity implements
+        LocationListener,
+        GoogleApiClient.OnConnectionFailedListener,
+        GoogleApiClient.ConnectionCallbacks
+{
     private Toolbar mToolbar;
     private GoogleMap googleMap;
     private Button btnLocationFrom, btnLocationDestination, btnRequestRide;
@@ -53,8 +66,11 @@ public class ActivityTransport extends ActionBarActivity implements LocationList
     private final String TAG_FROM = "FROM";
     private final String TAG_DESTINATION = "DESTINATION";
     private LatLng mapCenter;
-
-
+    private AdapterAddress mPlaceArrayAdapter;
+    private static final int GOOGLE_API_CLIENT_ID = 0;
+    private GoogleApiClient mGoogleApiClient;
+    private static final LatLngBounds BOUNDS_MOUNTAIN_VIEW = new LatLngBounds(
+            new LatLng(37.398160, -122.180831), new LatLng(37.430610, -121.972090));
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,23 +87,21 @@ public class ActivityTransport extends ActionBarActivity implements LocationList
         progressMapDestination = (ProgressBar) findViewById(R.id.progressMapDestination);
         txtLocationDestinton = (TextView) findViewById(R.id.txtLocationDestination);
         txtLocationFrom = (TextView) findViewById(R.id.txtLocationFrom);
-
-        // Getting Google Play availability status
+        mGoogleApiClient = new GoogleApiClient.Builder(ActivityTransport.this)
+                .addApi(Places.GEO_DATA_API)
+                .enableAutoManage(this, GOOGLE_API_CLIENT_ID, this)
+                .addConnectionCallbacks(this)
+                .build();
         int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());
 
-        // Showing status
-        if (status != ConnectionResult.SUCCESS) { // Google Play Services are not available
-
+        if (status != ConnectionResult.SUCCESS) {
             int requestCode = 10;
             Dialog dialog = GooglePlayServicesUtil.getErrorDialog(status, this, requestCode);
             dialog.show();
-
-        } else { // Google Play Services are available
-
+        } else {
             SupportMapFragment fm = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapView);
             googleMap = fm.getMap();
             googleMap.setMyLocationEnabled(true);
-
             LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
             Criteria criteria = new Criteria();
             String provider = locationManager.getBestProvider(criteria, true);
@@ -95,10 +109,10 @@ public class ActivityTransport extends ActionBarActivity implements LocationList
             if (location != null) {
                 onLocationChanged(location);
             }
-            locationManager.requestLocationUpdates(provider, 120000, 0, this);
+            locationManager.requestLocationUpdates(provider, 20000, 0, this);
 
-            //mapCenter = googleMap.getCameraPosition().target;
-            //txtFrom.setText(getAddress(mapCenter));
+            mapCenter = googleMap.getCameraPosition().target;
+            txtFrom.setText(getAddress(mapCenter));
 
             googleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
                 @Override
@@ -158,11 +172,11 @@ public class ActivityTransport extends ActionBarActivity implements LocationList
             }
         });
 
-        txtFrom.setAdapter(new AdapterAddress(this, R.layout.auto_complete_list_item));
-        txtFrom.setOnItemClickListener(this);
 
-        txtDestination.setAdapter(new AdapterAddress(this, R.layout.auto_complete_list_item));
-        txtDestination.setOnItemClickListener(this);
+        mPlaceArrayAdapter = new AdapterAddress(this, android.R.layout.simple_list_item_1,
+                BOUNDS_MOUNTAIN_VIEW, null);
+        txtFrom.setAdapter(mPlaceArrayAdapter);
+        txtDestination.setAdapter(mPlaceArrayAdapter);
     }
 
 
@@ -227,10 +241,52 @@ public class ActivityTransport extends ActionBarActivity implements LocationList
         return addressLine;
     }
 
+
+    private AdapterView.OnItemClickListener mAutocompleteClickListener
+            = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            final ModelPlace item = mPlaceArrayAdapter.getItem(position);
+            final String placeId = String.valueOf(item.placeId);
+            PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi
+                    .getPlaceById(mGoogleApiClient, placeId);
+            placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
+            
+        }
+    };
+
+    private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsCallback
+            = new ResultCallback<PlaceBuffer>() {
+        @Override
+        public void onResult(PlaceBuffer places) {
+            if (!places.getStatus().isSuccess()) {
+                return;
+            }
+            // Selecting the first object buffer.
+            final Place place = places.get(0);
+            CharSequence attributions = places.getAttributions();
+
+            txtLocationFrom.setText(Html.fromHtml(place.getAddress() + ""));
+
+        }
+    };
+
     @Override
-    public void onItemClick(AdapterView adapterView, View view, int position, long id) {
-        String address = (String) adapterView.getItemAtPosition(position);
-        Toast.makeText(this, address, Toast.LENGTH_SHORT).show();
+    public void onConnected(Bundle bundle) {
+        mPlaceArrayAdapter.setGoogleApiClient(mGoogleApiClient);
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        mPlaceArrayAdapter.setGoogleApiClient(null);
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        Toast.makeText(this,
+                "Google Places API connection failed with error code:" +
+                        connectionResult.getErrorCode(),
+                Toast.LENGTH_LONG).show();
     }
 
 
