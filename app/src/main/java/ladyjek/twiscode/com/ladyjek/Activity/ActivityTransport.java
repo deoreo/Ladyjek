@@ -41,18 +41,23 @@ import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
 public class ActivityTransport extends ActionBarActivity implements
-        LocationListener
+        LocationListener, GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener
 {
+    private ActivityTransport activityTransport;
     private Toolbar mToolbar;
     private GoogleMap googleMap;
     private Button btnLocationFrom, btnLocationDestination, btnRequestRide;
@@ -66,6 +71,8 @@ public class ActivityTransport extends ActionBarActivity implements
     private final String TAG_DESTINATION = "DESTINATION";
     private LatLng mapCenter;
     private AdapterAddress mPlaceArrayAdapter;
+    private GoogleApiClient mGoogleApiClient;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,6 +89,14 @@ public class ActivityTransport extends ActionBarActivity implements
         progressMapDestination = (ProgressBar) findViewById(R.id.progressMapDestination);
         txtLocationDestinton = (TextView) findViewById(R.id.txtLocationDestination);
         txtLocationFrom = (TextView) findViewById(R.id.txtLocationFrom);
+        mGoogleApiClient = new GoogleApiClient
+                .Builder(this)
+                .addApi(Places.GEO_DATA_API)
+                .addApi(Places.PLACE_DETECTION_API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
+
         int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());
 
         if (status != ConnectionResult.SUCCESS) {
@@ -132,12 +147,18 @@ public class ActivityTransport extends ActionBarActivity implements
             @Override
             public void onClick(View v) {
                 txtFrom.setText(add);
+                googleMap.addMarker(new MarkerOptions()
+                        .position(mapCenter)
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.blue_marker)));
             }
         });
         btnLocationDestination.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 txtDestination.setText(add);
+                googleMap.addMarker(new MarkerOptions()
+                        .position(mapCenter)
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.red_marker)));
             }
         });
 
@@ -169,11 +190,20 @@ public class ActivityTransport extends ActionBarActivity implements
         txtDestination.setAdapter(mPlaceArrayAdapter);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    protected void onStop() {
+        mGoogleApiClient.disconnect();
+        super.onStop();
+    }
 
     @Override
     public void onLocationChanged(Location location) {
-        googleMap.clear();
-
         double latitude = location.getLatitude();
         double longitude = location.getLongitude();
         LatLng latLng = new LatLng(latitude, longitude);
@@ -187,6 +217,26 @@ public class ActivityTransport extends ActionBarActivity implements
                 .strokeColor(Color.BLUE)
                 .fillColor(Color.parseColor("#500084d3"));
         googleMap.addCircle(circleOptions);
+
+    }
+
+    public void addMark(){
+        Places.GeoDataApi.getPlaceById(mGoogleApiClient, placeId)
+                .setResultCallback(new ResultCallback<PlaceBuffer>() {
+                    @Override
+                    public void onResult(PlaceBuffer places) {
+                        if (places.getStatus().isSuccess()) {
+                            final Place myPlace = places.get(0);
+                            LatLng queried_location = myPlace.getLatLng();
+                            googleMap.addMarker(new MarkerOptions()
+                                    .position(queried_location)
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.red_marker)));
+                        } else {
+                            Log.d("ActivityReult", places.getStatus().toString());
+                        }
+                        places.release();
+                    }
+                });
     }
 
     @Override
@@ -240,11 +290,24 @@ public class ActivityTransport extends ActionBarActivity implements
             placeId = String.valueOf(item.placeId);
             description = String.valueOf(item.description);
             txtLocationFrom.setText(description);
+            addMark();
         }
     };
 
+    @Override
+    public void onConnected(Bundle bundle) {
 
+    }
 
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
+    }
 
 
     private class DoChangeLocation extends AsyncTask<String, Void, String> {
