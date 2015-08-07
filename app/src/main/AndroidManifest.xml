@@ -82,6 +82,10 @@
             android:name=".Activity.ActivityTracking"
             android:label="@string/title_activity_activity_transport" >
         </activity>
+        <activity
+            android:name=".Activity.Main"
+            android:label="@string/title_activity_activity_transport" >
+        </activity>
     </application>
 
 </manifest>
