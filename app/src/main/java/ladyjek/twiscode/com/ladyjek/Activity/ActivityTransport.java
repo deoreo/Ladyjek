@@ -67,17 +67,19 @@ public class ActivityTransport extends ActionBarActivity implements
     private Toolbar mToolbar;
     private GoogleMap googleMap;
     private Button btnLocationFrom, btnLocationDestination, btnRequestRide;
+    private final String TAG_FROM = "FROM";
+    private final String TAG_DESTINATION = "DESTINATION";
     private AutoCompleteTextView txtFrom, txtDestination;
     private LinearLayout layoutMarkerFrom, layoutMarkerDestination;
     private TextView txtLocationFrom, txtLocationDestinton;
     private ProgressBar progressMapFrom, progressMapDestination;
-    private String add, tagLocation = "";
+    private String add, tagLocation = TAG_FROM;
     private String placeId = "", description = "";
-    private final String TAG_FROM = "FROM";
-    private final String TAG_DESTINATION = "DESTINATION";
+
     private LatLng mapCenter;
     private AdapterAddress mPlaceArrayAdapter;
     private GoogleApiClient mGoogleApiClient;
+    private Marker markerFrom, markerDestination;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,7 +129,7 @@ public class ActivityTransport extends ActionBarActivity implements
             locationManager.requestLocationUpdates(provider, 20000, 0, this);
 
             mapCenter = googleMap.getCameraPosition().target;
-            txtFrom.setText(getAddress(mapCenter));
+            //addMarker(getAddress(mapCenter));
 
 
             googleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
@@ -174,22 +176,26 @@ public class ActivityTransport extends ActionBarActivity implements
 
 
         txtFrom.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 // layoutMarkerFrom.setVisibility(View.VISIBLE);
                 //layoutMarkerDestination.setVisibility(View.GONE);
                 tagLocation = TAG_FROM;
+                if(markerFrom!=null) {
+                    markerFrom.remove();
+                }
             }
         });
 
         txtDestination.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 // layoutMarkerFrom.setVisibility(View.GONE);
                 //layoutMarkerDestination.setVisibility(View.VISIBLE);
                 tagLocation = TAG_DESTINATION;
+                if(markerDestination!=null) {
+                    markerDestination.remove();
+                }
 
             }
         });
@@ -282,22 +288,22 @@ public class ActivityTransport extends ActionBarActivity implements
         description = String.valueOf(item.description);
         txtLocationFrom.setText(description);
         addMarker(description);
+
     }
 
     public void addMarker(String address) {
-        ModelGeocode geoCode = PlaceAPI.geocode(address);
-        LatLng locationMarker = new LatLng(geoCode.getLat(),geoCode.getLon());
-        if(tagLocation.equals(TAG_FROM)) {
-            googleMap.addMarker(
+        ModelGeocode geocode = PlaceAPI.geocode(address);
+        LatLng locationMarker = new LatLng(geocode.getLat(), geocode.getLon());
+        if (tagLocation.equals(TAG_FROM)) {
+            markerFrom = googleMap.addMarker(
                     new MarkerOptions()
                             .position(locationMarker)
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.current_location)));
-        }
-        else if(tagLocation.equals(TAG_DESTINATION)) {
-            googleMap.addMarker(
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
+        } else if (tagLocation.equals(TAG_DESTINATION)) {
+            markerDestination = googleMap.addMarker(
                     new MarkerOptions()
                             .position(locationMarker)
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.destination)));
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_destination)));
         }
 
     }
