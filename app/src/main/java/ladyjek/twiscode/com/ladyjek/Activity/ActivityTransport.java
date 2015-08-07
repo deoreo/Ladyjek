@@ -2,6 +2,7 @@ package ladyjek.twiscode.com.ladyjek.Activity;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.location.Address;
@@ -61,8 +62,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class ActivityTransport extends ActionBarActivity implements
-        LocationListener, GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, OnItemClickListener {
+        LocationListener, OnItemClickListener {
     private ActivityTransport activityTransport;
     private Toolbar mToolbar;
     private GoogleMap googleMap;
@@ -78,7 +78,6 @@ public class ActivityTransport extends ActionBarActivity implements
 
     private LatLng mapCenter;
     private AdapterAddress mPlaceArrayAdapter;
-    private GoogleApiClient mGoogleApiClient;
     private Marker markerFrom, markerDestination;
 
     @Override
@@ -99,14 +98,6 @@ public class ActivityTransport extends ActionBarActivity implements
         progressMapDestination = (ProgressBar) findViewById(R.id.progressMapDestination);
         txtLocationDestinton = (TextView) findViewById(R.id.txtLocationDestination);
         txtLocationFrom = (TextView) findViewById(R.id.txtLocationFrom);
-        mGoogleApiClient = new GoogleApiClient
-                .Builder(this)
-                .addApi(Places.GEO_DATA_API)
-                .addApi(Places.PLACE_DETECTION_API)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .build();
-        mGoogleApiClient.connect();
 
         int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());
 
@@ -175,27 +166,23 @@ public class ActivityTransport extends ActionBarActivity implements
         });
 
 
-        txtFrom.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        txtFrom.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onFocusChange(View v, boolean hasFocus) {
+            public void onClick(View v) {
                 // layoutMarkerFrom.setVisibility(View.VISIBLE);
                 //layoutMarkerDestination.setVisibility(View.GONE);
                 tagLocation = TAG_FROM;
-                if(markerFrom!=null) {
-                    markerFrom.remove();
-                }
+
             }
         });
 
-        txtDestination.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        txtDestination.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onFocusChange(View v, boolean hasFocus) {
+            public void onClick(View v) {
                 // layoutMarkerFrom.setVisibility(View.GONE);
                 //layoutMarkerDestination.setVisibility(View.VISIBLE);
                 tagLocation = TAG_DESTINATION;
-                if(markerDestination!=null) {
-                    markerDestination.remove();
-                }
+
 
             }
         });
@@ -209,24 +196,15 @@ public class ActivityTransport extends ActionBarActivity implements
         txtDestination.setOnItemClickListener(this);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mGoogleApiClient.connect();
-    }
 
-    @Override
-    protected void onStop() {
-        mGoogleApiClient.disconnect();
-        super.onStop();
-    }
 
     @Override
     public void onLocationChanged(Location location) {
-        //googleMap.clear();
+        googleMap.clear();
         double latitude = location.getLatitude();
         double longitude = location.getLongitude();
         LatLng latLng = new LatLng(latitude, longitude);
+        addMarker(getAddress(latLng));
 
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
@@ -268,25 +246,20 @@ public class ActivityTransport extends ActionBarActivity implements
 
 
     @Override
-    public void onConnected(Bundle bundle) {
-
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-
-    }
-
-    @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         final ModelPlace item = mPlaceArrayAdapter.getItem(position);
         description = String.valueOf(item.description);
         txtLocationFrom.setText(description);
+        if(tagLocation.equals(TAG_FROM)) {
+            if (markerFrom != null) {
+                markerFrom.remove();
+            }
+        }
+        else if(tagLocation.equals(TAG_DESTINATION)) {
+            if (markerDestination != null) {
+                markerDestination.remove();
+            }
+        }
         addMarker(description);
 
     }
