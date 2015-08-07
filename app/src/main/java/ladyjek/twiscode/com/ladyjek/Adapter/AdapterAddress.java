@@ -33,7 +33,7 @@ import ladyjek.twiscode.com.ladyjek.Utilities.PlaceAPI;
 /**
  * Created by User on 8/5/2015.
  */
-public class AdapterAddress extends ArrayAdapter<ModelPlace> implements Filterable, AdapterView.OnItemClickListener {
+public class AdapterAddress extends ArrayAdapter<ModelPlace> implements Filterable {
     private ArrayList resultList;
     private static final String TAG = "PlaceArrayAdapter";
     private GoogleApiClient mGoogleApiClient;
@@ -86,9 +86,4 @@ public class AdapterAddress extends ArrayAdapter<ModelPlace> implements Filterab
         return filter;
     }
 
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Log.d("Adapter","Pos : " + position);
-    }
 }

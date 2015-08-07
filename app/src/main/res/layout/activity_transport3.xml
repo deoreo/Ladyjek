@@ -59,7 +59,7 @@
         android:background="@drawable/rounded_white_primary_color"
 
         android:textColorHint="#111111"
-        android:selectAllOnFocus="true"
+        android:focusableInTouchMode="true"
 
         />
 
@@ -75,7 +75,7 @@
         android:lines="1"
         android:hint="Destination"
         android:paddingLeft="15dp"
-        android:selectAllOnFocus="true"
+        android:focusableInTouchMode="true"
         android:background="@drawable/rounded_white_primary_color"
 
         android:textColorHint="#111111"
