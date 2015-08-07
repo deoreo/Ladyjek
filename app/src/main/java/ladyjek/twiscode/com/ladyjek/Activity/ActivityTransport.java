@@ -12,6 +12,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
@@ -26,8 +27,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import ladyjek.twiscode.com.ladyjek.Adapter.AdapterAddress;
+import ladyjek.twiscode.com.ladyjek.Model.ModelGeocode;
 import ladyjek.twiscode.com.ladyjek.Model.ModelPlace;
 import ladyjek.twiscode.com.ladyjek.R;
+import ladyjek.twiscode.com.ladyjek.Utilities.PlaceAPI;
 
 
 import com.google.android.gms.common.ConnectionResult;
@@ -35,6 +38,8 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.data.DataHolder;
+import com.google.android.gms.location.places.GeoDataApi;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
@@ -79,6 +84,8 @@ public class ActivityTransport extends ActionBarActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transport3);
         SetActionBar();
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
         btnRequestRide = (Button) findViewById(R.id.btnRequestRide);
         btnLocationFrom = (Button) findViewById(R.id.btnLocationFrom);
         btnLocationDestination = (Button) findViewById(R.id.btnLocationDestination);
@@ -97,6 +104,7 @@ public class ActivityTransport extends ActionBarActivity implements
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
+        mGoogleApiClient.connect();
 
         int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());
 
@@ -113,6 +121,7 @@ public class ActivityTransport extends ActionBarActivity implements
             String provider = locationManager.getBestProvider(criteria, true);
             Location location = locationManager.getLastKnownLocation(provider);
             if (location != null) {
+
                 onLocationChanged(location);
             }
             locationManager.requestLocationUpdates(provider, 20000, 0, this);
@@ -208,6 +217,7 @@ public class ActivityTransport extends ActionBarActivity implements
 
     @Override
     public void onLocationChanged(Location location) {
+        //googleMap.clear();
         double latitude = location.getLatitude();
         double longitude = location.getLongitude();
         LatLng latLng = new LatLng(latitude, longitude);
@@ -224,24 +234,6 @@ public class ActivityTransport extends ActionBarActivity implements
 
     }
 
-    public void addMark() {
-        Places.GeoDataApi.getPlaceById(mGoogleApiClient, placeId)
-                .setResultCallback(new ResultCallback<PlaceBuffer>() {
-                    @Override
-                    public void onResult(PlaceBuffer places) {
-                        if (places.getStatus().isSuccess()) {
-                            final Place myPlace = places.get(0);
-                            LatLng queried_location = myPlace.getLatLng();
-                            googleMap.addMarker(new MarkerOptions()
-                                    .position(queried_location)
-                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.red_marker)));
-                        } else {
-                            Log.d("ActivityReult", places.getStatus().toString());
-                        }
-                        places.release();
-                    }
-                });
-    }
 
     @Override
     public void onProviderDisabled(String provider) {
@@ -268,23 +260,6 @@ public class ActivityTransport extends ActionBarActivity implements
 
     }
 
-    public String getAddress(LatLng latlng) {
-        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-        double lat = latlng.latitude;
-        double lng = latlng.longitude;
-        String addressLine = "";
-        try {
-            List<Address> addresses = geocoder.getFromLocation(lat, lng, 1);
-            Address obj = addresses.get(0);
-            addressLine = obj.getAddressLine(0);
-
-        } catch (IOException e) {
-        } catch (Exception e) {
-            Log.w("ActivityTransport", "Canont get Address!");
-        }
-        return addressLine;
-    }
-
 
     @Override
     public void onConnected(Bundle bundle) {
@@ -304,71 +279,44 @@ public class ActivityTransport extends ActionBarActivity implements
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         final ModelPlace item = mPlaceArrayAdapter.getItem(position);
-        placeId = String.valueOf(item.placeId);
         description = String.valueOf(item.description);
         txtLocationFrom.setText(description);
-        Log.d("ActivityTransport", "Pos : " + position);
-        addMark();
+        addMarker(description);
     }
 
-
-    private class DoChangeLocation extends AsyncTask<String, Void, String> {
-        private Activity activity;
-        private String tagLocation;
-
-        public DoChangeLocation(String tagLocation) {
-            super();
-            this.tagLocation = tagLocation;
+    public void addMarker(String address) {
+        ModelGeocode geoCode = PlaceAPI.geocode(address);
+        LatLng locationMarker = new LatLng(geoCode.getLat(),geoCode.getLon());
+        if(tagLocation.equals(TAG_FROM)) {
+            googleMap.addMarker(
+                    new MarkerOptions()
+                            .position(locationMarker)
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.current_location)));
         }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            if (tagLocation.equals(TAG_FROM)) {
-                progressMapFrom.setVisibility(View.VISIBLE);
-                progressMapDestination.setVisibility(View.GONE);
-            } else if (tagLocation.equals(TAG_DESTINATION)) {
-                progressMapFrom.setVisibility(View.GONE);
-                progressMapDestination.setVisibility(View.VISIBLE);
-            }
+        else if(tagLocation.equals(TAG_DESTINATION)) {
+            googleMap.addMarker(
+                    new MarkerOptions()
+                            .position(locationMarker)
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.destination)));
         }
-
-        @Override
-        protected String doInBackground(String... params) {
-            try {
-                add = getAddress(mapCenter);
-
-                return "OK";
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return "FAIL";
-
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-
-            switch (result) {
-                case "FAIL":
-                    txtLocationFrom.setText("No Location");
-                    txtLocationDestinton.setText("No Location");
-                    progressMapFrom.setVisibility(View.GONE);
-                    progressMapDestination.setVisibility(View.GONE);
-                    break;
-                case "OK":
-                    txtLocationFrom.setText(add);
-                    txtLocationDestinton.setText(add);
-                    progressMapFrom.setVisibility(View.GONE);
-                    progressMapDestination.setVisibility(View.GONE);
-                    break;
-            }
-
-        }
-
 
     }
 
+    public String getAddress(LatLng latlng) {
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        double lat = latlng.latitude;
+        double lng = latlng.longitude;
+        String addressLine = "";
+        try {
+            List<Address> addresses = geocoder.getFromLocation(lat, lng, 1);
+            Address obj = addresses.get(0);
+            addressLine = obj.getAddressLine(0);
+
+        } catch (IOException e) {
+        } catch (Exception e) {
+            Log.w("ActivityTransport", "Canont get Address!");
+        }
+        return addressLine;
+    }
 
 }

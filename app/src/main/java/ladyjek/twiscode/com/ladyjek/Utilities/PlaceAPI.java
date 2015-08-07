@@ -19,6 +19,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import ladyjek.twiscode.com.ladyjek.Model.ModelGeocode;
 import ladyjek.twiscode.com.ladyjek.Model.ModelPlace;
 import ladyjek.twiscode.com.ladyjek.R;
 
@@ -30,6 +31,7 @@ public class PlaceAPI {
     private static final String TAG = "PlaceAPI";
 
     private static final String PLACES_API_BASE = "https://maps.googleapis.com/maps/api/place";
+    private static final String GEOCODE_API_BASE = "https://maps.googleapis.com/maps/api/geocode";
     private static final String TYPE_AUTOCOMPLETE = "/autocomplete";
     private static final String OUT_JSON = "/json";
     private static final String API_KEY = "AIzaSyAJ6wF29SmwinrHoyJ-KjWwlZ3IFtVz0vY";
@@ -89,5 +91,55 @@ public class PlaceAPI {
         return resultList;
     }
 
+    public static ModelGeocode geocode(String address) {
+        ModelGeocode modelGeocode = null;
+        HttpURLConnection conn = null;
+        StringBuilder jsonResults = new StringBuilder();
+        try {
+            StringBuilder sb = new StringBuilder(GEOCODE_API_BASE + OUT_JSON);
+            sb.append("?key=" + API_KEY);
+            sb.append("&address=" + URLEncoder.encode(address, "utf8"));
+
+            URL url = new URL(sb.toString());
+            conn = (HttpURLConnection) url.openConnection();
+            InputStreamReader in = new InputStreamReader(conn.getInputStream());
+
+            // Load the results into a StringBuilder
+            int read;
+            char[] buff = new char[1024];
+            while ((read = in.read(buff)) != -1) {
+                jsonResults.append(buff, 0, read);
+            }
+        } catch (MalformedURLException e) {
+            Log.e(TAG, "Error processing Places API URL", e);
+        } catch (IOException e) {
+            Log.e(TAG, "Error connecting to Places API", e);
+        } finally {
+            if (conn != null) {
+                conn.disconnect();
+            }
+        }
+
+        try {
+            // Create a JSON object hierarchy from the results
+            JSONObject jsonObj = new JSONObject(jsonResults.toString());
+            JSONArray resultsJsonArray = jsonObj.getJSONArray("results");
+
+            // Extract the Geocode from the results
+            for (int i = 0; i < resultsJsonArray.length(); i++) {
+                JSONObject geoObj = resultsJsonArray.getJSONObject(i).getJSONObject("geometry");
+                JSONObject locObj = geoObj.getJSONObject("location");
+
+                String lat=locObj.getString("lat");
+                String lon =locObj.getString("lng");
+                modelGeocode = new ModelGeocode(lat, lon);
+
+            }
+        } catch (JSONException e) {
+            Log.e(TAG, "Cannot process JSON results", e);
+        }
+
+        return modelGeocode;
+    }
 
 }
