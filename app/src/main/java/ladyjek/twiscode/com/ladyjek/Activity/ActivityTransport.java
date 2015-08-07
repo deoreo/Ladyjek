@@ -49,14 +49,15 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import android.widget.AdapterView.OnItemClickListener;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
 public class ActivityTransport extends ActionBarActivity implements
         LocationListener, GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener
-{
+        GoogleApiClient.OnConnectionFailedListener, OnItemClickListener {
     private ActivityTransport activityTransport;
     private Toolbar mToolbar;
     private GoogleMap googleMap;
@@ -66,7 +67,7 @@ public class ActivityTransport extends ActionBarActivity implements
     private TextView txtLocationFrom, txtLocationDestinton;
     private ProgressBar progressMapFrom, progressMapDestination;
     private String add, tagLocation = "";
-    private String placeId="", description="";
+    private String placeId = "", description = "";
     private final String TAG_FROM = "FROM";
     private final String TAG_DESTINATION = "DESTINATION";
     private LatLng mapCenter;
@@ -167,8 +168,8 @@ public class ActivityTransport extends ActionBarActivity implements
 
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                layoutMarkerFrom.setVisibility(View.VISIBLE);
-                layoutMarkerDestination.setVisibility(View.GONE);
+                // layoutMarkerFrom.setVisibility(View.VISIBLE);
+                //layoutMarkerDestination.setVisibility(View.GONE);
                 tagLocation = TAG_FROM;
             }
         });
@@ -177,8 +178,8 @@ public class ActivityTransport extends ActionBarActivity implements
 
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                layoutMarkerFrom.setVisibility(View.GONE);
-                layoutMarkerDestination.setVisibility(View.VISIBLE);
+                // layoutMarkerFrom.setVisibility(View.GONE);
+                //layoutMarkerDestination.setVisibility(View.VISIBLE);
                 tagLocation = TAG_DESTINATION;
 
             }
@@ -187,7 +188,10 @@ public class ActivityTransport extends ActionBarActivity implements
 
         mPlaceArrayAdapter = new AdapterAddress(this, android.R.layout.simple_list_item_1);
         txtFrom.setAdapter(mPlaceArrayAdapter);
+        txtFrom.setOnItemClickListener(this);
+
         txtDestination.setAdapter(mPlaceArrayAdapter);
+        txtDestination.setOnItemClickListener(this);
     }
 
     @Override
@@ -220,7 +224,7 @@ public class ActivityTransport extends ActionBarActivity implements
 
     }
 
-    public void addMark(){
+    public void addMark() {
         Places.GeoDataApi.getPlaceById(mGoogleApiClient, placeId)
                 .setResultCallback(new ResultCallback<PlaceBuffer>() {
                     @Override
@@ -282,18 +286,6 @@ public class ActivityTransport extends ActionBarActivity implements
     }
 
 
-    private AdapterView.OnItemClickListener mAutocompleteClickListener
-            = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            final ModelPlace item = mPlaceArrayAdapter.getItem(position);
-            placeId = String.valueOf(item.placeId);
-            description = String.valueOf(item.description);
-            txtLocationFrom.setText(description);
-            addMark();
-        }
-    };
-
     @Override
     public void onConnected(Bundle bundle) {
 
@@ -307,6 +299,16 @@ public class ActivityTransport extends ActionBarActivity implements
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
 
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        final ModelPlace item = mPlaceArrayAdapter.getItem(position);
+        placeId = String.valueOf(item.placeId);
+        description = String.valueOf(item.description);
+        txtLocationFrom.setText(description);
+        Log.d("ActivityTransport", "Pos : " + position);
+        addMark();
     }
 
 
