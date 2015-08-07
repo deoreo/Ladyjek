@@ -9,6 +9,9 @@
     <string name="api_key_edo">AIzaSyDYz9r1BDO7ZprULDFPwrQF9uaCGKC_lg4</string>
     <string name="api_key_richie">AIzaSyAD5yWM5-f3bzAPOBcwubWc-V8rmsrlGzI</string>
 
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
+
     <string-array name="payList">
         <item>Tunai</item>
         <item>Dompet</item>
@@ -35,7 +38,15 @@
     <string name="review"><u>Jemput</u></string>
     <string name="tracking"><u>Panggil bantuan</u></string>
     <string name="feedback"><u>kirim saran</u></string>
+    <string name="pesan"><u>Pesan sekarang</u></string>
 
+    <string-array name="nav_drawer_labels">
+        <item>Informasi Pribadi</item>
+        <item>Dompet</item>
+        <item>Promo</item>
+        <item>Tentang ladyjek</item>
+        <item>Bantuan</item>
+    </string-array>
 
 
     </resources>

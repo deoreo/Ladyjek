@@ -1,0 +1,127 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
+    tools:context="ladyjek.twiscode.com.ladyjek.Activity.ActivityTransport"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <fragment xmlns:map="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/mapView"
+            class="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+        <RelativeLayout
+            android:id="@+id/wrapperRegister"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="20dp"
+            android:background="@drawable/plain_gradient_bg_btn"
+            android:layout_alignParentBottom="true">
+            <TextView
+                android:id="@+id/txtLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white_color"
+                android:textStyle="bold"
+                android:text="@string/lbl_review"
+                android:textSize="18dp"
+                android:layout_centerHorizontal="true"
+                />
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txtLabel"
+                android:layout_centerHorizontal="true">
+                <TextView
+                    android:id="@+id/btnPesan"
+                    android:layout_marginTop="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white_color"
+                    android:text="@string/pesan"
+                    android:textSize="18dp"
+                    android:layout_centerHorizontal="true"
+
+                    />
+                <ImageView
+                    android:layout_width="34dp"
+                    android:layout_height="38dp"
+                    android:src="@drawable/right_arrow_white"
+                    android:layout_toRightOf="@id/btnPesan"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="-8dp"/>
+            </RelativeLayout>
+
+        </RelativeLayout>
+    </LinearLayout>
+
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <RelativeLayout
+            android:layout_marginTop="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:background="@drawable/bg_white_transparent"
+            >
+            <AutoCompleteTextView
+                android:id="@+id/txtFrom"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:gravity="center_vertical"
+                android:singleLine="true"
+                android:lines="1"
+                android:hint="From"
+                android:paddingLeft="15dp"
+                android:textSize="15sp"
+                android:background="@drawable/rounded_white_primary_color"
+
+                android:textColorHint="#111111"
+                android:selectAllOnFocus="true"
+
+                />
+
+            <AutoCompleteTextView
+                android:id="@+id/txtDestination"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/txtFrom"
+                android:layout_marginTop="5dp"
+                android:gravity="center_vertical"
+                android:singleLine="true"
+                android:lines="1"
+                android:hint="Destination"
+                android:paddingLeft="15dp"
+                android:selectAllOnFocus="true"
+                android:background="@drawable/rounded_white_primary_color"
+
+                android:textColorHint="#111111"
+                android:textSize="15sp" />
+
+        </RelativeLayout>
+    </LinearLayout>
+
+
+
+
+
+
+</RelativeLayout>

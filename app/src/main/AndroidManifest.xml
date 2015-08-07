@@ -24,7 +24,7 @@
         android:theme="@style/MyMaterialTheme" >
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="@string/api_key_edo" />
+            android:value="@string/api_key_richie" />
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -80,6 +80,10 @@
         </activity>
         <activity
             android:name=".Activity.ActivityTracking"
+            android:label="@string/title_activity_activity_transport" >
+        </activity>
+        <activity
+            android:name=".Activity.Main"
             android:label="@string/title_activity_activity_transport" >
         </activity>
     </application>

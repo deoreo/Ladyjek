@@ -10,11 +10,16 @@
         <item name="colorPrimary">@color/bg_grad_2</item>
         <item name="colorPrimaryDark">@color/bg_grad_1</item>
         <item name="colorAccent">@color/bg_grad_1</item>
+        <item name="android:textColorPrimary">@color/bg_grad_2</item>
+        <item name="android:textColorSecondary">@color/bg_grad_2</item>
+        <item name="actionMenuTextColor">@color/bg_grad_2</item>
+
     </style>
     <style name="CustomRatingBar" parent="@android:style/Widget.RatingBar">
         <item name="android:progressDrawable">@drawable/custom_ratingbar</item>
                 <item name="android:height">24dp</item>
                 <item name="android:width">24dp</item>
-</style>
+    </style>
+
 
 </resources>
