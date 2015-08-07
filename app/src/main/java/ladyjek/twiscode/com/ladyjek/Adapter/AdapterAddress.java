@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Filter;
@@ -32,7 +33,7 @@ import ladyjek.twiscode.com.ladyjek.Utilities.PlaceAPI;
 /**
  * Created by User on 8/5/2015.
  */
-public class AdapterAddress extends ArrayAdapter<ModelPlace> implements Filterable {
+public class AdapterAddress extends ArrayAdapter<ModelPlace> implements Filterable, AdapterView.OnItemClickListener {
     private ArrayList resultList;
     private static final String TAG = "PlaceArrayAdapter";
     private GoogleApiClient mGoogleApiClient;
@@ -54,69 +55,8 @@ public class AdapterAddress extends ArrayAdapter<ModelPlace> implements Filterab
     public ModelPlace getItem(int index) {
         return mResultList.get(index);
     }
-/*
-    private ArrayList<ModelPlace> getPredictions(CharSequence constraint) {
-        if (mGoogleApiClient != null) {
-            PendingResult<AutocompletePredictionBuffer> results = Places.GeoDataApi.getAutocompletePredictions(mGoogleApiClient, constraint.toString(), mBounds, mPlaceFilter);
-            // Wait for predictions, set the timeout.
-            AutocompletePredictionBuffer autocompletePredictions = results
-                    .await(60, TimeUnit.SECONDS);
-            final Status status = autocompletePredictions.getStatus();
-            if (!status.isSuccess()) {
-                Toast.makeText(getContext(), "Error: " + status.toString(),
-                        Toast.LENGTH_SHORT).show();
-                autocompletePredictions.release();
-                return null;
-            }
 
-            Log.i(TAG, "Query completed. Received " + autocompletePredictions.getCount()
-                    + " predictions.");
-            Iterator<AutocompletePrediction> iterator = autocompletePredictions.iterator();
-            ArrayList resultList = new ArrayList<>(autocompletePredictions.getCount());
-            while (iterator.hasNext()) {
-                AutocompletePrediction prediction = iterator.next();
-                resultList.add(new ModelPlace(prediction.getPlaceId(),
-                        prediction.getDescription()));
-            }
-            // Buffer release
-            autocompletePredictions.release();
-            return resultList;
-        }
-        Log.e(TAG, "Google API client is not connected.");
-        return null;
-    }
-    @Override
-    public Filter getFilter() {
-        Filter filter = new Filter() {
-            @Override
-            protected FilterResults performFiltering(CharSequence constraint) {
-                FilterResults results = new FilterResults();
-                if (constraint != null) {
-                    // Query the autocomplete API for the entered constraint
-                    mResultList = getPredictions(constraint);
-                    if (mResultList != null) {
-                        // Results
-                        results.values = mResultList;
-                        results.count = mResultList.size();
-                    }
-                }
-                return results;
-            }
 
-            @Override
-            protected void publishResults(CharSequence constraint, FilterResults results) {
-                if (results != null && results.count > 0) {
-                    // The API returned at least one result, update the data.
-                    notifyDataSetChanged();
-                } else {
-                    // The API did not return any results, invalidate the data set.
-                    notifyDataSetInvalidated();
-                }
-            }
-        };
-        return filter;
-    }
-*/
 
     @Override
     public Filter getFilter() {
@@ -147,6 +87,8 @@ public class AdapterAddress extends ArrayAdapter<ModelPlace> implements Filterab
     }
 
 
-
-
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Log.d("Adapter","Pos : " + position);
+    }
 }
