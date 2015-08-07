@@ -3,7 +3,7 @@
 
     <string name="title_activity_activity_login">Sign-In</string>
     <string name="title_activity_activity_register">Sign-Up</string>
-    <string name="title_activity_activity_confirm">Confirm Booking</string>
+    <string name="title_activity_activity_confirm">Review pesanan</string>
     <string name="title_activity_activity_rate">Rate Driver</string>
     <string name="action_settings">Setting</string>
     <string name="api_key_edo">AIzaSyDYz9r1BDO7ZprULDFPwrQF9uaCGKC_lg4</string>
@@ -16,9 +16,9 @@
         <item>Tunai</item>
         <item>Dompet</item>
     </string-array>
-    <string name="title_activity_activity_transport">Transport</string>
-
-    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_activity_transport">Masukan lokasi awal dan akhir</string>
+    <string name="title_activity_change_location_rumah">Masukan lokasi rumah</string>
+    <string name="title_activity_change_location_kantor">Masukan lokasi kantor</string>
 
     <string name="lbl_register">Baru disini?</string>
     <string name="lbl_register2">Great Job!</string>
@@ -39,6 +39,9 @@
     <string name="tracking"><u>Panggil bantuan</u></string>
     <string name="feedback"><u>kirim saran</u></string>
     <string name="pesan"><u>Pesan sekarang</u></string>
+    <string name="simpan"><u>Simpan</u></string>
+    <string name="lanjut"><u>Lanjut</u></string>
+    <string name="verify"><u>Verifikasi nomor</u></string>
 
     <string-array name="nav_drawer_labels">
         <item>Informasi Pribadi</item>

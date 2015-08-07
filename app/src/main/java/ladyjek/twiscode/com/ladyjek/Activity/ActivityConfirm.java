@@ -76,7 +76,7 @@ public class ActivityConfirm extends ActionBarActivity {
     }
 
     private void SetActionBar() {
-        mToolbar = (Toolbar) findViewById(R.id.tool_bar);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         mToolbar.setNavigationIcon(R.drawable.ic_back);
         getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);

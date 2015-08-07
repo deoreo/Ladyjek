@@ -24,16 +24,7 @@
             android:padding="20dp"
             android:background="@drawable/plain_gradient_bg_btn"
             android:layout_alignParentBottom="true">
-            <TextView
-                android:id="@+id/txtLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white_color"
-                android:textStyle="bold"
-                android:text="@string/lbl_review"
-                android:textSize="18dp"
-                android:layout_centerHorizontal="true"
-                />
+
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -45,7 +36,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white_color"
-                    android:text="@string/pesan"
+                    android:text="@string/simpan"
                     android:textSize="18dp"
                     android:layout_centerHorizontal="true"
 
@@ -70,9 +61,36 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="vertical"
+            android:background="@drawable/bg_white_transparent">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <ImageView
+                    android:padding="10dp"
+                    android:id="@+id/btnBack"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_back"/>
+                <TextView
+                    android:layout_toRightOf="@id/btnBack"
+                    android:padding="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title_activity_change_location_rumah"
+                    android:textSize="18dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/bg_grad_2"
+                    android:layout_centerVertical="true"
+                    />
+            </RelativeLayout>
 
+        </LinearLayout>
         <RelativeLayout
-            android:layout_marginTop="50dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="20dp"
@@ -125,50 +143,6 @@
                     android:background="@color/black_color" />
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_below="@id/layFrom"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:orientation="vertical">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp">
-                    <AutoCompleteTextView
-                        android:id="@+id/txtDestination"
-                        android:layout_width="0dp"
-                        android:layout_height="40dp"
-                        android:layout_weight="1"
-                        android:layout_alignParentStart="true"
-                        android:layout_below="@+id/txtFrom"
-                        android:layout_marginTop="5dp"
-                        android:gravity="center_vertical"
-                        android:singleLine="true"
-                        android:lines="1"
-                        android:hint="Destination"
-                        android:selectAllOnFocus="true"
-                        android:background="@null"
-
-                        android:textColorHint="#111111"
-                        android:textSize="15sp" />
-                    <RelativeLayout
-                        android:layout_width="17dp"
-                        android:layout_height="40dp">
-                        <ImageView
-                            android:layout_width="17dp"
-                            android:layout_height="19dp"
-                            android:layout_centerVertical="true"
-                            android:layout_alignParentRight="true"
-                            android:src="@drawable/right_arrow" />
-                    </RelativeLayout>
-                </LinearLayout>
-
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:background="@color/black_color" />
-            </LinearLayout>
 
 
 
