@@ -5,7 +5,7 @@
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:orientation="vertical"
-    tools:context="ladyjek.twiscode.com.ladyjek.Activity.ActivityTransport"
+    tools:context="ladyjek.twiscode.com.ladyjek.Activity.ActivityChangeLocation"
     >
     <LinearLayout
         android:layout_width="match_parent"
@@ -28,7 +28,6 @@
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/txtLabel"
                 android:layout_centerHorizontal="true">
                 <TextView
                     android:id="@+id/btnPesan"
