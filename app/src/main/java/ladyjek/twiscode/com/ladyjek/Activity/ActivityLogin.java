@@ -212,12 +212,6 @@ public class ActivityLogin extends Activity implements DetectSoftwareKeyboard.Li
                 String email = params[0];
                 String password = params[1];
 
-                /*
-                //Process login
-                if (email.equals("edo@gmail.com") && password.equals("abcd1234")) {
-                    return "OK";
-                }
-                */
                 if (email.equals(ApplicationData.user.email) && password.equals(ApplicationData.user.password)) {
                     return "OK";
                 }
@@ -233,7 +227,7 @@ public class ActivityLogin extends Activity implements DetectSoftwareKeyboard.Li
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            progressDialog.dismiss();
+
             switch (result) {
                 case "FAIL":
                     Utilities.showDialog(activity, "Warning", "Login Failed!");
@@ -247,6 +241,7 @@ public class ActivityLogin extends Activity implements DetectSoftwareKeyboard.Li
 
             txtPassword.clearFocus();
             txtPassword.setText("");
+            progressDialog.dismiss();
         }
 
 

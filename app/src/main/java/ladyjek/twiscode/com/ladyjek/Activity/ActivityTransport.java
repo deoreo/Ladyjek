@@ -56,8 +56,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 
 public class ActivityTransport extends ActionBarActivity implements
@@ -109,7 +107,6 @@ public class ActivityTransport extends ActionBarActivity implements
         } else {
             SupportMapFragment fm = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapView);
             googleMap = fm.getMap();
-            //googleMap.setMyLocationEnabled(true);
             LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
             Criteria criteria = new Criteria();
             String provider = locationManager.getBestProvider(criteria, true);
@@ -118,11 +115,7 @@ public class ActivityTransport extends ActionBarActivity implements
 
                 onLocationChanged(location);
             }
-            //locationManager.requestLocationUpdates(provider, 20000, 0, this);
-
             mapCenter = googleMap.getCameraPosition().target;
-            //drawNewMarker(getAddress(mapCenter));
-
 
             googleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
                 @Override
