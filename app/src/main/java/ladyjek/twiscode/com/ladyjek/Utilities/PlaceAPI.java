@@ -156,6 +156,8 @@ public class PlaceAPI {
         return modelGeocode;
     }
 
+
+
     public static Document getRoute(LatLng start, LatLng end, String mode) {
         String url = "http://maps.googleapis.com/maps/api/directions/xml?"
                 + "origin=" + start.latitude + "," + start.longitude
@@ -177,6 +179,7 @@ public class PlaceAPI {
         }
         return null;
     }
+
     public static ArrayList<LatLng> getDirection(Document doc) {
         NodeList nl1, nl2, nl3;
         ArrayList<LatLng> listGeopoints = new ArrayList<LatLng>();
@@ -253,5 +256,41 @@ public class PlaceAPI {
         }
         return poly;
     }
+
+    public static String getDurationText(Document doc) {
+        try {
+            NodeList nl1;
+            nl1 = doc.getElementsByTagName("duration");
+
+            Node node1 = nl1.item(nl1.getLength() - 1);
+            NodeList nl2 = null;
+            nl2 = node1.getChildNodes();
+            Node node2 = nl2.item(getNodeIndex(nl2, "text"));
+            Log.d("DurationText", node2.getTextContent());
+            return node2.getTextContent();
+        } catch (Exception e) {
+            return "-1";
+        }
+    }
+
+    public static String getDistanceText(Document doc) {
+
+        try {
+            NodeList nl1;
+            nl1 = doc.getElementsByTagName("distance");
+
+            Node node1 = nl1.item(nl1.getLength() - 1);
+            NodeList nl2 = null;
+            nl2 = node1.getChildNodes();
+            Node node2 = nl2.item(getNodeIndex(nl2, "text"));
+            Log.d("DistanceText", node2.getTextContent());
+            return node2.getTextContent();
+        } catch (Exception e) {
+            return "-1";
+        }
+
+
+    }
+
 
 }

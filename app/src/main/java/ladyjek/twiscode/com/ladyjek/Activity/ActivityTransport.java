@@ -14,8 +14,10 @@ import android.os.StrictMode;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -59,7 +61,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 
 public class ActivityTransport extends ActionBarActivity implements
-        LocationListener, OnItemClickListener {
+        LocationListener, OnItemClickListener, View.OnKeyListener {
     private ActivityTransport activityTransport;
     private Toolbar mToolbar;
     private GoogleMap googleMap;
@@ -71,12 +73,14 @@ public class ActivityTransport extends ActionBarActivity implements
     private TextView txtLocationFrom, txtLocationDestinton;
     private ProgressBar progressMapFrom, progressMapDestination;
     private String add, tagLocation = TAG_FROM;
-    private String placeId = "", description = "";
+    private String placeId = "", description = "", strDistance="", strDuration="";
 
     private LatLng mapCenter, posFrom, posDest;
     private AdapterAddress mPlaceArrayAdapter;
     private Marker markerFrom, markerDestination;
     private CameraUpdate cameraUpdate;
+    private Polyline driveLine;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -138,8 +142,14 @@ public class ActivityTransport extends ActionBarActivity implements
         btnRequestRide.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getBaseContext(), ActivityConfirm.class);
-                startActivity(i);
+                Bundle args = new Bundle();
+                args.putString("from", txtFrom.getText().toString());
+                args.putString("destination", txtDestination.getText().toString());
+                args.putString("distance", strDistance);
+                args.putString("duration", strDuration);
+                Intent intent = new Intent(getBaseContext(), ActivityConfirm.class);
+                intent.putExtras(args);
+                startActivity(intent);
             }
         });
 
@@ -168,6 +178,8 @@ public class ActivityTransport extends ActionBarActivity implements
                     tagLocation = TAG_DESTINATION;
                     Log.d("ActivityTransport", tagLocation);
                 }
+
+
                 return false;
             }
         });
@@ -175,9 +187,10 @@ public class ActivityTransport extends ActionBarActivity implements
         mPlaceArrayAdapter = new AdapterAddress(this, android.R.layout.simple_list_item_1);
         txtFrom.setAdapter(mPlaceArrayAdapter);
         txtFrom.setOnItemClickListener(this);
-
+        txtFrom.setOnKeyListener(this);
         txtDestination.setAdapter(mPlaceArrayAdapter);
         txtDestination.setOnItemClickListener(this);
+        txtDestination.setOnKeyListener(this);
     }
 
 
@@ -253,7 +266,7 @@ public class ActivityTransport extends ActionBarActivity implements
     public void drawNewMarker(String address) {
         ModelGeocode geocode = PlaceAPI.geocode(address);
         LatLng locationMarker = new LatLng(geocode.getLat(), geocode.getLon());
-
+        if(driveLine!=null){driveLine.remove();}
         if (tagLocation.equals(TAG_FROM)) {
             posFrom = locationMarker;
             markerFrom = googleMap.addMarker(
@@ -270,7 +283,6 @@ public class ActivityTransport extends ActionBarActivity implements
                             .position(posDest)
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_destination)));
 
-
             Document doc = PlaceAPI.getRoute(posFrom, posDest, "driving");
 
             ArrayList<LatLng> directionPoint = PlaceAPI.getDirection(doc);
@@ -280,7 +292,9 @@ public class ActivityTransport extends ActionBarActivity implements
             for (int i = 0; i < directionPoint.size(); i++) {
                 rectLine.add(directionPoint.get(i));
             }
-            googleMap.addPolyline(rectLine);
+            strDistance = ""+PlaceAPI.getDistanceText(doc);
+            strDuration = ""+PlaceAPI.getDurationText(doc);
+            driveLine = googleMap.addPolyline(rectLine);
 
 
             cameraUpdate = CameraUpdateFactory.newLatLngZoom(locationMarker, 13);
@@ -306,4 +320,15 @@ public class ActivityTransport extends ActionBarActivity implements
         return addressLine;
     }
 
+    @Override
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+        if (keyCode == EditorInfo.IME_ACTION_SEARCH ||
+                keyCode == EditorInfo.IME_ACTION_DONE ||
+                event.getAction() == KeyEvent.ACTION_DOWN &&
+                        event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+            driveLine.remove();
+        }
+
+        return false;
+    }
 }

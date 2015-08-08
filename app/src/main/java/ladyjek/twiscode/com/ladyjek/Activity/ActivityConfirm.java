@@ -1,6 +1,5 @@
 package ladyjek.twiscode.com.ladyjek.Activity;
 
-import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -10,14 +9,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.Spinner;
 import android.widget.TextView;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
 
 import ladyjek.twiscode.com.ladyjek.R;
 
@@ -27,7 +20,7 @@ public class ActivityConfirm extends ActionBarActivity {
     private Toolbar mToolbar;
     Spinner pay;
     ArrayAdapter<CharSequence> adapterPay;
-    TextView btnConfirm;
+    private TextView txtConfirm, txtFrom, txtDestination, txtDistance, txtDuration,txtTotal ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +30,14 @@ public class ActivityConfirm extends ActionBarActivity {
         //SetActionBar();
         SetPaySpinner();
 
-        btnConfirm = (TextView) findViewById(R.id.btnConfirm);
-        btnConfirm.setOnClickListener(new View.OnClickListener() {
+        txtConfirm = (TextView) findViewById(R.id.btnConfirm);
+        txtFrom = (TextView) findViewById(R.id.txtFrom);
+        txtDestination = (TextView) findViewById(R.id.txtDestination);
+        txtDistance = (TextView) findViewById(R.id.txtDistance);
+        txtDuration = (TextView) findViewById(R.id.txtDuration);
+        txtTotal = (TextView) findViewById(R.id.txtTotal);
+
+        txtConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(getBaseContext(), ActivityPickUp.class);
