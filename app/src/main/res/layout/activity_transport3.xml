@@ -44,7 +44,7 @@
     android:paddingRight="20dp"
     android:paddingTop="10dp"
     android:paddingBottom="10dp"
-    android:background="#b6e4e4e4"
+    android:background="@drawable/bg_white_transparent"
     >
     <AutoCompleteTextView
         android:id="@+id/txtFrom"
@@ -57,9 +57,7 @@
         android:paddingLeft="15dp"
         android:textSize="15sp"
         android:background="@drawable/rounded_white_primary_color"
-
         android:textColorHint="#111111"
-        android:focusableInTouchMode="true"
 
         />
 
@@ -75,9 +73,7 @@
         android:lines="1"
         android:hint="Destination"
         android:paddingLeft="15dp"
-        android:focusableInTouchMode="true"
         android:background="@drawable/rounded_white_primary_color"
-
         android:textColorHint="#111111"
         android:textSize="15sp" />
 
