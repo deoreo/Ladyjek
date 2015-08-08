@@ -20,7 +20,10 @@ public class ActivityConfirm extends ActionBarActivity {
     private Toolbar mToolbar;
     Spinner pay;
     ArrayAdapter<CharSequence> adapterPay;
-    private TextView txtConfirm, txtFrom, txtDestination, txtDistance, txtDuration,txtTotal ;
+    private TextView txtConfirm, txtFrom, txtDestination, txtDistance, txtDuration, txtTotal;
+    private String strFrom = "", strDest = "", strDistance = "", strDuration = "", strLat = "", strLon = "";
+    private int totalPrice = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +32,21 @@ public class ActivityConfirm extends ActionBarActivity {
 
         //SetActionBar();
         SetPaySpinner();
+        try {
+            Bundle b = getIntent().getExtras();
+            strFrom = b.getString("from");
+            strDest = b.getString("destination");
+            strDistance = b.getString("distance");
+            strDuration = b.getString("duration");
+            strLat = b.getString("lat");
+            strLon = b.getString("lon");
+
+            String[] strDist = strDistance.split(" ");
+            float intDist = Float.parseFloat(strDist[0]);
+            totalPrice = 4000 * Math.round(intDist);
+        } catch (Exception e) {
+
+        }
 
         txtConfirm = (TextView) findViewById(R.id.btnConfirm);
         txtFrom = (TextView) findViewById(R.id.txtFrom);
@@ -46,6 +64,11 @@ public class ActivityConfirm extends ActionBarActivity {
             }
         });
 
+        txtFrom.setText(strFrom);
+        txtDestination.setText(strDest);
+        txtDistance.setText(strDistance);
+        txtDuration.setText(strDuration);
+        txtTotal.setText("Rp " + totalPrice);
 
     }
 
@@ -83,8 +106,8 @@ public class ActivityConfirm extends ActionBarActivity {
 
     }
 
-    private void SetPaySpinner(){
-        pay = (Spinner)findViewById(R.id.txtPay);
+    private void SetPaySpinner() {
+        pay = (Spinner) findViewById(R.id.txtPay);
         adapterPay = ArrayAdapter.createFromResource(this, R.array.payList, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
         adapterPay.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -109,10 +132,11 @@ public class ActivityConfirm extends ActionBarActivity {
         });
     }
 
+    @Override
+    public void onBackPressed() {
 
-
-
-
+        finish();
+    }
 
 
 }

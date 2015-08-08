@@ -147,6 +147,9 @@ public class ActivityTransport extends ActionBarActivity implements
                 args.putString("destination", txtDestination.getText().toString());
                 args.putString("distance", strDistance);
                 args.putString("duration", strDuration);
+                args.putString("lat",""+posFrom.latitude);
+                args.putString("lon",""+posFrom.longitude);
+
                 Intent intent = new Intent(getBaseContext(), ActivityConfirm.class);
                 intent.putExtras(args);
                 startActivity(intent);
