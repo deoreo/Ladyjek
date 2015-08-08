@@ -153,6 +153,7 @@ public class ActivityTransport extends ActionBarActivity implements
                 Intent intent = new Intent(getBaseContext(), ActivityConfirm.class);
                 intent.putExtras(args);
                 startActivity(intent);
+                finish();
             }
         });
 

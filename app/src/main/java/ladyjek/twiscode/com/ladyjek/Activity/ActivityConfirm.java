@@ -58,7 +58,12 @@ public class ActivityConfirm extends ActionBarActivity {
         txtConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Bundle args = new Bundle();
+                args.putString("lat",""+strLat);
+                args.putString("lon",""+strLon);
                 Intent i = new Intent(getBaseContext(), ActivityPickUp.class);
+                i.addCategory(Intent.CATEGORY_HOME);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(i);
                 finish();
             }
