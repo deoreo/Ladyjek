@@ -63,15 +63,15 @@
         </RelativeLayout>
     </LinearLayout>
 
-
-
     <LinearLayout
+        android:id="@+id/layoutfillForm"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         >
 
         <RelativeLayout
+
             android:layout_marginTop="50dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -90,7 +90,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="40dp">
-                    <AutoCompleteTextView
+                    <EditText
                         android:id="@+id/txtFrom"
                         android:layout_width="0dp"
                         android:layout_height="40dp"
@@ -104,7 +104,8 @@
                         android:hint="From"
                         android:selectAllOnFocus="true"
                         android:background="@null"
-
+                        android:textColor="#111111"
+                        android:textStyle="bold"
                         android:textColorHint="#111111"
                         android:textSize="15sp" />
                     <RelativeLayout
@@ -121,7 +122,7 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="2dp"
+                    android:layout_height="1dp"
                     android:background="@color/black_color" />
             </LinearLayout>
 
@@ -134,7 +135,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="40dp">
-                    <AutoCompleteTextView
+                    <EditText
                         android:id="@+id/txtDestination"
                         android:layout_width="0dp"
                         android:layout_height="40dp"
@@ -148,7 +149,8 @@
                         android:hint="Destination"
                         android:selectAllOnFocus="true"
                         android:background="@null"
-
+                        android:textColor="#111111"
+                        android:textStyle="bold"
                         android:textColorHint="#111111"
                         android:textSize="15sp" />
                     <RelativeLayout
@@ -166,19 +168,30 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="2dp"
+                    android:layout_height="1dp"
                     android:background="@color/black_color" />
             </LinearLayout>
 
-
-
-
         </RelativeLayout>
+
+
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/suggestionLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@id/layoutfillForm"
+        android:orientation="vertical"
+        android:background="#ffffff"
+        >
+        <ListView
+            android:id="@+id/lvSuggestion"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+        </ListView>
 
-
-
+    </LinearLayout>
 
 
 </RelativeLayout>

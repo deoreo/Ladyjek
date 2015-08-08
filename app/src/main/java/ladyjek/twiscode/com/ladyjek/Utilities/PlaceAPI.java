@@ -91,10 +91,10 @@ public class PlaceAPI {
             // Extract the Place descriptions from the results
             resultList = new ArrayList(predsJsonArray.length());
             for (int i = 0; i < predsJsonArray.length(); i++) {
-                String description = predsJsonArray.getJSONObject(i).getString("description");
+                String description = predsJsonArray.getJSONObject(i).getString("address");
                 String[] descSplit = description.split(",");
                 String placeId = predsJsonArray.getJSONObject(i).getString("place_id");
-                resultList.add(new ModelPlace(placeId, descSplit[0]+","+descSplit[1]));
+                resultList.add(new ModelPlace(placeId, descSplit[0], description));
 
                 //resultList.add(descSplit);
             }

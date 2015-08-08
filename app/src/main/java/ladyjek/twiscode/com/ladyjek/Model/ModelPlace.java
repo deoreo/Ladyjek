@@ -6,17 +6,42 @@ package ladyjek.twiscode.com.ladyjek.Model;
 public class ModelPlace {
 
 
-    public CharSequence placeId;
-    public CharSequence description;
+    private String placeId;
+    private String address;
+    private String addressDetail;
 
-    public ModelPlace(CharSequence placeId, CharSequence description) {
+    public ModelPlace(String placeId, String address, String addressDetail ) {
         this.placeId = placeId;
-        this.description = description;
+        this.address = address;
+        this.addressDetail = addressDetail;
     }
 
     @Override
     public String toString() {
-        return description.toString();
+        return address.toString();
     }
 
+    public String getPlaceId() {
+        return placeId;
+    }
+
+    public void setPlaceId(String placeId) {
+        this.placeId = placeId;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getAddressDetail() {
+        return addressDetail;
+    }
+
+    public void setAddressDetail(String addressDetail) {
+        this.addressDetail = addressDetail;
+    }
 }

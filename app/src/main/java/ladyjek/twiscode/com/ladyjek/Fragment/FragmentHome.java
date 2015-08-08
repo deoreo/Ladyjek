@@ -1,9 +1,13 @@
 package ladyjek.twiscode.com.ladyjek.Fragment;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,25 +20,21 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Bundle;
 import android.os.StrictMode;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
+import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityConfirm;
-import ladyjek.twiscode.com.ladyjek.Activity.ActivityTransport;
 import ladyjek.twiscode.com.ladyjek.Adapter.AdapterAddress;
+import ladyjek.twiscode.com.ladyjek.Adapter.AdapterSuggestion;
+import ladyjek.twiscode.com.ladyjek.Control.JSONControl;
 import ladyjek.twiscode.com.ladyjek.Model.ModelGeocode;
 import ladyjek.twiscode.com.ladyjek.Model.ModelPlace;
 import ladyjek.twiscode.com.ladyjek.R;
@@ -48,7 +48,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -58,13 +57,17 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 import android.widget.AdapterView.OnItemClickListener;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Document;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import ladyjek.twiscode.com.ladyjek.R;
 
 /**
  * Created by Unity on 18/05/2015.
@@ -72,13 +75,18 @@ import ladyjek.twiscode.com.ladyjek.R;
 public class FragmentHome extends Fragment implements
         LocationListener, OnItemClickListener, View.OnKeyListener {
 
-    private ActivityTransport activityTransport;
     private Toolbar mToolbar;
+    ModelPlace mPlace;
+    private List<ModelPlace> LIST_PLACE = null;
+    private static final String KEY_ID = "place_id";
+    private static final String KEY_ADDRESS = "address";
+    private static final String KEY_DETAIL = "detail";
+    private static final String KEY_DESCRIPTION = "description";
     private GoogleMap googleMap;
     private TextView btnRequestRide;
     private final String TAG_FROM = "FROM";
     private final String TAG_DESTINATION = "DESTINATION";
-    private AutoCompleteTextView txtFrom, txtDestination;
+    private EditText txtFrom, txtDestination;
     private String add, tagLocation = TAG_FROM;
     private String placeId = "", description = "", strDistance="", strDuration="";
 
@@ -88,6 +96,10 @@ public class FragmentHome extends Fragment implements
     private CameraUpdate cameraUpdate;
     private Polyline driveLine;
     private Activity mActivity;
+
+    private AdapterSuggestion mAdapter;
+private ListView mListView;
+
     public FragmentHome() {
         // Required empty public constructor
     }
@@ -106,8 +118,9 @@ public class FragmentHome extends Fragment implements
         StrictMode.setThreadPolicy(policy);
         mActivity = getActivity();
         btnRequestRide = (TextView) rootView.findViewById(R.id.btnRequestRide);
-        txtFrom = (AutoCompleteTextView) rootView.findViewById(R.id.txtFrom);
-        txtDestination = (AutoCompleteTextView) rootView.findViewById(R.id.txtDestination);
+        txtFrom = (EditText) rootView.findViewById(R.id.txtFrom);
+        txtDestination = (EditText) rootView.findViewById(R.id.txtDestination);
+        mListView = (ListView) rootView.findViewById(R.id.lvSuggestion);
         int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(mActivity);
 
         if (status != ConnectionResult.SUCCESS) {
@@ -136,7 +149,7 @@ public class FragmentHome extends Fragment implements
                 args.putString("destination", txtDestination.getText().toString());
                 args.putString("distance", strDistance);
                 args.putString("duration", strDuration);
-                args.putString("lat",""+posFrom.latitude);
+                args.putString("lat", "" + posFrom.latitude);
                 args.putString("lon", "" + posFrom.longitude);
 
                 Intent intent = new Intent(mActivity, ActivityConfirm.class);
@@ -175,6 +188,7 @@ public class FragmentHome extends Fragment implements
             }
         });
 
+        /*
         mPlaceArrayAdapter = new AdapterAddress(mActivity, android.R.layout.simple_list_item_1);
         txtFrom.setAdapter(mPlaceArrayAdapter);
         txtFrom.setOnItemClickListener(this);
@@ -182,6 +196,28 @@ public class FragmentHome extends Fragment implements
         txtDestination.setAdapter(mPlaceArrayAdapter);
         txtDestination.setOnItemClickListener(this);
         txtDestination.setOnKeyListener(this);
+        */
+
+        txtFrom.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+                if(s.length() >=3)
+                {
+                    new GetSuggestion(s.toString()).execute();
+                }
+            }
+        });
+
 
 
 
@@ -238,18 +274,18 @@ public class FragmentHome extends Fragment implements
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         final ModelPlace item = mPlaceArrayAdapter.getItem(position);
-        description = String.valueOf(item.description);
+        description = String.valueOf(item.getAddress())+String.valueOf(item.getAddressDetail());
 
         if(tagLocation.equals(TAG_FROM)) {
             if (markerFrom != null) {
-                //txtFrom.setText(description);
+                //txtFrom.setText(address);
                 markerFrom.remove();
 
             }
         }
         else if(tagLocation.equals(TAG_DESTINATION)) {
             if (markerDestination != null) {
-                //txtDestination.setText(description);
+                //txtDestination.setText(address);
                 markerDestination.remove();
             }
         }
@@ -283,8 +319,7 @@ public class FragmentHome extends Fragment implements
                 Document doc = PlaceAPI.getRoute(posFrom, posDest, "driving");
 
                 ArrayList<LatLng> directionPoint = PlaceAPI.getDirection(doc);
-                PolylineOptions rectLine = new PolylineOptions().width(5).color(
-                        Color.BLUE);
+                PolylineOptions rectLine = new PolylineOptions().width(10).color(getResources().getColor(R.color.bg_grad_2));
 
                 for (int i = 0; i < directionPoint.size(); i++) {
                     rectLine.add(directionPoint.get(i));
@@ -332,4 +367,79 @@ public class FragmentHome extends Fragment implements
 
         return false;
     }
+
+
+    public class GetSuggestion extends AsyncTask<String, Void, JSONArray> {
+        ProgressDialog pDialog;
+        String address;
+
+        public GetSuggestion(String address){
+            this.address = address;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected JSONArray doInBackground(String... arg) {
+            JSONArray json = null;
+            LIST_PLACE = new ArrayList<ModelPlace>();
+            JSONControl JSONControl = new JSONControl();
+            try {
+                json = JSONControl.listPlace(address);
+            } catch (Exception e) {
+            }
+            if (json != null) {
+                for (int i = 0; i < json.length(); i++) {
+                    String id = "";
+                    String description  ="";
+                    String address = "";
+                    String detail = "";
+                    boolean status = true;
+                    try {
+
+
+                        JSONObject jsonObject = json.getJSONObject(i);
+                        id = jsonObject.getString(KEY_ID);
+                        description = jsonObject.getString(KEY_DESCRIPTION);
+                        String[] descSplit = description.split(",");
+                        address = descSplit[0];
+                        detail = descSplit[1]+","+descSplit[2];
+                        status=true;
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    if (status) {
+                        mPlace = new ModelPlace(id, address, detail);
+                        LIST_PLACE.add(mPlace);
+                    }
+                }
+                    try {
+                    mAdapter = new AdapterSuggestion(getActivity(), LIST_PLACE);
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
+            }
+            else{
+                LIST_PLACE = null;
+            }
+
+            return json;
+        }
+
+        @Override
+        protected void onPostExecute(final JSONArray json) {
+            // TODO Auto-generated method stub
+            super.onPostExecute(json);
+            mListView.setAdapter(mAdapter);
+        }
+    }
+
+
+
+
 }
