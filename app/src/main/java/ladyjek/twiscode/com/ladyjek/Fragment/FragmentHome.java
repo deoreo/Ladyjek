@@ -79,9 +79,6 @@ public class FragmentHome extends Fragment implements
     private final String TAG_FROM = "FROM";
     private final String TAG_DESTINATION = "DESTINATION";
     private AutoCompleteTextView txtFrom, txtDestination;
-    private LinearLayout layoutMarkerFrom, layoutMarkerDestination;
-    private TextView txtLocationFrom, txtLocationDestinton;
-    private ProgressBar progressMapFrom, progressMapDestination;
     private String add, tagLocation = TAG_FROM;
     private String placeId = "", description = "", strDistance="", strDuration="";
 
@@ -125,7 +122,6 @@ public class FragmentHome extends Fragment implements
             String provider = locationManager.getBestProvider(criteria, true);
             Location location = locationManager.getLastKnownLocation(provider);
             if (location != null) {
-
                 onLocationChanged(location);
             }
             mapCenter = googleMap.getCameraPosition().target;
@@ -243,14 +239,17 @@ public class FragmentHome extends Fragment implements
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         final ModelPlace item = mPlaceArrayAdapter.getItem(position);
         description = String.valueOf(item.description);
-        txtLocationFrom.setText(description);
+
         if(tagLocation.equals(TAG_FROM)) {
             if (markerFrom != null) {
+                //txtFrom.setText(description);
                 markerFrom.remove();
+
             }
         }
         else if(tagLocation.equals(TAG_DESTINATION)) {
             if (markerDestination != null) {
+                //txtDestination.setText(description);
                 markerDestination.remove();
             }
         }
@@ -259,42 +258,49 @@ public class FragmentHome extends Fragment implements
 
 
     public void drawNewMarker(String address) {
-        ModelGeocode geocode = PlaceAPI.geocode(address);
-        LatLng locationMarker = new LatLng(geocode.getLat(), geocode.getLon());
-        if(driveLine!=null){driveLine.remove();}
-        if (tagLocation.equals(TAG_FROM)) {
-            posFrom = locationMarker;
-            markerFrom = googleMap.addMarker(
-                    new MarkerOptions()
-                            .position(posFrom)
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
-
-            cameraUpdate = CameraUpdateFactory.newLatLngZoom(locationMarker, 15);
-            googleMap.animateCamera(cameraUpdate);
-        } else if (tagLocation.equals(TAG_DESTINATION)) {
-            posDest = locationMarker;
-            markerDestination = googleMap.addMarker(
-                    new MarkerOptions()
-                            .position(posDest)
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_destination)));
-
-            Document doc = PlaceAPI.getRoute(posFrom, posDest, "driving");
-
-            ArrayList<LatLng> directionPoint = PlaceAPI.getDirection(doc);
-            PolylineOptions rectLine = new PolylineOptions().width(5).color(
-                    Color.BLUE);
-
-            for (int i = 0; i < directionPoint.size(); i++) {
-                rectLine.add(directionPoint.get(i));
+        try {
+            ModelGeocode geocode = PlaceAPI.geocode(address);
+            LatLng locationMarker = new LatLng(geocode.getLat(), geocode.getLon());
+            if (driveLine != null) {
+                driveLine.remove();
             }
-            strDistance = ""+PlaceAPI.getDistanceText(doc);
-            strDuration = ""+PlaceAPI.getDurationText(doc);
-            driveLine = googleMap.addPolyline(rectLine);
+            if (tagLocation.equals(TAG_FROM)) {
+                posFrom = locationMarker;
+                markerFrom = googleMap.addMarker(
+                        new MarkerOptions()
+                                .position(posFrom)
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
+
+                cameraUpdate = CameraUpdateFactory.newLatLngZoom(locationMarker, 15);
+                googleMap.animateCamera(cameraUpdate);
+            } else if (tagLocation.equals(TAG_DESTINATION)) {
+                posDest = locationMarker;
+                markerDestination = googleMap.addMarker(
+                        new MarkerOptions()
+                                .position(posDest)
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_destination)));
+
+                Document doc = PlaceAPI.getRoute(posFrom, posDest, "driving");
+
+                ArrayList<LatLng> directionPoint = PlaceAPI.getDirection(doc);
+                PolylineOptions rectLine = new PolylineOptions().width(5).color(
+                        Color.BLUE);
+
+                for (int i = 0; i < directionPoint.size(); i++) {
+                    rectLine.add(directionPoint.get(i));
+                }
+                strDistance = "" + PlaceAPI.getDistanceText(doc);
+                strDuration = "" + PlaceAPI.getDurationText(doc);
+                driveLine = googleMap.addPolyline(rectLine);
 
 
-            cameraUpdate = CameraUpdateFactory.newLatLngZoom(locationMarker, 13);
-            googleMap.animateCamera(cameraUpdate);
+                cameraUpdate = CameraUpdateFactory.newLatLngZoom(locationMarker, 13);
+                googleMap.animateCamera(cameraUpdate);
+            }
         }
+            catch(Exception e) {
+
+            }
 
     }
 
