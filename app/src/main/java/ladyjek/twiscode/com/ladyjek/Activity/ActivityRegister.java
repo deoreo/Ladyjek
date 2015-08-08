@@ -1,7 +1,12 @@
 package ladyjek.twiscode.com.ladyjek.Activity;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -9,29 +14,79 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.TextView;
+
+import com.google.android.gms.maps.model.LatLng;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
+import ladyjek.twiscode.com.ladyjek.Model.User;
 import ladyjek.twiscode.com.ladyjek.R;
+import ladyjek.twiscode.com.ladyjek.Utilities.Utilities;
 
 public class ActivityRegister extends ActionBarActivity {
 
-    String dtServer;
-    private Toolbar mToolbar;
-    private TextView txtAge;
-    private DatePickerDialog date;
-    private SimpleDateFormat dateFormatter,dateServer;
+    private EditText txtEmail,txtPassword,txtConfirm;
+    private TextView btnRegister;
+    private Activity act;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        //txtAge = (TextView) findViewById(R.id.editAge);
-        //SetActionBar();
-        //SetDate();
+
+        act = this;
+        txtEmail = (EditText) findViewById(R.id.txtEmail);
+        txtPassword = (EditText) findViewById(R.id.txtPassword);
+        txtConfirm = (EditText) findViewById(R.id.txtPassword);
+        btnRegister = (TextView) findViewById(R.id.btnRegister);
+
+        btnRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String email = txtEmail.getText().toString();
+                String password = txtPassword.getText().toString();
+                String confirm = txtConfirm.getText().toString();
+                if (email == null || password == null || email.trim().isEmpty() || password.trim().isEmpty() || confirm == null || confirm.trim().isEmpty()) {
+                    Utilities.showDialog(act, "Warning", "please fill all data!");
+                    txtEmail.setText("");
+                    txtPassword.setText("");
+                    txtConfirm.setText("");
+                } else if (!email.trim().contains("@") ||
+                        !email.trim().contains(".") ||
+                        email.trim().contains(" ")) {
+                    Utilities.showDialog(act, "Warning", "Wrong email format!");
+                    txtEmail.setText("");
+                    txtPassword.setText("");
+                    txtConfirm.setText("");
+                } else if (!confirm.equals(password)) {
+                    Utilities.showDialog(act, "Warning", "Confirmation password not match!");
+                    txtEmail.setText("");
+                    txtPassword.setText("");
+                    txtConfirm.setText("");
+                } else {
+                    ApplicationData.user = new User("1","nama kamu",email,password,"",new LatLng(0,0),new LatLng(0,0));
+                    Intent i = new Intent(getBaseContext(), ActivityHandphone.class);
+                    startActivity(i);
+                    finish();
+                    /*
+                    new DoRegister(act).execute(
+                            email,
+                            password
+                    );
+                    */
+
+                }
+            }
+        });
+
+
+
 
 
 
@@ -62,42 +117,7 @@ public class ActivityRegister extends ActionBarActivity {
         }
 
     }
-/*
-    private void SetActionBar() {
-        mToolbar = (Toolbar) findViewById(R.id.tool_bar);
-        setSupportActionBar(mToolbar);
-        mToolbar.setNavigationIcon(R.drawable.ic_back);
-        getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
 
-    }
 
-    void SetDate(){
-        dateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
-        dateServer = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-        txtAge.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                date.show();
-            }
-        });
-
-        Calendar newCalendar = Calendar.getInstance();
-        newCalendar.set(newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
-        txtAge.setText(dateFormatter.format(newCalendar.getTime()));
-
-        date = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
-
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                Calendar newDate = Calendar.getInstance();
-                newDate.set(year, monthOfYear, dayOfMonth);
-                txtAge.setText(dateFormatter.format(newDate.getTime()));
-                dtServer = dateServer.format(newDate.getTime());
-            }
-
-        },newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
-
-    }
-    */
 
 }

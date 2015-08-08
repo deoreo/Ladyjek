@@ -94,6 +94,10 @@
             android:name=".Activity.ActivityInformasiPribadi"
             android:label="@string/title_activity_personal_info" >
         </activity>
+        <activity
+            android:name=".Activity.ActivityChangeLocation"
+            android:label="@string/title_activity_personal_info" >
+        </activity>
     </application>
 
 </manifest>

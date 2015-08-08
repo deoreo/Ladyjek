@@ -87,16 +87,20 @@
                                     android:layout_height="wrap_content"
                                     android:orientation="vertical">
 
-                                    <TextView
+                                    <EditText
                                         android:id="@+id/txtCountryCode"
                                         android:layout_width="wrap_content"
                                         android:layout_height="50dp"
-                                        android:hint="+62"
-                                        android:paddingTop="14dp"
+                                        android:text="+62"
+                                        android:paddingTop="10dp"
+                                        android:paddingBottom="10dp"
+                                        android:paddingRight="10dp"
+                                        android:paddingLeft="2dp"
+                                        android:background="@null"
                                         android:textColor="@color/white_color"
                                         android:textColorHint="@color/white_color"
                                         android:textStyle="bold"
-                                        android:textSize="18dp"/>
+                                        android:editable="false"/>
 
                                     <View
                                         android:layout_width="match_parent"

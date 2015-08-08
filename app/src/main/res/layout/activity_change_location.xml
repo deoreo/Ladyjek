@@ -76,6 +76,7 @@
                     android:layout_centerVertical="true"
                     android:src="@drawable/ic_back"/>
                 <TextView
+                    android:id="@+id/txtLocation"
                     android:layout_toRightOf="@id/btnBack"
                     android:padding="10dp"
                     android:layout_width="match_parent"
@@ -148,10 +149,5 @@
 
         </RelativeLayout>
     </LinearLayout>
-
-
-
-
-
 
 </RelativeLayout>

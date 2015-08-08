@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.DetectSoftwareKeyboard;
 import ladyjek.twiscode.com.ladyjek.Utilities.Utilities;
@@ -22,8 +23,8 @@ import ladyjek.twiscode.com.ladyjek.Utilities.Utilities;
 public class ActivityHandphone extends Activity {
 
     private Activity act;
-    private TextView txtRegisterHandphone, txtCountryCode;
-    private EditText txtPhoneNumber;
+    private TextView txtRegisterHandphone ;
+    private EditText txtPhoneNumber,txtCountryCode;
     private String countryCode, phNum, strPhoneNumber="";
 
     @Override
@@ -32,7 +33,7 @@ public class ActivityHandphone extends Activity {
         setContentView(R.layout.activity_handphone);
 
         act = this;
-        txtCountryCode = (TextView)findViewById(R.id.txtCountryCode);
+        txtCountryCode = (EditText)findViewById(R.id.txtCountryCode);
         txtRegisterHandphone = (TextView)findViewById(R.id.txtRegisterHandphone);
         txtPhoneNumber = (EditText) findViewById(R.id.txtPhoneNumber);
         countryCode = txtCountryCode.getText().toString();
@@ -42,9 +43,18 @@ public class ActivityHandphone extends Activity {
         txtRegisterHandphone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getBaseContext(), ActivityHandphoneKonfirmasi.class);
-                startActivity(i);
-                finish();
+                String hp = txtPhoneNumber.getText().toString();
+                if (hp == null || hp.trim().isEmpty() || hp.length() <6) {
+                    Utilities.showDialog(act, "Warning", "Minimal 6 Character!");
+                    txtRegisterHandphone.setText("");
+                }
+                else{
+                    ApplicationData.user.hp = hp;
+                    Intent i = new Intent(getBaseContext(), ActivityHandphoneKonfirmasi.class);
+                    startActivity(i);
+                    finish();
+                }
+
             }
         });
 

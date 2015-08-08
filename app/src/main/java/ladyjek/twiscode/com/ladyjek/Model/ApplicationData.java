@@ -12,6 +12,9 @@ import java.util.Stack;
 public class ApplicationData {
 
     public static User user = new User();
+    public static String phone = "2789";
+    public static Boolean editPhone = false;
+    public static Boolean editHome = false;
 
 
 

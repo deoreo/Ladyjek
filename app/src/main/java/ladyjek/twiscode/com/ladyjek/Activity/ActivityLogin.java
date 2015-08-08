@@ -21,6 +21,7 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.DetectSoftwareKeyboard;
 import ladyjek.twiscode.com.ladyjek.Utilities.Utilities;
@@ -101,9 +102,39 @@ public class ActivityLogin extends Activity implements DetectSoftwareKeyboard.Li
                     );
                 }
                 */
+                /*
                 Intent i = new Intent(getBaseContext(), ActivityHandphone.class);
                 startActivity(i);
                 finish();
+                */
+                String email = txtEmail.getText().toString();
+                String password = txtPassword.getText().toString();
+                if (email == null || password == null || email.trim().isEmpty() || password.trim().isEmpty()) {
+                    Utilities.showDialog(act,"Warning", "Email or Password is empty!");
+                    txtEmail.setText("");
+                    txtPassword.setText("");
+                } else if (!email.trim().contains("@") ||
+                        !email.trim().contains(".") ||
+                        email.trim().contains(" ")) {
+                    Utilities.showDialog(act, "Warning", "Wrong email format!");
+                    txtEmail.setText("");
+                    txtPassword.setText("");
+                } else {
+                    if(ApplicationData.user==null){
+                        Utilities.showDialog(act, "Warning", "Please register!");
+                        txtEmail.setText("");
+                        txtPassword.setText("");
+                    }
+                    else{
+                        txtEmail.setText("");
+                        txtPassword.setText("");
+                        new DoLogin(act).execute(
+                                email,
+                                password
+                        );
+                    }
+
+                }
             }
         });
 
@@ -181,10 +212,16 @@ public class ActivityLogin extends Activity implements DetectSoftwareKeyboard.Li
                 String email = params[0];
                 String password = params[1];
 
+                /*
                 //Process login
                 if (email.equals("edo@gmail.com") && password.equals("abcd1234")) {
                     return "OK";
                 }
+                */
+                if (email.equals(ApplicationData.user.email) && password.equals(ApplicationData.user.password)) {
+                    return "OK";
+                }
+
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -202,7 +239,7 @@ public class ActivityLogin extends Activity implements DetectSoftwareKeyboard.Li
                     Utilities.showDialog(activity, "Warning", "Login Failed!");
                     break;
                 case "OK":
-                    Intent i = new Intent(getBaseContext(), ActivityTransport.class);
+                    Intent i = new Intent(getBaseContext(), Main.class);
                     startActivity(i);
                     finish();
                     break;

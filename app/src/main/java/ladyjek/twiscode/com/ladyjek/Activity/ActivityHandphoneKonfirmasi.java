@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.R;
 
 public class ActivityHandphoneKonfirmasi extends Activity {
@@ -27,10 +28,21 @@ public class ActivityHandphoneKonfirmasi extends Activity {
         txtConfirmSmsCode = (TextView)findViewById(R.id.txtConfirmSmsCode);
         txtSmsCode = (EditText) findViewById(R.id.txtSmsCode);
 
+        if(ApplicationData.editPhone){
+            txtConfirmSmsCode.setText(R.string.lanjut);
+        }
+        else {
+            txtConfirmSmsCode.setText(R.string.login);
+        }
+
+        txtSmsCode.setText(ApplicationData.phone);
+
+
+
         txtConfirmSmsCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getBaseContext(), ActivityTransport.class);
+                Intent i = new Intent(getBaseContext(), ActivityLogin.class);
                 startActivity(i);
                 finish();
             }
@@ -54,11 +66,22 @@ public class ActivityHandphoneKonfirmasi extends Activity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
+
         if (id == R.id.action_settings) {
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        if(ApplicationData.editPhone){
+            ApplicationData.editPhone = false;
+        }
+        finish();
+        super.onBackPressed();  // optional depending on your needs
     }
 
 

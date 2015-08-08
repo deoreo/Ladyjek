@@ -103,7 +103,7 @@ public class Main extends ActionBarActivity implements FragmentDrawer.FragmentDr
         //displayView(position);
         //ApplicationData.menu = position;
         //ChangeMain();
-        displayView(position);
+        displayView(position+1);
     }
 
     private void displayView(int position) {
@@ -121,13 +121,13 @@ public class Main extends ActionBarActivity implements FragmentDrawer.FragmentDr
                 break;
         }
 
+        if(position==0){
+            if (fragment != null ) {
 
-        if (fragment != null ) {
-
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.container_body, fragment);
-            fragmentTransaction.commit();
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.container_body, fragment);
+                fragmentTransaction.commit();
 
 
             /*
@@ -138,7 +138,15 @@ public class Main extends ActionBarActivity implements FragmentDrawer.FragmentDr
             // set the toolbar title
             getSupportActionBar().setTitle(title);
             */
+            }
         }
+        else{
+            if(position==1){
+                Intent i = new Intent(getBaseContext(), ActivityInformasiPribadi.class);
+                startActivity(i);
+            }
+        }
+
 
 
     }

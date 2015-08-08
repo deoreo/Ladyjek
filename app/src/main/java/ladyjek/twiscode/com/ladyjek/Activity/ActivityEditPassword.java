@@ -4,15 +4,71 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.R;
+import ladyjek.twiscode.com.ladyjek.Utilities.Utilities;
 
 public class ActivityEditPassword extends Activity {
+
+
+    private Activity act;
+    private ImageView btnBack;
+    private TextView btnSimpan;
+    private EditText oldpass,newpass,confirmpass;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_password);
+
+        act = this;
+
+        btnSimpan = (TextView) findViewById(R.id.btnSimpan);
+
+        oldpass = (EditText) findViewById(R.id.txtSandiLama);
+        newpass = (EditText) findViewById(R.id.txtSandiBaru);
+        confirmpass = (EditText) findViewById(R.id.txtKonfirmasiSandi);
+
+        btnBack = (ImageView) findViewById(R.id.btnBack);
+
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
+        btnSimpan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String opass = oldpass.getText().toString();
+                String npass = newpass.getText().toString();
+                String cpass = confirmpass.getText().toString();
+                if (opass == null || npass == null || cpass == null || opass.trim().isEmpty() || cpass.trim().isEmpty() || npass.trim().isEmpty()) {
+                    Utilities.showDialog(act, "Warning", "Please fill all data!");
+
+                } else if (!npass.equals(cpass)) {
+                    Utilities.showDialog(act, "Warning", "Confirm password not match");
+                } else {
+                    if(opass.equals(ApplicationData.user.password)){
+                        ApplicationData.user.password = npass;
+                        finish();
+                    }
+                    else {
+                        Utilities.showDialog(act, "Warning", "Wrong old password");
+                    }
+
+
+                }
+            }
+        });
+
+
 
 
     }
@@ -37,6 +93,13 @@ public class ActivityEditPassword extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        finish();
+        super.onBackPressed();  // optional depending on your needs
     }
 
 

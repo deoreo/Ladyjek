@@ -71,7 +71,8 @@
                     android:background="@null"
                     android:textStyle="bold"
                     android:textColorHint="#111111"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:enabled="false"/>
                     <ImageView
                         android:id="@+id/editNama"
                         android:layout_width="wrap_content"
@@ -99,7 +100,8 @@
                     android:selectAllOnFocus="true"
                     android:background="@null"
                     android:textColorHint="#111111"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:enabled="false"/>
                 <ImageView
                     android:id="@+id/editEmail"
                     android:layout_width="wrap_content"
@@ -142,7 +144,8 @@
                     android:background="@null"
                     android:textColorHint="#111111"
                     android:textSize="16sp"
-                    android:inputType="textPassword"/>
+                    android:inputType="textPassword"
+                    android:enabled="false"/>
                 <ImageView
                     android:id="@+id/editPassword"
                     android:layout_width="wrap_content"
@@ -185,7 +188,8 @@
                     android:background="@null"
                     android:textColorHint="#111111"
                     android:textSize="16sp"
-                    android:inputType="number"/>
+                    android:inputType="number"
+                    android:enabled="false"/>
                 <ImageView
                     android:id="@+id/editPhone"
                     android:layout_width="wrap_content"
@@ -260,7 +264,7 @@
                             </LinearLayout>
 
                             <TextView
-                                android:id="@+id/txtFromAddress"
+                                android:id="@+id/txtRumah"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:textSize="14dp"
@@ -314,7 +318,7 @@
                             </LinearLayout>
 
                             <TextView
-                                android:id="@+id/txtDestinationAddress"
+                                android:id="@+id/txtKantor"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:textSize="14dp"
@@ -336,7 +340,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true">
                         <TextView
-                            android:id="@+id/btnPesan"
+                            android:id="@+id/btnSimpan"
                             android:layout_marginTop="5dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -350,7 +354,7 @@
                             android:layout_width="34dp"
                             android:layout_height="38dp"
                             android:src="@drawable/right_arrow_white"
-                            android:layout_toRightOf="@id/btnPesan"
+                            android:layout_toRightOf="@id/btnSimpan"
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="10dp"
                             android:layout_marginTop="-8dp"/>
