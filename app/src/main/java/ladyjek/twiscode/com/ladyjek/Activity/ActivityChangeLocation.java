@@ -40,5 +40,5 @@ public class ActivityChangeLocation extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    
+
 }
