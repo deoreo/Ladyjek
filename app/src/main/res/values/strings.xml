@@ -20,6 +20,8 @@
     <string name="title_activity_activity_transport">Masukan lokasi awal dan akhir</string>
     <string name="title_activity_change_location_rumah">Masukan lokasi rumah</string>
     <string name="title_activity_change_location_kantor">Masukan lokasi kantor</string>
+    <string name="title_activity_personal_info">Informasi pribadi</string>
+    <string name="title_activity_edit_password">Edit password</string>
 
     <string name="lbl_register">Baru disini?</string>
     <string name="lbl_register2">Great Job!</string>

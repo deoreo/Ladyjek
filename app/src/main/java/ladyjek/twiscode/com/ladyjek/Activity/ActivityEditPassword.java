@@ -1,19 +1,18 @@
 package ladyjek.twiscode.com.ladyjek.Activity;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import ladyjek.twiscode.com.ladyjek.R;
 
-public class ActivityChangeLocation extends Activity {
+public class ActivityEditPassword extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_change_location);
+        setContentView(R.layout.activity_edit_password);
 
 
     }
