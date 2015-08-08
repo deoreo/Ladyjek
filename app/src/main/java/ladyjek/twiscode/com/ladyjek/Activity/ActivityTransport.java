@@ -1,8 +1,6 @@
 package ladyjek.twiscode.com.ladyjek.Activity;
 
-import android.app.Activity;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.location.Address;
@@ -11,21 +9,21 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import ladyjek.twiscode.com.ladyjek.Adapter.AdapterAddress;
 import ladyjek.twiscode.com.ladyjek.Model.ModelGeocode;
@@ -36,14 +34,7 @@ import ladyjek.twiscode.com.ladyjek.Utilities.PlaceAPI;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.data.DataHolder;
-import com.google.android.gms.location.places.GeoDataApi;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.PlaceBuffer;
-import com.google.android.gms.location.places.Places;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -51,18 +42,26 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import android.widget.AdapterView.OnItemClickListener;
 
+import org.w3c.dom.Document;
+
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+
 public class ActivityTransport extends ActionBarActivity implements
-        LocationListener, OnItemClickListener {
+        LocationListener, OnItemClickListener, View.OnKeyListener {
     private ActivityTransport activityTransport;
     private Toolbar mToolbar;
     private GoogleMap googleMap;
@@ -74,11 +73,13 @@ public class ActivityTransport extends ActionBarActivity implements
     private TextView txtLocationFrom, txtLocationDestinton;
     private ProgressBar progressMapFrom, progressMapDestination;
     private String add, tagLocation = TAG_FROM;
-    private String placeId = "", description = "";
+    private String placeId = "", description = "", strDistance="", strDuration="";
 
-    private LatLng mapCenter;
+    private LatLng mapCenter, posFrom, posDest;
     private AdapterAddress mPlaceArrayAdapter;
     private Marker markerFrom, markerDestination;
+    private CameraUpdate cameraUpdate;
+    private Polyline driveLine;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,7 +109,7 @@ public class ActivityTransport extends ActionBarActivity implements
         } else {
             SupportMapFragment fm = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapView);
             googleMap = fm.getMap();
-            googleMap.setMyLocationEnabled(true);
+            //googleMap.setMyLocationEnabled(true);
             LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
             Criteria criteria = new Criteria();
             String provider = locationManager.getBestProvider(criteria, true);
@@ -117,10 +118,10 @@ public class ActivityTransport extends ActionBarActivity implements
 
                 onLocationChanged(location);
             }
-            locationManager.requestLocationUpdates(provider, 20000, 0, this);
+            //locationManager.requestLocationUpdates(provider, 20000, 0, this);
 
             mapCenter = googleMap.getCameraPosition().target;
-            //addMarker(getAddress(mapCenter));
+            //drawNewMarker(getAddress(mapCenter));
 
 
             googleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
@@ -141,59 +142,59 @@ public class ActivityTransport extends ActionBarActivity implements
         btnRequestRide.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getBaseContext(), ActivityConfirm.class);
-                startActivity(i);
+                Bundle args = new Bundle();
+                args.putString("from", txtFrom.getText().toString());
+                args.putString("destination", txtDestination.getText().toString());
+                args.putString("distance", strDistance);
+                args.putString("duration", strDuration);
+                args.putString("lat",""+posFrom.latitude);
+                args.putString("lon",""+posFrom.longitude);
+
+                Intent intent = new Intent(getBaseContext(), ActivityConfirm.class);
+                intent.putExtras(args);
+                startActivity(intent);
+                finish();
             }
         });
 
-        btnLocationFrom.setOnClickListener(new View.OnClickListener() {
+
+        txtFrom.setOnTouchListener(new View.OnTouchListener() {
+
             @Override
-            public void onClick(View v) {
-                txtFrom.setText(add);
-                googleMap.addMarker(new MarkerOptions()
-                        .position(mapCenter)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.blue_marker)));
+            public boolean onTouch(View v, MotionEvent event) {
+                // TODO Auto-generated method stub
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    //do stuff here
+                    tagLocation = TAG_FROM;
+                    Log.d("ActivityTransport", tagLocation);
+                }
+                return false;
             }
         });
-        btnLocationDestination.setOnClickListener(new View.OnClickListener() {
+
+        txtDestination.setOnTouchListener(new View.OnTouchListener() {
+
             @Override
-            public void onClick(View v) {
-                txtDestination.setText(add);
-                googleMap.addMarker(new MarkerOptions()
-                        .position(mapCenter)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.red_marker)));
+            public boolean onTouch(View v, MotionEvent event) {
+                // TODO Auto-generated method stub
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    //do stuff here
+                    tagLocation = TAG_DESTINATION;
+                    Log.d("ActivityTransport", tagLocation);
+                }
+
+
+                return false;
             }
         });
-
-
-        txtFrom.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // layoutMarkerFrom.setVisibility(View.VISIBLE);
-                //layoutMarkerDestination.setVisibility(View.GONE);
-                tagLocation = TAG_FROM;
-
-            }
-        });
-
-        txtDestination.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // layoutMarkerFrom.setVisibility(View.GONE);
-                //layoutMarkerDestination.setVisibility(View.VISIBLE);
-                tagLocation = TAG_DESTINATION;
-
-
-            }
-        });
-
 
         mPlaceArrayAdapter = new AdapterAddress(this, android.R.layout.simple_list_item_1);
         txtFrom.setAdapter(mPlaceArrayAdapter);
         txtFrom.setOnItemClickListener(this);
-
+        txtFrom.setOnKeyListener(this);
         txtDestination.setAdapter(mPlaceArrayAdapter);
         txtDestination.setOnItemClickListener(this);
+        txtDestination.setOnKeyListener(this);
     }
 
 
@@ -203,18 +204,20 @@ public class ActivityTransport extends ActionBarActivity implements
         googleMap.clear();
         double latitude = location.getLatitude();
         double longitude = location.getLongitude();
-        LatLng latLng = new LatLng(latitude, longitude);
-        addMarker(getAddress(latLng));
-
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        LatLng currentPosition = new LatLng(latitude, longitude);
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(currentPosition));
         googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
         CircleOptions circleOptions = new CircleOptions()
-                .center(latLng)
+                .center(currentPosition)
                 .radius(500)
                 .strokeWidth(2)
                 .strokeColor(Color.BLUE)
                 .fillColor(Color.parseColor("#500084d3"));
-        googleMap.addCircle(circleOptions);
+        //googleMap.addCircle(circleOptions);
+        drawNewMarker(getAddress(currentPosition));
+
+        cameraUpdate = CameraUpdateFactory.newLatLngZoom(currentPosition, 15);
+        googleMap.animateCamera(cameraUpdate);
 
     }
 
@@ -260,23 +263,46 @@ public class ActivityTransport extends ActionBarActivity implements
                 markerDestination.remove();
             }
         }
-        addMarker(description);
+        drawNewMarker(description);
 
     }
 
-    public void addMarker(String address) {
+    public void drawNewMarker(String address) {
         ModelGeocode geocode = PlaceAPI.geocode(address);
         LatLng locationMarker = new LatLng(geocode.getLat(), geocode.getLon());
+        if(driveLine!=null){driveLine.remove();}
         if (tagLocation.equals(TAG_FROM)) {
+            posFrom = locationMarker;
             markerFrom = googleMap.addMarker(
                     new MarkerOptions()
-                            .position(locationMarker)
+                            .position(posFrom)
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
+
+            cameraUpdate = CameraUpdateFactory.newLatLngZoom(locationMarker, 15);
+            googleMap.animateCamera(cameraUpdate);
         } else if (tagLocation.equals(TAG_DESTINATION)) {
+            posDest = locationMarker;
             markerDestination = googleMap.addMarker(
                     new MarkerOptions()
-                            .position(locationMarker)
+                            .position(posDest)
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_destination)));
+
+            Document doc = PlaceAPI.getRoute(posFrom, posDest, "driving");
+
+            ArrayList<LatLng> directionPoint = PlaceAPI.getDirection(doc);
+            PolylineOptions rectLine = new PolylineOptions().width(5).color(
+                    Color.BLUE);
+
+            for (int i = 0; i < directionPoint.size(); i++) {
+                rectLine.add(directionPoint.get(i));
+            }
+            strDistance = ""+PlaceAPI.getDistanceText(doc);
+            strDuration = ""+PlaceAPI.getDurationText(doc);
+            driveLine = googleMap.addPolyline(rectLine);
+
+
+            cameraUpdate = CameraUpdateFactory.newLatLngZoom(locationMarker, 13);
+            googleMap.animateCamera(cameraUpdate);
         }
 
     }
@@ -298,4 +324,15 @@ public class ActivityTransport extends ActionBarActivity implements
         return addressLine;
     }
 
+    @Override
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+        if (keyCode == EditorInfo.IME_ACTION_SEARCH ||
+                keyCode == EditorInfo.IME_ACTION_DONE ||
+                event.getAction() == KeyEvent.ACTION_DOWN &&
+                        event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+            driveLine.remove();
+        }
+
+        return false;
+    }
 }

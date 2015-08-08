@@ -77,10 +77,13 @@
                             android:textSize="16dp"
                             android:textStyle="bold"
                             android:textColor="@color/black_color"
+                            android:singleLine="true"
+                            android:maxLines="1"
+                            android:ellipsize="end"
                             android:text="Current Location"
                             />
                         <TextView
-                            android:id="@+id/txtFromAddress"
+                            android:id="@+id/txtDetailFrom"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textSize="14dp"
@@ -110,16 +113,19 @@
                         android:layout_marginLeft="10dp"
                         >
                         <TextView
-                            android:id="@+id/txtdestination"
+                            android:id="@+id/txtDestination"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textSize="16dp"
                             android:textStyle="bold"
                             android:textColor="@color/black_color"
+                            android:singleLine="true"
+                            android:maxLines="1"
+                            android:ellipsize="end"
                             android:text="Destination Location"
                             />
                         <TextView
-                            android:id="@+id/txtDestinationAddress"
+                            android:id="@+id/txtDetailDestination"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textSize="14dp"
@@ -189,7 +195,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
                         <TextView
-                            android:id="@+id/txtTime"
+                            android:id="@+id/txtDuration"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="@color/black_color"

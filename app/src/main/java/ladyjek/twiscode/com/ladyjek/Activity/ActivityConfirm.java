@@ -1,6 +1,5 @@
 package ladyjek.twiscode.com.ladyjek.Activity;
 
-import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -10,14 +9,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.Spinner;
 import android.widget.TextView;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
 
 import ladyjek.twiscode.com.ladyjek.R;
 
@@ -27,7 +20,10 @@ public class ActivityConfirm extends ActionBarActivity {
     private Toolbar mToolbar;
     Spinner pay;
     ArrayAdapter<CharSequence> adapterPay;
-    TextView btnConfirm;
+    private TextView txtConfirm, txtFrom, txtDestination, txtDistance, txtDuration, txtTotal;
+    private String strFrom = "", strDest = "", strDistance = "", strDuration = "", strLat = "", strLon = "";
+    private int totalPrice = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,17 +32,48 @@ public class ActivityConfirm extends ActionBarActivity {
 
         //SetActionBar();
         SetPaySpinner();
+        try {
+            Bundle b = getIntent().getExtras();
+            strFrom = b.getString("from");
+            strDest = b.getString("destination");
+            strDistance = b.getString("distance");
+            strDuration = b.getString("duration");
+            strLat = b.getString("lat");
+            strLon = b.getString("lon");
 
-        btnConfirm = (TextView) findViewById(R.id.btnConfirm);
-        btnConfirm.setOnClickListener(new View.OnClickListener() {
+            String[] strDist = strDistance.split(" ");
+            float intDist = Float.parseFloat(strDist[0]);
+            totalPrice = 4000 * Math.round(intDist);
+        } catch (Exception e) {
+
+        }
+
+        txtConfirm = (TextView) findViewById(R.id.btnConfirm);
+        txtFrom = (TextView) findViewById(R.id.txtFrom);
+        txtDestination = (TextView) findViewById(R.id.txtDestination);
+        txtDistance = (TextView) findViewById(R.id.txtDistance);
+        txtDuration = (TextView) findViewById(R.id.txtDuration);
+        txtTotal = (TextView) findViewById(R.id.txtTotal);
+
+        txtConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Bundle args = new Bundle();
+                args.putString("lat",""+strLat);
+                args.putString("lon",""+strLon);
                 Intent i = new Intent(getBaseContext(), ActivityPickUp.class);
+                i.addCategory(Intent.CATEGORY_HOME);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(i);
                 finish();
             }
         });
 
+        txtFrom.setText(strFrom);
+        txtDestination.setText(strDest);
+        txtDistance.setText(strDistance);
+        txtDuration.setText(strDuration);
+        txtTotal.setText("Rp " + totalPrice);
 
     }
 
@@ -84,8 +111,8 @@ public class ActivityConfirm extends ActionBarActivity {
 
     }
 
-    private void SetPaySpinner(){
-        pay = (Spinner)findViewById(R.id.txtPay);
+    private void SetPaySpinner() {
+        pay = (Spinner) findViewById(R.id.txtPay);
         adapterPay = ArrayAdapter.createFromResource(this, R.array.payList, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
         adapterPay.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -110,10 +137,11 @@ public class ActivityConfirm extends ActionBarActivity {
         });
     }
 
+    @Override
+    public void onBackPressed() {
 
-
-
-
+        finish();
+    }
 
 
 }
