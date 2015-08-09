@@ -59,7 +59,6 @@ public class JSONResponse {
             }
             _inputStream.close();
             _json = sb.toString();
-            Log.e("JSON", _json);
         } catch (Exception e) {
             Log.e("Buffer Error", "Error converting result " + e.toString());
         }

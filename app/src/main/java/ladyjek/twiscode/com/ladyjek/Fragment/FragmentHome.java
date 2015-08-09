@@ -3,10 +3,12 @@ package ladyjek.twiscode.com.ladyjek.Fragment;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,22 +25,27 @@ import android.location.LocationManager;
 import android.os.StrictMode;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.MotionEvent;
-import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityConfirm;
+import ladyjek.twiscode.com.ladyjek.Activity.Main;
 import ladyjek.twiscode.com.ladyjek.Adapter.AdapterAddress;
 import ladyjek.twiscode.com.ladyjek.Adapter.AdapterSuggestion;
 import ladyjek.twiscode.com.ladyjek.Control.JSONControl;
+import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.Model.ModelGeocode;
 import ladyjek.twiscode.com.ladyjek.Model.ModelPlace;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.PlaceAPI;
+import ladyjek.twiscode.com.ladyjek.Utilities.Utilities;
 
 
 import com.google.android.gms.common.ConnectionResult;
@@ -63,27 +70,27 @@ import org.json.JSONObject;
 import org.w3c.dom.Document;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 /**
  * Created by Unity on 18/05/2015.
  */
 public class FragmentHome extends Fragment implements
-        LocationListener, OnItemClickListener, View.OnKeyListener {
+        LocationListener {
 
     private Toolbar mToolbar;
-    ModelPlace mPlace;
+    ModelPlace mPlace, selectedPlaceFrom, selectedPlaceDestination;
     private List<ModelPlace> LIST_PLACE = null;
     private static final String KEY_ID = "place_id";
     private static final String KEY_ADDRESS = "address";
     private static final String KEY_DETAIL = "detail";
     private static final String KEY_DESCRIPTION = "description";
     private GoogleMap googleMap;
-    private TextView btnRequestRide;
+    private TextView btnRequestRide, txtAddressCurrent;
     private final String TAG_FROM = "FROM";
     private final String TAG_DESTINATION = "DESTINATION";
     private EditText txtFrom, txtDestination;
@@ -96,8 +103,12 @@ public class FragmentHome extends Fragment implements
     private CameraUpdate cameraUpdate;
     private Polyline driveLine;
     private Activity mActivity;
-
+    private ProgressBar pSuggestion;
     private AdapterSuggestion mAdapter;
+    private RelativeLayout layoutSuggestion;
+    private FrameLayout itemCurrent;
+
+
 private ListView mListView;
 
     public FragmentHome() {
@@ -121,7 +132,11 @@ private ListView mListView;
         txtFrom = (EditText) rootView.findViewById(R.id.txtFrom);
         txtDestination = (EditText) rootView.findViewById(R.id.txtDestination);
         mListView = (ListView) rootView.findViewById(R.id.lvSuggestion);
+        pSuggestion = (ProgressBar) rootView.findViewById(R.id.progressSuggestion);
+        layoutSuggestion = (RelativeLayout) rootView.findViewById(R.id.layoutSuggestion);
+        itemCurrent = (FrameLayout) rootView.findViewById(R.id.itemCurrent);
         int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(mActivity);
+        txtAddressCurrent = (TextView) rootView.findViewById(R.id.txtAddressCurrent);
 
         if (status != ConnectionResult.SUCCESS) {
             int requestCode = 10;
@@ -166,6 +181,17 @@ private ListView mListView;
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     //do stuff here
                     tagLocation = TAG_FROM;
+                    if(posFrom!=null){
+                        layoutSuggestion.setVisibility(VISIBLE);
+                        itemCurrent.setVisibility(VISIBLE);
+                        mListView.setVisibility(GONE);
+                        pSuggestion.setVisibility(GONE);
+                        txtAddressCurrent.setText(getAddress(posFrom));
+                    }
+                    else{
+                        itemCurrent.setVisibility(GONE);
+                        mListView.setVisibility(VISIBLE);
+                    }
                     Log.d("ActivityTransport", tagLocation);
                 }
                 return false;
@@ -180,6 +206,16 @@ private ListView mListView;
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     //do stuff here
                     tagLocation = TAG_DESTINATION;
+                    if (posDest != null) {
+                        layoutSuggestion.setVisibility(VISIBLE);
+                        itemCurrent.setVisibility(VISIBLE);
+                        mListView.setVisibility(GONE);
+                        pSuggestion.setVisibility(GONE);
+                        txtAddressCurrent.setText(getAddress(posDest));
+                    } else {
+                        itemCurrent.setVisibility(GONE);
+                        mListView.setVisibility(VISIBLE);
+                    }
                     Log.d("ActivityTransport", tagLocation);
                 }
 
@@ -213,13 +249,49 @@ private ListView mListView;
                                       int before, int count) {
                 if(s.length() >=3)
                 {
-                    new GetSuggestion(s.toString()).execute();
+                    new GetSuggestion(s.toString(), tagLocation).execute();
+                }
+            }
+        });
+        txtDestination.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+                if(s.length() >=3)
+                {
+                    new GetSuggestion(s.toString(), tagLocation).execute();
                 }
             }
         });
 
+        itemCurrent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+                if(txtFrom.getText().toString().isEmpty() || txtDestination.getText().toString().isEmpty()) {
+                    if (tagLocation.equals(TAG_FROM)) {
+                        txtFrom.setText(txtAddressCurrent.getText().toString());
+                        hideKeyboard();
+                    }
+                    if (tagLocation.equals(TAG_DESTINATION)) {
+                        txtDestination.setText(txtAddressCurrent.getText().toString());
+                        hideKeyboard();
+                    }
+                }
 
+                layoutSuggestion.setVisibility(GONE);
+
+            }
+        });
 
         // Inflate the layout for this fragment
         return rootView;
@@ -271,28 +343,6 @@ private ListView mListView;
         super.onDetach();
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        final ModelPlace item = mPlaceArrayAdapter.getItem(position);
-        description = String.valueOf(item.getAddress())+String.valueOf(item.getAddressDetail());
-
-        if(tagLocation.equals(TAG_FROM)) {
-            if (markerFrom != null) {
-                //txtFrom.setText(address);
-                markerFrom.remove();
-
-            }
-        }
-        else if(tagLocation.equals(TAG_DESTINATION)) {
-            if (markerDestination != null) {
-                //txtDestination.setText(address);
-                markerDestination.remove();
-            }
-        }
-        drawNewMarker(description);
-    }
-
-
     public void drawNewMarker(String address) {
         try {
             ModelGeocode geocode = PlaceAPI.geocode(address);
@@ -315,23 +365,21 @@ private ListView mListView;
                         new MarkerOptions()
                                 .position(posDest)
                                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_destination)));
-
-                Document doc = PlaceAPI.getRoute(posFrom, posDest, "driving");
-
-                ArrayList<LatLng> directionPoint = PlaceAPI.getDirection(doc);
-                PolylineOptions rectLine = new PolylineOptions().width(10).color(getResources().getColor(R.color.bg_grad_2));
-
-                for (int i = 0; i < directionPoint.size(); i++) {
-                    rectLine.add(directionPoint.get(i));
-                }
-                strDistance = "" + PlaceAPI.getDistanceText(doc);
-                strDuration = "" + PlaceAPI.getDurationText(doc);
-                driveLine = googleMap.addPolyline(rectLine);
-
-
                 cameraUpdate = CameraUpdateFactory.newLatLngZoom(locationMarker, 13);
                 googleMap.animateCamera(cameraUpdate);
             }
+            Document doc = PlaceAPI.getRoute(posFrom, posDest, "driving");
+
+            ArrayList<LatLng> directionPoint = PlaceAPI.getDirection(doc);
+            PolylineOptions rectLine = new PolylineOptions().width(15).color(getResources().getColor(R.color.bg_grad_2));
+
+            for (int i = 0; i < directionPoint.size(); i++) {
+                rectLine.add(directionPoint.get(i));
+            }
+            strDistance = "" + PlaceAPI.getDistanceText(doc);
+            strDuration = "" + PlaceAPI.getDurationText(doc);
+            driveLine = googleMap.addPolyline(rectLine);
+
         }
             catch(Exception e) {
 
@@ -351,35 +399,33 @@ private ListView mListView;
 
         } catch (IOException e) {
         } catch (Exception e) {
-            Log.w("ActivityTransport", "Canont get Address!");
         }
         return addressLine;
     }
 
-    @Override
-    public boolean onKey(View v, int keyCode, KeyEvent event) {
-        if (keyCode == EditorInfo.IME_ACTION_SEARCH ||
-                keyCode == EditorInfo.IME_ACTION_DONE ||
-                event.getAction() == KeyEvent.ACTION_DOWN &&
-                        event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
-            driveLine.remove();
+    public void hideKeyboard(){
+        View view = mActivity.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
-
-        return false;
     }
 
-
     public class GetSuggestion extends AsyncTask<String, Void, JSONArray> {
-        ProgressDialog pDialog;
-        String address;
+        String address,tag;
 
-        public GetSuggestion(String address){
+        public GetSuggestion(String address, String tag){
             this.address = address;
+            this.tag = tag;
         }
 
         @Override
         protected void onPreExecute() {
-            super.onPreExecute();
+            layoutSuggestion.setVisibility(VISIBLE);
+            pSuggestion.setVisibility(VISIBLE);
+            itemCurrent.setVisibility(GONE);
+            mListView.setVisibility(VISIBLE);
+            mListView.setAdapter(null);
         }
 
         @Override
@@ -394,8 +440,8 @@ private ListView mListView;
             if (json != null) {
                 for (int i = 0; i < json.length(); i++) {
                     String id = "";
-                    String description  ="";
-                    String address = "";
+                     description  ="";
+                     address = "";
                     String detail = "";
                     boolean status = true;
                     try {
@@ -435,8 +481,100 @@ private ListView mListView;
         protected void onPostExecute(final JSONArray json) {
             // TODO Auto-generated method stub
             super.onPostExecute(json);
+            pSuggestion.setVisibility(GONE);
             mListView.setAdapter(mAdapter);
+            mListView.setOnItemClickListener(new OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    try {
+                        ModelPlace selectedPlace = LIST_PLACE.get(position);
+                        if(tag.equals(TAG_FROM)) {
+                            txtFrom.setText(selectedPlace.getAddress());
+                            if (markerFrom != null) {
+                                markerFrom.remove();
+                            }
+                        }
+                        else if(tag.equals(TAG_DESTINATION)) {
+                            txtDestination.setText(selectedPlace.getAddress());
+                            if (markerDestination != null) {
+                                markerDestination.remove();
+                            }
+
+                        }
+                        layoutSuggestion.setVisibility(GONE);
+                        hideKeyboard();
+                        drawNewMarker(selectedPlace.getAddress());
+                    }
+                    catch (Exception e){
+
+                    }
+                }
+            });
+
         }
+    }
+
+    private class DoLogin extends AsyncTask<String, Void, String> {
+        private Activity activity;
+        private Context context;
+        private Resources resources;
+        private ProgressDialog progressDialog;
+
+        private String tempString;
+
+        public DoLogin(Activity activity) {
+            super();
+            this.activity = activity;
+            this.context = activity.getApplicationContext();
+            this.resources = activity.getResources();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = new ProgressDialog(activity);
+            progressDialog.setMessage("Searching your location. . .");
+            progressDialog.setIndeterminate(false);
+            progressDialog.setCancelable(false);
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressDialog.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+
+                String email = params[0];
+                String password = params[1];
+
+                if (email.equals(ApplicationData.user.email) && password.equals(ApplicationData.user.password)) {
+                    return "OK";
+                }
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return "FAIL";
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            switch (result) {
+                case "FAIL":
+                    Utilities.showDialog(activity, "Warning", "Can not find location!");
+                    break;
+                case "OK":
+                    break;
+            }
+
+            progressDialog.dismiss();
+        }
+
+
     }
 
 

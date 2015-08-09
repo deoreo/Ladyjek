@@ -82,31 +82,7 @@ public class ActivityLogin extends Activity implements DetectSoftwareKeyboard.Li
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*
-                String email = txtEmail.getText().toString();
-                String password = txtPassword.getText().toString();
-                if (email == null || password == null || email.trim().isEmpty() || password.trim().isEmpty()) {
-                    Utilities.showDialog(act,"Warning", "Email or Password is empty!");
-                    txtEmail.setText("");
-                    txtPassword.setText("");
-                } else if (!email.trim().contains("@") ||
-                        !email.trim().contains(".") ||
-                        email.trim().contains(" ")) {
-                    Utilities.showDialog(act, "Warning", "Wrong email format!");
-                    txtEmail.setText("");
-                    txtPassword.setText("");
-                } else {
-                    new DoLogin(act).execute(
-                            email,
-                            password
-                    );
-                }
-                */
-                /*
-                Intent i = new Intent(getBaseContext(), ActivityHandphone.class);
-                startActivity(i);
-                finish();
-                */
+
                 String email = txtEmail.getText().toString();
                 String password = txtPassword.getText().toString();
                 if (email == null || password == null || email.trim().isEmpty() || password.trim().isEmpty()) {
@@ -205,8 +181,6 @@ public class ActivityLogin extends Activity implements DetectSoftwareKeyboard.Li
 
         @Override
         protected String doInBackground(String... params) {
-            // Generates Basic Authorization Basic Header
-
             try {
 
                 String email = params[0];
@@ -246,5 +220,6 @@ public class ActivityLogin extends Activity implements DetectSoftwareKeyboard.Li
 
 
     }
+
 }
 

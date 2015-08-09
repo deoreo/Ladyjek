@@ -18,8 +18,8 @@ public class ActivityConfirm extends ActionBarActivity {
 
 
     private Toolbar mToolbar;
-    Spinner pay;
-    ArrayAdapter<CharSequence> adapterPay;
+    private Spinner pay;
+    private ArrayAdapter<CharSequence> adapterPay;
     private TextView txtConfirm, txtFrom, txtDestination, txtDistance, txtDuration, txtTotal;
     private String strFrom = "", strDest = "", strDistance = "", strDuration = "", strLat = "", strLon = "";
     private int totalPrice = 0;

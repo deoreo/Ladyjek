@@ -1,6 +1,5 @@
 package ladyjek.twiscode.com.ladyjek.Control;
 
-import android.app.Activity;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -11,7 +10,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
 import java.net.URLEncoder;
 
-import ladyjek.twiscode.com.ladyjek.Utilities.ClassConfiguration;
+import ladyjek.twiscode.com.ladyjek.Utilities.Config;
 
 public class JSONControl {
     private JSONResponse _JSONResponse;
@@ -25,7 +24,7 @@ public class JSONControl {
         JSONArray json = null;
         JSONObject jsonObj = null;
         try {
-            String url = ClassConfiguration.URL_SUGGESTION +
+            String url = Config.URL_SUGGESTION +
                             URLEncoder.encode(addressInput, "utf8");
             Log.d("url", url);
 

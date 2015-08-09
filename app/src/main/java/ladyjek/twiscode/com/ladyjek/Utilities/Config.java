@@ -1,6 +1,6 @@
 package ladyjek.twiscode.com.ladyjek.Utilities;
 
-public class ClassConfiguration {
+public class Config {
     public static final String PLACES_API_BASE = "https://maps.googleapis.com/maps/api/place";
     public static final String GEOCODE_API_BASE = "https://maps.googleapis.com/maps/api/geocode";
     public static final String TYPE_AUTOCOMPLETE = "/autocomplete";

@@ -66,21 +66,14 @@ public class AdapterSuggestion extends BaseAdapter {
             holder.txtDetail = (TextView) convertView.findViewById(R.id.txtDetail);
             convertView.setTag(position);
 
-            ModelPlace article = mSourceData.get(position);
-            final String ID = article.getPlaceId();
-            final String ADDRESS = article.getAddress();
-            final String DETAIL = article.getAddressDetail();
+            ModelPlace modelPlace = mSourceData.get(position);
+            final String ADDRESS = modelPlace.getAddress();
+            final String DETAIL = modelPlace.getAddressDetail();
 
 
             holder.txtAddress.setText(ADDRESS);
             holder.txtDetail.setText(DETAIL);
 
-            convertView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                }
-            });
 
         }
         return convertView;
