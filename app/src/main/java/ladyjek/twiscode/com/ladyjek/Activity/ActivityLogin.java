@@ -5,30 +5,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewTreeObserver;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.app.ProgressDialog;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.R;
-import ladyjek.twiscode.com.ladyjek.Utilities.DetectSoftwareKeyboard;
-import ladyjek.twiscode.com.ladyjek.Utilities.Utilities;
+import ladyjek.twiscode.com.ladyjek.Utilities.KeyboardManager;
+import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
 
-public class ActivityLogin extends Activity implements DetectSoftwareKeyboard.Listener {
+public class ActivityLogin extends Activity implements KeyboardManager.Listener {
 
-    private Activity act;
+    private Activity mActivity;
     private TextView btnRegister, btnLogin;
     private EditText txtEmail, txtPassword;
     private RelativeLayout wrapperLogin, wrapperRegister;
@@ -38,7 +31,7 @@ public class ActivityLogin extends Activity implements DetectSoftwareKeyboard.Li
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        act = this;
+        mActivity = this;
         btnRegister = (TextView) findViewById(R.id.btnRegister);
         btnLogin = (TextView) findViewById(R.id.btnLogin);
         txtEmail = (EditText) findViewById(R.id.txtEmail);
@@ -47,7 +40,7 @@ public class ActivityLogin extends Activity implements DetectSoftwareKeyboard.Li
         wrapperRegister = (RelativeLayout) findViewById(R.id.wrapperRegister);
 
 
-        DetectSoftwareKeyboard mainLayout = (DetectSoftwareKeyboard) findViewById(R.id.layoutLogin);
+        KeyboardManager mainLayout = (KeyboardManager) findViewById(R.id.layoutLogin);
         mainLayout.setListener(this);
 
         txtEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -86,25 +79,25 @@ public class ActivityLogin extends Activity implements DetectSoftwareKeyboard.Li
                 String email = txtEmail.getText().toString();
                 String password = txtPassword.getText().toString();
                 if (email == null || password == null || email.trim().isEmpty() || password.trim().isEmpty()) {
-                    Utilities.showDialog(act,"Warning", "Email or Password is empty!");
+                    DialogManager.showDialog(mActivity, "Warning", "Email or Password is empty!");
                     txtEmail.setText("");
                     txtPassword.setText("");
                 } else if (!email.trim().contains("@") ||
                         !email.trim().contains(".") ||
                         email.trim().contains(" ")) {
-                    Utilities.showDialog(act, "Warning", "Wrong email format!");
+                    DialogManager.showDialog(mActivity, "Warning", "Wrong email format!");
                     txtEmail.setText("");
                     txtPassword.setText("");
                 } else {
                     if(ApplicationData.user==null){
-                        Utilities.showDialog(act, "Warning", "Please register!");
+                        DialogManager.showDialog(mActivity, "Warning", "Please register!");
                         txtEmail.setText("");
                         txtPassword.setText("");
                     }
                     else{
                         txtEmail.setText("");
                         txtPassword.setText("");
-                        new DoLogin(act).execute(
+                        new DoLogin(mActivity).execute(
                                 email,
                                 password
                         );
@@ -204,7 +197,7 @@ public class ActivityLogin extends Activity implements DetectSoftwareKeyboard.Li
 
             switch (result) {
                 case "FAIL":
-                    Utilities.showDialog(activity, "Warning", "Login Failed!");
+                    DialogManager.showDialog(activity, "Warning", "Login Failed!");
                     break;
                 case "OK":
                     Intent i = new Intent(getBaseContext(), Main.class);

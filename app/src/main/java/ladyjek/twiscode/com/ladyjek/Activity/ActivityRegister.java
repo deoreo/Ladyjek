@@ -1,32 +1,21 @@
 package ladyjek.twiscode.com.ladyjek.Activity;
 
 import android.app.Activity;
-import android.app.DatePickerDialog;
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
-
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.Model.User;
 import ladyjek.twiscode.com.ladyjek.R;
-import ladyjek.twiscode.com.ladyjek.Utilities.Utilities;
+import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
 
 public class ActivityRegister extends ActionBarActivity {
 
@@ -53,19 +42,19 @@ public class ActivityRegister extends ActionBarActivity {
                 String password = txtPassword.getText().toString();
                 String confirm = txtConfirm.getText().toString();
                 if (email == null || password == null || email.trim().isEmpty() || password.trim().isEmpty() || confirm == null || confirm.trim().isEmpty()) {
-                    Utilities.showDialog(act, "Warning", "please fill all data!");
+                    DialogManager.showDialog(act, "Warning", "please fill all data!");
                     txtEmail.setText("");
                     txtPassword.setText("");
                     txtConfirm.setText("");
                 } else if (!email.trim().contains("@") ||
                         !email.trim().contains(".") ||
                         email.trim().contains(" ")) {
-                    Utilities.showDialog(act, "Warning", "Wrong email format!");
+                    DialogManager.showDialog(act, "Warning", "Wrong email format!");
                     txtEmail.setText("");
                     txtPassword.setText("");
                     txtConfirm.setText("");
                 } else if (!confirm.equals(password)) {
-                    Utilities.showDialog(act, "Warning", "Confirmation password not match!");
+                    DialogManager.showDialog(act, "Warning", "Confirmation password not match!");
                     txtEmail.setText("");
                     txtPassword.setText("");
                     txtConfirm.setText("");

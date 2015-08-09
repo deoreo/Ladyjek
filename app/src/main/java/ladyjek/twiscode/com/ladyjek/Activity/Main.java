@@ -22,6 +22,9 @@ import android.view.View;
 import ladyjek.twiscode.com.ladyjek.Fragment.FragmentDrawer;
 import ladyjek.twiscode.com.ladyjek.Fragment.FragmentHome;
 import ladyjek.twiscode.com.ladyjek.R;
+import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
+
+import static ladyjek.twiscode.com.ladyjek.Utilities.DialogManager.*;
 
 
 public class Main extends ActionBarActivity implements FragmentDrawer.FragmentDrawerListener {
@@ -30,16 +33,12 @@ public class Main extends ActionBarActivity implements FragmentDrawer.FragmentDr
     private FragmentDrawer drawerFragment;
 
 
-
-
-
     private ActionBar actionBarCustom;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -54,7 +53,6 @@ public class Main extends ActionBarActivity implements FragmentDrawer.FragmentDr
         drawerFragment.setDrawerListener(this);
 
 
-
         displayView(0);
 
 
@@ -62,8 +60,9 @@ public class Main extends ActionBarActivity implements FragmentDrawer.FragmentDr
 
     @Override
     public void onBackPressed() {
-        Log.d("counter stack", Integer.toString(getFragmentManager().getBackStackEntryCount()));
-
+        String counterStack = Integer.toString(getFragmentManager().getBackStackEntryCount());
+        Log.d("counter stack", "" + counterStack);
+        finish();
 
     }
 
@@ -103,7 +102,7 @@ public class Main extends ActionBarActivity implements FragmentDrawer.FragmentDr
         //displayView(position);
         //ApplicationData.menu = position;
         //ChangeMain();
-        displayView(position+1);
+        displayView(position + 1);
     }
 
     private void displayView(int position) {
@@ -121,8 +120,8 @@ public class Main extends ActionBarActivity implements FragmentDrawer.FragmentDr
                 break;
         }
 
-        if(position==0){
-            if (fragment != null ) {
+        if (position == 0) {
+            if (fragment != null) {
 
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -139,19 +138,17 @@ public class Main extends ActionBarActivity implements FragmentDrawer.FragmentDr
             getSupportActionBar().setTitle(title);
             */
             }
-        }
-        else{
-            if(position==1){
+        } else {
+            if (position == 1) {
                 Intent i = new Intent(getBaseContext(), ActivityInformasiPribadi.class);
                 startActivity(i);
             }
         }
 
 
-
     }
 
-    private void Share(){
+    private void Share() {
         Intent sharingIntent = new Intent(Intent.ACTION_SEND);
         sharingIntent.setType("text/plain");
         String shareBody = "http://www.google.com";
@@ -164,7 +161,6 @@ public class Main extends ActionBarActivity implements FragmentDrawer.FragmentDr
         sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
         this.startActivity(Intent.createChooser(sharingIntent, "Share via"));
     }
-
 
 
     @Override
@@ -183,10 +179,6 @@ public class Main extends ActionBarActivity implements FragmentDrawer.FragmentDr
 
         super.onPause();
     }
-
-
-
-
 
 
 }

@@ -10,7 +10,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
 import java.net.URLEncoder;
 
-import ladyjek.twiscode.com.ladyjek.Utilities.Config;
+import ladyjek.twiscode.com.ladyjek.Utilities.ConfigManager;
 
 public class JSONControl {
     private JSONResponse _JSONResponse;
@@ -24,7 +24,7 @@ public class JSONControl {
         JSONArray json = null;
         JSONObject jsonObj = null;
         try {
-            String url = Config.URL_SUGGESTION +
+            String url = ConfigManager.URL_SUGGESTION +
                             URLEncoder.encode(addressInput, "utf8");
             Log.d("url", url);
 

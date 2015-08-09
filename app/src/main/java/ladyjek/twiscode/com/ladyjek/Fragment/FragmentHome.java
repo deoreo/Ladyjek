@@ -3,13 +3,15 @@ package ladyjek.twiscode.com.ladyjek.Fragment;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,16 +38,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityConfirm;
-import ladyjek.twiscode.com.ladyjek.Activity.Main;
 import ladyjek.twiscode.com.ladyjek.Adapter.AdapterAddress;
 import ladyjek.twiscode.com.ladyjek.Adapter.AdapterSuggestion;
 import ladyjek.twiscode.com.ladyjek.Control.JSONControl;
-import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.Model.ModelGeocode;
 import ladyjek.twiscode.com.ladyjek.Model.ModelPlace;
 import ladyjek.twiscode.com.ladyjek.R;
-import ladyjek.twiscode.com.ladyjek.Utilities.PlaceAPI;
-import ladyjek.twiscode.com.ladyjek.Utilities.Utilities;
+import ladyjek.twiscode.com.ladyjek.Utilities.GoogleAPIManager;
+import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
 
 
 import com.google.android.gms.common.ConnectionResult;
@@ -55,6 +55,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -102,14 +103,16 @@ public class FragmentHome extends Fragment implements
     private Marker markerFrom, markerDestination;
     private CameraUpdate cameraUpdate;
     private Polyline driveLine;
+    private Circle mapCircle;
     private Activity mActivity;
     private ProgressBar pSuggestion;
     private AdapterSuggestion mAdapter;
     private RelativeLayout layoutSuggestion;
     private FrameLayout itemCurrent;
-
-
-private ListView mListView;
+    private ListView mListView;
+    private Location location;
+    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
+    private static final long MIN_TIME_BW_UPDATES =  1;
 
     public FragmentHome() {
         // Required empty public constructor
@@ -118,7 +121,7 @@ private ListView mListView;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        mActivity = getActivity();
     }
 
     @Override
@@ -127,7 +130,7 @@ private ListView mListView;
         View rootView = inflater.inflate(R.layout.activity_transport4, container, false);
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-        mActivity = getActivity();
+
         btnRequestRide = (TextView) rootView.findViewById(R.id.btnRequestRide);
         txtFrom = (EditText) rootView.findViewById(R.id.txtFrom);
         txtDestination = (EditText) rootView.findViewById(R.id.txtDestination);
@@ -135,26 +138,77 @@ private ListView mListView;
         pSuggestion = (ProgressBar) rootView.findViewById(R.id.progressSuggestion);
         layoutSuggestion = (RelativeLayout) rootView.findViewById(R.id.layoutSuggestion);
         itemCurrent = (FrameLayout) rootView.findViewById(R.id.itemCurrent);
-        int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(mActivity);
         txtAddressCurrent = (TextView) rootView.findViewById(R.id.txtAddressCurrent);
 
-        if (status != ConnectionResult.SUCCESS) {
-            int requestCode = 10;
-            Dialog dialog = GooglePlayServicesUtil.getErrorDialog(status, mActivity, requestCode);
-            dialog.show();
-        } else {
-            SupportMapFragment fm = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapView);
-            googleMap = fm.getMap();
-            LocationManager locationManager = (LocationManager) mActivity.getSystemService(Context.LOCATION_SERVICE);
-            Criteria criteria = new Criteria();
-            String provider = locationManager.getBestProvider(criteria, true);
-            Location location = locationManager.getLastKnownLocation(provider);
-            if (location != null) {
-                onLocationChanged(location);
-            }
-            mapCenter = googleMap.getCameraPosition().target;
+        try {
+            Log.d("loc", "get current location");
 
+            int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(mActivity);
+            if (status != ConnectionResult.SUCCESS) {
+                int requestCode = 10;
+                Dialog dialog = GooglePlayServicesUtil.getErrorDialog(status, mActivity, requestCode);
+                dialog.show();
+            } else {
+                SupportMapFragment fm = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapView);
+                googleMap = fm.getMap();
+                LocationManager locationManager = (LocationManager) mActivity.getSystemService(Context.LOCATION_SERVICE);
+                boolean isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+                boolean isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+                Criteria criteria = new Criteria();
+                String provider = locationManager.getBestProvider(criteria, true);
+                location = locationManager.getLastKnownLocation(provider);
+
+                if (!isGPSEnabled && !isNetworkEnabled)
+                {
+                    DialogManager.showDialog(mActivity,"Warning","Turn on your GPS or network!");
+                }
+                else
+                {
+
+                    if (isNetworkEnabled) {
+                        locationManager.requestLocationUpdates(
+                                LocationManager.NETWORK_PROVIDER,
+                                MIN_TIME_BW_UPDATES,
+                                MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+                        Log.d("Network", "Network");
+                        if (locationManager != null) {
+                            location = locationManager
+                                    .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                            if (location != null) {
+                                Double latitude = location.getLatitude();
+                                Double longitude = location.getLongitude();
+                                posFrom = new LatLng(latitude,longitude);
+                            }
+                        }
+                    }
+                    if (isGPSEnabled) {
+                        locationManager.requestLocationUpdates(
+                                LocationManager.GPS_PROVIDER,
+                                MIN_TIME_BW_UPDATES,
+                                MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+
+                        Log.d("Network", "Network");
+                        if (locationManager != null) {
+                            location = locationManager
+                                    .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                            if (location != null) {
+                                Double latitude = location.getLatitude();
+                                Double longitude = location.getLongitude();
+                                posFrom = new LatLng(latitude,longitude);
+                            }
+                        }
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
+        if (location != null) {
+            onLocationChanged(location);
+        }
+        mapCenter = googleMap.getCameraPosition().target;
 
         btnRequestRide.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -298,22 +352,24 @@ private ListView mListView;
     }
     @Override
     public void onLocationChanged(Location location) {
-        googleMap.clear();
+        if(mapCircle!=null){
+            mapCircle.remove();
+        }
         double latitude = location.getLatitude();
         double longitude = location.getLongitude();
-        LatLng currentPosition = new LatLng(latitude, longitude);
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(currentPosition));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(posFrom));
         googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
         CircleOptions circleOptions = new CircleOptions()
-                .center(currentPosition)
+                .center(posFrom)
                 .radius(500)
-                .strokeWidth(2)
+                .strokeWidth(1)
                 .strokeColor(Color.BLUE)
                 .fillColor(Color.parseColor("#500084d3"));
-        //googleMap.addCircle(circleOptions);
-        drawNewMarker(getAddress(currentPosition));
 
-        cameraUpdate = CameraUpdateFactory.newLatLngZoom(currentPosition, 15);
+        mapCircle = googleMap.addCircle(circleOptions);
+        drawNewMarker(getAddress(posFrom));
+
+        cameraUpdate = CameraUpdateFactory.newLatLngZoom(posFrom, 15);
         googleMap.animateCamera(cameraUpdate);
 
     }
@@ -345,7 +401,7 @@ private ListView mListView;
 
     public void drawNewMarker(String address) {
         try {
-            ModelGeocode geocode = PlaceAPI.geocode(address);
+            ModelGeocode geocode = GoogleAPIManager.geocode(address);
             LatLng locationMarker = new LatLng(geocode.getLat(), geocode.getLon());
             if (driveLine != null) {
                 driveLine.remove();
@@ -368,16 +424,16 @@ private ListView mListView;
                 cameraUpdate = CameraUpdateFactory.newLatLngZoom(locationMarker, 13);
                 googleMap.animateCamera(cameraUpdate);
             }
-            Document doc = PlaceAPI.getRoute(posFrom, posDest, "driving");
+            Document doc = GoogleAPIManager.getRoute(posFrom, posDest, "driving");
 
-            ArrayList<LatLng> directionPoint = PlaceAPI.getDirection(doc);
+            ArrayList<LatLng> directionPoint = GoogleAPIManager.getDirection(doc);
             PolylineOptions rectLine = new PolylineOptions().width(15).color(getResources().getColor(R.color.bg_grad_2));
 
             for (int i = 0; i < directionPoint.size(); i++) {
                 rectLine.add(directionPoint.get(i));
             }
-            strDistance = "" + PlaceAPI.getDistanceText(doc);
-            strDuration = "" + PlaceAPI.getDurationText(doc);
+            strDistance = "" + GoogleAPIManager.getDistanceText(doc);
+            strDuration = "" + GoogleAPIManager.getDurationText(doc);
             driveLine = googleMap.addPolyline(rectLine);
 
         }
@@ -410,6 +466,8 @@ private ListView mListView;
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
+
+
 
     public class GetSuggestion extends AsyncTask<String, Void, JSONArray> {
         String address,tag;
@@ -513,70 +571,6 @@ private ListView mListView;
 
         }
     }
-
-    private class DoLogin extends AsyncTask<String, Void, String> {
-        private Activity activity;
-        private Context context;
-        private Resources resources;
-        private ProgressDialog progressDialog;
-
-        private String tempString;
-
-        public DoLogin(Activity activity) {
-            super();
-            this.activity = activity;
-            this.context = activity.getApplicationContext();
-            this.resources = activity.getResources();
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressDialog = new ProgressDialog(activity);
-            progressDialog.setMessage("Searching your location. . .");
-            progressDialog.setIndeterminate(false);
-            progressDialog.setCancelable(false);
-            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            progressDialog.show();
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            try {
-
-                String email = params[0];
-                String password = params[1];
-
-                if (email.equals(ApplicationData.user.email) && password.equals(ApplicationData.user.password)) {
-                    return "OK";
-                }
-
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return "FAIL";
-
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-
-            switch (result) {
-                case "FAIL":
-                    Utilities.showDialog(activity, "Warning", "Can not find location!");
-                    break;
-                case "OK":
-                    break;
-            }
-
-            progressDialog.dismiss();
-        }
-
-
-    }
-
 
 
 

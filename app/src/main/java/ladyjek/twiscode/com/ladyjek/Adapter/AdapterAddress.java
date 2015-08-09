@@ -1,34 +1,18 @@
 package ladyjek.twiscode.com.ladyjek.Adapter;
 
 import android.content.Context;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Filter;
 import android.widget.Filterable;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.AutocompleteFilter;
-import com.google.android.gms.location.places.AutocompletePrediction;
-import com.google.android.gms.location.places.AutocompletePredictionBuffer;
-import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLngBounds;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.concurrent.TimeUnit;
 
 import ladyjek.twiscode.com.ladyjek.Model.ModelPlace;
-import ladyjek.twiscode.com.ladyjek.R;
-import ladyjek.twiscode.com.ladyjek.Utilities.PlaceAPI;
+import ladyjek.twiscode.com.ladyjek.Utilities.GoogleAPIManager;
 
 /**
  * Created by User on 8/5/2015.
@@ -66,7 +50,7 @@ public class AdapterAddress extends ArrayAdapter<ModelPlace> implements Filterab
                 FilterResults filterResults = new FilterResults();
                 if (constraint != null) {
                     // Retrieve the autocomplete results.
-                    mResultList = PlaceAPI.autocomplete(constraint.toString());
+                    mResultList = GoogleAPIManager.autocomplete(constraint.toString());
                     // Assign the data to the FilterResults
                     filterResults.values = mResultList;
                     filterResults.count = mResultList.size();

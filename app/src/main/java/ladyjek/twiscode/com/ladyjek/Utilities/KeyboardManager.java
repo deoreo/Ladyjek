@@ -11,9 +11,9 @@ import android.widget.LinearLayout;
  * the soft keyboard is shown and hidden (something Android can't tell you, weirdly). 
  */
 
-public class DetectSoftwareKeyboard extends LinearLayout {
+public class KeyboardManager extends LinearLayout {
 
-    public DetectSoftwareKeyboard(Context context, AttributeSet attrs) {
+    public KeyboardManager(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 

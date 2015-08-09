@@ -40,7 +40,7 @@ import java.io.InputStream;
 /**
  * Created by User on 8/5/2015.
  */
-public class PlaceAPI {
+public class GoogleAPIManager {
 
     private static final String TAG = "PlaceAPI";
 

@@ -1,24 +1,17 @@
 package ladyjek.twiscode.com.ladyjek.Activity;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.R;
-import ladyjek.twiscode.com.ladyjek.Utilities.DetectSoftwareKeyboard;
-import ladyjek.twiscode.com.ladyjek.Utilities.Utilities;
+import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
 
 public class ActivityHandphone extends Activity {
 
@@ -45,7 +38,7 @@ public class ActivityHandphone extends Activity {
             public void onClick(View v) {
                 String hp = txtPhoneNumber.getText().toString();
                 if (hp == null || hp.trim().isEmpty() || hp.length() <6) {
-                    Utilities.showDialog(act, "Warning", "Minimal 6 Character!");
+                    DialogManager.showDialog(act, "Warning", "Minimal 6 Character!");
                     txtRegisterHandphone.setText("");
                 }
                 else{

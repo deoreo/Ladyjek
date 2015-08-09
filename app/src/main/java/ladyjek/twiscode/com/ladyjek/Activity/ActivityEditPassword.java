@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.R;
-import ladyjek.twiscode.com.ladyjek.Utilities.Utilities;
+import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
 
 public class ActivityEditPassword extends Activity {
 
@@ -50,17 +50,17 @@ public class ActivityEditPassword extends Activity {
                 String npass = newpass.getText().toString();
                 String cpass = confirmpass.getText().toString();
                 if (opass == null || npass == null || cpass == null || opass.trim().isEmpty() || cpass.trim().isEmpty() || npass.trim().isEmpty()) {
-                    Utilities.showDialog(act, "Warning", "Please fill all data!");
+                    DialogManager.showDialog(act, "Warning", "Please fill all data!");
 
                 } else if (!npass.equals(cpass)) {
-                    Utilities.showDialog(act, "Warning", "Confirm password not match");
+                    DialogManager.showDialog(act, "Warning", "Confirm password not match");
                 } else {
                     if(opass.equals(ApplicationData.user.password)){
                         ApplicationData.user.password = npass;
                         finish();
                     }
                     else {
-                        Utilities.showDialog(act, "Warning", "Wrong old password");
+                        DialogManager.showDialog(act, "Warning", "Wrong old password");
                     }
 
 

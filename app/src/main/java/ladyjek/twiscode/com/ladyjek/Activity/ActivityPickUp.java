@@ -1,15 +1,11 @@
 package ladyjek.twiscode.com.ladyjek.Activity;
 
 import android.app.Dialog;
-import android.graphics.Color;
 import android.location.Address;
-import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -26,19 +22,14 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
-
-import org.w3c.dom.Document;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import ladyjek.twiscode.com.ladyjek.Model.ModelGeocode;
 import ladyjek.twiscode.com.ladyjek.R;
-import ladyjek.twiscode.com.ladyjek.Utilities.PlaceAPI;
-import ladyjek.twiscode.com.ladyjek.Utilities.Utilities;
+import ladyjek.twiscode.com.ladyjek.Utilities.GoogleAPIManager;
 
 public class ActivityPickUp extends ActionBarActivity implements LocationListener {
 
@@ -141,7 +132,7 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
     }
 
     public void drawNewMarker(String address) {
-        ModelGeocode geocode = PlaceAPI.geocode(address);
+        ModelGeocode geocode = GoogleAPIManager.geocode(address);
         LatLng locationMarker = new LatLng(geocode.getLat(), geocode.getLon());
         posFrom = locationMarker;
         markerFrom = googleMap.addMarker(
