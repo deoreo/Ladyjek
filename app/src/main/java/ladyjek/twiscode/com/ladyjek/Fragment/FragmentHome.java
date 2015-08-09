@@ -334,14 +334,13 @@ public class FragmentHome extends Fragment implements
                 if(txtFrom.getText().toString().isEmpty() || txtDestination.getText().toString().isEmpty()) {
                     if (tagLocation.equals(TAG_FROM)) {
                         txtFrom.setText(txtAddressCurrent.getText().toString());
-                        hideKeyboard();
                     }
                     if (tagLocation.equals(TAG_DESTINATION)) {
                         txtDestination.setText(txtAddressCurrent.getText().toString());
-                        hideKeyboard();
+
                     }
                 }
-
+                hideKeyboard();
                 layoutSuggestion.setVisibility(GONE);
 
             }
@@ -366,7 +365,7 @@ public class FragmentHome extends Fragment implements
                 .strokeColor(Color.BLUE)
                 .fillColor(Color.parseColor("#500084d3"));
 
-        mapCircle = googleMap.addCircle(circleOptions);
+       // mapCircle = googleMap.addCircle(circleOptions);
         drawNewMarker(getAddress(posFrom));
 
         cameraUpdate = CameraUpdateFactory.newLatLngZoom(posFrom, 15);
