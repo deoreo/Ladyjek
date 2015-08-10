@@ -47,7 +47,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="120dp"
+                android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_margin="20dp">
                 <LinearLayout
@@ -55,13 +55,14 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
                     <RelativeLayout
-                        android:layout_width="36dp"
+                        android:layout_width="24dp"
                         android:layout_height="match_parent">
                         <ImageView
-                            android:layout_width="36dp"
-                            android:layout_height="36dp"
-                            android:src="@drawable/current_location"
-                            android:layout_centerInParent="true"/>
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/current"
+                            android:layout_centerInParent="true"
+                            />
                     </RelativeLayout>
                     <LinearLayout
                         android:layout_width="0dp"
@@ -96,17 +97,18 @@
                             />
                     </LinearLayout>
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_marginTop="30dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
                     <RelativeLayout
-                        android:layout_width="36dp"
-                        android:layout_height="match_parent">
+                        android:layout_width="24dp"
+                        android:layout_height="24dp">
                         <ImageView
-                            android:layout_width="36dp"
-                            android:layout_height="36dp"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
                             android:src="@drawable/destination"
                             android:layout_centerInParent="true"/>
                     </RelativeLayout>
