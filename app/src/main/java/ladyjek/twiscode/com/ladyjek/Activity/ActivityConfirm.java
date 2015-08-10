@@ -12,6 +12,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+
 import ladyjek.twiscode.com.ladyjek.R;
 
 public class ActivityConfirm extends ActionBarActivity {
@@ -20,22 +23,26 @@ public class ActivityConfirm extends ActionBarActivity {
     private Toolbar mToolbar;
     private Spinner pay;
     private ArrayAdapter<CharSequence> adapterPay;
-    private TextView txtConfirm, txtFrom, txtDestination, txtDistance, txtDuration, txtTotal;
-    private String strFrom = "", strDest = "", strDistance = "", strDuration = "", strLat = "", strLon = "";
+    private TextView txtConfirm, txtFrom, txtDestination, txtDistance, txtDuration, txtTotal, txtDetailFrom, txtDetailDestination;
+    private String strFrom = "", strDest = "", strDistance = "",
+            strDuration = "", strLat = "", strLon = "",
+            strDetailFrom = "",strDetailDest="" ;
     private int totalPrice = 0;
-
-
+    private NumberFormat numberFormat;
+    private DecimalFormat decimalFormat;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm);
-
+        decimalFormat = new DecimalFormat("0.00##");
         //SetActionBar();
         SetPaySpinner();
         try {
             Bundle b = getIntent().getExtras();
             strFrom = b.getString("from");
             strDest = b.getString("destination");
+            strDetailFrom = b.getString("detailfrom");
+            strDetailDest = b.getString("detaildestination");
             strDistance = b.getString("distance");
             strDuration = b.getString("duration");
             strLat = b.getString("lat");
@@ -44,6 +51,7 @@ public class ActivityConfirm extends ActionBarActivity {
             String[] strDist = strDistance.split(" ");
             float intDist = Float.parseFloat(strDist[0]);
             totalPrice = 4000 * Math.round(intDist);
+
         } catch (Exception e) {
 
         }
@@ -54,6 +62,8 @@ public class ActivityConfirm extends ActionBarActivity {
         txtDistance = (TextView) findViewById(R.id.txtDistance);
         txtDuration = (TextView) findViewById(R.id.txtDuration);
         txtTotal = (TextView) findViewById(R.id.txtTotal);
+        txtDetailFrom = (TextView) findViewById(R.id.txtDetailFrom);
+        txtDetailDestination = (TextView) findViewById(R.id.txtDetailDestination);
 
         txtConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,9 +81,11 @@ public class ActivityConfirm extends ActionBarActivity {
 
         txtFrom.setText(strFrom);
         txtDestination.setText(strDest);
+        txtDetailFrom.setText(strDetailFrom);
+        txtDetailDestination.setText(strDetailDest);
         txtDistance.setText(strDistance);
         txtDuration.setText(strDuration);
-        txtTotal.setText("Rp " + totalPrice);
+        txtTotal.setText("Rp " + decimalFormat.format(totalPrice));
 
     }
 
