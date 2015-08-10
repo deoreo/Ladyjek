@@ -132,6 +132,7 @@
                                 android:background="@null"
                                 android:textColorHint="@drawable/hint_selector"
                                 android:inputType="textPassword"
+                                android:textColor="@color/white_color"
                                 android:textStyle="bold"
                                 android:textCursorDrawable="@drawable/cursor_white"/>
                             <View

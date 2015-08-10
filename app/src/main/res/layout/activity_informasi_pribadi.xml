@@ -75,8 +75,8 @@
                     android:enabled="false"/>
                     <ImageView
                         android:id="@+id/editNama"
-                        android:layout_width="wrap_content"
-                        android:layout_height="40dp"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
                         android:layout_marginLeft="10dp"
                         android:src="@drawable/edit_text_icon"
                         />
@@ -104,8 +104,8 @@
                     android:enabled="false"/>
                 <ImageView
                     android:id="@+id/editEmail"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:layout_marginLeft="10dp"
                     android:src="@drawable/edit_text_icon"
                     />
@@ -148,8 +148,8 @@
                     android:enabled="false"/>
                 <ImageView
                     android:id="@+id/editPassword"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:layout_marginLeft="10dp"
                     android:src="@drawable/edit_text_icon"
                     />
@@ -192,8 +192,8 @@
                     android:enabled="false"/>
                 <ImageView
                     android:id="@+id/editPhone"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:layout_marginLeft="10dp"
                     android:src="@drawable/edit_text_icon"
                     />
@@ -256,8 +256,8 @@
                                     />
                                 <ImageView
                                     android:id="@+id/editRumah"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="40dp"
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
                                     android:layout_marginLeft="10dp"
                                     android:src="@drawable/edit_text_icon"
                                     />
@@ -310,8 +310,8 @@
                                     />
                                 <ImageView
                                     android:id="@+id/editKantor"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="40dp"
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
                                     android:layout_marginLeft="10dp"
                                     android:src="@drawable/edit_text_icon"
                                     />

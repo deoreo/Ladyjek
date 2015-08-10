@@ -10,7 +10,6 @@
         <item name="colorPrimary">@color/bg_grad_2</item>
         <item name="colorPrimaryDark">@color/bg_grad_1</item>
         <item name="colorAccent">@color/bg_grad_1</item>
-        <item name="android:textColorPrimary">@color/bg_grad_2</item>
         <item name="android:textColorSecondary">@color/bg_grad_2</item>
         <item name="actionMenuTextColor">@color/bg_grad_2</item>
 
