@@ -80,12 +80,13 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="50dp"
                                 android:hint="alamat e-mail"
-                                android:textColorHint="@color/white_color"
+                                android:textColorHint="@drawable/hint_selector"
                                 android:padding="10dp"
                                 android:background="@null"
                                 android:textColor="@color/white_color"
                                 android:inputType="textEmailAddress"
-                                android:textStyle="bold"/>
+                                android:textStyle="bold"
+                                android:textCursorDrawable="@drawable/cursor_white"/>
                             <View
                                 android:layout_width="match_parent"
                                 android:layout_height="2dp"
@@ -103,12 +104,13 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="50dp"
                                 android:hint="kata sandi"
-                                android:textColorHint="@color/white_color"
+                                android:textColorHint="@drawable/hint_selector"
                                 android:padding="10dp"
                                 android:background="@null"
                                 android:textColor="@color/white_color"
                                 android:inputType="textPassword"
-                                android:textStyle="bold"/>
+                                android:textStyle="bold"
+                                android:textCursorDrawable="@drawable/cursor_white"/>
                             <View
                                 android:layout_width="match_parent"
                                 android:layout_height="2dp"
@@ -126,12 +128,12 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="50dp"
                                 android:hint="konfirmasi kata sandi"
-                                android:textColorHint="@color/white_color"
                                 android:padding="10dp"
                                 android:background="@null"
-                                android:textColor="@color/white_color"
+                                android:textColorHint="@drawable/hint_selector"
                                 android:inputType="textPassword"
-                                android:textStyle="bold"/>
+                                android:textStyle="bold"
+                                android:textCursorDrawable="@drawable/cursor_white"/>
                             <View
                                 android:layout_width="match_parent"
                                 android:layout_height="2dp"

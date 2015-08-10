@@ -87,8 +87,9 @@
                                     android:inputType="textEmailAddress"
                                     android:padding="10dp"
                                     android:textColor="@color/white_color"
-                                    android:textColorHint="@color/white_color"
-                                    android:textStyle="bold" />
+                                    android:textColorHint="@drawable/hint_selector"
+                                    android:textStyle="bold"
+                                    android:textCursorDrawable="@drawable/cursor_white"/>
 
                                 <View
                                     android:layout_width="match_parent"
@@ -111,8 +112,9 @@
                                     android:inputType="textPassword"
                                     android:padding="10dp"
                                     android:textColor="@color/white_color"
-                                    android:textColorHint="@color/white_color"
-                                    android:textStyle="bold" />
+                                    android:textColorHint="@drawable/hint_selector"
+                                    android:textStyle="bold"
+                                    android:textCursorDrawable="@drawable/cursor_white"/>
 
                                 <View
                                     android:layout_width="match_parent"

@@ -17,7 +17,7 @@ public class ApplicationData {
     private static String nama ="Edo";
     private static String email = "edo@gmail.com";
     private static String password = "abcd";
-    private static String hp = "+6283857565559";
+    private static String hp = "83857565559";
 
 
     public static User user = new User(id,nama,email,password,hp,null,null);
