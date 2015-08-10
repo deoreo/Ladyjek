@@ -96,7 +96,7 @@ public class FragmentHome extends Fragment implements
     private final String TAG_DESTINATION = "DESTINATION";
     private EditText txtFrom, txtDestination;
     private String add, tagLocation = TAG_FROM;
-    private String placeId = "", description = "", strDistance="", strDuration="";
+    private String placeId = "", description = "", strDistance="", strDuration="", strDetailFrom = "a", strDetailDestination ="b";
 
     private LatLng mapCenter, posFrom, posDest;
     private AdapterAddress mPlaceArrayAdapter;
@@ -111,7 +111,7 @@ public class FragmentHome extends Fragment implements
     private FrameLayout itemCurrent;
     private ListView mListView;
     private Location location;
-    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
+    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 1000 * 60 * 1;
     private static final long MIN_TIME_BW_UPDATES =  1;
 
     public FragmentHome() {
@@ -166,10 +166,7 @@ public class FragmentHome extends Fragment implements
                 {
 
                     if (isNetworkEnabled) {
-                        locationManager.requestLocationUpdates(
-                                LocationManager.NETWORK_PROVIDER,
-                                MIN_TIME_BW_UPDATES,
-                                MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+                        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
                         Log.d("Network", "Network");
                         if (locationManager != null) {
                             location = locationManager
@@ -182,10 +179,7 @@ public class FragmentHome extends Fragment implements
                         }
                     }
                     if (isGPSEnabled) {
-                        locationManager.requestLocationUpdates(
-                                LocationManager.GPS_PROVIDER,
-                                MIN_TIME_BW_UPDATES,
-                                MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+                        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
 
                         Log.d("Network", "Network");
                         if (locationManager != null) {
@@ -216,6 +210,8 @@ public class FragmentHome extends Fragment implements
                 Bundle args = new Bundle();
                 args.putString("from", txtFrom.getText().toString());
                 args.putString("destination", txtDestination.getText().toString());
+                args.putString("detailfrom", strDetailFrom);
+                args.putString("detaildestination", strDetailDestination);
                 args.putString("distance", strDistance);
                 args.putString("duration", strDuration);
                 args.putString("lat", "" + posFrom.latitude);
@@ -278,15 +274,7 @@ public class FragmentHome extends Fragment implements
             }
         });
 
-        /*
-        mPlaceArrayAdapter = new AdapterAddress(mActivity, android.R.layout.simple_list_item_1);
-        txtFrom.setAdapter(mPlaceArrayAdapter);
-        txtFrom.setOnItemClickListener(this);
-        txtFrom.setOnKeyListener(this);
-        txtDestination.setAdapter(mPlaceArrayAdapter);
-        txtDestination.setOnItemClickListener(this);
-        txtDestination.setOnKeyListener(this);
-        */
+
 
         txtFrom.addTextChangedListener(new TextWatcher() {
 
@@ -354,6 +342,7 @@ public class FragmentHome extends Fragment implements
         if(mapCircle!=null){
             mapCircle.remove();
         }
+        googleMap.clear();
         double latitude = location.getLatitude();
         double longitude = location.getLongitude();
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(posFrom));
@@ -399,6 +388,7 @@ public class FragmentHome extends Fragment implements
     }
 
     public void drawNewMarker(String address) {
+        Log.d("FragmentHome", address);
         try {
             ModelGeocode geocode = GoogleAPIManager.geocode(address);
             LatLng locationMarker = new LatLng(geocode.getLat(), geocode.getLon());
@@ -451,6 +441,12 @@ public class FragmentHome extends Fragment implements
             List<Address> addresses = geocoder.getFromLocation(lat, lng, 1);
             Address obj = addresses.get(0);
             addressLine = obj.getAddressLine(0);
+            if(tagLocation.equals(TAG_FROM)){
+                strDetailFrom = obj.getAddressLine(1)+" , "+obj.getAddressLine(2);
+            }
+            else if(tagLocation.equals(TAG_DESTINATION)){
+                strDetailDestination = obj.getAddressLine(1)+" , "+obj.getAddressLine(2);
+            }
 
         } catch (IOException e) {
         } catch (Exception e) {
@@ -547,12 +543,14 @@ public class FragmentHome extends Fragment implements
                         ModelPlace selectedPlace = LIST_PLACE.get(position);
                         if(tag.equals(TAG_FROM)) {
                             txtFrom.setText(selectedPlace.getAddress());
+                            strDetailFrom = selectedPlace.getAddressDetail();
                             if (markerFrom != null) {
                                 markerFrom.remove();
                             }
                         }
                         else if(tag.equals(TAG_DESTINATION)) {
                             txtDestination.setText(selectedPlace.getAddress());
+                            strDetailDestination = selectedPlace.getAddressDetail();
                             if (markerDestination != null) {
                                 markerDestination.remove();
                             }

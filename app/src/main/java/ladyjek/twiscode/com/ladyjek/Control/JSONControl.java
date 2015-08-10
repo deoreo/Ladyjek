@@ -39,5 +39,24 @@ public class JSONControl {
 
     }
 
+    public JSONArray login(String addressInput) {
+        JSONArray json = null;
+        JSONObject jsonObj = null;
+        try {
+            String url = ConfigManager.URL_SUGGESTION +
+                    URLEncoder.encode(addressInput, "utf8");
+            Log.d("url", url);
+
+
+            jsonObj = _JSONResponse.GETResponse(url);
+            json = jsonObj.getJSONArray("predictions");
+        } catch (ConnectException e) {
+        } catch (UnsupportedEncodingException e) {
+        } catch (JSONException e) {
+        }
+        return json;
+
+    }
+
 
 }

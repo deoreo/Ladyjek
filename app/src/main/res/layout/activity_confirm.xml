@@ -74,6 +74,7 @@
                             android:id="@+id/txtFrom"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:padding="2dp"
                             android:textSize="16dp"
                             android:textStyle="bold"
                             android:textColor="@color/black_color"
@@ -87,7 +88,11 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textSize="14dp"
+                            android:padding="2dp"
                             android:text="Current Location"
+                            android:singleLine="true"
+                            android:maxLines="1"
+                            android:ellipsize="end"
                             />
                     </LinearLayout>
                 </LinearLayout>
@@ -116,6 +121,7 @@
                             android:id="@+id/txtDestination"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:padding="2dp"
                             android:textSize="16dp"
                             android:textStyle="bold"
                             android:textColor="@color/black_color"
@@ -128,8 +134,12 @@
                             android:id="@+id/txtDetailDestination"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:padding="2dp"
                             android:textSize="14dp"
                             android:text="destination Location"
+                            android:singleLine="true"
+                            android:maxLines="1"
+                            android:ellipsize="end"
                             />
                     </LinearLayout>
                 </LinearLayout>

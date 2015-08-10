@@ -109,7 +109,6 @@ public class ActivityLogin extends Activity implements KeyboardManager.Listener 
 
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -144,7 +143,6 @@ public class ActivityLogin extends Activity implements KeyboardManager.Listener 
             wrapperRegister.setVisibility(View.VISIBLE);
         }
     }
-
 
     private class DoLogin extends AsyncTask<String, Void, String> {
         private Activity activity;
@@ -182,7 +180,6 @@ public class ActivityLogin extends Activity implements KeyboardManager.Listener 
                 if (email.equals(ApplicationData.user.email) && password.equals(ApplicationData.user.password)) {
                     return "OK";
                 }
-
 
             } catch (Exception e) {
                 e.printStackTrace();
