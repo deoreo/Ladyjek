@@ -150,8 +150,6 @@ public class ActivityLogin extends Activity implements KeyboardManager.Listener 
         private Resources resources;
         private ProgressDialog progressDialog;
 
-        private String tempString;
-
         public DoLogin(Activity activity) {
             super();
             this.activity = activity;
@@ -203,8 +201,6 @@ public class ActivityLogin extends Activity implements KeyboardManager.Listener 
                     break;
             }
 
-            txtPassword.clearFocus();
-            txtPassword.setText("");
             progressDialog.dismiss();
         }
 
