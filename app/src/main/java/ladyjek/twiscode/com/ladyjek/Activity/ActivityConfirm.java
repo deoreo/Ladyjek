@@ -9,6 +9,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -23,6 +25,7 @@ public class ActivityConfirm extends ActionBarActivity {
     private Toolbar mToolbar;
     private Spinner pay;
     private ArrayAdapter<CharSequence> adapterPay;
+    private ImageView btnBack;
     private TextView txtConfirm, txtFrom, txtDestination, txtDistance, txtDuration, txtTotal, txtDetailFrom, txtDetailDestination;
     private String strFrom = "", strDest = "", strDistance = "",
             strDuration = "", strLat = "", strLon = "",
@@ -64,6 +67,7 @@ public class ActivityConfirm extends ActionBarActivity {
         txtTotal = (TextView) findViewById(R.id.txtTotal);
         txtDetailFrom = (TextView) findViewById(R.id.txtDetailFrom);
         txtDetailDestination = (TextView) findViewById(R.id.txtDetailDestination);
+        btnBack = (ImageView) findViewById(R.id.btnBack);
 
         txtConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,6 +90,13 @@ public class ActivityConfirm extends ActionBarActivity {
         txtDistance.setText(strDistance);
         txtDuration.setText(strDuration);
         txtTotal.setText("Rp " + decimalFormat.format(totalPrice));
+
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
     }
 
@@ -150,9 +161,10 @@ public class ActivityConfirm extends ActionBarActivity {
     }
 
     @Override
-    public void onBackPressed() {
-
+    public void onBackPressed()
+    {
         finish();
+        super.onBackPressed();  // optional depending on your needs
     }
 
 

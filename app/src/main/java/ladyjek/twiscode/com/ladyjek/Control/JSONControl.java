@@ -59,4 +59,21 @@ public class JSONControl {
     }
 
 
+    /*Contoh POST
+    public void postComment(String art, String msg, String nam) {
+
+        try {
+                List<NameValuePair> params = new ArrayList<NameValuePair>();
+                params.add(new BasicNameValuePair("art", art));
+                params.add(new BasicNameValuePair("msg", msg));
+                params.add(new BasicNameValuePair("nam", nam));
+                JSONObject jsonObj = _JSONResponse.POSTResponse(ClassConfiguration.URL_API_COMMENT, params);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+     */
+
+
 }
