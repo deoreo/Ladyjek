@@ -7,4 +7,5 @@ public class ConfigManager {
     public static final String OUT_JSON = "/json";
     public static final String API_KEY = "AIzaSyAJ6wF29SmwinrHoyJ-KjWwlZ3IFtVz0vY";
     public static final String URL_SUGGESTION = PLACES_API_BASE +"/autocomplete/json?components=country:id&key="+API_KEY+"&input=";
+    public static final String SERVER = "http://192.168.1.104:3001/ladyjek/api";
 }

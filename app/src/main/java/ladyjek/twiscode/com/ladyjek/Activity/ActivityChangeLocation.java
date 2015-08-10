@@ -3,6 +3,7 @@ package ladyjek.twiscode.com.ladyjek.Activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,7 +13,7 @@ import android.widget.TextView;
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.R;
 
-public class ActivityChangeLocation extends Activity {
+public class ActivityChangeLocation extends FragmentActivity {
 
     private TextView lblChange,btnSimpan;
     private ImageView btnBack;

@@ -82,22 +82,22 @@ public class ActivityInformasiPribadi extends Activity {
         editKantor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*
+
                 ApplicationData.editHome = false;
                 Intent i = new Intent(getBaseContext(), ActivityChangeLocation.class);
                 startActivity(i);
-                */
+
             }
         });
 
         editRumah.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*
+
                 ApplicationData.editHome = true;
                 Intent i = new Intent(getBaseContext(), ActivityChangeLocation.class);
                 startActivity(i);
-                */
+
             }
         });
 

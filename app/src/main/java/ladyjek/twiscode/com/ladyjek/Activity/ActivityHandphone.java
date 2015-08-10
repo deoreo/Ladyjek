@@ -39,7 +39,7 @@ public class ActivityHandphone extends Activity {
                 String hp = txtPhoneNumber.getText().toString();
                 if (hp == null || hp.trim().isEmpty() || hp.length() <6) {
                     DialogManager.showDialog(act, "Warning", "Minimal 6 Character!");
-                    txtRegisterHandphone.setText("");
+                    txtPhoneNumber.setText("");
                 }
                 else{
                     ApplicationData.user.hp = hp;
