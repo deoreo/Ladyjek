@@ -63,13 +63,6 @@ public class ActivityRegister extends ActionBarActivity {
                     Intent i = new Intent(getBaseContext(), ActivityHandphone.class);
                     startActivity(i);
                     finish();
-                    /*
-                    new DoRegister(act).execute(
-                            email,
-                            password
-                    );
-                    */
-
                 }
             }
         });

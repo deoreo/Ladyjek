@@ -6,7 +6,7 @@ import android.net.NetworkInfo;
 
 public class NetworkManager {
 
-    private Context _context;
+    private static Context _context;
     private static NetworkManager _instance = null;
 
     public NetworkManager(Context context) {
@@ -17,7 +17,7 @@ public class NetworkManager {
             _instance = new NetworkManager(ctx);
         return _instance;
     }
-    public boolean isConnectingToInternet() {
+    public static boolean isConnectedInternet() {
         ConnectivityManager connectivity = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connectivity != null) {
             NetworkInfo[] info = connectivity.getAllNetworkInfo();

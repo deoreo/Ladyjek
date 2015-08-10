@@ -7,7 +7,10 @@ import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.Looper;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -74,14 +77,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeoutException;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 /**
  * Created by Unity on 18/05/2015.
  */
-public class FragmentHome extends Fragment implements
-        LocationListener {
+public class FragmentHome extends Fragment
+         {
 
     private Toolbar mToolbar;
     ModelPlace mPlace, selectedPlaceFrom, selectedPlaceDestination;
@@ -140,69 +144,7 @@ public class FragmentHome extends Fragment implements
         itemCurrent = (FrameLayout) rootView.findViewById(R.id.itemCurrent);
         txtAddressCurrent = (TextView) rootView.findViewById(R.id.txtAddressCurrent);
 
-        try {
-            Log.d("loc", "get current location");
-
-            int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(mActivity);
-            if (status != ConnectionResult.SUCCESS) {
-                int requestCode = 10;
-                Dialog dialog = GooglePlayServicesUtil.getErrorDialog(status, mActivity, requestCode);
-                dialog.show();
-            } else {
-                SupportMapFragment fm = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapView);
-                googleMap = fm.getMap();
-                LocationManager locationManager = (LocationManager) mActivity.getSystemService(Context.LOCATION_SERVICE);
-                boolean isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-                boolean isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-                Criteria criteria = new Criteria();
-                String provider = locationManager.getBestProvider(criteria, true);
-                location = locationManager.getLastKnownLocation(provider);
-
-                if (!isGPSEnabled && !isNetworkEnabled)
-                {
-                    DialogManager.showDialog(mActivity,"Warning","Turn on your GPS or network!");
-                }
-                else
-                {
-
-                    if (isNetworkEnabled) {
-                        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
-                        Log.d("Network", "Network");
-                        if (locationManager != null) {
-                            location = locationManager
-                                    .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                            if (location != null) {
-                                Double latitude = location.getLatitude();
-                                Double longitude = location.getLongitude();
-                                posFrom = new LatLng(latitude,longitude);
-                            }
-                        }
-                    }
-                    if (isGPSEnabled) {
-                        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
-
-                        Log.d("Network", "Network");
-                        if (locationManager != null) {
-                            location = locationManager
-                                    .getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                            if (location != null) {
-                                Double latitude = location.getLatitude();
-                                Double longitude = location.getLongitude();
-                                posFrom = new LatLng(latitude,longitude);
-                            }
-                        }
-                    }
-                }
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        if (location != null) {
-            onLocationChanged(location);
-        }
-        mapCenter = googleMap.getCameraPosition().target;
+        new GetMyLocation(mActivity).execute();
 
         btnRequestRide.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -231,14 +173,13 @@ public class FragmentHome extends Fragment implements
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     //do stuff here
                     tagLocation = TAG_FROM;
-                    if(posFrom!=null){
+                    if (posFrom != null) {
                         layoutSuggestion.setVisibility(VISIBLE);
                         itemCurrent.setVisibility(VISIBLE);
                         mListView.setVisibility(GONE);
                         pSuggestion.setVisibility(GONE);
                         txtAddressCurrent.setText(getAddress(posFrom));
-                    }
-                    else{
+                    } else {
                         itemCurrent.setVisibility(GONE);
                         mListView.setVisibility(VISIBLE);
                     }
@@ -298,7 +239,8 @@ public class FragmentHome extends Fragment implements
         txtDestination.addTextChangedListener(new TextWatcher() {
 
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+            }
 
             @Override
             public void beforeTextChanged(CharSequence s, int start,
@@ -308,8 +250,7 @@ public class FragmentHome extends Fragment implements
             @Override
             public void onTextChanged(CharSequence s, int start,
                                       int before, int count) {
-                if(s.length() >=3)
-                {
+                if (s.length() >= 3) {
                     new GetSuggestion(s.toString(), tagLocation).execute();
                 }
             }
@@ -336,55 +277,6 @@ public class FragmentHome extends Fragment implements
 
         // Inflate the layout for this fragment
         return rootView;
-    }
-    @Override
-    public void onLocationChanged(Location location) {
-        if(mapCircle!=null){
-            mapCircle.remove();
-        }
-        googleMap.clear();
-        double latitude = location.getLatitude();
-        double longitude = location.getLongitude();
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(posFrom));
-        googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
-        CircleOptions circleOptions = new CircleOptions()
-                .center(posFrom)
-                .radius(500)
-                .strokeWidth(1)
-                .strokeColor(Color.BLUE)
-                .fillColor(Color.parseColor("#500084d3"));
-
-       // mapCircle = googleMap.addCircle(circleOptions);
-        drawNewMarker(getAddress(posFrom));
-
-        cameraUpdate = CameraUpdateFactory.newLatLngZoom(posFrom, 15);
-        googleMap.animateCamera(cameraUpdate);
-
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
     }
 
     public void drawNewMarker(String address) {
@@ -462,8 +354,6 @@ public class FragmentHome extends Fragment implements
         }
     }
 
-
-
     public class GetSuggestion extends AsyncTask<String, Void, JSONArray> {
         String address,tag;
 
@@ -498,8 +388,6 @@ public class FragmentHome extends Fragment implements
                     String detail = "";
                     boolean status = true;
                     try {
-
-
                         JSONObject jsonObject = json.getJSONObject(i);
                         id = jsonObject.getString(KEY_ID);
                         description = jsonObject.getString(KEY_DESCRIPTION);
@@ -541,14 +429,13 @@ public class FragmentHome extends Fragment implements
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     try {
                         ModelPlace selectedPlace = LIST_PLACE.get(position);
-                        if(tag.equals(TAG_FROM)) {
+                        if (tag.equals(TAG_FROM)) {
                             txtFrom.setText(selectedPlace.getAddress());
                             strDetailFrom = selectedPlace.getAddressDetail();
                             if (markerFrom != null) {
                                 markerFrom.remove();
                             }
-                        }
-                        else if(tag.equals(TAG_DESTINATION)) {
+                        } else if (tag.equals(TAG_DESTINATION)) {
                             txtDestination.setText(selectedPlace.getAddress());
                             strDetailDestination = selectedPlace.getAddressDetail();
                             if (markerDestination != null) {
@@ -559,8 +446,7 @@ public class FragmentHome extends Fragment implements
                         layoutSuggestion.setVisibility(GONE);
                         hideKeyboard();
                         drawNewMarker(selectedPlace.getAddress());
-                    }
-                    catch (Exception e){
+                    } catch (Exception e) {
 
                     }
                 }
@@ -569,6 +455,163 @@ public class FragmentHome extends Fragment implements
         }
     }
 
+    private class GetMyLocation extends AsyncTask<String, Void, String> implements LocationListener {
+        private Activity activity;
+        private Context context;
+        private Resources resources;
+        private ProgressDialog progressDialog;
+        private Handler mUserLocationHandler = null;
+        private Handler handler = null;
 
+
+
+        public GetMyLocation(Activity activity) {
+            super();
+            this.activity = activity;
+            this.context = activity.getApplicationContext();
+            this.resources = activity.getResources();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            progressDialog = new ProgressDialog(activity);
+            progressDialog.setMessage("Memuat lokasi anda. . .");
+            progressDialog.setIndeterminate(false);
+            progressDialog.setCancelable(false);
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressDialog.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+                try {
+                    Looper.prepare();
+                    mUserLocationHandler = new Handler();
+                    Log.d("loc", "get current location");
+
+                    int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(mActivity);
+                    if (status != ConnectionResult.SUCCESS) {
+                        int requestCode = 10;
+                        Dialog dialog = GooglePlayServicesUtil.getErrorDialog(status, mActivity, requestCode);
+                        dialog.show();
+                    } else {
+                        SupportMapFragment fm = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapView);
+                        googleMap = fm.getMap();
+                        LocationManager locationManager = (LocationManager) mActivity.getSystemService(Context.LOCATION_SERVICE);
+                        boolean isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+                        boolean isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+                        Criteria criteria = new Criteria();
+                        String provider = locationManager.getBestProvider(criteria, true);
+                        location = locationManager.getLastKnownLocation(provider);
+                        if (!isGPSEnabled && !isNetworkEnabled)
+                        {
+                            DialogManager.showDialog(mActivity,"Warning","Turn on your GPS or network!");
+                        }
+                        else
+                        {
+
+                            if (isNetworkEnabled) {
+
+                                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES,this );
+                                Log.d("Network", "Network");
+                                if (locationManager != null) {
+                                    location = locationManager
+                                            .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                                    if (location != null) {
+                                        Double latitude = location.getLatitude();
+                                        Double longitude = location.getLongitude();
+                                        posFrom = new LatLng(latitude,longitude);
+                                    }
+                                }
+                            }
+                            if (isGPSEnabled) {
+                                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES,this );
+                                Log.d("Network", "Network");
+                                if (locationManager != null) {
+                                    location = locationManager
+                                            .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                                    if (location != null) {
+                                        Double latitude = location.getLatitude();
+                                        Double longitude = location.getLongitude();
+                                        posFrom = new LatLng(latitude,longitude);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    Looper.loop();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return "OK";
+            }
+            catch (Exception e){
+
+            }
+            return "FAIL";
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            switch (result) {
+                case "FAIL":
+                    DialogManager.showDialog(activity, "Warning", "Can not find your location!");
+                    break;
+                case "OK":
+                    double latitude = location.getLatitude();
+                    double longitude = location.getLongitude();
+                    posFrom = new LatLng(latitude,longitude);
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLng(posFrom));
+                    googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+                    CircleOptions circleOptions = new CircleOptions()
+                            .center(posFrom)
+                            .radius(500)
+                            .strokeWidth(1)
+                            .strokeColor(Color.BLUE)
+                            .fillColor(Color.parseColor("#500084d3"));
+
+                    // mapCircle = googleMap.addCircle(circleOptions);
+                    drawNewMarker(getAddress(posFrom));
+                    cameraUpdate = CameraUpdateFactory.newLatLngZoom(posFrom, 15);
+                    googleMap.animateCamera(cameraUpdate);
+                   // DialogManager.showDialog(activity, "", "Success find your location!");
+                    break;
+            }
+
+            progressDialog.dismiss();
+        }
+
+
+        @Override
+        public void onLocationChanged(Location location) {
+
+            Message msg = new Message();
+            handler.sendMessage(msg);
+            if(mUserLocationHandler != null){
+                mUserLocationHandler.getLooper().quit();
+            }
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+
+        }
+    }
 
 }
