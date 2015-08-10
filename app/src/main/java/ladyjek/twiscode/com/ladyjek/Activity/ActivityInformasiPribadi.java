@@ -7,7 +7,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -147,10 +146,10 @@ public class ActivityInformasiPribadi extends Activity {
     }
 
     private void SetData(){
-        nama.setText(ApplicationData.user.nama);
+        nama.setText(ApplicationData.user.name);
         email.setText(ApplicationData.user.email);
         password.setText(ApplicationData.user.password);
-        hp.setText(ApplicationData.user.hp);
+        hp.setText(ApplicationData.user.phone);
     }
 
     @Override

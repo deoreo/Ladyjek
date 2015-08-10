@@ -59,7 +59,7 @@ public class ActivityRegister extends ActionBarActivity {
                     txtPassword.setText("");
                     txtConfirm.setText("");
                 } else {
-                    ApplicationData.user = new User("1","nama kamu",email,password,"",new LatLng(0,0),new LatLng(0,0));
+                    ApplicationData.user = new User("1","name kamu",email,password,"",new LatLng(0,0),new LatLng(0,0));
                     Intent i = new Intent(getBaseContext(), ActivityHandphone.class);
                     startActivity(i);
                     finish();
