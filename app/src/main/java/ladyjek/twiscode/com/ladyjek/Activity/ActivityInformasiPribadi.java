@@ -3,9 +3,12 @@ package ladyjek.twiscode.com.ladyjek.Activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -50,7 +53,19 @@ public class ActivityInformasiPribadi extends Activity {
             @Override
             public void onClick(View v) {
                 nama.setEnabled(true);
-                nama.setFocusable(true);
+                nama.requestFocus();
+            }
+        });
+
+        nama.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                boolean handled = false;
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    nama.setEnabled(false);
+                    handled = true;
+                }
+                return handled;
             }
         });
 
@@ -58,7 +73,19 @@ public class ActivityInformasiPribadi extends Activity {
             @Override
             public void onClick(View v) {
                 email.setEnabled(true);
-                email.setFocusable(true);
+                email.requestFocus();
+            }
+        });
+
+        email.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                boolean handled = false;
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    email.setEnabled(false);
+                    handled = true;
+                }
+                return handled;
             }
         });
 
@@ -66,7 +93,22 @@ public class ActivityInformasiPribadi extends Activity {
             @Override
             public void onClick(View v) {
                 hp.setEnabled(true);
-                hp.setFocusable(true);
+                hp.requestFocus();
+            }
+        });
+
+        hp.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                boolean handled = false;
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    hp.setEnabled(false);
+                    ApplicationData.editPhone = true;
+                    Intent i = new Intent(getBaseContext(), ActivityHandphoneKonfirmasi.class);
+                    startActivity(i);
+                    handled = true;
+                }
+                return handled;
             }
         });
 
