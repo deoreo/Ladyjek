@@ -122,8 +122,8 @@
                         android:hint="From"
                         android:selectAllOnFocus="true"
                         android:background="@null"
-
-                        android:textColorHint="#111111"
+                        android:textStyle="bold"
+                        android:textColorHint="@drawable/hint_selector_black"
                         android:textSize="15sp" />
                     <RelativeLayout
                         android:layout_width="17dp"

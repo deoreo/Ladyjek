@@ -50,17 +50,11 @@ public class ActivityHandphone extends Activity {
                     txtPhoneNumber.setText("");
                 }
                 else{
-<<<<<<< HEAD
-                    ApplicationData.modelUser.phone = hp;
-                    Intent i = new Intent(getBaseContext(), ActivityHandphoneKonfirmasi.class);
-                    startActivity(i);
-                    finish();
-=======
+
                     new DoPhone(act).execute(
                             ApplicationData.registered_id,
-                            "+62"+txtPhoneNumber
+                            "+62"+hp
                     );
->>>>>>> 126fff202b97b090a4a835a5203626755d2c4469
                 }
 
             }
@@ -132,7 +126,7 @@ public class ActivityHandphone extends Activity {
                 */
                 JSONControl jsControl = new JSONControl();
                 JSONObject response = jsControl.postPhone(id, phone);
-                Log.d("json response",response.toString());
+                Log.d("json response phone",response.toString());
                 /*
                 try {
                     JSONObject _id = response.getJSONObject("_id");
@@ -167,7 +161,7 @@ public class ActivityHandphone extends Activity {
             progressDialog.dismiss();
             switch (result) {
                 case "FAIL":
-                    DialogManager.showDialog(activity, "Warning", "Phone Number Already registered!");
+                    DialogManager.showDialog(activity, "Warning", "Register Phone Number failed!");
                     break;
                 case "OK":
                     Intent i = new Intent(getBaseContext(), ActivityHandphoneKonfirmasi.class);

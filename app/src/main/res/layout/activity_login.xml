@@ -87,7 +87,7 @@
                                     android:inputType="textEmailAddress"
                                     android:padding="10dp"
                                     android:textColor="@color/white_color"
-                                    android:textColorHint="@drawable/hint_selector"
+                                    android:textColorHint="@drawable/hint_selector_white"
                                     android:textStyle="bold"
                                     android:textCursorDrawable="@drawable/cursor_white"/>
 
@@ -112,7 +112,7 @@
                                     android:inputType="textPassword"
                                     android:padding="10dp"
                                     android:textColor="@color/white_color"
-                                    android:textColorHint="@drawable/hint_selector"
+                                    android:textColorHint="@drawable/hint_selector_white"
                                     android:textStyle="bold"
                                     android:textCursorDrawable="@drawable/cursor_white"/>
 

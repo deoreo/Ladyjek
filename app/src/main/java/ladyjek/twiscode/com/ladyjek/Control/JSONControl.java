@@ -89,7 +89,7 @@ public class JSONControl {
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             params.add(new BasicNameValuePair("id", id));
             params.add(new BasicNameValuePair("phoneNumber", phone));
-            jsonObj = _JSONResponse.POSTResponse(ConfigManager.PHONE_NUMBER, params);
+            jsonObj = _JSONResponse.PATCHResponse(ConfigManager.PHONE_NUMBER, params);
 
         } catch (Exception e) {
             e.printStackTrace();

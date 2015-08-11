@@ -120,19 +120,18 @@ public class JSONResponse {
 
 
             DefaultHttpClient httpClient = new DefaultHttpClient();
-            HttpPost httpPost = new HttpPost(url);
-            httpPost.setEntity(new UrlEncodedFormEntity(params));
-            httpPost.setHeader("X-HTTP-Method-Override", "PATCH");
-            httpPost.setHeader("Content-type", "application/json");
-            httpPost.setHeader("Accept", "*/*");
-            httpPost.setHeader("Accept-Encoding", "gzip, deflate");
-            httpPost.addHeader("Connection", "keep-alive");
-            httpPost.addHeader("Accept-Language", "en-GB,en-US;q=0.8,en;q=0.6");
-            httpPost.setHeader("User-Agent", "nnst");
-            httpPost.setHeader("Accept-Charset", "utf-8");
-            //httpPost.setHeader("Authorization", "Token" + " " + token);
-
-            HttpResponse httpResponse = httpClient.execute(httpPost);
+            HttpPatch httpPatch = new HttpPatch(url);
+            httpPatch.setEntity(new UrlEncodedFormEntity(params));
+            //httpPatch.setHeader("X-HTTP-Method-Override", "PATCH");
+            httpPatch.setHeader("Content-type", "application/x-www-form-urlencoded");
+            httpPatch.setHeader("Accept", "*/*");
+            httpPatch.setHeader("Accept-Encoding", "gzip, deflate, sdch");
+            //httpPatch.addHeader("Connection", "keep-alive");
+            httpPatch.addHeader("Accept-Language", "en-US;q=0.8");
+            //httpPost.setHeader("User-Agent", "nnst");
+            //httpPost.setHeader("Accept-Charset", "utf-8");
+//httpPost.setHeader("Authorization", "Token" + " " + token);
+            HttpResponse httpResponse = httpClient.execute(httpPatch);
             HttpEntity httpEntity = httpResponse.getEntity();
             _inputStream = httpEntity.getContent();
 

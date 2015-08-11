@@ -72,9 +72,7 @@ public class ActivityRegister extends ActionBarActivity {
                     txtPassword.setText("");
                     txtConfirm.setText("");
                 } else {
-<<<<<<< HEAD
-                    ApplicationData.modelUser = new ModelUser("1","name kamu",email,password,"",new LatLng(0,0),new LatLng(0,0));
-=======
+
                     /*
                     ApplicationData.user = new User("1","nama kamu",email,password,"",new LatLng(0,0),new LatLng(0,0));
 >>>>>>> 126fff202b97b090a4a835a5203626755d2c4469

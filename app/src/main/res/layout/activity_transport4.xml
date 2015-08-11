@@ -106,7 +106,7 @@
                         android:background="@null"
                         android:textColor="#111111"
                         android:textStyle="bold"
-                        android:textColorHint="#111111"
+                        android:textColorHint="@drawable/hint_selector_black"
                         android:textSize="15sp" />
                     <RelativeLayout
                         android:layout_width="17dp"
@@ -151,7 +151,7 @@
                         android:background="@null"
                         android:textColor="#111111"
                         android:textStyle="bold"
-                        android:textColorHint="#111111"
+                        android:textColorHint="@drawable/hint_selector_black"
                         android:textSize="15sp" />
                     <RelativeLayout
                         android:layout_width="17dp"
