@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ProgressBar;
 
 import ladyjek.twiscode.com.ladyjek.Database.DatabaseHandler;
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
@@ -15,52 +16,51 @@ import ladyjek.twiscode.com.ladyjek.R;
 public class ActivitySplashScreen extends Activity {
 
     private DatabaseHandler db;
+    private ProgressBar mProgressBar;
+    private int mWaited = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
         db = new DatabaseHandler(this);
-
-        /*
-        int countUser = db.getUserCount();
-        if(countUser > 0) {
-
-            Intent i = new Intent(getBaseContext(), Main.class);
-            startActivity(i);
-            ApplicationData.userLogin = db.getUser();
-            finish();
-        }
-        else{
-            // After 5 seconds redirect to another intent
-            Intent i = new Intent(getBaseContext(), ActivityLogin.class);
-            startActivity(i);
-            finish();
-        }
-        */
-
-        Dummy();
+        mProgressBar = (ProgressBar) findViewById(R.id.splash_progress);
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_activity_splash_screen, menu);
-        return true;
-    }
+    protected void onStart() {
+        super.onStart();
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        Thread splashThread = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    for (int i = 0; i <= 1000; i++) {
+                        sleep(2);
+                        mProgressBar.setProgress(mWaited/10);
+                        mWaited+=1;
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } finally {
+                    int countUser = db.getUserCount();
+                    if(countUser > 0) {
+                        Intent i = new Intent(getBaseContext(), Main.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(i);
+                    }
+                    else{
+                        Intent i = new Intent(getBaseContext(), ActivityLogin.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(i);
+                    }
+                    finish();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
 
-        return super.onOptionsItemSelected(item);
+                }
+            }
+        };
+        splashThread.start();
     }
 
     private void Dummy(){
@@ -68,7 +68,6 @@ public class ActivitySplashScreen extends Activity {
             public void run() {
 
                 try {
-                    // Thread will sleep for 5 seconds
                     sleep(5 * 1000);
                     int countUser = db.getUserCount();
                     if(countUser > 0) {
@@ -93,5 +92,10 @@ public class ActivitySplashScreen extends Activity {
 
 
         background.start();
+    }
+
+    @Override
+    public void onBackPressed() {
+
     }
 }
