@@ -76,15 +76,15 @@ public class JSONControl {
         return jsonObj;
     }
 
-    public JSONObject postPhone(String id, String phone) {
+    public String postPhone(String id, String phone) {
 
-        JSONObject jsonObj = null;
+        String jsonObj = null;
 
         try {
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             params.add(new BasicNameValuePair("id", id));
             params.add(new BasicNameValuePair("phoneNumber", phone));
-            jsonObj = _JSONResponse.PATCHResponse(ConfigManager.PHONE_NUMBER, params);
+            jsonObj = _JSONResponse.POSTResponseString(ConfigManager.PHONE_NUMBER, params);
 
         } catch (Exception e) {
             e.printStackTrace();

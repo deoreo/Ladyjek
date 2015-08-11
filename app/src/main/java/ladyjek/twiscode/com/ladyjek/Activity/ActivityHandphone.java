@@ -125,8 +125,11 @@ public class ActivityHandphone extends Activity {
                 }
                 */
                 JSONControl jsControl = new JSONControl();
-                JSONObject response = jsControl.postPhone(id, phone);
-                Log.d("json response phone",response.toString());
+                String response = jsControl.postPhone(id, phone);
+                Log.d("json response phone",response);
+                if(response.contains("true")){
+                    return "OK";
+                }
                 /*
                 try {
                     JSONObject _id = response.getJSONObject("_id");
