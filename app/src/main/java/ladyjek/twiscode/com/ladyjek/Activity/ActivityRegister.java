@@ -75,7 +75,6 @@ public class ActivityRegister extends ActionBarActivity {
 
                     /*
                     ApplicationData.user = new User("1","nama kamu",email,password,"",new LatLng(0,0),new LatLng(0,0));
->>>>>>> 126fff202b97b090a4a835a5203626755d2c4469
                     Intent i = new Intent(getBaseContext(), ActivityHandphone.class);
                     startActivity(i);
                     finish();

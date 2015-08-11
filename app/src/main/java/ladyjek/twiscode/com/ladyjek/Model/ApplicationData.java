@@ -13,9 +13,12 @@ public class ApplicationData {
     private static String hp = "83857565559";
 
     public static String registered_id = "";
+    public static String login_id = "";
+
 
 
     public static ModelUser modelUser = new ModelUser(id,nama,email,password,hp,null,null);
+    public static ModelUser userLogin;
     public static String phone = "2789";
     public static Boolean editPhone = false;
     public static Boolean editHome = false;

@@ -44,26 +44,21 @@ public class JSONControl {
 
     }
 
-    public JSONArray login(String addressInput) {
-        JSONArray json = null;
+    public JSONObject postLogin(String email, String password) {
         JSONObject jsonObj = null;
+
         try {
-            String url = ConfigManager.URL_SUGGESTION +
-                    URLEncoder.encode(addressInput, "utf8");
-            Log.d("url", url);
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new BasicNameValuePair("email", email));
+            params.add(new BasicNameValuePair("password", password));
+            jsonObj = _JSONResponse.POSTResponse(ConfigManager.LOGIN, params);
 
-
-            jsonObj = _JSONResponse.GETResponse(url);
-            json = jsonObj.getJSONArray("predictions");
-        } catch (ConnectException e) {
-        } catch (UnsupportedEncodingException e) {
-        } catch (JSONException e) {
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return json;
+        return jsonObj;
 
     }
-
-
 
     public JSONObject postRegister(String email, String password) {
 
@@ -72,7 +67,7 @@ public class JSONControl {
         try {
                 List<NameValuePair> params = new ArrayList<NameValuePair>();
                 params.add(new BasicNameValuePair("email", email));
-                params.add(new BasicNameValuePair("password", password));
+            params.add(new BasicNameValuePair("password", password));
                 jsonObj = _JSONResponse.POSTResponse(ConfigManager.REGISTER, params);
 
         } catch (Exception e) {
