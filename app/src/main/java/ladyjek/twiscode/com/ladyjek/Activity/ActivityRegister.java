@@ -1,9 +1,14 @@
 package ladyjek.twiscode.com.ladyjek.Activity;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,6 +17,14 @@ import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import ladyjek.twiscode.com.ladyjek.Control.JSONControl;
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.Model.ModelUser;
 import ladyjek.twiscode.com.ladyjek.R;
@@ -59,10 +72,20 @@ public class ActivityRegister extends ActionBarActivity {
                     txtPassword.setText("");
                     txtConfirm.setText("");
                 } else {
+<<<<<<< HEAD
                     ApplicationData.modelUser = new ModelUser("1","name kamu",email,password,"",new LatLng(0,0),new LatLng(0,0));
+=======
+                    /*
+                    ApplicationData.user = new User("1","nama kamu",email,password,"",new LatLng(0,0),new LatLng(0,0));
+>>>>>>> 126fff202b97b090a4a835a5203626755d2c4469
                     Intent i = new Intent(getBaseContext(), ActivityHandphone.class);
                     startActivity(i);
                     finish();
+                    */
+                    new DoRegister(act).execute(
+                            email,
+                            password
+                    );
                 }
             }
         });
@@ -97,6 +120,93 @@ public class ActivityRegister extends ActionBarActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+
+    }
+
+    private class DoRegister extends AsyncTask<String, Void, String> {
+        private Activity activity;
+        private Context context;
+        private Resources resources;
+        private ProgressDialog progressDialog;
+
+        public DoRegister(Activity activity) {
+            super();
+            this.activity = activity;
+            this.context = activity.getApplicationContext();
+            this.resources = activity.getResources();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = new ProgressDialog(activity);
+            progressDialog.setMessage("Signing Up. . .");
+            progressDialog.setIndeterminate(false);
+            progressDialog.setCancelable(false);
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressDialog.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+
+                String email = params[0];
+                String password = params[1];
+
+                /*
+                if (email.equals(ApplicationData.user.email) && password.equals(ApplicationData.user.password)) {
+                    return "OK";
+                }
+                */
+                JSONControl jsControl = new JSONControl();
+                JSONObject response = jsControl.postRegister(email,password);
+                Log.d("json response",response.toString());
+                try {
+                    String _id = response.getString("_id");
+                    Log.d("json response id",_id.toString());
+                    if(_id!=null){
+                        ApplicationData.registered_id = _id.toString();
+                        return "OK";
+                    }
+                    else {
+                        return "FAIL";
+                    }
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return "FAIL";
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            progressDialog.dismiss();
+            switch (result) {
+                case "FAIL":
+                    DialogManager.showDialog(activity, "Warning", "Sign up Failed!");
+                    break;
+                case "OK":
+                    Intent i = new Intent(getBaseContext(), ActivityHandphone.class);
+                    startActivity(i);
+                    finish();
+                    break;
+            }
+
+
+        }
+
 
     }
 

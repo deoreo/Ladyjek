@@ -50,3 +50,4 @@ _sandbox
 
 #Other
 *.bin
+sh.exe.stackdump

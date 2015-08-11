@@ -12,6 +12,8 @@ public class ApplicationData {
     private static String password = "abcd";
     private static String hp = "83857565559";
 
+    public static String registered_id = "";
+
 
     public static ModelUser modelUser = new ModelUser(id,nama,email,password,hp,null,null);
     public static String phone = "2789";
