@@ -1,6 +1,8 @@
 package ladyjek.twiscode.com.ladyjek.Model;
 
 
+import com.google.android.gms.maps.model.LatLng;
+
 /**
  * Created by Unity on 19/05/2015.
  */
@@ -22,6 +24,9 @@ public class ApplicationData {
     public static String phone = "2789";
     public static Boolean editPhone = false;
     public static Boolean editHome = false;
+
+    public static LatLng posFrom;
+    public static LatLng posDriver;
 
 
 

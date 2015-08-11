@@ -1,64 +1,48 @@
 package ladyjek.twiscode.com.ladyjek.Activity;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ProgressBar;
 
+import org.json.JSONObject;
+
+import ladyjek.twiscode.com.ladyjek.Control.JSONControl;
+import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
+import ladyjek.twiscode.com.ladyjek.Model.ModelUser;
 import ladyjek.twiscode.com.ladyjek.R;
+import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
 
 public class ActivityLoading extends Activity {
 
+    private ProgressBar mProgressBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading);
-
+        mProgressBar = (ProgressBar)findViewById(R.id.progressBarPickUp);
         Dummy();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_activity_splash_screen, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
     private void Dummy(){
         Thread background = new Thread() {
             public void run() {
-
                 try {
-                    // Thread will sleep for 5 seconds
-                    sleep(1*1000);
-
-                    // After 5 seconds redirect to another intent
-
-                    Intent i=new Intent(getBaseContext(),ActivityConfirm.class);
-
+                    sleep(5*1000);
+                    mProgressBar.setIndeterminate(true);
+                    Intent i=new Intent(getBaseContext(),ActivityPickUp.class);
                     startActivity(i);
-
-                    //Remove activity
                     finish();
 
                 } catch (Exception e) {
-
                 }
             }
         };
@@ -66,4 +50,78 @@ public class ActivityLoading extends Activity {
 
         background.start();
     }
+
+    private class GetDriver extends AsyncTask<String, Void, String> {
+        private Activity activity;
+        private Context context;
+        private Resources resources;
+        private ProgressDialog progressDialog;
+
+        public GetDriver(Activity activity) {
+            super();
+            this.activity = activity;
+            this.context = activity.getApplicationContext();
+            this.resources = activity.getResources();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+
+                String email = params[0];
+                String password = params[1];
+
+                JSONControl jsControl = new JSONControl();
+                JSONObject response = jsControl.postLogin(email,password);
+                JSONObject responseUser = response.getJSONObject("driver");
+                Log.d("json response", response.toString());
+                try {
+                    String _id = responseUser.getString("_id");
+                    Log.d("json response id",_id.toString());
+                    if(_id!=null){
+                        return "OK";
+                    }
+                    else {
+                        return "FAIL";
+                    }
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return "FAIL";
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            progressDialog.dismiss();
+            switch (result) {
+                case "FAIL":
+                    DialogManager.showDialog(activity, "Warning", "");
+                    break;
+                case "OK":
+
+                    Intent i = new Intent(getBaseContext(), Main.class);
+                    startActivity(i);
+                    finish();
+                    break;
+            }
+
+
+        }
+
+
+    }
+
 }

@@ -1,6 +1,7 @@
 package ladyjek.twiscode.com.ladyjek.Activity;
 
 import android.app.Dialog;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -19,6 +20,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -27,6 +30,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.Model.ModelGeocode;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.GoogleAPIManager;
@@ -43,14 +47,6 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pickup);
-
-        try {
-            Bundle b = getIntent().getExtras();
-            strLat = b.getString("lat");
-            strLon = b.getString("lon");
-        } catch (Exception e) {
-
-        }
 
         // Getting Google Play availability status
         int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());
@@ -69,10 +65,17 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
 
             // Getting GoogleMap object from the fragment
             googleMap = fm.getMap();
-            Double latitude = Double.parseDouble(strLat);
-            Double longitude = Double.parseDouble(strLon);
+            Double latitude = ApplicationData.posFrom.latitude;
+            Double longitude = ApplicationData.posFrom.longitude;
             LatLng currentPosition = new LatLng(latitude, longitude);
             drawNewMarker(getAddress(currentPosition));
+            CircleOptions circleOptions = new CircleOptions()
+                    .center(posFrom)
+                    .radius(500)
+                    .strokeWidth(1)
+                    .strokeColor(Color.BLUE)
+                    .fillColor(Color.parseColor("#500084d3"));
+            Circle mapCircle = googleMap.addCircle(circleOptions);
 
         }
 

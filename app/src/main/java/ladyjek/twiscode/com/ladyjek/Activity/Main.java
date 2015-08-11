@@ -65,7 +65,6 @@ public class Main extends ActionBarActivity implements FragmentDrawer.FragmentDr
         String counterStack = Integer.toString(getFragmentManager().getBackStackEntryCount());
         Log.d("counter stack", "" + counterStack);
         finish();
-
     }
 
 
