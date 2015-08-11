@@ -69,18 +69,18 @@ public class ActivitySplashScreen extends Activity {
 
                 try {
                     // Thread will sleep for 5 seconds
-
+                    sleep(5 * 1000);
                     int countUser = db.getUserCount();
                     if(countUser > 0) {
-                        sleep(3 * 1000);
                         Intent i = new Intent(getBaseContext(), Main.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(i);
                         ApplicationData.userLogin = db.getUser();
                     }
                     else{
-                        sleep(3 * 1000);
                         // After 5 seconds redirect to another intent
                         Intent i = new Intent(getBaseContext(), ActivityLogin.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(i);
                     }
                     finish();

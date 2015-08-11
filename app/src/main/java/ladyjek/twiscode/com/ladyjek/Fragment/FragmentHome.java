@@ -44,6 +44,7 @@ import ladyjek.twiscode.com.ladyjek.Activity.ActivityConfirm;
 import ladyjek.twiscode.com.ladyjek.Adapter.AdapterAddress;
 import ladyjek.twiscode.com.ladyjek.Adapter.AdapterSuggestion;
 import ladyjek.twiscode.com.ladyjek.Control.JSONControl;
+import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.Model.ModelGeocode;
 import ladyjek.twiscode.com.ladyjek.Model.ModelPlace;
 import ladyjek.twiscode.com.ladyjek.R;
@@ -145,7 +146,6 @@ public class FragmentHome extends Fragment {
         itemCurrent = (FrameLayout) rootView.findViewById(R.id.itemCurrent);
         txtAddressCurrent = (TextView) rootView.findViewById(R.id.txtAddressCurrent);
 
-        //TimeOutSearchLocation();
         new GetMyLocation(mActivity).execute();
 
         btnRequestRide.setOnClickListener(new View.OnClickListener() {
@@ -397,6 +397,8 @@ public class FragmentHome extends Fragment {
 
                     } catch (JSONException e) {
                         e.printStackTrace();
+                    } catch (Exception e){
+
                     }
 
                     if (status) {
@@ -484,7 +486,6 @@ public class FragmentHome extends Fragment {
             try {
                 try {
                     Looper.prepare();
-
                     mUserLocationHandler = new Handler();
                     Log.d("loc", "get current location");
 
@@ -556,29 +557,30 @@ public class FragmentHome extends Fragment {
                     DialogManager.showDialog(activity, "Warning", "Can not find your location!");
                     break;
                 case "OK":
-                    double latitude = location.getLatitude();
-                    double longitude = location.getLongitude();
-                    posFrom = new LatLng(latitude, longitude);
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLng(posFrom));
-                    googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
-                    CircleOptions circleOptions = new CircleOptions()
-                            .center(posFrom)
-                            .radius(500)
-                            .strokeWidth(1)
-                            .strokeColor(Color.BLUE)
-                            .fillColor(Color.parseColor("#500084d3"));
+                    try {
+                        double latitude = location.getLatitude();
+                        double longitude = location.getLongitude();
+                        posFrom = new LatLng(latitude, longitude);
+                        ApplicationData.posFrom = posFrom;
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLng(posFrom));
+                        googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
 
-                    // mapCircle = googleMap.addCircle(circleOptions);
-                    drawNewMarker(getAddress(posFrom));
-                    cameraUpdate = CameraUpdateFactory.newLatLngZoom(posFrom, 15);
-                    googleMap.animateCamera(cameraUpdate);
-                    // DialogManager.showDialog(activity, "", "Success find your location!");
+                        drawNewMarker(getAddress(posFrom));
+                        cameraUpdate = CameraUpdateFactory.newLatLngZoom(posFrom, 15);
+                        googleMap.animateCamera(cameraUpdate);
+                    } catch (Exception e){
+
+                    }
                     break;
             }
 
             progressDialog.dismiss();
         }
 
+        public void OnStart()
+        {
+            new GetMyLocation(mActivity).execute();
+        }
 
         @Override
         public void onLocationChanged(Location location) {
@@ -606,21 +608,6 @@ public class FragmentHome extends Fragment {
         }
     }
 
-    private void TimeOutSearchLocation() {
-        Thread background = new Thread() {
-            public void run() {
 
-                try {
-                    sleep(60 * 1000);
-                    new GetMyLocation(mActivity).execute();
-                } catch (Exception e) {
-                    Log.d("time out", "time out");
-                }
-            }
-        };
-
-
-        background.start();
-    }
 
 }

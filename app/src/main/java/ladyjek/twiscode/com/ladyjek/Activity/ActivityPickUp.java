@@ -1,6 +1,7 @@
 package ladyjek.twiscode.com.ladyjek.Activity;
 
 import android.app.Dialog;
+import android.graphics.Color;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Address;
@@ -26,6 +27,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -56,13 +59,6 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
         btnCall = (Button) findViewById(R.id.btnCall);
         btnSMS = (Button) findViewById(R.id.btnSMS);
 
-        try {
-            Bundle b = getIntent().getExtras();
-            strLat = b.getString("lat");
-            strLon = b.getString("lon");
-        } catch (Exception e) {
-
-        }
 
         // Getting Google Play availability status
         int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());
@@ -81,10 +77,17 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
 
             // Getting GoogleMap object from the fragment
             googleMap = fm.getMap();
-            Double latitude = Double.parseDouble(strLat);
-            Double longitude = Double.parseDouble(strLon);
+            Double latitude = ApplicationData.posFrom.latitude;
+            Double longitude = ApplicationData.posFrom.longitude;
             LatLng currentPosition = new LatLng(latitude, longitude);
             drawNewMarker(getAddress(currentPosition));
+            CircleOptions circleOptions = new CircleOptions()
+                    .center(posFrom)
+                    .radius(500)
+                    .strokeWidth(1)
+                    .strokeColor(Color.BLUE)
+                    .fillColor(Color.parseColor("#500084d3"));
+            Circle mapCircle = googleMap.addCircle(circleOptions);
 
         }
 
