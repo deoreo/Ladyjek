@@ -17,7 +17,7 @@ public class NetworkManager {
             _instance = new NetworkManager(ctx);
         return _instance;
     }
-    public static boolean isConnectedInternet() {
+    public boolean isConnectedInternet() {
         ConnectivityManager connectivity = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connectivity != null) {
             NetworkInfo[] info = connectivity.getAllNetworkInfo();

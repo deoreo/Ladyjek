@@ -28,9 +28,27 @@ public class ActivityLoading extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading);
         mProgressBar = (ProgressBar)findViewById(R.id.progressBarPickUp);
-        Dummy();
     }
 
+    @Override
+    protected void onStart(){
+        super.onStart();
+        Thread background = new Thread() {
+            public void run() {
+                try {
+                    sleep(5*1000);
+                    Intent i=new Intent(getBaseContext(),ActivityPickUp.class);
+                    startActivity(i);
+                    finish();
+
+                } catch (Exception e) {
+                }
+            }
+        };
+
+
+        background.start();
+    }
 
     private void Dummy(){
         Thread background = new Thread() {

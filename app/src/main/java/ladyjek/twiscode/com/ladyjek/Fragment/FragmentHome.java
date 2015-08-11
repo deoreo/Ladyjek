@@ -50,6 +50,7 @@ import ladyjek.twiscode.com.ladyjek.Model.ModelPlace;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.GoogleAPIManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
+import ladyjek.twiscode.com.ladyjek.Utilities.NetworkManager;
 
 
 import com.google.android.gms.common.ConnectionResult;
@@ -146,7 +147,12 @@ public class FragmentHome extends Fragment {
         itemCurrent = (FrameLayout) rootView.findViewById(R.id.itemCurrent);
         txtAddressCurrent = (TextView) rootView.findViewById(R.id.txtAddressCurrent);
 
-        new GetMyLocation(mActivity).execute();
+        if(NetworkManager.getInstance(mActivity).isConnectedInternet()) {
+            new GetMyLocation(mActivity).execute();
+        }
+        else{
+            DialogManager.showDialog(mActivity,"Warning", "No internet connection");
+        }
 
         btnRequestRide.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -462,6 +468,7 @@ public class FragmentHome extends Fragment {
         private ProgressDialog progressDialog;
         private Handler mUserLocationHandler = null;
         private Handler handler = null;
+        double latitude, longitude;
 
         public GetMyLocation(Activity activity) {
             super();
@@ -506,36 +513,35 @@ public class FragmentHome extends Fragment {
                         if (!isGPSEnabled && !isNetworkEnabled) {
                             DialogManager.showDialog(mActivity, "Warning", "Turn on your GPS or network!");
                         } else {
-
                             if (isNetworkEnabled) {
-
-                                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
-                                Log.d("Network", "Network");
+                                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
+                                Log.d("locationManager", "Network");
                                 if (locationManager != null) {
                                     location = locationManager
                                             .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
                                     if (location != null) {
-                                        Double latitude = location.getLatitude();
-                                        Double longitude = location.getLongitude();
+                                        latitude = location.getLatitude();
+                                        longitude = location.getLongitude();
                                         posFrom = new LatLng(latitude, longitude);
                                     }
                                 }
                             }
                             if (isGPSEnabled) {
-                                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
-                                Log.d("Network", "Network");
+                                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+                                Log.d("locationManager", "GPS");
                                 if (locationManager != null) {
                                     location = locationManager
                                             .getLastKnownLocation(LocationManager.GPS_PROVIDER);
                                     if (location != null) {
-                                        Double latitude = location.getLatitude();
-                                        Double longitude = location.getLongitude();
+                                        latitude = location.getLatitude();
+                                        longitude = location.getLongitude();
                                         posFrom = new LatLng(latitude, longitude);
                                     }
                                 }
                             }
                         }
                     }
+
                     Looper.loop();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -557,30 +563,22 @@ public class FragmentHome extends Fragment {
                     DialogManager.showDialog(activity, "Warning", "Can not find your location!");
                     break;
                 case "OK":
-                    try {
-                        double latitude = location.getLatitude();
-                        double longitude = location.getLongitude();
-                        posFrom = new LatLng(latitude, longitude);
-                        ApplicationData.posFrom = posFrom;
-                        googleMap.moveCamera(CameraUpdateFactory.newLatLng(posFrom));
-                        googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
-
-                        drawNewMarker(getAddress(posFrom));
-                        cameraUpdate = CameraUpdateFactory.newLatLngZoom(posFrom, 15);
-                        googleMap.animateCamera(cameraUpdate);
-                    } catch (Exception e){
-
-                    }
+                    LatLng pFrom = new LatLng(latitude, longitude);
+                    ApplicationData.posFrom = pFrom;
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLng(pFrom));
+                    googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+                    googleMap.addMarker(
+                            new MarkerOptions()
+                                    .position(pFrom)
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
+                    cameraUpdate = CameraUpdateFactory.newLatLngZoom(pFrom, 15);
+                    googleMap.animateCamera(cameraUpdate);
                     break;
             }
 
             progressDialog.dismiss();
         }
 
-        public void OnStart()
-        {
-            new GetMyLocation(mActivity).execute();
-        }
 
         @Override
         public void onLocationChanged(Location location) {
