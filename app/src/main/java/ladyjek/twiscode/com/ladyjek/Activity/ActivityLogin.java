@@ -190,6 +190,7 @@ public class ActivityLogin extends Activity implements KeyboardManager.Listener 
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
+            progressDialog.dismiss();
             switch (result) {
                 case "FAIL":
                     DialogManager.showDialog(activity, "Warning", "Login Failed!");
@@ -201,7 +202,7 @@ public class ActivityLogin extends Activity implements KeyboardManager.Listener 
                     break;
             }
 
-            progressDialog.dismiss();
+
         }
 
 

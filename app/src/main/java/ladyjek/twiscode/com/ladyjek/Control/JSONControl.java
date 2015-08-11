@@ -2,6 +2,8 @@ package ladyjek.twiscode.com.ladyjek.Control;
 
 import android.util.Log;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -9,6 +11,8 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 
 import ladyjek.twiscode.com.ladyjek.Utilities.ConfigManager;
 
@@ -59,21 +63,24 @@ public class JSONControl {
     }
 
 
-    /*Contoh POST
-    public void postComment(String art, String msg, String nam) {
+
+    public JSONObject postRegister(String email, String password) {
+
+        JSONObject jsonObj = null;
 
         try {
                 List<NameValuePair> params = new ArrayList<NameValuePair>();
-                params.add(new BasicNameValuePair("art", art));
-                params.add(new BasicNameValuePair("msg", msg));
-                params.add(new BasicNameValuePair("nam", nam));
-                JSONObject jsonObj = _JSONResponse.POSTResponse(ClassConfiguration.URL_API_COMMENT, params);
+                params.add(new BasicNameValuePair("email", email));
+                params.add(new BasicNameValuePair("password", password));
+                jsonObj = _JSONResponse.POSTResponse(ConfigManager.REGISTER, params);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return jsonObj;
     }
 
-     */
+
 
 
 }

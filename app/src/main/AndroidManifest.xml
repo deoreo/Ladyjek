@@ -19,7 +19,7 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/logo_ladyjek"
+        android:icon="@drawable/ladyjek_logo_icon"
         android:label="@string/app_name"
         android:theme="@style/MyMaterialTheme" >
         <meta-data
@@ -69,10 +69,6 @@
             android:name=".Activity.ActivityRate"
             android:label="@string/title_activity_activity_rate"
             android:windowSoftInputMode="adjustResize" >
-        </activity>
-        <activity
-            android:name=".Activity.ActivityTransport"
-            android:label="@string/title_activity_activity_transport" >
         </activity>
         <activity
             android:name=".Activity.ActivityPickUp"
