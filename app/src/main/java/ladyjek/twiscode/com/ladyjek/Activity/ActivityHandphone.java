@@ -1,14 +1,22 @@
 package ladyjek.twiscode.com.ladyjek.Activity;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.json.JSONObject;
+
+import ladyjek.twiscode.com.ladyjek.Control.JSONControl;
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
@@ -42,10 +50,10 @@ public class ActivityHandphone extends Activity {
                     txtPhoneNumber.setText("");
                 }
                 else{
-                    ApplicationData.user.phone = hp;
-                    Intent i = new Intent(getBaseContext(), ActivityHandphoneKonfirmasi.class);
-                    startActivity(i);
-                    finish();
+                    new DoPhone(act).execute(
+                            ApplicationData.registered_id,
+                            "+62"+txtPhoneNumber
+                    );
                 }
 
             }
@@ -77,6 +85,94 @@ public class ActivityHandphone extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private class DoPhone extends AsyncTask<String, Void, String> {
+        private Activity activity;
+        private Context context;
+        private Resources resources;
+        private ProgressDialog progressDialog;
+
+        public DoPhone(Activity activity) {
+            super();
+            this.activity = activity;
+            this.context = activity.getApplicationContext();
+            this.resources = activity.getResources();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = new ProgressDialog(activity);
+            progressDialog.setMessage("Loading. . .");
+            progressDialog.setIndeterminate(false);
+            progressDialog.setCancelable(false);
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressDialog.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+
+                String id = params[0];
+                String phone = params[1];
+
+                /*
+                if (email.equals(ApplicationData.user.email) && password.equals(ApplicationData.user.password)) {
+                    return "OK";
+                }
+                */
+                JSONControl jsControl = new JSONControl();
+                JSONObject response = jsControl.postPhone(id, phone);
+                Log.d("json response",response.toString());
+                /*
+                try {
+                    JSONObject _id = response.getJSONObject("_id");
+                    if(_id!=null){
+                        ApplicationData.registered_id = _id.toString();
+                        return "OK";
+                    }
+                    else {
+                        return "FAIL";
+                    }
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
+                */
+
+
+
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return "FAIL";
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            progressDialog.dismiss();
+            switch (result) {
+                case "FAIL":
+                    DialogManager.showDialog(activity, "Warning", "Phone Number Already registered!");
+                    break;
+                case "OK":
+                    Intent i = new Intent(getBaseContext(), ActivityHandphoneKonfirmasi.class);
+                    startActivity(i);
+                    finish();
+                    break;
+            }
+
+
+        }
+
+
     }
 
 

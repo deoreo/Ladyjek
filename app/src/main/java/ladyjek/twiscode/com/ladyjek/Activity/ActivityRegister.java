@@ -157,13 +157,12 @@ public class ActivityRegister extends ActionBarActivity {
                 */
                 JSONControl jsControl = new JSONControl();
                 JSONObject response = jsControl.postRegister(email,password);
-
+                Log.d("json response",response.toString());
                 try {
-                    JSONObject _id = response.getJSONObject("_id");
+                    String _id = response.getString("_id");
+                    Log.d("json response id",_id.toString());
                     if(_id!=null){
-                        JSONObject _email = response.getJSONObject("email");
-                        JSONObject _verified = response.getJSONObject("verified");
-
+                        ApplicationData.registered_id = _id.toString();
                         return "OK";
                     }
                     else {

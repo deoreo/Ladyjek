@@ -14,6 +14,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.Utilities.ConfigManager;
 
 public class JSONControl {
@@ -73,6 +74,22 @@ public class JSONControl {
                 params.add(new BasicNameValuePair("email", email));
                 params.add(new BasicNameValuePair("password", password));
                 jsonObj = _JSONResponse.POSTResponse(ConfigManager.REGISTER, params);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return jsonObj;
+    }
+
+    public JSONObject postPhone(String id, String phone) {
+
+        JSONObject jsonObj = null;
+
+        try {
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new BasicNameValuePair("id", id));
+            params.add(new BasicNameValuePair("phoneNumber", phone));
+            jsonObj = _JSONResponse.POSTResponse(ConfigManager.PHONE_NUMBER, params);
 
         } catch (Exception e) {
             e.printStackTrace();
