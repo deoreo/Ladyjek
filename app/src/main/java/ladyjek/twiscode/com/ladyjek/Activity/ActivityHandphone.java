@@ -50,17 +50,10 @@ public class ActivityHandphone extends Activity {
                     txtPhoneNumber.setText("");
                 }
                 else{
-<<<<<<< HEAD
-                    ApplicationData.modelUser.phone = hp;
-                    Intent i = new Intent(getBaseContext(), ActivityHandphoneKonfirmasi.class);
-                    startActivity(i);
-                    finish();
-=======
                     new DoPhone(act).execute(
                             ApplicationData.registered_id,
                             "+62"+txtPhoneNumber
                     );
->>>>>>> 126fff202b97b090a4a835a5203626755d2c4469
                 }
 
             }

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,7 +15,12 @@ import android.app.ProgressDialog;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import org.json.JSONObject;
+
+import ladyjek.twiscode.com.ladyjek.Control.JSONControl;
+import ladyjek.twiscode.com.ladyjek.Database.DatabaseHandler;
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
+import ladyjek.twiscode.com.ladyjek.Model.ModelUser;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.KeyboardManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
@@ -25,6 +31,8 @@ public class ActivityLogin extends Activity implements KeyboardManager.Listener 
     private TextView btnRegister, btnLogin;
     private EditText txtEmail, txtPassword;
     private RelativeLayout wrapperLogin, wrapperRegister;
+    private ModelUser userLogin;
+    private DatabaseHandler db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +40,8 @@ public class ActivityLogin extends Activity implements KeyboardManager.Listener 
         setContentView(R.layout.activity_login);
 
         mActivity = this;
+
+        db = new DatabaseHandler(mActivity);
         btnRegister = (TextView) findViewById(R.id.btnRegister);
         btnLogin = (TextView) findViewById(R.id.btnLogin);
         txtEmail = (EditText) findViewById(R.id.txtEmail);
@@ -175,8 +185,27 @@ public class ActivityLogin extends Activity implements KeyboardManager.Listener 
                 String email = params[0];
                 String password = params[1];
 
-                if (email.equals(ApplicationData.modelUser.email) && password.equals(ApplicationData.modelUser.password)) {
-                    return "OK";
+                JSONControl jsControl = new JSONControl();
+                JSONObject response = jsControl.postLogin(email,password);
+                JSONObject responseUser = response.getJSONObject("user");
+                Log.d("json response", response.toString());
+                try {
+                    String _id = responseUser.getString("_id");
+                    Log.d("json response id",_id.toString());
+                    if(_id!=null){
+                        userLogin = new ModelUser();
+                        userLogin.setEmail(email);
+                        userLogin.setPassword(password);
+                        db.insertUser(userLogin);
+                        ApplicationData.login_id = _id.toString();
+                        return "OK";
+                    }
+                    else {
+                        return "FAIL";
+                    }
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
                 }
 
             } catch (Exception e) {

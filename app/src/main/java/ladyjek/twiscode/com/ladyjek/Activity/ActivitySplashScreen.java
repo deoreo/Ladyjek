@@ -7,14 +7,36 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import ladyjek.twiscode.com.ladyjek.Database.DatabaseHandler;
+import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
+import ladyjek.twiscode.com.ladyjek.Model.ModelUser;
 import ladyjek.twiscode.com.ladyjek.R;
 
 public class ActivitySplashScreen extends Activity {
 
+    private DatabaseHandler db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
+        db = new DatabaseHandler(this);
+
+        /*
+        int countUser = db.getUserCount();
+        if(countUser > 0) {
+
+            Intent i = new Intent(getBaseContext(), Main.class);
+            startActivity(i);
+            ApplicationData.userLogin = db.getUser();
+            finish();
+        }
+        else{
+            // After 5 seconds redirect to another intent
+            Intent i = new Intent(getBaseContext(), ActivityLogin.class);
+            startActivity(i);
+            finish();
+        }
+        */
 
         Dummy();
     }
@@ -47,15 +69,18 @@ public class ActivitySplashScreen extends Activity {
 
                 try {
                     // Thread will sleep for 5 seconds
-                    sleep(5*1000);
-
-                    // After 5 seconds redirect to another intent
-
-                    Intent i=new Intent(getBaseContext(),ActivityLogin.class);
-
-                    startActivity(i);
-
-                    //Remove activity
+                    sleep(3 * 1000);
+                    int countUser = db.getUserCount();
+                    if(countUser > 0) {
+                        Intent i = new Intent(getBaseContext(), Main.class);
+                        startActivity(i);
+                        ApplicationData.userLogin = db.getUser();
+                    }
+                    else{
+                        // After 5 seconds redirect to another intent
+                        Intent i = new Intent(getBaseContext(), ActivityLogin.class);
+                        startActivity(i);
+                    }
                     finish();
 
                 } catch (Exception e) {
