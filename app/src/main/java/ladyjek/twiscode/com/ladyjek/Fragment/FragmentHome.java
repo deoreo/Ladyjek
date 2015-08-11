@@ -82,11 +82,11 @@ import java.util.concurrent.TimeoutException;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+
 /**
  * Created by Unity on 18/05/2015.
  */
-public class FragmentHome extends Fragment
-         {
+public class FragmentHome extends Fragment {
 
     private Toolbar mToolbar;
     ModelPlace mPlace, selectedPlaceFrom, selectedPlaceDestination;
@@ -101,7 +101,7 @@ public class FragmentHome extends Fragment
     private final String TAG_DESTINATION = "DESTINATION";
     private EditText txtFrom, txtDestination;
     private String add, tagLocation = TAG_FROM;
-    private String placeId = "", description = "", strDistance="", strDuration="", strDetailFrom = "a", strDetailDestination ="b";
+    private String placeId = "", description = "", strDistance = "", strDuration = "", strDetailFrom = "a", strDetailDestination = "b";
 
     private LatLng mapCenter, posFrom, posDest;
     private AdapterAddress mPlaceArrayAdapter;
@@ -117,7 +117,7 @@ public class FragmentHome extends Fragment
     private ListView mListView;
     private Location location;
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 1000 * 60 * 1;
-    private static final long MIN_TIME_BW_UPDATES =  1;
+    private static final long MIN_TIME_BW_UPDATES = 1;
 
     public FragmentHome() {
         // Required empty public constructor
@@ -145,6 +145,7 @@ public class FragmentHome extends Fragment
         itemCurrent = (FrameLayout) rootView.findViewById(R.id.itemCurrent);
         txtAddressCurrent = (TextView) rootView.findViewById(R.id.txtAddressCurrent);
 
+        //TimeOutSearchLocation();
         new GetMyLocation(mActivity).execute();
 
         btnRequestRide.setOnClickListener(new View.OnClickListener() {
@@ -217,11 +218,11 @@ public class FragmentHome extends Fragment
         });
 
 
-
         txtFrom.addTextChangedListener(new TextWatcher() {
 
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+            }
 
             @Override
             public void beforeTextChanged(CharSequence s, int start,
@@ -231,8 +232,7 @@ public class FragmentHome extends Fragment
             @Override
             public void onTextChanged(CharSequence s, int start,
                                       int before, int count) {
-                if(s.length() >=3)
-                {
+                if (s.length() >= 3) {
                     new GetSuggestion(s.toString(), tagLocation).execute();
                 }
             }
@@ -261,7 +261,7 @@ public class FragmentHome extends Fragment
             @Override
             public void onClick(View v) {
 
-                if(txtFrom.getText().toString().isEmpty() || txtDestination.getText().toString().isEmpty()) {
+                if (txtFrom.getText().toString().isEmpty() || txtDestination.getText().toString().isEmpty()) {
                     if (tagLocation.equals(TAG_FROM)) {
                         txtFrom.setText(txtAddressCurrent.getText().toString());
                     }
@@ -318,10 +318,9 @@ public class FragmentHome extends Fragment
             strDuration = "" + GoogleAPIManager.getDurationText(doc);
             driveLine = googleMap.addPolyline(rectLine);
 
-        }
-            catch(Exception e) {
+        } catch (Exception e) {
 
-            }
+        }
 
     }
 
@@ -334,11 +333,10 @@ public class FragmentHome extends Fragment
             List<Address> addresses = geocoder.getFromLocation(lat, lng, 1);
             Address obj = addresses.get(0);
             addressLine = obj.getAddressLine(0);
-            if(tagLocation.equals(TAG_FROM)){
-                strDetailFrom = obj.getAddressLine(1)+" , "+obj.getAddressLine(2);
-            }
-            else if(tagLocation.equals(TAG_DESTINATION)){
-                strDetailDestination = obj.getAddressLine(1)+" , "+obj.getAddressLine(2);
+            if (tagLocation.equals(TAG_FROM)) {
+                strDetailFrom = obj.getAddressLine(1) + " , " + obj.getAddressLine(2);
+            } else if (tagLocation.equals(TAG_DESTINATION)) {
+                strDetailDestination = obj.getAddressLine(1) + " , " + obj.getAddressLine(2);
             }
 
         } catch (IOException e) {
@@ -347,7 +345,7 @@ public class FragmentHome extends Fragment
         return addressLine;
     }
 
-    public void hideKeyboard(){
+    public void hideKeyboard() {
         View view = mActivity.getCurrentFocus();
         if (view != null) {
             InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -356,9 +354,9 @@ public class FragmentHome extends Fragment
     }
 
     public class GetSuggestion extends AsyncTask<String, Void, JSONArray> {
-        String address,tag;
+        String address, tag;
 
-        public GetSuggestion(String address, String tag){
+        public GetSuggestion(String address, String tag) {
             this.address = address;
             this.tag = tag;
         }
@@ -384,8 +382,8 @@ public class FragmentHome extends Fragment
             if (json != null) {
                 for (int i = 0; i < json.length(); i++) {
                     String id = "";
-                     description  ="";
-                     address = "";
+                    description = "";
+                    address = "";
                     String detail = "";
                     boolean status = true;
                     try {
@@ -394,8 +392,8 @@ public class FragmentHome extends Fragment
                         description = jsonObject.getString(KEY_DESCRIPTION);
                         String[] descSplit = description.split(",");
                         address = descSplit[0];
-                        detail = descSplit[1]+","+descSplit[2];
-                        status=true;
+                        detail = descSplit[1] + "," + descSplit[2];
+                        status = true;
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -406,13 +404,12 @@ public class FragmentHome extends Fragment
                         LIST_PLACE.add(mPlace);
                     }
                 }
-                    try {
+                try {
                     mAdapter = new AdapterSuggestion(getActivity(), LIST_PLACE);
                 } catch (NullPointerException e) {
                     e.printStackTrace();
                 }
-            }
-            else{
+            } else {
                 LIST_PLACE = null;
             }
 
@@ -464,8 +461,6 @@ public class FragmentHome extends Fragment
         private Handler mUserLocationHandler = null;
         private Handler handler = null;
 
-
-
         public GetMyLocation(Activity activity) {
             super();
             this.activity = activity;
@@ -476,7 +471,6 @@ public class FragmentHome extends Fragment
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
             progressDialog = new ProgressDialog(activity);
             progressDialog.setMessage("Memuat lokasi anda. . .");
             progressDialog.setIndeterminate(false);
@@ -490,6 +484,7 @@ public class FragmentHome extends Fragment
             try {
                 try {
                     Looper.prepare();
+
                     mUserLocationHandler = new Handler();
                     Log.d("loc", "get current location");
 
@@ -507,16 +502,13 @@ public class FragmentHome extends Fragment
                         Criteria criteria = new Criteria();
                         String provider = locationManager.getBestProvider(criteria, true);
                         location = locationManager.getLastKnownLocation(provider);
-                        if (!isGPSEnabled && !isNetworkEnabled)
-                        {
-                            DialogManager.showDialog(mActivity,"Warning","Turn on your GPS or network!");
-                        }
-                        else
-                        {
+                        if (!isGPSEnabled && !isNetworkEnabled) {
+                            DialogManager.showDialog(mActivity, "Warning", "Turn on your GPS or network!");
+                        } else {
 
                             if (isNetworkEnabled) {
 
-                                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES,this );
+                                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
                                 Log.d("Network", "Network");
                                 if (locationManager != null) {
                                     location = locationManager
@@ -524,12 +516,12 @@ public class FragmentHome extends Fragment
                                     if (location != null) {
                                         Double latitude = location.getLatitude();
                                         Double longitude = location.getLongitude();
-                                        posFrom = new LatLng(latitude,longitude);
+                                        posFrom = new LatLng(latitude, longitude);
                                     }
                                 }
                             }
                             if (isGPSEnabled) {
-                                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES,this );
+                                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
                                 Log.d("Network", "Network");
                                 if (locationManager != null) {
                                     location = locationManager
@@ -537,7 +529,7 @@ public class FragmentHome extends Fragment
                                     if (location != null) {
                                         Double latitude = location.getLatitude();
                                         Double longitude = location.getLongitude();
-                                        posFrom = new LatLng(latitude,longitude);
+                                        posFrom = new LatLng(latitude, longitude);
                                     }
                                 }
                             }
@@ -548,8 +540,7 @@ public class FragmentHome extends Fragment
                     e.printStackTrace();
                 }
                 return "OK";
-            }
-            catch (Exception e){
+            } catch (Exception e) {
 
             }
             return "FAIL";
@@ -567,7 +558,7 @@ public class FragmentHome extends Fragment
                 case "OK":
                     double latitude = location.getLatitude();
                     double longitude = location.getLongitude();
-                    posFrom = new LatLng(latitude,longitude);
+                    posFrom = new LatLng(latitude, longitude);
                     googleMap.moveCamera(CameraUpdateFactory.newLatLng(posFrom));
                     googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
                     CircleOptions circleOptions = new CircleOptions()
@@ -581,7 +572,7 @@ public class FragmentHome extends Fragment
                     drawNewMarker(getAddress(posFrom));
                     cameraUpdate = CameraUpdateFactory.newLatLngZoom(posFrom, 15);
                     googleMap.animateCamera(cameraUpdate);
-                   // DialogManager.showDialog(activity, "", "Success find your location!");
+                    // DialogManager.showDialog(activity, "", "Success find your location!");
                     break;
             }
 
@@ -594,7 +585,7 @@ public class FragmentHome extends Fragment
 
             Message msg = new Message();
             handler.sendMessage(msg);
-            if(mUserLocationHandler != null){
+            if (mUserLocationHandler != null) {
                 mUserLocationHandler.getLooper().quit();
             }
         }
@@ -613,6 +604,23 @@ public class FragmentHome extends Fragment
         public void onProviderDisabled(String provider) {
 
         }
+    }
+
+    private void TimeOutSearchLocation() {
+        Thread background = new Thread() {
+            public void run() {
+
+                try {
+                    sleep(60 * 1000);
+                    new GetMyLocation(mActivity).execute();
+                } catch (Exception e) {
+                    Log.d("time out", "time out");
+                }
+            }
+        };
+
+
+        background.start();
     }
 
 }
