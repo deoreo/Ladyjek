@@ -115,4 +115,60 @@ public class JSONResponse {
 
     }
 
+    public JSONObject PATCHResponse(String url, List<NameValuePair> params) {
+        try {
+
+
+            DefaultHttpClient httpClient = new DefaultHttpClient();
+            HttpPost httpPost = new HttpPost(url);
+            httpPost.setEntity(new UrlEncodedFormEntity(params));
+            httpPost.setHeader("X-HTTP-Method-Override", "PATCH");
+            httpPost.setHeader("Content-type", "application/json");
+            httpPost.setHeader("Accept", "*/*");
+            httpPost.setHeader("Accept-Encoding", "gzip, deflate");
+            httpPost.addHeader("Connection", "keep-alive");
+            httpPost.addHeader("Accept-Language", "en-GB,en-US;q=0.8,en;q=0.6");
+            httpPost.setHeader("User-Agent", "nnst");
+            httpPost.setHeader("Accept-Charset", "utf-8");
+            //httpPost.setHeader("Authorization", "Token" + " " + token);
+
+            HttpResponse httpResponse = httpClient.execute(httpPost);
+            HttpEntity httpEntity = httpResponse.getEntity();
+            _inputStream = httpEntity.getContent();
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    _inputStream, "iso-8859-1"), 8);
+            StringBuilder sb = new StringBuilder();
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line + "\n");
+            }
+            _inputStream.close();
+            _json = sb.toString();
+        } catch (Exception e) {
+            Log.e("Buffer Error", "Error converting result " + e.toString());
+        }
+
+        // try parse the string to a JSON object
+        try {
+            _jObj = new JSONObject(_json);
+        } catch (JSONException e) {
+            Log.e("JSON Parser", "Error parsing data " + e.toString());
+        }
+
+        // return JSON String
+        return _jObj;
+
+    }
+    
+
 }

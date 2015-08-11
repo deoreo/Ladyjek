@@ -1,7 +1,7 @@
 package ladyjek.twiscode.com.ladyjek.Model;
 
 /**
- * Created by User on 8/3/2015.
+ * Created by ModelUser on 8/3/2015.
  */
 public class ModelPlace {
 

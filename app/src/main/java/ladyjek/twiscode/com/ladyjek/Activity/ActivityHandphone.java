@@ -42,7 +42,7 @@ public class ActivityHandphone extends Activity {
                     txtPhoneNumber.setText("");
                 }
                 else{
-                    ApplicationData.user.phone = hp;
+                    ApplicationData.modelUser.phone = hp;
                     Intent i = new Intent(getBaseContext(), ActivityHandphoneKonfirmasi.class);
                     startActivity(i);
                     finish();

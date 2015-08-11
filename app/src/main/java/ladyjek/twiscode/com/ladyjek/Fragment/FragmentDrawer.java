@@ -2,33 +2,25 @@ package ladyjek.twiscode.com.ladyjek.Fragment;
 
 import android.app.Fragment;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 
 
-
-
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import ladyjek.twiscode.com.ladyjek.Adapter.NavigationDrawerAdapter;
-import ladyjek.twiscode.com.ladyjek.Model.NavDrawerItem;
+import ladyjek.twiscode.com.ladyjek.Utilities.NavDrawerItem;
 import ladyjek.twiscode.com.ladyjek.R;
 
 

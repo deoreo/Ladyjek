@@ -1,11 +1,8 @@
 package ladyjek.twiscode.com.ladyjek.Database;
 
 /**
- * Created by User on 8/3/2015.
+ * Created by ModelUser on 8/3/2015.
  */
-
-import java.util.ArrayList;
-import java.util.List;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -14,8 +11,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import ladyjek.twiscode.com.ladyjek.Model.ModelPlace;
-import ladyjek.twiscode.com.ladyjek.Model.User;
+import ladyjek.twiscode.com.ladyjek.Model.ModelUser;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
 
@@ -24,11 +20,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 2;
     // Database Name
     private static final String DATABASE_NAME = "LadyjekDB";
-    // Contacts table name
-    private static final String T_USER = "t_article";
+    // ModelUser table name
+    private static final String T_USER = "t_user";
+    private static final String T_HISTORY = "t_history";
 
-    // Contacts Table Columns names
-    private static final String KEY_ID = "id";
+    // ModelUser Table Columns names
+    private static final String KEY_ID_USER = "id_user";
     private static final String KEY_NAME = "name";
     private static final String KEY_EMAIL = "email";
     private static final String KEY_PASSWORD = "password";
@@ -39,6 +36,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_OFFICE_LAT = "office_lat";
     private static final String KEY_OFFICE_LON = "office_lon";
 
+    private static String KEY_ID_HISTORY ="id_hisory";
+    private static String KEY_DATE = "date";
+    private static String KEY_TIME = "time";
+    private static String KEY_DRIVER = "driver";
+    private static String KEY_FROM = "from";
+    private static String KEY_DESTINATION = "destination";
+    private static String KEY_DISTANCE = "distance";
+    private static String KEY_DURATION = "duration";
+    private static String KEY_PRICE = "price";
+
 
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -47,9 +54,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     // Creating Tables
     @Override
     public void onCreate(SQLiteDatabase db) {
-        Log.v("DBMatome", "onCreate");
-        String CREATE_TABLE = "CREATE TABLE " + T_USER + "("
-                + KEY_ID + " TEXT PRIMARY KEY,"
+        Log.v("DBUser", "onCreate");
+        String CREATE_TABLE_USER = "CREATE TABLE " + T_USER + "("
+                + KEY_ID_USER + " TEXT PRIMARY KEY,"
                 + KEY_NAME + " TEXT,"
                 + KEY_EMAIL + " TEXT,"
                 + KEY_PASSWORD + " TEXT,"
@@ -60,16 +67,29 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_OFFICE_LAT + " TEXT,"
                 + KEY_OFFICE_LON + " TEXT"
                 + ")";
-        db.execSQL(CREATE_TABLE);
+
+        String CREATE_TABLE_HISTORY = "CREATE TABLE " + T_HISTORY + "("
+                + KEY_ID_HISTORY + " TEXT PRIMARY KEY,"
+                + KEY_DATE + " TEXT,"
+                + KEY_TIME + " TEXT,"
+                + KEY_DRIVER + " TEXT,"
+                + KEY_FROM + " TEXT,"
+                + KEY_DESTINATION + " TEXT,"
+                + KEY_DISTANCE + " TEXT,"
+                + KEY_DURATION + " TEXT,"
+                + KEY_PRICE + " TEXT"
+                + ")";
+
+        db.execSQL(CREATE_TABLE_USER);
+        db.execSQL(CREATE_TABLE_HISTORY);
     }
 
     // Upgrading database
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.v("DBMatome", "OnUpgrade");
         // Drop older table if existed
         db.execSQL("DROP TABLE IF EXISTS " + T_USER);
-
+        db.execSQL("DROP TABLE IF EXISTS " + T_HISTORY);
         // Create tables again
         onCreate(db);
     }
@@ -79,45 +99,69 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      * All CRUD(Create, Read, Update, Delete) Operations
      */
 
-    // Adding new contact
-    public void addUser(User user) {
+    // Adding new modelUser
+    public void insertUser(ModelUser modelUser) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(KEY_ID, user.getId());
-        values.put(KEY_NAME, user.getName());
-        values.put(KEY_EMAIL, user.getEmail());
-        values.put(KEY_PASSWORD, user.getPassword());
-        values.put(KEY_PHONE, user.getPhone());
-        values.put(KEY_PAYMENT, user.getPayment());
-        values.put(KEY_HOME_LAT, user.getHomeLat());
-        values.put(KEY_HOME_LON, user.getHomeLon());
-        values.put(KEY_OFFICE_LAT, user.getOfficeLat());
-        values.put(KEY_OFFICE_LON, user.getOfficeLon());
+        values.put(KEY_ID_USER, modelUser.getId());
+        values.put(KEY_NAME, modelUser.getName());
+        values.put(KEY_EMAIL, modelUser.getEmail());
+        values.put(KEY_PASSWORD, modelUser.getPassword());
+        values.put(KEY_PHONE, modelUser.getPhone());
+        values.put(KEY_PAYMENT, modelUser.getPayment());
+        values.put(KEY_HOME_LAT, modelUser.getHomeLat());
+        values.put(KEY_HOME_LON, modelUser.getHomeLon());
+        values.put(KEY_OFFICE_LAT, modelUser.getOfficeLat());
+        values.put(KEY_OFFICE_LON, modelUser.getOfficeLon());
 
         // Inserting Row
+        db.insert(T_USER, null, values);
         db.insert(T_USER, null, values);
         db.close(); // Closing database connection
     }
 
-    public User getUser(String id) {
+    // Adding new modelUser
+    public void insertHistory(ModelUser modelUser) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_ID_USER, modelUser.getId());
+        values.put(KEY_NAME, modelUser.getName());
+        values.put(KEY_EMAIL, modelUser.getEmail());
+        values.put(KEY_PASSWORD, modelUser.getPassword());
+        values.put(KEY_PHONE, modelUser.getPhone());
+        values.put(KEY_PAYMENT, modelUser.getPayment());
+        values.put(KEY_HOME_LAT, modelUser.getHomeLat());
+        values.put(KEY_HOME_LON, modelUser.getHomeLon());
+        values.put(KEY_OFFICE_LAT, modelUser.getOfficeLat());
+        values.put(KEY_OFFICE_LON, modelUser.getOfficeLon());
+
+        // Inserting Row
+        db.insert(T_USER, null, values);
+        db.insert(T_USER, null, values);
+        db.close(); // Closing database connection
+    }
+    
+
+    public ModelUser getUser(String id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.query(T_USER, new String[]{KEY_ID,
+        Cursor cursor = db.query(T_USER, new String[]{KEY_ID_USER,
                         KEY_NAME, KEY_EMAIL, KEY_PASSWORD, KEY_PHONE,
                         KEY_PAYMENT, KEY_HOME_LAT, KEY_HOME_LON,
-                        KEY_OFFICE_LAT, KEY_OFFICE_LON}, KEY_ID + "=?",
+                        KEY_OFFICE_LAT, KEY_OFFICE_LON}, KEY_ID_USER + "=?",
                 new String[]{String.valueOf(id)}, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
 
-        User user = new User(cursor.getString(0),
+        ModelUser modelUser = new ModelUser(cursor.getString(0),
                 cursor.getString(1), cursor.getString(2), cursor.getString(3),
                 cursor.getString(4), cursor.getString(5), cursor.getString(6),
                 cursor.getString(7), cursor.getString(8), cursor.getString(9)
 
         );
-        return user;
+        return modelUser;
     }
 
 
@@ -126,7 +170,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     */
     public void deleteSaved(String article_id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(T_USER, KEY_ID + " = ?",
+        db.delete(T_USER, KEY_ID_USER + " = ?",
                 new String[]{String.valueOf(article_id)});
     }
 

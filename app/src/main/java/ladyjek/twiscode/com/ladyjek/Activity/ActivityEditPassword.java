@@ -55,8 +55,8 @@ public class ActivityEditPassword extends Activity {
                 } else if (!npass.equals(cpass)) {
                     DialogManager.showDialog(act, "Warning", "Confirm password not match");
                 } else {
-                    if(opass.equals(ApplicationData.user.password)){
-                        ApplicationData.user.password = npass;
+                    if(opass.equals(ApplicationData.modelUser.password)){
+                        ApplicationData.modelUser.password = npass;
                         finish();
                     }
                     else {

@@ -89,7 +89,7 @@ public class ActivityLogin extends Activity implements KeyboardManager.Listener 
                     txtEmail.setText("");
                     txtPassword.setText("");
                 } else {
-                    if(ApplicationData.user==null){
+                    if(ApplicationData.modelUser ==null){
                         DialogManager.showDialog(mActivity, "Warning", "Please register!");
                         txtEmail.setText("");
                         txtPassword.setText("");
@@ -175,7 +175,7 @@ public class ActivityLogin extends Activity implements KeyboardManager.Listener 
                 String email = params[0];
                 String password = params[1];
 
-                if (email.equals(ApplicationData.user.email) && password.equals(ApplicationData.user.password)) {
+                if (email.equals(ApplicationData.modelUser.email) && password.equals(ApplicationData.modelUser.password)) {
                     return "OK";
                 }
 

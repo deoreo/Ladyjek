@@ -38,7 +38,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import java.io.InputStream;
 /**
- * Created by User on 8/5/2015.
+ * Created by ModelUser on 8/5/2015.
  */
 public class GoogleAPIManager {
 

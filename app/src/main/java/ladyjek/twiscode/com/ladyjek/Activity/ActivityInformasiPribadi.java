@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.google.android.gms.maps.model.LatLng;
 
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
-import ladyjek.twiscode.com.ladyjek.Model.User;
+import ladyjek.twiscode.com.ladyjek.Model.ModelUser;
 import ladyjek.twiscode.com.ladyjek.R;
 
 public class ActivityInformasiPribadi extends Activity {
@@ -103,10 +103,10 @@ public class ActivityInformasiPribadi extends Activity {
         btnSimpan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LatLng kantor = ApplicationData.user.kantor;
-                LatLng rumah = ApplicationData.user.rumah;
-                String id = ApplicationData.user.id;
-                ApplicationData.user = new User(id,nama.getText().toString(),email.getText().toString(),password.getText().toString(),hp.getText().toString(),kantor,rumah);
+                LatLng kantor = ApplicationData.modelUser.kantor;
+                LatLng rumah = ApplicationData.modelUser.rumah;
+                String id = ApplicationData.modelUser.id;
+                ApplicationData.modelUser = new ModelUser(id,nama.getText().toString(),email.getText().toString(),password.getText().toString(),hp.getText().toString(),kantor,rumah);
             }
         });
 
@@ -146,10 +146,10 @@ public class ActivityInformasiPribadi extends Activity {
     }
 
     private void SetData(){
-        nama.setText(ApplicationData.user.name);
-        email.setText(ApplicationData.user.email);
-        password.setText(ApplicationData.user.password);
-        hp.setText(ApplicationData.user.phone);
+        nama.setText(ApplicationData.modelUser.name);
+        email.setText(ApplicationData.modelUser.email);
+        password.setText(ApplicationData.modelUser.password);
+        hp.setText(ApplicationData.modelUser.phone);
     }
 
     @Override

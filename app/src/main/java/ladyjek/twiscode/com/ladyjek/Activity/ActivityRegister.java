@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.google.android.gms.maps.model.LatLng;
 
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
-import ladyjek.twiscode.com.ladyjek.Model.User;
+import ladyjek.twiscode.com.ladyjek.Model.ModelUser;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
 
@@ -59,7 +59,7 @@ public class ActivityRegister extends ActionBarActivity {
                     txtPassword.setText("");
                     txtConfirm.setText("");
                 } else {
-                    ApplicationData.user = new User("1","name kamu",email,password,"",new LatLng(0,0),new LatLng(0,0));
+                    ApplicationData.modelUser = new ModelUser("1","name kamu",email,password,"",new LatLng(0,0),new LatLng(0,0));
                     Intent i = new Intent(getBaseContext(), ActivityHandphone.class);
                     startActivity(i);
                     finish();

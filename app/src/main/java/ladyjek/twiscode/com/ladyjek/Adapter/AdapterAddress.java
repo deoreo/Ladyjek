@@ -15,7 +15,7 @@ import ladyjek.twiscode.com.ladyjek.Model.ModelPlace;
 import ladyjek.twiscode.com.ladyjek.Utilities.GoogleAPIManager;
 
 /**
- * Created by User on 8/5/2015.
+ * Created by ModelUser on 8/5/2015.
  */
 public class AdapterAddress extends ArrayAdapter<ModelPlace> implements Filterable {
     private ArrayList resultList;

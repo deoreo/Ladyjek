@@ -1,4 +1,4 @@
-package ladyjek.twiscode.com.ladyjek.Model;
+package ladyjek.twiscode.com.ladyjek.Utilities;
 
 /**
  * Created by Unity on 18/05/2015.
