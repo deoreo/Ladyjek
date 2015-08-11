@@ -42,9 +42,15 @@ public class ActivityHandphoneKonfirmasi extends Activity {
         txtConfirmSmsCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getBaseContext(), ActivityLogin.class);
-                startActivity(i);
-                finish();
+                if(ApplicationData.editPhone){
+                    finish();
+                }
+                else{
+                    Intent i = new Intent(getBaseContext(), ActivityLogin.class);
+                    startActivity(i);
+                    finish();
+                }
+
             }
         });
 

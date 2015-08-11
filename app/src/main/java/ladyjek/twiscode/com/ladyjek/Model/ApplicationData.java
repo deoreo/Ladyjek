@@ -14,6 +14,8 @@ public class ApplicationData {
     private static String password = "abcd";
     private static String hp = "83857565559";
 
+    public static String phoneNumber = "089682587567";
+
     public static String registered_id = "";
     public static String login_id = "";
 
