@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.app.ProgressDialog;
 import android.widget.RelativeLayout;
@@ -24,6 +25,7 @@ import ladyjek.twiscode.com.ladyjek.Model.ModelUser;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.KeyboardManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
+import ladyjek.twiscode.com.ladyjek.Utilities.UserManager;
 
 public class ActivityLogin extends Activity implements KeyboardManager.Listener {
 
@@ -32,6 +34,7 @@ public class ActivityLogin extends Activity implements KeyboardManager.Listener 
     private EditText txtEmail, txtPassword;
     private RelativeLayout wrapperLogin, wrapperRegister;
     private ModelUser userLogin;
+    private UserManager userManager;
     private DatabaseHandler db;
 
     @Override
@@ -99,20 +102,13 @@ public class ActivityLogin extends Activity implements KeyboardManager.Listener 
                     txtEmail.setText("");
                     txtPassword.setText("");
                 } else {
-                    if(ApplicationData.modelUser ==null){
-                        DialogManager.showDialog(mActivity, "Warning", "Please register!");
-                        txtEmail.setText("");
-                        txtPassword.setText("");
-                    }
-                    else{
-                        txtEmail.setText("");
-                        txtPassword.setText("");
-                        new DoLogin(mActivity).execute(
-                                email,
-                                password
-                        );
-                    }
-
+                    hideKeyboard();
+                    //txtEmail.setText("");
+                    //txtPassword.setText("");
+                    new DoLogin(mActivity).execute(
+                            email,
+                            password
+                    );
                 }
             }
         });
@@ -151,6 +147,14 @@ public class ActivityLogin extends Activity implements KeyboardManager.Listener 
         } else {
             wrapperLogin.setVisibility(View.GONE);
             wrapperRegister.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void hideKeyboard(){
+        View view = mActivity.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
 
@@ -196,6 +200,7 @@ public class ActivityLogin extends Activity implements KeyboardManager.Listener 
                         userLogin = new ModelUser();
                         userLogin.setEmail(email);
                         userLogin.setPassword(password);
+                        //UserManager.getInstance(mActivity).setUserMail(email);
                         db.insertUser(userLogin);
                         ApplicationData.login_id = _id.toString();
                         return "OK";
@@ -222,9 +227,10 @@ public class ActivityLogin extends Activity implements KeyboardManager.Listener 
             progressDialog.dismiss();
             switch (result) {
                 case "FAIL":
-                    DialogManager.showDialog(activity, "Warning", "Login Failed!");
+                    DialogManager.showDialog(activity, "Warning", "Please register!");
                     break;
                 case "OK":
+
                     Intent i = new Intent(getBaseContext(), Main.class);
                     startActivity(i);
                     finish();
