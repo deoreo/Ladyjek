@@ -18,10 +18,42 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/drawerList"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_weight="1"
+        android:layout_height="0dp"
         android:background="@color/white_color"
 
         />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:background="@color/white_color"
+        android:paddingRight="10dp"
+        android:paddingLeft="10dp"
+        >
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Logout"
+            android:typeface="sans"
+            android:textSize="14dip"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+            android:textStyle="bold"
+            android:layout_centerHorizontal="true"/>
+
+        <!--
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey_color"
+            android:layout_below="@id/title"/>
+         -->
+
+
+    </RelativeLayout>
 
 </LinearLayout>
