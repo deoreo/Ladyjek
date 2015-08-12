@@ -75,18 +75,36 @@
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:layout_marginTop="20dp">
-                            <EditText
-                                android:id="@+id/txtEmail"
+                            <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="50dp"
-                                android:hint="alamat e-mail"
-                                android:textColorHint="@drawable/hint_selector_white"
-                                android:padding="10dp"
-                                android:background="@null"
-                                android:textColor="@color/white_color"
-                                android:inputType="textEmailAddress"
-                                android:textStyle="bold"
-                                android:textCursorDrawable="@drawable/cursor_white"/>
+                                android:orientation="horizontal">
+                                <EditText
+                                    android:id="@+id/txtEmail"
+                                    android:layout_width="0dp"
+                                    android:layout_weight="1"
+                                    android:layout_height="50dp"
+                                    android:hint="alamat email"
+                                    android:textColorHint="@drawable/hint_selector_white"
+                                    android:padding="10dp"
+                                    android:background="@null"
+                                    android:textColor="@color/white_color"
+                                    android:textStyle="bold"
+                                    android:textCursorDrawable="@drawable/cursor_white"/>
+                                <RelativeLayout
+                                    android:id="@+id/btnDeletePassword"
+                                    android:layout_width="20dp"
+                                    android:layout_height="50dp"
+                                    android:visibility="gone">
+                                    <ImageView
+                                        android:layout_width="20dp"
+                                        android:layout_height="20dp"
+                                        android:layout_centerVertical="true"
+                                        android:layout_alignParentRight="true"
+                                        android:src="@drawable/ic_erase_white" />
+                                </RelativeLayout>
+                            </LinearLayout>
+
                             <View
                                 android:layout_width="match_parent"
                                 android:layout_height="2dp"
@@ -99,18 +117,37 @@
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:layout_marginTop="5dp">
-                            <EditText
-                                android:id="@+id/txtPassword"
+                            <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="50dp"
-                                android:hint="kata sandi"
-                                android:textColorHint="@drawable/hint_selector_white"
-                                android:padding="10dp"
-                                android:background="@null"
-                                android:textColor="@color/white_color"
-                                android:inputType="textPassword"
-                                android:textStyle="bold"
-                                android:textCursorDrawable="@drawable/cursor_white"/>
+                                android:orientation="horizontal">
+                                <EditText
+                                    android:id="@+id/txtPassword"
+                                    android:layout_width="0dp"
+                                    android:layout_weight="1"
+                                    android:layout_height="50dp"
+                                    android:hint="kata sandi"
+                                    android:padding="10dp"
+                                    android:background="@null"
+                                    android:textColorHint="@drawable/hint_selector_white"
+                                    android:inputType="textPassword"
+                                    android:textColor="@color/white_color"
+                                    android:textStyle="bold"
+                                    android:textCursorDrawable="@drawable/cursor_white"/>
+                                <RelativeLayout
+                                    android:id="@+id/btnDeleteEmail"
+                                    android:layout_width="20dp"
+                                    android:layout_height="50dp"
+                                    android:visibility="gone">
+                                    <ImageView
+                                        android:layout_width="20dp"
+                                        android:layout_height="20dp"
+                                        android:layout_centerVertical="true"
+                                        android:layout_alignParentRight="true"
+                                        android:src="@drawable/ic_erase_white" />
+                                </RelativeLayout>
+                            </LinearLayout>
+
                             <View
                                 android:layout_width="match_parent"
                                 android:layout_height="2dp"
@@ -123,18 +160,38 @@
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:layout_marginTop="5dp">
-                            <EditText
-                                android:id="@+id/txtConfirmPassword"
+
+                            <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="50dp"
-                                android:hint="konfirmasi kata sandi"
-                                android:padding="10dp"
-                                android:background="@null"
-                                android:textColorHint="@drawable/hint_selector_white"
-                                android:inputType="textPassword"
-                                android:textColor="@color/white_color"
-                                android:textStyle="bold"
-                                android:textCursorDrawable="@drawable/cursor_white"/>
+                                android:orientation="horizontal">
+                                <EditText
+                                    android:id="@+id/txtConfirmPassword"
+                                    android:layout_width="0dp"
+                                    android:layout_weight="1"
+                                    android:layout_height="50dp"
+                                    android:hint="konfirmasi kata sandi"
+                                    android:padding="10dp"
+                                    android:background="@null"
+                                    android:textColorHint="@drawable/hint_selector_white"
+                                    android:inputType="textPassword"
+                                    android:textColor="@color/white_color"
+                                    android:textStyle="bold"
+                                    android:textCursorDrawable="@drawable/cursor_white"/>
+                                <RelativeLayout
+                                    android:id="@+id/btnDeleteConfirm"
+                                    android:layout_width="20dp"
+                                    android:layout_height="50dp"
+                                    android:visibility="gone">
+                                    <ImageView
+                                        android:layout_width="20dp"
+                                        android:layout_height="20dp"
+                                        android:layout_centerVertical="true"
+                                        android:layout_alignParentRight="true"
+                                        android:src="@drawable/ic_erase_white" />
+                                </RelativeLayout>
+                            </LinearLayout>
+
                             <View
                                 android:layout_width="match_parent"
                                 android:layout_height="2dp"

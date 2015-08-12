@@ -36,6 +36,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.Model.ModelGeocode;
@@ -122,6 +124,27 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
             }
         });
 
+
+
+
+    }
+
+    private void Dummy(){
+        Timer myTimer = new Timer();
+        myTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                MovetoTracking();
+            }
+
+        }, 0, 10000);
+    }
+
+    private void MovetoTracking(){
+        Intent i=new Intent(getBaseContext(),ActivityTracking.class);
+        ApplicationData.act = ActivityTracking.class;
+        startActivity(i);
+        finish();
     }
 
 
