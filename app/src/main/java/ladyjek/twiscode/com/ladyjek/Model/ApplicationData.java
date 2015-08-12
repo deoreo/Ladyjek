@@ -1,6 +1,8 @@
 package ladyjek.twiscode.com.ladyjek.Model;
 
 
+import android.app.Activity;
+
 import com.google.android.gms.maps.model.LatLng;
 
 /**
@@ -29,6 +31,8 @@ public class ApplicationData {
 
     public static LatLng posFrom;
     public static LatLng posDriver;
+
+    public static Class act = null;
 
 
 

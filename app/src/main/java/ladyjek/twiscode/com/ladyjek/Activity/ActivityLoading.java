@@ -23,11 +23,13 @@ import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
 public class ActivityLoading extends Activity {
 
     private ProgressBar mProgressBar;
+    private Activity act;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading);
         mProgressBar = (ProgressBar)findViewById(R.id.progressBarPickUp);
+        act = this;
     }
 
     @Override
@@ -38,6 +40,7 @@ public class ActivityLoading extends Activity {
                 try {
                     sleep(5*1000);
                     Intent i=new Intent(getBaseContext(),ActivityPickUp.class);
+                    ApplicationData.act = ActivityPickUp.class;
                     startActivity(i);
                     finish();
 
