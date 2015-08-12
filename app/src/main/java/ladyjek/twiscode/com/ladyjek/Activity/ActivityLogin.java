@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,6 +22,7 @@ import org.json.JSONObject;
 
 import ladyjek.twiscode.com.ladyjek.Control.JSONControl;
 import ladyjek.twiscode.com.ladyjek.Database.DatabaseHandler;
+import ladyjek.twiscode.com.ladyjek.Fragment.FragmentHome;
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.Model.ModelUser;
 import ladyjek.twiscode.com.ladyjek.R;
@@ -27,7 +30,10 @@ import ladyjek.twiscode.com.ladyjek.Utilities.KeyboardManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.UserManager;
 
-public class ActivityLogin extends Activity implements KeyboardManager.Listener {
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
+public class ActivityLogin extends Activity  implements KeyboardManager.Listener {
 
     private Activity mActivity;
     private TextView btnRegister, btnLogin;
@@ -36,6 +42,7 @@ public class ActivityLogin extends Activity implements KeyboardManager.Listener 
     private ModelUser userLogin;
     private UserManager userManager;
     private DatabaseHandler db;
+    private RelativeLayout btnClearEmail, btnClearPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +58,8 @@ public class ActivityLogin extends Activity implements KeyboardManager.Listener 
         txtPassword = (EditText) findViewById(R.id.txtPassword);
         wrapperLogin = (RelativeLayout) findViewById(R.id.wrapperLogin);
         wrapperRegister = (RelativeLayout) findViewById(R.id.wrapperRegister);
-
+        btnClearEmail = (RelativeLayout) findViewById(R.id.btnClearEmail);
+        btnClearPassword = (RelativeLayout) findViewById(R.id.btnClearPassword);
 
         KeyboardManager mainLayout = (KeyboardManager) findViewById(R.id.layoutLogin);
         mainLayout.setListener(this);
@@ -61,9 +69,9 @@ public class ActivityLogin extends Activity implements KeyboardManager.Listener 
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 String email = txtEmail.getText().toString();
-                if(!email.isEmpty()) {
-                    wrapperLogin.setVisibility(View.VISIBLE);
-                    wrapperRegister.setVisibility(View.GONE);
+                if (!email.isEmpty()) {
+                    wrapperLogin.setVisibility(VISIBLE);
+                    wrapperRegister.setVisibility(GONE);
                 }
             }
         });
@@ -72,8 +80,8 @@ public class ActivityLogin extends Activity implements KeyboardManager.Listener 
 
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                wrapperLogin.setVisibility(View.VISIBLE);
-                wrapperRegister.setVisibility(View.GONE);
+                wrapperLogin.setVisibility(VISIBLE);
+                wrapperRegister.setVisibility(GONE);
             }
         });
 
@@ -113,6 +121,48 @@ public class ActivityLogin extends Activity implements KeyboardManager.Listener 
             }
         });
 
+        txtEmail.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+                if (s.length() >= 1) {
+                    btnClearEmail.setVisibility(VISIBLE);
+                } else if (s.length() == 0) {
+                    btnClearEmail.setVisibility(GONE);
+                }
+            }
+        });
+        txtPassword.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+                if (s.length() >= 1) {
+                    btnClearPassword.setVisibility(VISIBLE);
+                }
+                else if(s.length()==0){
+                    btnClearPassword.setVisibility(GONE);
+                }
+            }
+        });
+
     }
 
     @Override
@@ -142,13 +192,17 @@ public class ActivityLogin extends Activity implements KeyboardManager.Listener 
         String email = txtEmail.getText().toString();
         String password = txtPassword.getText().toString();
         if (isShowing || !email.isEmpty()|| !password.isEmpty()) {
-            wrapperLogin.setVisibility(View.VISIBLE);
-            wrapperRegister.setVisibility(View.GONE);
+            wrapperLogin.setVisibility(VISIBLE);
+            wrapperRegister.setVisibility(GONE);
         } else {
-            wrapperLogin.setVisibility(View.GONE);
-            wrapperRegister.setVisibility(View.VISIBLE);
+            wrapperLogin.setVisibility(GONE);
+            wrapperRegister.setVisibility(VISIBLE);
         }
     }
+
+
+
+
 
     public void hideKeyboard(){
         View view = mActivity.getCurrentFocus();

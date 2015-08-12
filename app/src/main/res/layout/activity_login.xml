@@ -96,7 +96,7 @@
                                         android:textStyle="bold"
                                         android:textCursorDrawable="@drawable/cursor_white"/>
                                     <RelativeLayout
-                                        android:id="@+id/btnDeleteEmail"
+                                        android:id="@+id/btnClearEmail"
                                         android:layout_width="20dp"
                                         android:layout_height="50dp"
                                         android:visibility="gone">
@@ -141,7 +141,7 @@
                                         android:textStyle="bold"
                                         android:textCursorDrawable="@drawable/cursor_white"/>
                                     <RelativeLayout
-                                        android:id="@+id/btnDeletePassword"
+                                        android:id="@+id/btnClearPassword"
                                         android:layout_width="20dp"
                                         android:layout_height="50dp"
                                         android:visibility="gone">
