@@ -1,6 +1,7 @@
 package ladyjek.twiscode.com.ladyjek.Activity;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -9,6 +10,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.R;
@@ -46,9 +49,25 @@ public class ActivityHandphoneKonfirmasi extends Activity {
                     finish();
                 }
                 else{
-                    Intent i = new Intent(getBaseContext(), ActivityLogin.class);
-                    startActivity(i);
-                    finish();
+                    //Intent i = new Intent(getBaseContext(), ActivityLogin.class);
+                    //startActivity(i);
+                   // finish();
+
+                    new AlertDialogWrapper.Builder(ActivityHandphoneKonfirmasi.this)
+                            .setTitle("Success register!")
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Intent i = new Intent(ActivityHandphoneKonfirmasi.this, ActivityLogin.class);
+                                    startActivity(i);
+                                    finish();
+                                    dialog.dismiss();
+                                }
+                            })
+                            .setIcon(R.drawable.ladyjek_icon)
+                            .show();
+
+
                 }
 
             }

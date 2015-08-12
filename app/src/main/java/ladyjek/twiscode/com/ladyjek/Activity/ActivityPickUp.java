@@ -81,10 +81,8 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
 
             // Getting GoogleMap object from the fragment
             googleMap = fm.getMap();
-            Double latitude = ApplicationData.posFrom.latitude;
-            Double longitude = ApplicationData.posFrom.longitude;
-            LatLng currentPosition = new LatLng(latitude, longitude);
-            drawNewMarker(getAddress(currentPosition));
+            LatLng currentPosition = ApplicationData.posFrom;
+            drawNewMarker(currentPosition);
             CircleOptions circleOptions = new CircleOptions()
                     .center(posFrom)
                     .radius(500)
@@ -206,19 +204,14 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
 
     }
 
-    public void drawNewMarker(String address) {
-        ModelGeocode geocode = GoogleAPIManager.geocode(address);
-        LatLng locationMarker = new LatLng(geocode.getLat(), geocode.getLon());
-        posFrom = locationMarker;
+    public void drawNewMarker(LatLng latLng) {
         markerFrom = googleMap.addMarker(
                 new MarkerOptions()
-                        .position(posFrom)
+                        .position(latLng)
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
 
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(locationMarker, 15);
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
         googleMap.animateCamera(cameraUpdate);
-
-
     }
 
     public String getAddress(LatLng latlng) {

@@ -92,7 +92,7 @@ import static android.view.View.VISIBLE;
 /**
  * Created by Unity on 18/05/2015.
  */
-public class FragmentHome extends Fragment {
+public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListener {
 
     private Toolbar mToolbar;
     ModelPlace mPlace, selectedPlaceFrom, selectedPlaceDestination;
@@ -166,19 +166,20 @@ public class FragmentHome extends Fragment {
         btnRequestRide.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bundle args = new Bundle();
-                args.putString("from", txtFrom.getText().toString());
-                args.putString("destination", txtDestination.getText().toString());
-                args.putString("detailfrom", strDetailFrom);
-                args.putString("detaildestination", strDetailDestination);
-                args.putString("distance", strDistance);
-                args.putString("duration", strDuration);
-                args.putString("lat", "" + posFrom.latitude);
-                args.putString("lon", "" + posFrom.longitude);
+                if(strDistance.isEmpty()&&strDuration.isEmpty()){
+                    DialogManager.showDialog(mActivity,"Warning", "Tentukan lokasi awal dan akhir!");
+                }
+                else {
+                    ApplicationData.addressFrom = txtFrom.getText().toString();
+                    ApplicationData.addressDestination = txtDestination.getText().toString();
+                    ApplicationData.detailFrom = strDetailFrom;
+                    ApplicationData.detailDestination = strDetailDestination;
+                    ApplicationData.distance = strDistance;
+                    ApplicationData.duration = strDuration;
 
-                Intent intent = new Intent(mActivity, ActivityConfirm.class);
-                intent.putExtras(args);
-                startActivity(intent);
+                    Intent intent = new Intent(mActivity, ActivityConfirm.class);
+                    startActivity(intent);
+                }
             }
         });
 
@@ -306,6 +307,8 @@ public class FragmentHome extends Fragment {
 
             }
         });
+
+        googleMap.setOnMapClickListener(this);
         // Inflate the layout for this fragment
         return rootView;
     }
@@ -396,6 +399,66 @@ public class FragmentHome extends Fragment {
             InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             layoutSuggestion.setVisibility(GONE);
+        }
+
+    }
+
+    @Override
+    public void onMapClick(LatLng latLng) {
+        //drawNewMarker
+        Log.d("FragmentHome", "OnMapClick: "+ latLng.toString());
+        String address = null;
+        if (driveLine != null) {
+            driveLine.remove();
+        }
+        if(tagLocation.equals(TAG_FROM)){
+            address = getAddress(latLng);
+            txtFrom.setText(address);
+            strDetailFrom = address;
+            if (markerFrom != null) {
+                markerFrom.remove();
+            }
+            ApplicationData.posFrom = latLng;
+            posFrom=latLng;
+            markerFrom = googleMap.addMarker(
+                    new MarkerOptions()
+                            .position(latLng)
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
+
+            cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
+            googleMap.animateCamera(cameraUpdate);
+            tagLocation = TAG_DESTINATION;
+
+        }
+        else if(tagLocation.equals(TAG_DESTINATION)){
+            address = getAddress(latLng);
+            txtDestination.setText(address);
+            strDetailDestination = address;
+            if (markerDestination != null) {
+                markerDestination.remove();
+            }
+            posDest = latLng;
+            markerDestination = googleMap.addMarker(
+                    new MarkerOptions()
+                            .position(posDest)
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_destination)));
+            cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 13);
+            googleMap.animateCamera(cameraUpdate);
+
+        }
+        layoutSuggestion.setVisibility(GONE);
+        if(posFrom!=null && posDest!=null) {
+            Document doc = GoogleAPIManager.getRoute(posFrom, posDest, "driving");
+
+            ArrayList<LatLng> directionPoint = GoogleAPIManager.getDirection(doc);
+            PolylineOptions rectLine = new PolylineOptions().width(15).color(getResources().getColor(R.color.bg_grad_2));
+
+            for (int i = 0; i < directionPoint.size(); i++) {
+                rectLine.add(directionPoint.get(i));
+            }
+            strDistance = "" + GoogleAPIManager.getDistanceText(doc);
+            strDuration = "" + GoogleAPIManager.getDurationText(doc);
+            driveLine = googleMap.addPolyline(rectLine);
         }
 
     }
@@ -628,7 +691,7 @@ public class FragmentHome extends Fragment {
                         }
                         gMap.moveCamera(CameraUpdateFactory.newLatLng(pFrom));
                         gMap.animateCamera(CameraUpdateFactory.zoomTo(15));
-                        gMap.addMarker(
+                        markerFrom = gMap.addMarker(
                                 new MarkerOptions()
                                         .position(pFrom)
                                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));

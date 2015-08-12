@@ -34,6 +34,14 @@ public class ApplicationData {
 
     public static Class act = null;
 
+    public static String addressFrom="";
+    public static String addressDestination="";
+    public static String detailFrom="";
+    public static String detailDestination="";
+    public static String distance="";
+    public static String duration="";
+
+
 
 
 

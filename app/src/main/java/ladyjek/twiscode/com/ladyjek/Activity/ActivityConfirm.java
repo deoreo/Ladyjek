@@ -17,6 +17,7 @@ import android.widget.TextView;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
+import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.R;
 
 public class ActivityConfirm extends ActionBarActivity {
@@ -28,8 +29,7 @@ public class ActivityConfirm extends ActionBarActivity {
     private ImageView btnBack;
     private TextView txtConfirm, txtFrom, txtDestination, txtDistance, txtDuration, txtTotal, txtDetailFrom, txtDetailDestination;
     private String strFrom = "", strDest = "", strDistance = "",
-            strDuration = "", strLat = "", strLon = "",
-            strDetailFrom = "",strDetailDest="" ;
+            strDuration = "", strDetailFrom = "",strDetailDest="" ;
     private int totalPrice = 0;
     private NumberFormat numberFormat;
     private DecimalFormat decimalFormat;
@@ -41,15 +41,12 @@ public class ActivityConfirm extends ActionBarActivity {
         //SetActionBar();
         SetPaySpinner();
         try {
-            Bundle b = getIntent().getExtras();
-            strFrom = b.getString("from");
-            strDest = b.getString("destination");
-            strDetailFrom = b.getString("detailfrom");
-            strDetailDest = b.getString("detaildestination");
-            strDistance = b.getString("distance");
-            strDuration = b.getString("duration");
-            strLat = b.getString("lat");
-            strLon = b.getString("lon");
+            strFrom = ApplicationData.addressFrom;
+            strDest = ApplicationData.addressDestination;
+            strDetailFrom = ApplicationData.detailFrom;
+            strDetailDest = ApplicationData.detailDestination;
+            strDistance = ApplicationData.distance;
+            strDuration = ApplicationData.duration;
 
             String[] strDist = strDistance.split(" ");
             float intDist = Float.parseFloat(strDist[0]);
@@ -74,8 +71,6 @@ public class ActivityConfirm extends ActionBarActivity {
             public void onClick(View v) {
 
                 Intent i = new Intent(getBaseContext(), ActivityLoading.class);
-                //i.addCategory(Intent.CATEGORY_HOME);
-                //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(i);
                 finish();
             }

@@ -90,6 +90,8 @@
                                     android:background="@null"
                                     android:textColor="@color/white_color"
                                     android:textStyle="bold"
+                                    android:singleLine="true"
+                                    android:maxLines="1"
                                     android:textCursorDrawable="@drawable/cursor_white"/>
                                 <RelativeLayout
                                     android:id="@+id/btnClearEmail"
