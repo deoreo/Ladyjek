@@ -47,7 +47,7 @@
                     android:id="@+id/imgDriver"
                     android:layout_width="140dp"
                     android:layout_height="140dp"
-                    android:background="@color/grey_color_smooth"/>
+                    android:background="@drawable/driver_photo_circle"/>
 
                 <RelativeLayout
                     android:layout_width="match_parent"

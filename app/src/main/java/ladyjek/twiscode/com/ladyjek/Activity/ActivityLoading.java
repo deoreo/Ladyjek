@@ -23,6 +23,7 @@ import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
 public class ActivityLoading extends Activity {
 
     private ProgressBar mProgressBar;
+    private int mWaited = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,22 +34,33 @@ public class ActivityLoading extends Activity {
     @Override
     protected void onStart(){
         super.onStart();
-        Thread background = new Thread() {
+        Thread splashThread = new Thread() {
+            @Override
             public void run() {
                 try {
-                    sleep(5*1000);
-                    Intent i=new Intent(getBaseContext(),ActivityPickUp.class);
-                    startActivity(i);
+                    for (int i = 0; i <= 1000; i++) {
+                        sleep(20);
+                        mProgressBar.setProgress(mWaited/10);
+                        mWaited+=1;
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } finally {
+
+                        Intent i = new Intent(getBaseContext(), ActivityPickUp.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(i);
+
                     finish();
 
-                } catch (Exception e) {
+
                 }
             }
         };
+        splashThread.start();
 
 
-        background.start();
-    }
+        }
 
     private void Dummy(){
         Thread background = new Thread() {
@@ -67,6 +79,12 @@ public class ActivityLoading extends Activity {
 
 
         background.start();
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+
     }
 
     private class GetDriver extends AsyncTask<String, Void, String> {

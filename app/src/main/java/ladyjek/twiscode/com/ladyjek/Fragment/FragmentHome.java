@@ -148,6 +148,8 @@ public class FragmentHome extends Fragment {
         layoutSuggestion = (RelativeLayout) rootView.findViewById(R.id.layoutSuggestion);
         itemCurrent = (FrameLayout) rootView.findViewById(R.id.itemCurrent);
         txtAddressCurrent = (TextView) rootView.findViewById(R.id.txtAddressCurrent);
+        SupportMapFragment fm = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapView);
+        googleMap = fm.getMap();
 
         if(NetworkManager.getInstance(mActivity).isConnectedInternet()) {
             new GetMyLocation(mActivity).execute();
@@ -449,13 +451,12 @@ public class FragmentHome extends Fragment {
                             if (markerDestination != null) {
                                 markerDestination.remove();
                             }
-
                         }
                         layoutSuggestion.setVisibility(GONE);
                         hideKeyboard();
                         drawNewMarker(selectedPlace.getAddress());
                     } catch (Exception e) {
-
+                        e.printStackTrace();
                     }
                 }
             });
