@@ -1,6 +1,7 @@
 package ladyjek.twiscode.com.ladyjek.Activity;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -95,6 +96,15 @@ public class ActivityTracking extends ActionBarActivity implements LocationListe
         googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
 
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        //finish();
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 
     @Override
