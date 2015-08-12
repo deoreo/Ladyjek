@@ -24,24 +24,26 @@
         android:background="@color/white_color"
 
         />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey_color_dark"
+        android:layout_below="@id/title"/>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
         android:background="@color/white_color"
-        android:paddingRight="10dp"
-        android:paddingLeft="10dp"
         >
 
         <TextView
-            android:id="@+id/title"
+            android:id="@+id/btnLogout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Logout"
+            android:text="Log out"
             android:typeface="sans"
             android:textSize="14dip"
-            android:paddingTop="15dp"
-            android:paddingBottom="50dp"
+            android:padding= "30dp"
             android:textStyle="bold"
             android:layout_centerHorizontal="true"/>
 

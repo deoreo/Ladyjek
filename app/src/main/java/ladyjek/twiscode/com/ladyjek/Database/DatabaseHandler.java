@@ -219,5 +219,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 new String[]{String.valueOf(article_id)});
     }
 
+    public void logout() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("delete from "+ T_USER);
+
+    }
+
 
 }

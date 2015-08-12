@@ -1,7 +1,9 @@
 package ladyjek.twiscode.com.ladyjek.Fragment;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -14,12 +16,16 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 
 import java.util.ArrayList;
 import java.util.List;
 
+import ladyjek.twiscode.com.ladyjek.Activity.ActivityLogin;
 import ladyjek.twiscode.com.ladyjek.Adapter.NavigationDrawerAdapter;
+import ladyjek.twiscode.com.ladyjek.Database.DatabaseHandler;
+import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.Utilities.NavDrawerItem;
 import ladyjek.twiscode.com.ladyjek.R;
 
@@ -35,6 +41,7 @@ import ladyjek.twiscode.com.ladyjek.R;
 public class FragmentDrawer extends android.support.v4.app.Fragment {
     private static String TAG = FragmentDrawer.class.getSimpleName();
 
+    TextView btnLogout;
     private RecyclerView recyclerView;
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
@@ -43,6 +50,7 @@ public class FragmentDrawer extends android.support.v4.app.Fragment {
     private static String[] titles = null;
     private FragmentDrawerListener drawerListener;
     private ImageView toggle;
+    private DatabaseHandler db;
 
     public FragmentDrawer() {
 
@@ -71,6 +79,7 @@ public class FragmentDrawer extends android.support.v4.app.Fragment {
 
         // drawer labels
         titles = getActivity().getResources().getStringArray(R.array.nav_drawer_labels);
+        db = new DatabaseHandler(getActivity());
     }
 
     @Override
@@ -80,6 +89,7 @@ public class FragmentDrawer extends android.support.v4.app.Fragment {
         View layout = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
         recyclerView = (RecyclerView) layout.findViewById(R.id.drawerList);
         toggle = (ImageView) layout.findViewById(R.id.drawer_toggle_inside);
+        btnLogout = (TextView) layout.findViewById(R.id.btnLogout);
 
         adapter = new NavigationDrawerAdapter(getActivity(), getData());
         recyclerView.setAdapter(adapter);
@@ -96,21 +106,25 @@ public class FragmentDrawer extends android.support.v4.app.Fragment {
 
             }
         }));
+
         toggle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mDrawerLayout.closeDrawer(containerView);
             }
         });
-        /*
-        try {
-            Log.d("url : ", ApplicationData.fbData.GetResponse().getJSONObject("picture").getJSONObject("data").get("url").toString());
-            new DownloadImageTask(profic)
-                    .execute(ApplicationData.fbData.GetResponse().getJSONObject("picture").getJSONObject("data").get("url").toString());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        */
+
+        btnLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                db.logout();
+                Intent i = new Intent(getActivity(), ActivityLogin.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i);
+                getActivity().finish();
+            }
+        });
+
         return layout;
     }
 
