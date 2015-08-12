@@ -494,6 +494,7 @@ public class FragmentHome extends Fragment {
 
         @Override
         protected String doInBackground(String... params) {
+            Log.d("posisi gps","doInbackground");
             try {
                 try {
                     Looper.prepare();
@@ -527,6 +528,8 @@ public class FragmentHome extends Fragment {
                                         latitude = location.getLatitude();
                                         longitude = location.getLongitude();
                                         posFrom = new LatLng(latitude, longitude);
+                                        ApplicationData.posFrom = posFrom;
+
                                     }
                                 }
                             }
@@ -540,6 +543,8 @@ public class FragmentHome extends Fragment {
                                         latitude = location.getLatitude();
                                         longitude = location.getLongitude();
                                         posFrom = new LatLng(latitude, longitude);
+                                        ApplicationData.posFrom = posFrom;
+
                                     }
                                 }
                             }
@@ -561,15 +566,23 @@ public class FragmentHome extends Fragment {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-
+            Log.d("posisi gps", "onPost");
             switch (result) {
                 case "FAIL":
                     DialogManager.showDialog(activity, "Warning", "Can not find your location!");
                     break;
                 case "OK":
                     try {
-                        LatLng pFrom = new LatLng(latitude, longitude);
-                        ApplicationData.posFrom = pFrom;
+                        LatLng pFrom = ApplicationData.posFrom;//new LatLng(ApplicationData.posFrom);
+                        //ApplicationData.posFrom = pFrom;
+                        Log.d("posisi gps", "pFrom");
+                        if(gMap==null){
+                            SupportMapFragment fm = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapView);
+                            gMap = fm.getMap();
+                        }
+                        else{
+                            Log.d("posisi gps", "map not null");
+                        }
                         gMap.moveCamera(CameraUpdateFactory.newLatLng(pFrom));
                         gMap.animateCamera(CameraUpdateFactory.zoomTo(15));
                         gMap.addMarker(
@@ -578,6 +591,7 @@ public class FragmentHome extends Fragment {
                                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
                         cameraUpdate = CameraUpdateFactory.newLatLngZoom(pFrom, 15);
                         gMap.animateCamera(cameraUpdate);
+                        Log.d("posisi gps", pFrom.toString());
                     }
                     catch (Exception e){
                         e.printStackTrace();
