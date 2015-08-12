@@ -7,11 +7,15 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.json.JSONObject;
@@ -21,12 +25,16 @@ import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 public class ActivityHandphone extends Activity {
 
     private Activity act;
     private TextView txtRegisterHandphone ;
     private EditText txtPhoneNumber,txtCountryCode;
     private String countryCode, phNum, strPhoneNumber="";
+    private RelativeLayout btnClearPhone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +48,7 @@ public class ActivityHandphone extends Activity {
         countryCode = txtCountryCode.getText().toString();
         phNum = txtPhoneNumber.getText().toString();
         strPhoneNumber = countryCode+phNum;
+        btnClearPhone = (RelativeLayout) findViewById(R.id.btnClearPhone);
 
         txtRegisterHandphone.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,7 +68,33 @@ public class ActivityHandphone extends Activity {
 
             }
         });
+        txtPhoneNumber.addTextChangedListener(new TextWatcher() {
 
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+                if (s.length() >= 1) {
+                    btnClearPhone.setVisibility(VISIBLE);
+                }
+                else if(s.length()==0){
+                    btnClearPhone.setVisibility(GONE);
+                }
+            }
+        });
+        btnClearPhone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                txtPhoneNumber.setText("");
+                btnClearPhone.setVisibility(GONE);
+            }
+        });
 
 
 

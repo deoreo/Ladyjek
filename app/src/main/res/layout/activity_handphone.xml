@@ -128,7 +128,7 @@
                                             android:textColorHint="@drawable/hint_selector_white"
                                             android:textStyle="bold" />
                                         <RelativeLayout
-                                            android:id="@+id/btnDelete"
+                                            android:id="@+id/btnClearPhone"
                                             android:layout_width="20dp"
                                             android:layout_height="50dp"
                                             android:visibility="gone">

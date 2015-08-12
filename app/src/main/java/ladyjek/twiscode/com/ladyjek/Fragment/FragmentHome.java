@@ -183,7 +183,6 @@ public class FragmentHome extends Fragment {
         });
 
         txtFrom.setOnTouchListener(new View.OnTouchListener() {
-
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 // TODO Auto-generated method stub

@@ -11,6 +11,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -160,6 +161,47 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
                 else if(s.length()==0){
                     btnClearPassword.setVisibility(GONE);
                 }
+            }
+        });
+        txtEmail.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                // TODO Auto-generated method stub
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    btnClearPassword.setVisibility(GONE);
+                    if(!txtEmail.getText().toString().isEmpty()){
+                        btnClearEmail.setVisibility(VISIBLE);
+                    }
+                }
+                return false;
+            }
+        });
+        txtPassword.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                // TODO Auto-generated method stub
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    btnClearEmail.setVisibility(GONE);
+                    if(!txtPassword.getText().toString().isEmpty()){
+                        btnClearPassword.setVisibility(VISIBLE);
+                    }
+                }
+                return false;
+            }
+        });
+
+        btnClearEmail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                txtEmail.setText("");
+                btnClearEmail.setVisibility(GONE);
+            }
+        });
+        btnClearPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                txtPassword.setText("");
+                btnClearPassword.setVisibility(GONE);
             }
         });
 

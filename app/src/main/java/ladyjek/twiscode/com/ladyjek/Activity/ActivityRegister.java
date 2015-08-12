@@ -8,11 +8,15 @@ import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -30,10 +34,14 @@ import ladyjek.twiscode.com.ladyjek.Model.ModelUser;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 public class ActivityRegister extends ActionBarActivity {
 
     private EditText txtEmail,txtPassword,txtConfirm;
     private TextView btnRegister;
+    private RelativeLayout btnClearEmail, btnClearPassword, btnClearConfirmPassword;
     private Activity act;
 
     @Override
@@ -44,8 +52,11 @@ public class ActivityRegister extends ActionBarActivity {
         act = this;
         txtEmail = (EditText) findViewById(R.id.txtEmail);
         txtPassword = (EditText) findViewById(R.id.txtPassword);
-        txtConfirm = (EditText) findViewById(R.id.txtPassword);
+        txtConfirm = (EditText) findViewById(R.id.txtConfirmPassword);
         btnRegister = (TextView) findViewById(R.id.btnRegister);
+        btnClearEmail = (RelativeLayout) findViewById(R.id.btnClearEmail);
+        btnClearPassword = (RelativeLayout) findViewById(R.id.btnClearPassword);
+        btnClearConfirmPassword = (RelativeLayout) findViewById(R.id.btnClearConfirmPassword);
 
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,6 +98,139 @@ public class ActivityRegister extends ActionBarActivity {
             }
         });
 
+        txtEmail.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+                if (s.length() >= 1) {
+                    btnClearEmail.setVisibility(VISIBLE);
+                } else if (s.length() == 0) {
+                    btnClearEmail.setVisibility(GONE);
+                    btnClearConfirmPassword.setVisibility(GONE);
+                }
+            }
+        });
+        txtPassword.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+                if (s.length() >= 1) {
+                    btnClearPassword.setVisibility(VISIBLE);
+                } else if (s.length() == 0) {
+                    btnClearEmail.setVisibility(GONE);
+                    btnClearConfirmPassword.setVisibility(GONE);
+                }
+            }
+        });
+        txtConfirm.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+                if (s.length() >= 1) {
+                    btnClearConfirmPassword.setVisibility(VISIBLE);
+                }
+                else if(s.length()==0){
+                    btnClearEmail.setVisibility(GONE);
+                    btnClearPassword.setVisibility(GONE);
+                }
+            }
+        });
+
+        btnClearEmail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                txtEmail.setText("");
+                btnClearEmail.setVisibility(GONE);
+                btnClearConfirmPassword.setVisibility(GONE);
+            }
+        });
+        btnClearPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                txtPassword.setText("");
+                btnClearPassword.setVisibility(GONE);
+                btnClearEmail.setVisibility(GONE);
+            }
+        });
+        btnClearConfirmPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                txtConfirm.setText("");
+                btnClearConfirmPassword.setVisibility(GONE);
+                btnClearEmail.setVisibility(GONE);
+            }
+        });
+
+        txtEmail.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                // TODO Auto-generated method stub
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    btnClearPassword.setVisibility(GONE);
+                    btnClearConfirmPassword.setVisibility(GONE);
+                    if (!txtEmail.getText().toString().isEmpty()) {
+                        btnClearEmail.setVisibility(VISIBLE);
+                    }
+                }
+                return false;
+            }
+        });
+        txtPassword.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                // TODO Auto-generated method stub
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    btnClearEmail.setVisibility(GONE);
+                    btnClearConfirmPassword.setVisibility(GONE);
+                    if (!txtPassword.getText().toString().isEmpty()) {
+                        btnClearPassword.setVisibility(VISIBLE);
+                    }
+                }
+                return false;
+            }
+        });
+        txtConfirm.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                // TODO Auto-generated method stub
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    btnClearEmail.setVisibility(GONE);
+                    btnClearPassword.setVisibility(GONE);
+                    if (!txtPassword.getText().toString().isEmpty()) {
+                        btnClearConfirmPassword.setVisibility(VISIBLE);
+                    }
+                }
+                return false;
+            }
+        });
 
 
 

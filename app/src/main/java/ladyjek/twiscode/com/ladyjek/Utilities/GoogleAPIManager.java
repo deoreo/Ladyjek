@@ -156,8 +156,6 @@ public class GoogleAPIManager {
         return modelGeocode;
     }
 
-
-
     public static Document getRoute(LatLng start, LatLng end, String mode) {
         String url = "http://maps.googleapis.com/maps/api/directions/xml?"
                 + "origin=" + start.latitude + "," + start.longitude
