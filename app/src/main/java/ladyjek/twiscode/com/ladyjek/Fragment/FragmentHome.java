@@ -118,6 +118,7 @@ public class FragmentHome extends Fragment {
     private FrameLayout itemCurrent;
     private ListView mListView;
     private Location location;
+    private SupportMapFragment fm;
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 1000 * 60 * 1;
     private static final long MIN_TIME_BW_UPDATES = 1;
 
@@ -469,6 +470,8 @@ public class FragmentHome extends Fragment {
         private Handler mUserLocationHandler = null;
         private Handler handler = null;
         double latitude, longitude;
+        private GoogleMap gMap;
+        LocationManager locationManager;
 
         public GetMyLocation(Activity activity) {
             super();
@@ -480,6 +483,7 @@ public class FragmentHome extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+
             progressDialog = new ProgressDialog(activity);
             progressDialog.setMessage("Memuat lokasi anda. . .");
             progressDialog.setIndeterminate(false);
@@ -495,16 +499,16 @@ public class FragmentHome extends Fragment {
                     Looper.prepare();
                     mUserLocationHandler = new Handler();
                     Log.d("loc", "get current location");
-
+                    SupportMapFragment fm = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapView);
+                    gMap = fm.getMap();
                     int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(mActivity);
                     if (status != ConnectionResult.SUCCESS) {
                         int requestCode = 10;
                         Dialog dialog = GooglePlayServicesUtil.getErrorDialog(status, mActivity, requestCode);
                         dialog.show();
                     } else {
-                        SupportMapFragment fm = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapView);
-                        googleMap = fm.getMap();
-                        LocationManager locationManager = (LocationManager) mActivity.getSystemService(Context.LOCATION_SERVICE);
+
+                        locationManager = (LocationManager) mActivity.getSystemService(Context.LOCATION_SERVICE);
                         boolean isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
                         boolean isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
                         Criteria criteria = new Criteria();
@@ -563,16 +567,21 @@ public class FragmentHome extends Fragment {
                     DialogManager.showDialog(activity, "Warning", "Can not find your location!");
                     break;
                 case "OK":
-                    LatLng pFrom = new LatLng(latitude, longitude);
-                    ApplicationData.posFrom = pFrom;
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLng(pFrom));
-                    googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
-                    googleMap.addMarker(
-                            new MarkerOptions()
-                                    .position(pFrom)
-                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
-                    cameraUpdate = CameraUpdateFactory.newLatLngZoom(pFrom, 15);
-                    googleMap.animateCamera(cameraUpdate);
+                    try {
+                        LatLng pFrom = new LatLng(latitude, longitude);
+                        ApplicationData.posFrom = pFrom;
+                        gMap.moveCamera(CameraUpdateFactory.newLatLng(pFrom));
+                        gMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+                        gMap.addMarker(
+                                new MarkerOptions()
+                                        .position(pFrom)
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
+                        cameraUpdate = CameraUpdateFactory.newLatLngZoom(pFrom, 15);
+                        gMap.animateCamera(cameraUpdate);
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
+                    }
                     break;
             }
 
@@ -582,7 +591,21 @@ public class FragmentHome extends Fragment {
 
         @Override
         public void onLocationChanged(Location location) {
-
+            try {
+                LatLng pFrom = new LatLng(latitude, longitude);
+                ApplicationData.posFrom = pFrom;
+                gMap.moveCamera(CameraUpdateFactory.newLatLng(pFrom));
+                gMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+                gMap.addMarker(
+                        new MarkerOptions()
+                                .position(pFrom)
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
+                cameraUpdate = CameraUpdateFactory.newLatLngZoom(pFrom, 15);
+                gMap.animateCamera(cameraUpdate);
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
             Message msg = new Message();
             handler.sendMessage(msg);
             if (mUserLocationHandler != null) {
