@@ -15,19 +15,24 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 
+import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.R;
 
-public class ActivityTracking extends ActionBarActivity implements LocationListener {
+public class ActivityTracking extends ActionBarActivity implements LocationListener, OnMapReadyCallback {
 
     private Toolbar mToolbar;
-    GoogleMap googleMap;
+    private GoogleMap googleMap;
+    private LatLng posDriver;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tracking);
+        posDriver = ApplicationData.posDriver;
+
 
 
         // Getting Google Play availability status
@@ -136,6 +141,11 @@ public class ActivityTracking extends ActionBarActivity implements LocationListe
         mToolbar.setNavigationIcon(R.drawable.ic_back);
         getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
 
     }
 }

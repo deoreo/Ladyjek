@@ -44,7 +44,7 @@ public class ActivitySplashScreen extends Activity {
                     e.printStackTrace();
                 } finally {
                     int countUser = db.getUserCount();
-                    if(countUser >= 0) {
+                    if(countUser > 0) {
                         if(ApplicationData.act==null){
                             Intent i = new Intent(getBaseContext(), Main.class);
                             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
