@@ -559,7 +559,7 @@ public class FragmentHome extends Fragment {
                         String provider = locationManager.getBestProvider(criteria, true);
                         location = locationManager.getLastKnownLocation(provider);
                         if (!isGPSEnabled && !isNetworkEnabled) {
-                            DialogManager.showDialog(mActivity, "Warning", "Turn on your GPS or network!");
+                            return "FAIL";
                         } else {
                             if (isNetworkEnabled) {
                                 locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
