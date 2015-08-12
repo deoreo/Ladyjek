@@ -19,6 +19,7 @@ import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.Model.ModelUser;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
+import ladyjek.twiscode.com.ladyjek.Utilities.UserManager;
 
 public class ActivityLoading extends Activity {
 
@@ -40,7 +41,8 @@ public class ActivityLoading extends Activity {
                 try {
                     sleep(5*1000);
                     Intent i=new Intent(getBaseContext(),ActivityPickUp.class);
-                    ApplicationData.act = ActivityPickUp.class;
+                    UserManager um = new UserManager(ActivityLoading.this);
+                    um.setActivity("ActivityPickUp");
                     startActivity(i);
                     finish();
 

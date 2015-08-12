@@ -23,10 +23,11 @@ public class UserManager {
     private static final String KEY_EXPIRED_ON = "expiredOn";
     private static final String KEY_USER_EMAIL = "userEmail";
     private static final String KEY_TOKEN = "token";
+    private static final String KEY_ACTIVITY = "activity";
     private Context mContext;
     private static final String TAG = "UserManager";
 
-    private UserManager(Context context){
+    public UserManager(Context context){
         mContext = context;
         mPref = mContext.getSharedPreferences(PREF_NAME, PRIVATE_MODE);
         mEditor = mPref.edit();
@@ -60,6 +61,20 @@ public class UserManager {
     public void setUserMail(String userMail) {
         try {
             mEditor.putString(KEY_USER_EMAIL, userMail);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new NullPointerException();
+        }
+        mEditor.commit();
+    }
+
+    public String getActivity() {
+        return mPref.getString(KEY_ACTIVITY, "");
+    }
+
+    public void setActivity(String act) {
+        try {
+            mEditor.putString(KEY_ACTIVITY, act);
         } catch (Exception e) {
             e.printStackTrace();
             throw new NullPointerException();

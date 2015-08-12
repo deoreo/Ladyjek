@@ -12,6 +12,7 @@ import ladyjek.twiscode.com.ladyjek.Database.DatabaseHandler;
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.Model.ModelUser;
 import ladyjek.twiscode.com.ladyjek.R;
+import ladyjek.twiscode.com.ladyjek.Utilities.UserManager;
 
 public class ActivitySplashScreen extends Activity {
 
@@ -45,13 +46,21 @@ public class ActivitySplashScreen extends Activity {
                 } finally {
                     int countUser = db.getUserCount();
                     if(countUser > 0) {
-                        if(ApplicationData.act==null){
+                        UserManager um = new UserManager(ActivitySplashScreen.this);
+                        String pref = um.getActivity();
+                        if(pref==""){
                             Intent i = new Intent(getBaseContext(), Main.class);
                             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(i);
                         }
                         else {
-                            Intent i = new Intent(getBaseContext(), ApplicationData.act);
+                            Intent i = null;
+                            if(pref.equalsIgnoreCase("ActivityPickUp")){
+                                i = new Intent(getBaseContext(), ActivityPickUp.class);
+                            }
+                            else if(pref.equalsIgnoreCase("ActivityTracking")){
+                                i = new Intent(getBaseContext(), ActivityTracking.class);
+                            }
                             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(i);
                         }

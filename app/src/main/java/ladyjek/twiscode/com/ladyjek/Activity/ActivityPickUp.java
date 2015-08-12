@@ -10,6 +10,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.telephony.PhoneStateListener;
@@ -43,6 +44,7 @@ import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.Model.ModelGeocode;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.GoogleAPIManager;
+import ladyjek.twiscode.com.ladyjek.Utilities.UserManager;
 
 public class ActivityPickUp extends ActionBarActivity implements LocationListener {
 
@@ -102,7 +104,7 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
             @Override
             public void onClick(View v) {
                 Intent callIntent = new Intent(Intent.ACTION_CALL);
-                callIntent.setData(Uri.parse("tel:"+ ApplicationData.phoneNumber));
+                callIntent.setData(Uri.parse("tel:" + ApplicationData.phoneNumber));
                 startActivity(callIntent);
             }
         });
@@ -124,25 +126,29 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
             }
         });
 
+        Dummy();
 
 
 
     }
 
     private void Dummy(){
-        Timer myTimer = new Timer();
-        myTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                MovetoTracking();
+        new CountDownTimer(5000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                //mTextField.setText("seconds remaining: " + millisUntilFinished / 1000);
             }
 
-        }, 0, 10000);
+            public void onFinish() {
+                MovetoTracking();
+            }
+        }.start();
     }
 
     private void MovetoTracking(){
         Intent i=new Intent(getBaseContext(),ActivityTracking.class);
-        ApplicationData.act = ActivityTracking.class;
+        UserManager um = new UserManager(ActivityPickUp.this);
+        um.setActivity("ActivityTracking");
         startActivity(i);
         finish();
     }
