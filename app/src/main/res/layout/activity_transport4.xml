@@ -13,7 +13,7 @@
         android:orientation="vertical">
         <fragment xmlns:map="http://schemas.android.com/apk/res-auto"
             android:id="@+id/mapView"
-            class="com.google.android.gms.maps.SupportMapFragment"
+            class="com.google.android.gms.maps.MapFragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"/>
@@ -163,6 +163,7 @@
                             android:layout_alignParentRight="true"
                             android:src="@drawable/right_arrow" />
                     </RelativeLayout>
+
                 </LinearLayout>
 
 

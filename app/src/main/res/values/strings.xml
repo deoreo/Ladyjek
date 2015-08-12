@@ -28,7 +28,7 @@
     <string name="lbl_login">Lets do this!</string>
     <string name="lbl_hp">Safety first!</string>
     <string name="lbl_konfirmasi">Terima kasih!</string>
-    <string name="lbl_review">Estimasi waktu menunggu : <b> 5 min </b></string>
+    <string name="lbl_review">Estimasi waktu menunggu : <b> - </b></string>
     <string name="lbl_tracking">Kontak darurat</string>
     <string name="lbl_tracking_2">Anda sedang berjalan menuju tujuan</string>
     <string name="lbl_feedback">Terima kasih!n</string>

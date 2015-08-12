@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -31,6 +32,7 @@ import android.os.StrictMode;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -58,8 +60,10 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
@@ -105,7 +109,7 @@ public class FragmentHome extends Fragment {
     private String add, tagLocation = TAG_FROM;
     private String placeId = "", description = "", strDistance = "", strDuration = "", strDetailFrom = "a", strDetailDestination = "b";
 
-    private LatLng mapCenter, posFrom, posDest;
+    private LatLng mapCenter, posFrom, posDest, posDriver;
     private AdapterAddress mPlaceArrayAdapter;
     private Marker markerFrom, markerDestination;
     private CameraUpdate cameraUpdate;
@@ -131,12 +135,13 @@ public class FragmentHome extends Fragment {
         super.onCreate(savedInstanceState);
         mActivity = getActivity();
         posFrom = ApplicationData.posFrom;
+        posDriver = ApplicationData.posDriver;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.activity_transport4, container, false);
+        final View rootView = inflater.inflate(R.layout.activity_transport4, container, false);
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
@@ -218,6 +223,7 @@ public class FragmentHome extends Fragment {
                     } else {
                         itemCurrent.setVisibility(GONE);
                         mListView.setVisibility(VISIBLE);
+                        layoutSuggestion.setVisibility(GONE);
                     }
                     Log.d("ActivityTransport", tagLocation);
                 }
@@ -226,6 +232,22 @@ public class FragmentHome extends Fragment {
                 return false;
             }
         });
+
+        layoutSuggestion.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                // TODO Auto-generated method stub
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    if(itemCurrent.getVisibility()==GONE)
+                        layoutSuggestion.setVisibility(GONE);
+                }
+
+
+                return false;
+            }
+        });
+
 
 
         txtFrom.addTextChangedListener(new TextWatcher() {
@@ -285,10 +307,22 @@ public class FragmentHome extends Fragment {
 
             }
         });
-
         // Inflate the layout for this fragment
         return rootView;
     }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        // Checks whether a keyboard is available
+        if (newConfig.KEYBOARDHIDDEN_NO == Configuration.KEYBOARDHIDDEN_NO) {
+            Log.d("keyboard", "show");
+        } else if (newConfig.KEYBOARDHIDDEN_YES == Configuration.KEYBOARDHIDDEN_YES) {
+            Log.d("keyboard", "hidden");
+        }
+    }
+
 
     public void drawNewMarker(String address) {
         Log.d("FragmentHome", address);
@@ -334,6 +368,7 @@ public class FragmentHome extends Fragment {
 
     }
 
+
     public String getAddress(LatLng latlng) {
         Geocoder geocoder = new Geocoder(mActivity, Locale.getDefault());
         double lat = latlng.latitude;
@@ -357,11 +392,15 @@ public class FragmentHome extends Fragment {
 
     public void hideKeyboard() {
         View view = mActivity.getCurrentFocus();
+
         if (view != null) {
             InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            layoutSuggestion.setVisibility(GONE);
         }
+
     }
+
 
     public class GetSuggestion extends AsyncTask<String, Void, JSONArray> {
         String address, tag;
@@ -445,6 +484,9 @@ public class FragmentHome extends Fragment {
                             if (markerFrom != null) {
                                 markerFrom.remove();
                             }
+                            ModelGeocode geocode = GoogleAPIManager.geocode(selectedPlace.getAddress());
+                            ApplicationData.posFrom = new LatLng(geocode.getLat(), geocode.getLon());
+
                         } else if (tag.equals(TAG_DESTINATION)) {
                             txtDestination.setText(selectedPlace.getAddress());
                             strDetailDestination = selectedPlace.getAddressDetail();
