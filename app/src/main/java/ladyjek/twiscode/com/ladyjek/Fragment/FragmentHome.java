@@ -613,11 +613,11 @@ public class FragmentHome extends Fragment {
             switch (result) {
                 case "FAIL":
                     DialogManager.showDialog(activity, "Warning", "Can not find your location!");
+
                     break;
                 case "OK":
                     try {
-                        LatLng pFrom = ApplicationData.posFrom;//new LatLng(ApplicationData.posFrom);
-                        //ApplicationData.posFrom = pFrom;
+                        LatLng pFrom = ApplicationData.posFrom;
                         Log.d("posisi gps", "pFrom");
                         if(gMap==null){
                             SupportMapFragment fm = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapView);
