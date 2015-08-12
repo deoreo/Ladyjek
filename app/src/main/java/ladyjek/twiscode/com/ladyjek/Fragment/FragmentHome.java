@@ -130,6 +130,7 @@ public class FragmentHome extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mActivity = getActivity();
+        posFrom = ApplicationData.posFrom;
     }
 
     @Override
