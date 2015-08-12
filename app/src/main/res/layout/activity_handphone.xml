@@ -110,20 +110,37 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:orientation="vertical">
-
-                                    <EditText
-                                        android:id="@+id/txtPhoneNumber"
+                                    <LinearLayout
                                         android:layout_width="match_parent"
                                         android:layout_height="50dp"
+                                        android:orientation="horizontal">
+                                        <EditText
+                                            android:id="@+id/txtPhoneNumber"
+                                            android:layout_width="0dp"
+                                            android:layout_weight="1"
+                                            android:layout_height="50dp"
+                                            android:inputType="number"
+                                            android:paddingTop="10dp"
+                                            android:paddingBottom="10dp"
+                                            android:paddingRight="10dp"
+                                            android:background="@null"
+                                            android:textColor="@color/white_color"
+                                            android:textColorHint="@drawable/hint_selector_white"
+                                            android:textStyle="bold" />
+                                        <RelativeLayout
+                                            android:id="@+id/btnDelete"
+                                            android:layout_width="20dp"
+                                            android:layout_height="50dp"
+                                            android:visibility="gone">
+                                            <ImageView
+                                                android:layout_width="20dp"
+                                                android:layout_height="20dp"
+                                                android:layout_centerVertical="true"
+                                                android:layout_alignParentRight="true"
+                                                android:src="@drawable/ic_erase_white" />
+                                        </RelativeLayout>
+                                    </LinearLayout>
 
-                                        android:inputType="number"
-                                        android:paddingTop="10dp"
-                                        android:paddingBottom="10dp"
-                                        android:paddingRight="10dp"
-                                        android:background="@null"
-                                        android:textColor="@color/white_color"
-                                        android:textColorHint="@color/white_color"
-                                        android:textStyle="bold" />
 
                                     <View
                                         android:layout_width="match_parent"
