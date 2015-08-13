@@ -37,31 +37,31 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
-import ladyjek.twiscode.com.ladyjek.Model.ModelGeocode;
 import ladyjek.twiscode.com.ladyjek.R;
-import ladyjek.twiscode.com.ladyjek.Utilities.GoogleAPIManager;
-import ladyjek.twiscode.com.ladyjek.Utilities.UserManager;
+import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
 
 public class ActivityPickUp extends ActionBarActivity implements LocationListener {
 
     private Toolbar mToolbar;
     private GoogleMap googleMap;
-    private String strLat="-7.282177", strLon="112.71183";
     private LatLng posFrom;
     private Marker markerFrom;
     private Button btnCall,btnSMS;
+    private ApplicationManager appManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pickup);
 
+        appManager = new ApplicationManager(ActivityPickUp.this);
         btnCall = (Button) findViewById(R.id.btnCall);
         btnSMS = (Button) findViewById(R.id.btnSMS);
+        Double latitude = appManager.getUserFrom().getLatitude();
+        Double longitude = appManager.getUserFrom().getLongitude();
+        posFrom = new LatLng(latitude,longitude);
 
 
         // Getting Google Play availability status
@@ -145,7 +145,7 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
 
     private void MovetoTracking(){
         Intent i=new Intent(getBaseContext(),ActivityTracking.class);
-        UserManager um = new UserManager(ActivityPickUp.this);
+        ApplicationManager um = new ApplicationManager(ActivityPickUp.this);
         um.setActivity("ActivityTracking");
         startActivity(i);
         finish();

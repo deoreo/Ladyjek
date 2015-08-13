@@ -27,48 +27,27 @@ public class ActivityTracking extends ActionBarActivity implements LocationListe
 
     private Toolbar mToolbar;
     private GoogleMap googleMap;
-    private LatLng posDriver;
+    private LatLng posFrom, posDest;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tracking);
-        posDriver = ApplicationData.posDriver;
+        posFrom = ApplicationData.posDestination;
 
-
-
-        // Getting Google Play availability status
         int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());
-
-        // Showing status
-        if(status!= ConnectionResult.SUCCESS){ // Google Play Services are not available
-
+        if(status!= ConnectionResult.SUCCESS){
             int requestCode = 10;
             Dialog dialog = GooglePlayServicesUtil.getErrorDialog(status, this, requestCode);
             dialog.show();
+        }else {
 
-        }else { // Google Play Services are available
-
-            // Getting reference to the SupportMapFragment of activity_main.xml
             SupportMapFragment fm = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapView);
-
-            // Getting GoogleMap object from the fragment
             googleMap = fm.getMap();
-
-            // Enabling MyLocation Layer of Google Map
             googleMap.setMyLocationEnabled(true);
-
-            // Getting LocationManager object from System Service LOCATION_SERVICE
             LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
-            // Creating a criteria object to retrieve provider
             Criteria criteria = new Criteria();
-
-            // Getting the name of the best provider
             String provider = locationManager.getBestProvider(criteria, true);
-
-            // Getting Current Location
             Location location = locationManager.getLastKnownLocation(provider);
-
             if(location!=null){
                 onLocationChanged(location);
             }
@@ -78,21 +57,10 @@ public class ActivityTracking extends ActionBarActivity implements LocationListe
     }
     @Override
     public void onLocationChanged(Location location) {
-
-
-        // Getting latitude of the current location
         double latitude = location.getLatitude();
-
-        // Getting longitude of the current location
         double longitude = location.getLongitude();
-
-        // Creating a LatLng object for the current location
         LatLng latLng = new LatLng(latitude, longitude);
-
-        // Showing the current location in Google Map
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-
-        // Zoom in the Google Map
         googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
 
 

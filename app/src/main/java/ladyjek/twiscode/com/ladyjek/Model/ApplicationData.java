@@ -30,6 +30,7 @@ public class ApplicationData {
     public static Boolean editHome = false;
 
     public static LatLng posFrom;
+    public static LatLng posDestination;
     public static LatLng posDriver;
 
     public static Class act = null;

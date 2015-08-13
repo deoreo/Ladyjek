@@ -23,13 +23,12 @@ import org.json.JSONObject;
 
 import ladyjek.twiscode.com.ladyjek.Control.JSONControl;
 import ladyjek.twiscode.com.ladyjek.Database.DatabaseHandler;
-import ladyjek.twiscode.com.ladyjek.Fragment.FragmentHome;
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.Model.ModelUser;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.KeyboardManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
-import ladyjek.twiscode.com.ladyjek.Utilities.UserManager;
+import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -41,7 +40,7 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
     private EditText txtEmail, txtPassword;
     private RelativeLayout wrapperLogin, wrapperRegister;
     private ModelUser userLogin;
-    private UserManager userManager;
+    private ApplicationManager applicationManager;
     private DatabaseHandler db;
     private RelativeLayout btnClearEmail, btnClearPassword;
 
@@ -296,7 +295,7 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
                         userLogin = new ModelUser();
                         userLogin.setEmail(email);
                         userLogin.setPassword(password);
-                        //UserManager.getInstance(mActivity).setUserMail(email);
+                        //ApplicationManager.getInstance(mActivity).setUserMail(email);
                         db.insertUser(userLogin);
                         ApplicationData.login_id = _id.toString();
                         return "OK";

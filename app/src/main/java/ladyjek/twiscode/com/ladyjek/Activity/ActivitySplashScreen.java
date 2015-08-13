@@ -2,17 +2,13 @@ package ladyjek.twiscode.com.ladyjek.Activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.ProgressBar;
 
 import ladyjek.twiscode.com.ladyjek.Database.DatabaseHandler;
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
-import ladyjek.twiscode.com.ladyjek.Model.ModelUser;
 import ladyjek.twiscode.com.ladyjek.R;
-import ladyjek.twiscode.com.ladyjek.Utilities.UserManager;
+import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
 
 public class ActivitySplashScreen extends Activity {
 
@@ -46,7 +42,7 @@ public class ActivitySplashScreen extends Activity {
                 } finally {
                     int countUser = db.getUserCount();
                     if(countUser > 0) {
-                        UserManager um = new UserManager(ActivitySplashScreen.this);
+                        ApplicationManager um = new ApplicationManager(ActivitySplashScreen.this);
                         String pref = um.getActivity();
                         if(pref==""){
                             Intent i = new Intent(getBaseContext(), Main.class);

@@ -6,14 +6,21 @@ package ladyjek.twiscode.com.ladyjek.Model;
 public class ModelPlace {
 
 
-    private String placeId;
-    private String address;
-    private String addressDetail;
+    private String placeId="";
+    private String address="";
+    private String addressDetail="";
+    private Double latitude;
+    private Double longitude;
 
     public ModelPlace(String placeId, String address, String addressDetail ) {
         this.placeId = placeId;
         this.address = address;
         this.addressDetail = addressDetail;
+    }
+
+    public ModelPlace(Double latitude, Double longitude){
+        this.latitude = longitude;
+        this.longitude = longitude;
     }
 
     @Override
@@ -43,5 +50,21 @@ public class ModelPlace {
 
     public void setAddressDetail(String addressDetail) {
         this.addressDetail = addressDetail;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
     }
 }

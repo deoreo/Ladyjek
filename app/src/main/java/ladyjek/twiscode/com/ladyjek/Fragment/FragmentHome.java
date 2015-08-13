@@ -50,6 +50,7 @@ import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.Model.ModelGeocode;
 import ladyjek.twiscode.com.ladyjek.Model.ModelPlace;
 import ladyjek.twiscode.com.ladyjek.R;
+import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.GoogleAPIManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.NetworkManager;
@@ -125,7 +126,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
     private SupportMapFragment fm;
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 1000 * 60 * 1;
     private static final long MIN_TIME_BW_UPDATES = 1;
-
+    private ApplicationManager appManager;
     public FragmentHome() {
         // Required empty public constructor
     }
@@ -134,7 +135,9 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mActivity = getActivity();
+        appManager = new ApplicationManager(mActivity);
         posFrom = ApplicationData.posFrom;
+        posDest = ApplicationData.posDestination;
         posDriver = ApplicationData.posDriver;
     }
 
@@ -419,6 +422,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                 markerFrom.remove();
             }
             ApplicationData.posFrom = latLng;
+            appManager.setUserFrom(new ModelPlace(latLng.latitude,latLng.longitude));
             posFrom=latLng;
             markerFrom = googleMap.addMarker(
                     new MarkerOptions()
@@ -437,6 +441,8 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
             if (markerDestination != null) {
                 markerDestination.remove();
             }
+            ApplicationData.posDestination = latLng;
+            appManager.setUserDestination(new ModelPlace(latLng.latitude, latLng.longitude));
             posDest = latLng;
             markerDestination = googleMap.addMarker(
                     new MarkerOptions()
@@ -548,6 +554,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                             }
                             ModelGeocode geocode = GoogleAPIManager.geocode(selectedPlace.getAddress());
                             ApplicationData.posFrom = new LatLng(geocode.getLat(), geocode.getLon());
+                            appManager.setUserFrom(new ModelPlace(geocode.getLat(),geocode.getLon()));
 
                         } else if (tag.equals(TAG_DESTINATION)) {
                             txtDestination.setText(selectedPlace.getAddress());
@@ -555,6 +562,9 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                             if (markerDestination != null) {
                                 markerDestination.remove();
                             }
+                            ModelGeocode geocode = GoogleAPIManager.geocode(selectedPlace.getAddress());
+                            ApplicationData.posDestination = new LatLng(geocode.getLat(), geocode.getLon());
+                            appManager.setUserDestination(new ModelPlace(geocode.getLat(),geocode.getLon()));
                         }
                         layoutSuggestion.setVisibility(GONE);
                         hideKeyboard();
