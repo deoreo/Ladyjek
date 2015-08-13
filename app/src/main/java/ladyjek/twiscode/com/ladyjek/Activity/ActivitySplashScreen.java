@@ -43,7 +43,8 @@ public class ActivitySplashScreen extends Activity {
                     int countUser = db.getUserCount();
                     if(countUser > 0) {
                         ApplicationManager um = new ApplicationManager(ActivitySplashScreen.this);
-                        String pref = um.getActivity();
+                        //String pref = um.getActivity();
+                        String pref = "";
                         if(pref==""){
                             Intent i = new Intent(getBaseContext(), Main.class);
                             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);

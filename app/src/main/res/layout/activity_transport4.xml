@@ -90,7 +90,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="40dp">
-                    <EditText
+                    <org.droidparts.widget.ClearableEditText
                         android:id="@+id/txtFrom"
                         android:layout_width="0dp"
                         android:layout_height="40dp"
@@ -107,9 +107,11 @@
                         android:textColor="#111111"
                         android:textStyle="bold"
                         android:textColorHint="@drawable/hint_selector_black"
-                        android:textSize="15sp" />
+                        android:textSize="15sp"
+                        android:drawableRight="@drawable/ic_erase1"
+                        />
                     <RelativeLayout
-                        android:id="@+id/btnDeleteFrom"
+                        android:id="@+id/btnClearFrom"
                         android:layout_marginRight="5dp"
                         android:layout_width="20dp"
                         android:layout_height="40dp"
@@ -148,7 +150,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="40dp">
-                    <EditText
+                    <org.droidparts.widget.ClearableEditText
                         android:id="@+id/txtDestination"
                         android:layout_width="0dp"
                         android:layout_height="40dp"
@@ -165,9 +167,11 @@
                         android:textColor="#111111"
                         android:textStyle="bold"
                         android:textColorHint="@drawable/hint_selector_black"
-                        android:textSize="15sp" />
+                        android:textSize="15sp"
+                        android:drawableRight="@drawable/ic_erase1"
+                        />
                     <RelativeLayout
-                        android:id="@+id/btnDeleteDestination"
+                        android:id="@+id/btnClearDestination"
                         android:layout_marginRight="5dp"
                         android:layout_width="20dp"
                         android:layout_height="40dp"

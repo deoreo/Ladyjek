@@ -18,10 +18,6 @@ public class ActivityRate extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rating);
 
-
-
-
-
     }
 
     @Override

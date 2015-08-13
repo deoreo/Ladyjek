@@ -1,5 +1,7 @@
 package ladyjek.twiscode.com.ladyjek.Model;
 
+import android.util.Log;
+
 /**
  * Created by ModelUser on 8/3/2015.
  */
@@ -19,7 +21,7 @@ public class ModelPlace {
     }
 
     public ModelPlace(Double latitude, Double longitude){
-        this.latitude = longitude;
+        this.latitude = latitude;
         this.longitude = longitude;
     }
 
@@ -53,7 +55,9 @@ public class ModelPlace {
     }
 
     public Double getLatitude() {
+        Log.d("modelplace", "lat:"+latitude);
         return latitude;
+
     }
 
     public void setLatitude(Double latitude) {
@@ -61,6 +65,7 @@ public class ModelPlace {
     }
 
     public Double getLongitude() {
+        Log.d("modelplace", "lon:"+longitude);
         return longitude;
     }
 
