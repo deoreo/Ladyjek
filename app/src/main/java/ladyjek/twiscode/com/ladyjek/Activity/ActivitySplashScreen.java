@@ -43,8 +43,7 @@ public class ActivitySplashScreen extends Activity {
                     int countUser = db.getUserCount();
                     if(countUser > 0) {
                         ApplicationManager um = new ApplicationManager(ActivitySplashScreen.this);
-                        //String pref = um.getActivity();
-                        String pref = "";
+                        String pref = um.getActivity();
                         if(pref==""){
                             Intent i = new Intent(getBaseContext(), Main.class);
                             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -57,6 +56,9 @@ public class ActivitySplashScreen extends Activity {
                             }
                             else if(pref.equalsIgnoreCase("ActivityTracking")){
                                 i = new Intent(getBaseContext(), ActivityTracking.class);
+                            }
+                            else if(pref.equalsIgnoreCase("ActivityRate")){
+                                i = new Intent(getBaseContext(), Main.class);
                             }
                             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(i);

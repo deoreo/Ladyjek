@@ -54,7 +54,7 @@
                     android:layout_height="120dp"
                     app:border_width="0dp"
                     android:layout_centerHorizontal="true"
-                    android:src="@drawable/images"
+                    android:src="@drawable/driver_photo_circle"
                     app:border_overlay="true"
                     android:layout_below="@id/txtTotal"
                     android:layout_marginTop="15dp"
@@ -67,7 +67,7 @@
                     android:layout_below="@id/imgDriver"
                     android:layout_centerHorizontal="true"
                     android:textAllCaps="false"
-                    android:text="Full Name"
+                    android:text="Dewi Handayani"
                     android:textColor="@color/black_color"
                     android:textStyle="bold"
                     android:textSize="20dp"/>
@@ -90,7 +90,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:textAllCaps="false"
-                    android:text="Feedback untuk dewi"
+                    android:text="Feedback untuk Dewi"
                     android:textColor="@color/black_color"
                     android:textSize="18dp"
                     android:layout_below="@id/rateDriver"/>
