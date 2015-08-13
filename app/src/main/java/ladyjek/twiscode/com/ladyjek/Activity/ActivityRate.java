@@ -1,5 +1,7 @@
 package ladyjek.twiscode.com.ladyjek.Activity;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -7,16 +9,17 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
-<<<<<<< HEAD
+import android.widget.Button;
 import android.widget.TextView;
-=======
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
->>>>>>> a622c70fa52ef365192958b06f1068d206ed7e05
+
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.R;
+import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -25,8 +28,7 @@ public class ActivityRate extends ActionBarActivity {
 
 
     private Toolbar mToolbar;
-    private TextView txtPrice;
-
+    private TextView txtPrice, btnSaran;
     private EditText txtFeedback;
     private RelativeLayout btnClearFeedback;
 
@@ -34,12 +36,11 @@ public class ActivityRate extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rating);
-        txtPrice = (TextView)findViewById(R.id.txtTotal);
-        txtPrice.setText("Total : "+ ApplicationData.price);
-
+        txtPrice = (TextView) findViewById(R.id.txtTotal);
+        txtPrice.setText("Total : " + ApplicationData.price);
         txtFeedback = (EditText) findViewById(R.id.feedbackDriver);
         btnClearFeedback = (RelativeLayout) findViewById(R.id.btnFeedback);
-
+        btnSaran = (TextView) findViewById(R.id.btnSaran);
         txtFeedback.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 
             @Override
@@ -87,6 +88,27 @@ public class ActivityRate extends ActionBarActivity {
             }
         });
 
+        btnSaran.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialogWrapper.Builder(ActivityRate.this)
+                        .setTitle("Terima kasih!")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent i = new Intent(getBaseContext(), Main.class);
+                                ApplicationManager um = new ApplicationManager(ActivityRate.this);
+                                um.setActivity("ActivityTracking");
+                                startActivity(i);
+                                finish();
+                                dialog.dismiss();
+                            }
+                        })
+                        .setIcon(R.drawable.ladyjek_icon)
+                        .show();
+            }
+        });
+
     }
 
     private void SetActionBar() {
@@ -97,7 +119,6 @@ public class ActivityRate extends ActionBarActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
 
     }
-
 
 
 }
