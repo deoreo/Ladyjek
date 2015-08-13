@@ -89,6 +89,8 @@ public class ActivityConfirm extends ActionBarActivity {
         txtDistance.setText(strDistance);
         txtDuration.setText(strDuration);
         txtTotal.setText("Rp " + decimalFormat.format(totalPrice));
+        ApplicationData.price = txtTotal.getText().toString();
+
 
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override

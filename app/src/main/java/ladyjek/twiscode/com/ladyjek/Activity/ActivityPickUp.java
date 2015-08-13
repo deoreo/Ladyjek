@@ -2,6 +2,7 @@ package ladyjek.twiscode.com.ladyjek.Activity;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
@@ -19,7 +20,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdate;
@@ -51,9 +54,11 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
     private LatLng posFrom, posDriver;
     private Marker markerFrom, markerDriver;
     private Button btnCall,btnSMS;
+    private TextView txtEstimate;
     private ApplicationManager appManager;
     private final String TAG_FROM = "FROM";
     private final String TAG_DRIVER = "DRIVER";
+    private String driverDuration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,11 +68,13 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
 
         btnCall = (Button) findViewById(R.id.btnCall);
         btnSMS = (Button) findViewById(R.id.btnSMS);
+        txtEstimate = (TextView) findViewById(R.id.txtEstimate);
         appManager = new ApplicationManager(ActivityPickUp.this);
         Double latitude = appManager.getUserFrom().getLatitude();
         Double longitude = appManager.getUserFrom().getLongitude();
         posFrom = new LatLng(latitude,longitude);
         posDriver = ApplicationData.posDriver;
+
 
 
         int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());
@@ -91,7 +98,8 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
             posDriver = ApplicationData.posDriver;
             drawNewMarker(posFrom,TAG_FROM);
             drawNewMarker(posDriver, TAG_DRIVER);
-            drawDriveLine(googleMap , posFrom , posDriver);
+            drawDriveLine(googleMap, posFrom, posDriver);
+            drawDriverMarker(googleMap, posFrom, posDriver);
         }
 
         PhoneCallListener phoneListener = new PhoneCallListener();
@@ -145,11 +153,24 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
     }
 
     private void MovetoTracking(){
-        Intent i=new Intent(getBaseContext(),ActivityTracking.class);
-        ApplicationManager um = new ApplicationManager(ActivityPickUp.this);
-        um.setActivity("ActivityTracking");
-        startActivity(i);
-        finish();
+        new AlertDialogWrapper.Builder(ActivityPickUp.this)
+                .setTitle("Driver telah sampai di tempat Anda")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent i=new Intent(getBaseContext(),ActivityTracking.class);
+                        ApplicationManager um = new ApplicationManager(ActivityPickUp.this);
+                        um.setActivity("ActivityTracking");
+                        startActivity(i);
+                        finish();
+                        dialog.dismiss();
+                    }
+                })
+                .setIcon(R.drawable.ladyjek_icon)
+                .show();
+
+
+
     }
 
 
@@ -242,6 +263,16 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
         }
     }
 
+    private void drawDriverMarker(GoogleMap gMap, LatLng pFrom, LatLng pDriver) {
+        markerDriver = gMap.addMarker(
+                new MarkerOptions()
+                        .position(pDriver)
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_driver)));
+        Document doc = GoogleAPIManager.getRoute(pFrom, pDriver, "driving");
+        ArrayList<LatLng> directionPoint = GoogleAPIManager.getDirection(doc);
+        driverDuration = "" + GoogleAPIManager.getDurationText(doc);
+        txtEstimate.setText("Estimasi waktu menunggu : "+ driverDuration);
+    }
 
     public String getAddress(LatLng latlng) {
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());

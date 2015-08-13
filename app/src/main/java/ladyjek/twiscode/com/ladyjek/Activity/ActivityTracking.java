@@ -1,6 +1,7 @@
 package ladyjek.twiscode.com.ladyjek.Activity;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.location.Criteria;
@@ -14,6 +15,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.afollestad.materialdialogs.AlertDialogWrapper;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdate;
@@ -123,6 +126,8 @@ public class ActivityTracking extends ActionBarActivity implements LocationListe
         }
     }
 
+
+
     private void Dummy(){
         new CountDownTimer(20000, 1000) {
 
@@ -137,11 +142,22 @@ public class ActivityTracking extends ActionBarActivity implements LocationListe
     }
 
     private void MovetoTracking(){
-        Intent i=new Intent(getBaseContext(),ActivityRate.class);
-        ApplicationManager um = new ApplicationManager(ActivityTracking.this);
-        um.setActivity("ActivityRate");
-        startActivity(i);
-        finish();
+        new AlertDialogWrapper.Builder(ActivityTracking.this)
+                .setTitle("Anda telah selamat sampai tujuan!")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent i=new Intent(getBaseContext(),ActivityRate.class);
+                        ApplicationManager um = new ApplicationManager(ActivityTracking.this);
+                        um.setActivity("ActivityRate");
+                        startActivity(i);
+                        finish();
+                        dialog.dismiss();
+                    }
+                })
+                .setIcon(R.drawable.ladyjek_icon)
+                .show();
+
     }
 
     @Override

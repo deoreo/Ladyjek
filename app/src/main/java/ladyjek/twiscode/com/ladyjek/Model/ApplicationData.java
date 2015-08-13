@@ -41,6 +41,7 @@ public class ApplicationData {
     public static String detailDestination="";
     public static String distance="";
     public static String duration="";
+    public static  String price = "";
 
 
 

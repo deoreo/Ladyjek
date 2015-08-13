@@ -107,7 +107,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
     private final String TAG_FROM = "FROM";
     private final String TAG_DESTINATION = "DESTINATION";
     private EditText txtFrom, txtDestination;
-    private String add, tagLocation = TAG_FROM;
+    private String add, tagLocation;
     private String placeId = "", description = "", strDistance = "", strDuration = "", strDetailFrom = "a", strDetailDestination = "b";
 
     private LatLng mapCenter, posFrom, posDest, posDriver;
@@ -137,6 +137,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         mActivity = getActivity();
         appManager = new ApplicationManager(mActivity);
         posFrom = ApplicationData.posFrom;
+        tagLocation = TAG_FROM;
     }
 
     @Override

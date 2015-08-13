@@ -25,7 +25,7 @@
             android:background="@drawable/plain_gradient_bg_btn"
             android:layout_alignParentBottom="true">
             <TextView
-                android:id="@+id/txtLabel"
+                android:id="@+id/txtDriverTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white_color"
@@ -37,7 +37,7 @@
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/txtLabel"
+                android:layout_below="@id/txtDriverTime"
                 android:layout_centerHorizontal="true">
                 <TextView
                     android:id="@+id/btnRequestRide"
