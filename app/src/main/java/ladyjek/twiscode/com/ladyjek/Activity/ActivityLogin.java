@@ -73,6 +73,12 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
                     wrapperLogin.setVisibility(VISIBLE);
                     wrapperRegister.setVisibility(GONE);
                 }
+                if(!hasFocus){
+                    btnClearEmail.setVisibility(GONE);
+                }
+                else {
+                    btnClearEmail.setVisibility(VISIBLE);
+                }
             }
         });
 
@@ -82,6 +88,13 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
             public void onFocusChange(View v, boolean hasFocus) {
                 wrapperLogin.setVisibility(VISIBLE);
                 wrapperRegister.setVisibility(GONE);
+
+                if(!hasFocus){
+                    btnClearPassword.setVisibility(GONE);
+                }
+                else {
+                    btnClearPassword.setVisibility(VISIBLE);
+                }
             }
         });
 

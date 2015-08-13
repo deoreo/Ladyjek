@@ -2,16 +2,22 @@ package ladyjek.twiscode.com.ladyjek.Activity;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
+
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
 public class ActivityEditPassword extends Activity {
 
@@ -20,6 +26,7 @@ public class ActivityEditPassword extends Activity {
     private ImageView btnBack;
     private TextView btnSimpan;
     private EditText oldpass,newpass,confirmpass;
+    private RelativeLayout btnClearOldPass, btnClearNewPass, btnClearConfirmPass;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +40,10 @@ public class ActivityEditPassword extends Activity {
         oldpass = (EditText) findViewById(R.id.txtSandiLama);
         newpass = (EditText) findViewById(R.id.txtSandiBaru);
         confirmpass = (EditText) findViewById(R.id.txtKonfirmasiSandi);
+
+        btnClearOldPass = (RelativeLayout) findViewById(R.id.btnOldPass);
+        btnClearNewPass = (RelativeLayout) findViewById(R.id.btnNewPass);
+        btnClearConfirmPass = (RelativeLayout) findViewById(R.id.btnConfirmPass);
 
         btnBack = (ImageView) findViewById(R.id.btnBack);
 
@@ -64,6 +75,120 @@ public class ActivityEditPassword extends Activity {
                     }
 
 
+                }
+            }
+        });
+
+        oldpass.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+
+                if (!hasFocus) {
+                    btnClearOldPass.setVisibility(GONE);
+                } else {
+                    if (oldpass.getText().length() >= 1) {
+                        btnClearOldPass.setVisibility(VISIBLE);
+                    } else if (oldpass.getText().length() == 0) {
+                        btnClearOldPass.setVisibility(GONE);
+                    }
+
+                }
+            }
+        });
+
+        newpass.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    btnClearNewPass.setVisibility(GONE);
+                } else {
+                    if (newpass.getText().length() >= 1) {
+                        btnClearNewPass.setVisibility(VISIBLE);
+                    } else if (oldpass.getText().length() == 0) {
+                        btnClearNewPass.setVisibility(GONE);
+                    }
+                }
+            }
+        });
+
+        confirmpass.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    btnClearConfirmPass.setVisibility(GONE);
+                } else {
+                    if (confirmpass.getText().length() >= 1) {
+                        btnClearConfirmPass.setVisibility(VISIBLE);
+                    } else if (confirmpass.getText().length() == 0) {
+                        btnClearConfirmPass.setVisibility(GONE);
+                    }
+                }
+            }
+        });
+
+        oldpass.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+                if (s.length() >= 1) {
+                    btnClearOldPass.setVisibility(VISIBLE);
+                } else if (s.length() == 0) {
+                    btnClearOldPass.setVisibility(GONE);
+                }
+            }
+        });
+        newpass.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+                if (s.length() >= 1) {
+                    btnClearNewPass.setVisibility(VISIBLE);
+                } else if (s.length() == 0) {
+                    btnClearNewPass.setVisibility(GONE);
+                }
+            }
+        });
+        confirmpass.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+                if (s.length() >= 1) {
+                    btnClearConfirmPass.setVisibility(VISIBLE);
+                } else if (s.length() == 0) {
+                    btnClearConfirmPass.setVisibility(GONE);
                 }
             }
         });

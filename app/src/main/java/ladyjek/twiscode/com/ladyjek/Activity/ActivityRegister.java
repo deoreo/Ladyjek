@@ -232,6 +232,43 @@ public class ActivityRegister extends ActionBarActivity {
             }
         });
 
+        txtEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+
+                if (!hasFocus) {
+                    btnClearEmail.setVisibility(GONE);
+                } else {
+                    btnClearEmail.setVisibility(VISIBLE);
+                }
+            }
+        });
+
+        txtPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    btnClearPassword.setVisibility(GONE);
+                } else {
+                    btnClearPassword.setVisibility(VISIBLE);
+                }
+            }
+        });
+
+        txtConfirm.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    btnClearConfirmPassword.setVisibility(GONE);
+                } else {
+                    btnClearConfirmPassword.setVisibility(VISIBLE);
+                }
+            }
+        });
+
 
 
 
