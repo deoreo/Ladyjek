@@ -150,6 +150,7 @@ public class ActivityEditPassword extends Activity {
                 }
             }
         });
+
         newpass.addTextChangedListener(new TextWatcher() {
 
             @Override
@@ -190,6 +191,27 @@ public class ActivityEditPassword extends Activity {
                 } else if (s.length() == 0) {
                     btnClearConfirmPass.setVisibility(GONE);
                 }
+            }
+        });
+
+        btnClearOldPass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                oldpass.setText("");
+            }
+        });
+
+        btnClearNewPass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                newpass.setText("");
+            }
+        });
+
+        btnClearConfirmPass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                confirmpass.setText("");
             }
         });
 

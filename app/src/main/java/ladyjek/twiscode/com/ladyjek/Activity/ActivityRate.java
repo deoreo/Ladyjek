@@ -3,20 +3,81 @@ package ladyjek.twiscode.com.ladyjek.Activity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.RelativeLayout;
 
 import ladyjek.twiscode.com.ladyjek.R;
+
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
 public class ActivityRate extends ActionBarActivity {
 
 
     private Toolbar mToolbar;
 
+    private EditText txtFeedback;
+    private RelativeLayout btnClearFeedback;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rating);
+
+        txtFeedback = (EditText) findViewById(R.id.feedbackDriver);
+        btnClearFeedback = (RelativeLayout) findViewById(R.id.btnFeedback);
+
+        txtFeedback.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+
+                if (!hasFocus) {
+                    btnClearFeedback.setVisibility(GONE);
+                } else {
+                    if (txtFeedback.getText().length() >= 1) {
+                        btnClearFeedback.setVisibility(VISIBLE);
+                    } else if (txtFeedback.getText().length() == 0) {
+                        btnClearFeedback.setVisibility(GONE);
+                    }
+
+                }
+            }
+        });
+
+        txtFeedback.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+                if (s.length() >= 1) {
+                    btnClearFeedback.setVisibility(VISIBLE);
+                } else if (s.length() == 0) {
+                    btnClearFeedback.setVisibility(GONE);
+                }
+            }
+        });
+
+        btnClearFeedback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                txtFeedback.setText("");
+            }
+        });
 
     }
 
