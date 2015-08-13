@@ -1,7 +1,6 @@
 package ladyjek.twiscode.com.ladyjek.Activity;
 
 import android.app.Dialog;
-import android.graphics.Color;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Address;
@@ -28,69 +27,71 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.Circle;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
+
+import org.w3c.dom.Document;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
+import ladyjek.twiscode.com.ladyjek.Utilities.GoogleAPIManager;
 
 public class ActivityPickUp extends ActionBarActivity implements LocationListener {
 
     private Toolbar mToolbar;
     private GoogleMap googleMap;
-    private LatLng posFrom;
-    private Marker markerFrom;
+    private LatLng posFrom, posDriver;
+    private Marker markerFrom, markerDriver;
     private Button btnCall,btnSMS;
     private ApplicationManager appManager;
+    private final String TAG_FROM = "FROM";
+    private final String TAG_DRIVER = "DRIVER";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pickup);
 
-        appManager = new ApplicationManager(ActivityPickUp.this);
+
         btnCall = (Button) findViewById(R.id.btnCall);
         btnSMS = (Button) findViewById(R.id.btnSMS);
+        appManager = new ApplicationManager(ActivityPickUp.this);
         Double latitude = appManager.getUserFrom().getLatitude();
         Double longitude = appManager.getUserFrom().getLongitude();
         posFrom = new LatLng(latitude,longitude);
+        posDriver = ApplicationData.posDriver;
 
 
-        // Getting Google Play availability status
         int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());
 
-        // Showing status
-        if (status != ConnectionResult.SUCCESS) { // Google Play Services are not available
+        if (status != ConnectionResult.SUCCESS) {
 
             int requestCode = 10;
             Dialog dialog = GooglePlayServicesUtil.getErrorDialog(status, this, requestCode);
             dialog.show();
 
-        } else { // Google Play Services are available
+        } else {
 
-            // Getting reference to the SupportMapFragment of activity_main.xml
             SupportMapFragment fm = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapView);
 
             // Getting GoogleMap object from the fragment
             googleMap = fm.getMap();
-            LatLng currentPosition = ApplicationData.posFrom;
-            drawNewMarker(currentPosition);
-            CircleOptions circleOptions = new CircleOptions()
-                    .center(posFrom)
-                    .radius(500)
-                    .strokeWidth(1)
-                    .strokeColor(Color.BLUE)
-                    .fillColor(Color.parseColor("#500084d3"));
-            Circle mapCircle = googleMap.addCircle(circleOptions);
-
+            appManager = new ApplicationManager(ActivityPickUp.this);
+            Double latFrom = appManager.getUserFrom().getLatitude();
+            Double longFrom = appManager.getUserFrom().getLongitude();
+            posFrom = new LatLng(latFrom,longFrom);
+            posDriver = ApplicationData.posDriver;
+            drawNewMarker(posFrom,TAG_FROM);
+            drawNewMarker(posDriver, TAG_DRIVER);
+            drawDriveLine(googleMap , posFrom , posDriver);
         }
 
         PhoneCallListener phoneListener = new PhoneCallListener();
@@ -131,7 +132,7 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
     }
 
     private void Dummy(){
-        new CountDownTimer(5000, 1000) {
+        new CountDownTimer(20000, 1000) {
 
             public void onTick(long millisUntilFinished) {
                 //mTextField.setText("seconds remaining: " + millisUntilFinished / 1000);
@@ -204,15 +205,43 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
 
     }
 
-    public void drawNewMarker(LatLng latLng) {
-        markerFrom = googleMap.addMarker(
-                new MarkerOptions()
-                        .position(latLng)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
+    public void drawNewMarker(LatLng latLng, String taglocation) {
+        try {
+            if (taglocation.equals(TAG_FROM)) {
+                markerFrom = googleMap.addMarker(
+                        new MarkerOptions()
+                                .position(latLng)
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
+            } else if (taglocation.equals(TAG_DRIVER)) {
+                markerDriver = googleMap.addMarker(
+                        new MarkerOptions()
+                                .position(latLng)
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_driver)));
+            }
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(posFrom, 12);
+            googleMap.animateCamera(cameraUpdate);
+        } catch (Exception e){
 
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
-        googleMap.animateCamera(cameraUpdate);
+        }
     }
+
+    private void drawDriveLine(GoogleMap gMap, LatLng pFrom, LatLng pDest){
+        try {
+            Document doc = GoogleAPIManager.getRoute(pFrom, pDest, "driving");
+
+            ArrayList<LatLng> directionPoint = GoogleAPIManager.getDirection(doc);
+            PolylineOptions rectLine = new PolylineOptions().width(15).color(getResources().getColor(R.color.line_blue));
+
+            for (int i = 0; i < directionPoint.size(); i++) {
+                rectLine.add(directionPoint.get(i));
+            }
+            gMap.addPolyline(rectLine);
+        }
+        catch (Exception e){
+
+        }
+    }
+
 
     public String getAddress(LatLng latlng) {
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());

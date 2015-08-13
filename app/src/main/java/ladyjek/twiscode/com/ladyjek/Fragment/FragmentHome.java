@@ -137,8 +137,6 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         mActivity = getActivity();
         appManager = new ApplicationManager(mActivity);
         posFrom = ApplicationData.posFrom;
-        posDest = ApplicationData.posDestination;
-        posDriver = ApplicationData.posDriver;
     }
 
     @Override
@@ -270,6 +268,9 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                 if (s.length() >= 3) {
                     new GetSuggestion(s.toString(), tagLocation).execute();
                 }
+                else if(s.length()==0){
+                    layoutSuggestion.setVisibility(GONE);
+                }
             }
         });
         txtDestination.addTextChangedListener(new TextWatcher() {
@@ -288,6 +289,9 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                                       int before, int count) {
                 if (s.length() >= 3) {
                     new GetSuggestion(s.toString(), tagLocation).execute();
+                }
+                else if(s.length()==0){
+                    layoutSuggestion.setVisibility(GONE);
                 }
             }
         });
@@ -431,7 +435,6 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
 
             cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
             googleMap.animateCamera(cameraUpdate);
-            tagLocation = TAG_DESTINATION;
 
         }
         else if(tagLocation.equals(TAG_DESTINATION)){

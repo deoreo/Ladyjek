@@ -57,6 +57,9 @@ public class ActivitySplashScreen extends Activity {
                             else if(pref.equalsIgnoreCase("ActivityTracking")){
                                 i = new Intent(getBaseContext(), ActivityTracking.class);
                             }
+                            else if(pref.equalsIgnoreCase("ActivityRate")){
+                                i = new Intent(getBaseContext(), Main.class);
+                            }
                             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(i);
                         }
