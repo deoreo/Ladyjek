@@ -34,7 +34,7 @@ public class ActivityHandphone extends Activity {
     private TextView txtRegisterHandphone ;
     private EditText txtPhoneNumber,txtCountryCode;
     private String countryCode, phNum, strPhoneNumber="";
-    private RelativeLayout btnClearPhone;
+    private RelativeLayout btnClearPhone, wrapperRegister;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +49,7 @@ public class ActivityHandphone extends Activity {
         phNum = txtPhoneNumber.getText().toString();
         strPhoneNumber = countryCode+phNum;
         btnClearPhone = (RelativeLayout) findViewById(R.id.btnClearPhone);
+        wrapperRegister = (RelativeLayout) findViewById(R.id.wrapperRegister);
 
         txtRegisterHandphone.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,6 +69,26 @@ public class ActivityHandphone extends Activity {
 
             }
         });
+
+        wrapperRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String hp = txtPhoneNumber.getText().toString();
+                if (hp == null || hp.trim().isEmpty() || hp.length() <6) {
+                    DialogManager.showDialog(act, "Warning", "Minimal 6 Character!");
+                    txtPhoneNumber.setText("");
+                }
+                else{
+
+                    new DoPhone(act).execute(
+                            ApplicationData.registered_id,
+                            "+62"+hp
+                    );
+                }
+
+            }
+        });
+
         txtPhoneNumber.addTextChangedListener(new TextWatcher() {
 
             @Override

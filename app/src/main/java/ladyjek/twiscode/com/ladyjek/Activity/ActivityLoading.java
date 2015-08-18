@@ -35,7 +35,7 @@ public class ActivityLoading extends Activity {
         Dummy();
     }
     private void Dummy(){
-        new CountDownTimer(20000, 1000) {
+        new CountDownTimer(7000, 1000) {
             public void onTick(long millisUntilFinished) {
                 mProgressBar.setIndeterminate(true);
             }
@@ -52,80 +52,19 @@ public class ActivityLoading extends Activity {
         um.setActivity("ActivityTracking");
         startActivity(i);
         finish();
-
     }
 
-    private class GetDriver extends AsyncTask<String, Void, String> {
-        private Activity activity;
-        private Context context;
-        private Resources resources;
-        private ProgressDialog progressDialog;
-
-        public GetDriver(Activity activity) {
-            super();
-            this.activity = activity;
-            this.context = activity.getApplicationContext();
-            this.resources = activity.getResources();
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            try {
-
-                String email = params[0];
-                String password = params[1];
-
-                JSONControl jsControl = new JSONControl();
-                JSONObject response = jsControl.postLogin(email,password);
-                JSONObject responseUser = response.getJSONObject("driver");
-                Log.d("json response", response.toString());
-                try {
-                    String _id = responseUser.getString("_id");
-                    Log.d("json response id",_id.toString());
-                    if(_id!=null){
-                        return "OK";
-                    }
-                    else {
-                        return "FAIL";
-                    }
-                }
-                catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return "FAIL";
-
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-
-            progressDialog.dismiss();
-            switch (result) {
-                case "FAIL":
-                    DialogManager.showDialog(activity, "Warning", "");
-                    break;
-                case "OK":
-
-                    Intent i = new Intent(getBaseContext(), Main.class);
-                    startActivity(i);
-                    finish();
-                    break;
-            }
-
-
-        }
-
-
+    @Override
+    public void onBackPressed() {
+        //finish();
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
+
+
+
+
 
 }

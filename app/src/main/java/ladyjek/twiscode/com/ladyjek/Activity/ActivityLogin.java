@@ -73,10 +73,9 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
                     wrapperLogin.setVisibility(VISIBLE);
                     wrapperRegister.setVisibility(GONE);
                 }
-                if(!hasFocus){
+                if (!hasFocus) {
                     btnClearEmail.setVisibility(GONE);
-                }
-                else {
+                } else {
                     btnClearEmail.setVisibility(VISIBLE);
                 }
             }
@@ -106,10 +105,45 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
             }
         });
 
+        wrapperRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getBaseContext(), ActivityRegister.class);
+                startActivity(i);
+            }
+        });
+
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                String email = txtEmail.getText().toString();
+                String password = txtPassword.getText().toString();
+                if (email == null || password == null || email.trim().isEmpty() || password.trim().isEmpty()) {
+                    DialogManager.showDialog(mActivity, "Warning", "Email or Password is empty!");
+                    txtEmail.setText("");
+                    txtPassword.setText("");
+                } else if (!email.trim().contains("@") ||
+                        !email.trim().contains(".") ||
+                        email.trim().contains(" ")) {
+                    DialogManager.showDialog(mActivity, "Warning", "Wrong email format!");
+                    txtEmail.setText("");
+                    txtPassword.setText("");
+                } else {
+                    hideKeyboard();
+                    //txtEmail.setText("");
+                    //txtPassword.setText("");
+                    new DoLogin(mActivity).execute(
+                            email,
+                            password
+                    );
+                }
+            }
+        });
+
+        wrapperLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 String email = txtEmail.getText().toString();
                 String password = txtPassword.getText().toString();
                 if (email == null || password == null || email.trim().isEmpty() || password.trim().isEmpty()) {

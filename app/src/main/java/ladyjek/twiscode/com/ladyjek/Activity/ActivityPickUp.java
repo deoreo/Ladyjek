@@ -98,7 +98,7 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
             posDriver = ApplicationData.posDriver;
             drawNewMarker(posFrom,TAG_FROM);
             drawNewMarker(posDriver, TAG_DRIVER);
-            drawDriveLine(googleMap, posFrom, posDriver);
+            drawDriveLine(googleMap, posDriver, posFrom);
             drawDriverMarker(googleMap, posFrom, posDriver);
         }
 

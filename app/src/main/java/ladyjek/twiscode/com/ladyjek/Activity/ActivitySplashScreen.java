@@ -51,7 +51,10 @@ public class ActivitySplashScreen extends Activity {
                         }
                         else {
                             Intent i = null;
-                            if(pref.equalsIgnoreCase("ActivityPickUp")){
+                            if(pref.equalsIgnoreCase("ActivityLoading")){
+                                i = new Intent(getBaseContext(), ActivityLoading.class);
+                            }
+                            else if(pref.equalsIgnoreCase("ActivityPickUp")){
                                 i = new Intent(getBaseContext(), ActivityPickUp.class);
                             }
                             else if(pref.equalsIgnoreCase("ActivityTracking")){

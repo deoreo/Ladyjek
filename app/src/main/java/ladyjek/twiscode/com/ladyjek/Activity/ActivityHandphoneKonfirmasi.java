@@ -21,6 +21,7 @@ public class ActivityHandphoneKonfirmasi extends Activity {
     private Activity act;
     private TextView txtConfirmSmsCode;
     private EditText txtSmsCode;
+    private RelativeLayout wrapperRegister;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +31,7 @@ public class ActivityHandphoneKonfirmasi extends Activity {
         act = this;
         txtConfirmSmsCode = (TextView)findViewById(R.id.txtConfirmSmsCode);
         txtSmsCode = (EditText) findViewById(R.id.txtSmsCode);
+        wrapperRegister = (RelativeLayout) findViewById(R.id.wrapperRegister);
 
         if(ApplicationData.editPhone){
             txtConfirmSmsCode.setText(R.string.lanjut);
@@ -45,14 +47,9 @@ public class ActivityHandphoneKonfirmasi extends Activity {
         txtConfirmSmsCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(ApplicationData.editPhone){
+                if (ApplicationData.editPhone) {
                     finish();
-                }
-                else{
-                    //Intent i = new Intent(getBaseContext(), ActivityLogin.class);
-                    //startActivity(i);
-                   // finish();
-
+                } else {
                     new AlertDialogWrapper.Builder(ActivityHandphoneKonfirmasi.this)
                             .setTitle("Success register!")
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -66,8 +63,31 @@ public class ActivityHandphoneKonfirmasi extends Activity {
                             })
                             .setIcon(R.drawable.ladyjek_icon)
                             .show();
+                }
 
+            }
+        });
 
+        wrapperRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(ApplicationData.editPhone){
+                    finish();
+                }
+                else{
+                    new AlertDialogWrapper.Builder(ActivityHandphoneKonfirmasi.this)
+                            .setTitle("Success register!")
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Intent i = new Intent(ActivityHandphoneKonfirmasi.this, ActivityLogin.class);
+                                    startActivity(i);
+                                    finish();
+                                    dialog.dismiss();
+                                }
+                            })
+                            .setIcon(R.drawable.ladyjek_icon)
+                            .show();
                 }
 
             }

@@ -30,7 +30,7 @@ public class ActivityRate extends ActionBarActivity {
     private Toolbar mToolbar;
     private TextView txtPrice, btnSaran;
     private EditText txtFeedback;
-    private RelativeLayout btnClearFeedback;
+    private RelativeLayout btnClearFeedback, wrapperRegister;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +41,7 @@ public class ActivityRate extends ActionBarActivity {
         txtFeedback = (EditText) findViewById(R.id.feedbackDriver);
         btnClearFeedback = (RelativeLayout) findViewById(R.id.btnFeedback);
         btnSaran = (TextView) findViewById(R.id.btnSaran);
+        wrapperRegister = (RelativeLayout) findViewById(R.id.wrapperRegister);
         txtFeedback.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 
             @Override
@@ -98,7 +99,28 @@ public class ActivityRate extends ActionBarActivity {
                             public void onClick(DialogInterface dialog, int which) {
                                 Intent i = new Intent(getBaseContext(), Main.class);
                                 ApplicationManager um = new ApplicationManager(ActivityRate.this);
-                                um.setActivity("ActivityTracking");
+                                um.setActivity("ActivityRate");
+                                startActivity(i);
+                                finish();
+                                dialog.dismiss();
+                            }
+                        })
+                        .setIcon(R.drawable.ladyjek_icon)
+                        .show();
+            }
+        });
+        wrapperRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialogWrapper.Builder(ActivityRate.this)
+                        .setTitle("Terima kasih!")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent i = new Intent(getBaseContext(), Main.class);
+                                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                ApplicationManager um = new ApplicationManager(ActivityRate.this);
+                                um.setActivity("ActivityRate");
                                 startActivity(i);
                                 finish();
                                 dialog.dismiss();
@@ -119,6 +141,16 @@ public class ActivityRate extends ActionBarActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
 
     }
+
+    @Override
+    public void onBackPressed() {
+        //finish();
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
 
 
 }

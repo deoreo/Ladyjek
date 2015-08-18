@@ -195,6 +195,21 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         wrapperRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (strDistance.isEmpty() && strDuration.isEmpty()) {
+                    DialogManager.showDialog(mActivity, "Warning", "Tentukan lokasi awal dan akhir!");
+                } else {
+                    ApplicationData.addressFrom = txtFrom.getText().toString();
+                    ApplicationData.addressDestination = txtDestination.getText().toString();
+                    ApplicationData.detailFrom = strDetailFrom;
+                    ApplicationData.detailDestination = strDetailDestination;
+                    ApplicationData.distance = strDistance;
+                    ApplicationData.duration = strDuration;
+
+                    Intent intent = new Intent(mActivity, ActivityConfirm.class);
+                    startActivity(intent);
+
+                    mActivity.finish();
+                }
             }
         });
         layoutfillForm.setOnClickListener(new View.OnClickListener() {
@@ -434,7 +449,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                 txtDestination.setText(address);
                 strDetailDestination = address;
                 ApplicationData.posDestination = posDest;
-                appManager.setUserFrom(new ModelPlace(posDest.latitude, posDest.longitude));
+                appManager.setUserDestination(new ModelPlace(posDest.latitude, posDest.longitude));
                 markerDestination = googleMap.addMarker(
                         new MarkerOptions()
                                 .position(posDest)

@@ -11,8 +11,11 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import org.droidparts.activity.legacy.Activity;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -21,6 +24,7 @@ import java.util.Locale;
 
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.R;
+import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
 
 public class ActivityConfirm extends ActionBarActivity {
 
@@ -29,6 +33,7 @@ public class ActivityConfirm extends ActionBarActivity {
     private Spinner pay;
     private ArrayAdapter<CharSequence> adapterPay;
     private ImageView btnBack;
+    private RelativeLayout wrapperRegister;
     private TextView txtConfirm, txtFrom, txtDestination, txtDistance, txtDuration, txtTotal, txtDetailFrom, txtDetailDestination;
     private String strFrom = "", strDest = "", strDistance = "",
             strDuration = "", strDetailFrom = "",strDetailDest="" ;
@@ -71,11 +76,23 @@ public class ActivityConfirm extends ActionBarActivity {
         txtDetailFrom = (TextView) findViewById(R.id.txtDetailFrom);
         txtDetailDestination = (TextView) findViewById(R.id.txtDetailDestination);
         btnBack = (ImageView) findViewById(R.id.btnBack);
+        wrapperRegister = (RelativeLayout) findViewById(R.id.wrapperRegister);
 
         txtConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent i = new Intent(getBaseContext(), ActivityLoading.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                ApplicationManager um = new ApplicationManager(ActivityConfirm.this);
+                um.setActivity("ActivityLoading");
+                startActivity(i);
+                finish();
+            }
+        });
 
+        wrapperRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 Intent i = new Intent(getBaseContext(), ActivityLoading.class);
                 startActivity(i);
                 finish();

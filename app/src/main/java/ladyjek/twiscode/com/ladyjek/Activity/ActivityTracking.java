@@ -14,6 +14,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.RelativeLayout;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -51,11 +52,13 @@ public class ActivityTracking extends ActionBarActivity implements LocationListe
     private final String TAG_FROM = "FROM";
     private final String TAG_DESTINATION = "DESTINATION";
     private ApplicationManager appManager;
+    private RelativeLayout wrapperRegister;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tracking);
+        wrapperRegister = (RelativeLayout) findViewById(R.id.wrapperRegister);
         appManager = new ApplicationManager(ActivityTracking.this);
         Double latFrom = appManager.getUserFrom().getLatitude();
         Double longFrom = appManager.getUserFrom().getLongitude();

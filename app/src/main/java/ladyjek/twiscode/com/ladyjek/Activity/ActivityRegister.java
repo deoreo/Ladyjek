@@ -41,7 +41,7 @@ public class ActivityRegister extends ActionBarActivity {
 
     private EditText txtEmail,txtPassword,txtConfirm;
     private TextView btnRegister;
-    private RelativeLayout btnClearEmail, btnClearPassword, btnClearConfirmPassword;
+    private RelativeLayout btnClearEmail, btnClearPassword, btnClearConfirmPassword, wrapperRegister;
     private Activity act;
 
     @Override
@@ -57,8 +57,49 @@ public class ActivityRegister extends ActionBarActivity {
         btnClearEmail = (RelativeLayout) findViewById(R.id.btnClearEmail);
         btnClearPassword = (RelativeLayout) findViewById(R.id.btnClearPassword);
         btnClearConfirmPassword = (RelativeLayout) findViewById(R.id.btnClearConfirmPassword);
+        wrapperRegister = (RelativeLayout) findViewById(R.id.wrapperRegister);
 
         btnRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String email = txtEmail.getText().toString();
+                String password = txtPassword.getText().toString();
+                String confirm = txtConfirm.getText().toString();
+                if (email == null || password == null || email.trim().isEmpty() || password.trim().isEmpty() || confirm == null || confirm.trim().isEmpty()) {
+                    DialogManager.showDialog(act, "Warning", "please fill all data!");
+                    txtEmail.setText("");
+                    txtPassword.setText("");
+                    txtConfirm.setText("");
+                } else if (!email.trim().contains("@") ||
+                        !email.trim().contains(".") ||
+                        email.trim().contains(" ")) {
+                    DialogManager.showDialog(act, "Warning", "Wrong email format!");
+                    txtEmail.setText("");
+                    txtPassword.setText("");
+                    txtConfirm.setText("");
+                } else if (!confirm.equals(password)) {
+                    DialogManager.showDialog(act, "Warning", "Confirmation password not match!");
+                    txtEmail.setText("");
+                    txtPassword.setText("");
+                    txtConfirm.setText("");
+                } else {
+
+                    /*
+                    ApplicationData.user = new User("1","nama kamu",email,password,"",new LatLng(0,0),new LatLng(0,0));
+                    Intent i = new Intent(getBaseContext(), ActivityHandphone.class);
+                    startActivity(i);
+                    finish();
+                    */
+                    new DoRegister(act).execute(
+                            email,
+                            password
+                    );
+                }
+            }
+        });
+
+        wrapperRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
