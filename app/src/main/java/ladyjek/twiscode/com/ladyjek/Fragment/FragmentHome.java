@@ -112,9 +112,10 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
     private String add, tagLocation;
     private String placeId = "", description = "", strDistance = "", strDuration = "", strDetailFrom = "a", strDetailDestination = "b";
 
-    private LatLng mapCenter, posFrom, posDest, posDriver;
+    private LatLng mapCenter, posFrom, posDest, posTemp, posDriver;
     private AdapterAddress mPlaceArrayAdapter;
-    private Marker markerFrom, markerDestination, markerTemp;
+    private Marker markerFrom, markerDestination;
+    public static Marker markerTemp;
     private CameraUpdate cameraUpdate;
     private Polyline driveLine;
     private Circle mapCircle;
@@ -178,6 +179,8 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         txtLocationFrom = (TextView) rootView.findViewById(R.id.txtLocationFrom);
         btnLocationFrom = (Button) rootView.findViewById(R.id.btnLocationFrom);
         btnLocationDestination = (Button) rootView.findViewById(R.id.btnLocationDestination);
+
+
 
         SupportMapFragment fm = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapView);
         googleMap = fm.getMap();
@@ -373,8 +376,15 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         btnLocationFrom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                posFrom = posTemp;
                 if (driveLine != null) {
                     driveLine.remove();
+                }
+                if(markerFrom!=null){
+                    markerFrom.remove();
+                }
+                if(markerTemp!=null){
+                    markerTemp.remove();
                 }
                 layoutMarkerDestination.setVisibility(GONE);
                 layoutMarkerFrom.setVisibility(GONE);
@@ -384,6 +394,10 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                 ApplicationData.posFrom = posFrom;
                 appManager.setUserFrom(new ModelPlace(posFrom.latitude, posFrom.longitude));
 
+                markerFrom = googleMap.addMarker(
+                        new MarkerOptions()
+                                .position(posFrom)
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
                 if (posFrom != null && posDest != null) {
                     Document doc = GoogleAPIManager.getRoute(posFrom, posDest, "driving");
 
@@ -404,10 +418,16 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         btnLocationDestination.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                posDest = posTemp;
                 if (driveLine != null) {
                     driveLine.remove();
                 }
-
+                if(markerDestination!=null){
+                    markerDestination.remove();
+                }
+                if(markerTemp!=null){
+                    markerTemp.remove();
+                }
                 layoutMarkerDestination.setVisibility(GONE);
                 layoutMarkerFrom.setVisibility(GONE);
                 String address = getAddress(posDest);
@@ -415,6 +435,10 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                 strDetailDestination = address;
                 ApplicationData.posDestination = posDest;
                 appManager.setUserFrom(new ModelPlace(posDest.latitude, posDest.longitude));
+                markerDestination = googleMap.addMarker(
+                        new MarkerOptions()
+                                .position(posDest)
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_destination)));
 
                 if (posFrom != null && posDest != null) {
                     Document doc = GoogleAPIManager.getRoute(posFrom, posDest, "driving");
@@ -546,20 +570,10 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
     @Override
     public void onMapClick(LatLng latLng) {
         //drawNewMarker
-        Log.d("FragmentHome", "OnMapClick: " + latLng.toString());
-        String address = null;
-
         if(tagLocation.equals(TAG_FROM)){
-           // address = getAddress(latLng);
-           // txtFrom.setText(address);
-           // strDetailFrom = address;
-            if (markerFrom != null) {
-                markerFrom.remove();
-            }
-           // ApplicationData.posFrom = latLng;
-           // appManager.setUserFrom(new ModelPlace(latLng.latitude,latLng.longitude));
-            posFrom=latLng;
-            markerFrom = googleMap.addMarker(
+            //posFrom=latLng;
+            posTemp = latLng;
+            markerTemp = googleMap.addMarker(
                     new MarkerOptions()
                             .position(latLng)
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
@@ -569,28 +583,18 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                     layoutMarkerFrom.setVisibility(VISIBLE);
                     layoutMarkerDestination.setVisibility(GONE);
                 }
-
                 @Override
                 public void onCancel() {
                 }
             });
 
-
-
         }
         else if(tagLocation.equals(TAG_DESTINATION)){
-            //address = getAddress(latLng);
-            //txtDestination.setText(address);
-            //strDetailDestination = address;
-            if (markerDestination != null) {
-                markerDestination.remove();
-            }
-            //ApplicationData.posDestination = latLng;
-            //appManager.setUserDestination(new ModelPlace(latLng.latitude, latLng.longitude));
-            posDest = latLng;
-            markerDestination = googleMap.addMarker(
+            //posDest = latLng;
+            posTemp = latLng;
+            markerTemp = googleMap.addMarker(
                     new MarkerOptions()
-                            .position(posDest)
+                            .position(latLng)
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_destination)));
             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15), new GoogleMap.CancelableCallback() {
                 @Override
@@ -606,21 +610,6 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
 
         }
         layoutSuggestion.setVisibility(GONE);
-        /*
-        if(posFrom!=null && posDest!=null) {
-            Document doc = GoogleAPIManager.getRoute(posFrom, posDest, "driving");
-
-            ArrayList<LatLng> directionPoint = GoogleAPIManager.getDirection(doc);
-            PolylineOptions rectLine = new PolylineOptions().width(15).color(getResources().getColor(R.color.bg_grad_2));
-
-            for (int i = 0; i < directionPoint.size(); i++) {
-                rectLine.add(directionPoint.get(i));
-            }
-            strDistance = "" + GoogleAPIManager.getDistanceText(doc);
-            strDuration = "" + GoogleAPIManager.getDurationText(doc);
-            driveLine = googleMap.addPolyline(rectLine);
-        }
-        */
     }
 
 
@@ -760,7 +749,6 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         }
 
 
-
         @Override
         protected String doInBackground(String... params) {
             Log.d("posisi gps","doInbackground");
@@ -798,7 +786,6 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                                         longitude = location.getLongitude();
                                         posFrom = new LatLng(latitude, longitude);
                                         ApplicationData.posFrom = posFrom;
-
                                     }
                                 }
                             }
@@ -858,6 +845,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                                         .position(pFrom)
                                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
                         cameraUpdate = CameraUpdateFactory.newLatLngZoom(pFrom, 15);
+                        txtFrom.setText(getAddress(pFrom));
                         gMap.animateCamera(cameraUpdate);
                         Log.d("posisi gps", pFrom.toString());
                     }
@@ -880,7 +868,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                 Log.d("FragmentHome", "OnLocationChange");
             }
             Message msg = new Message();
-            //handler.sendMessage(msg);
+            handler.sendMessage(msg);
             if (mUserLocationHandler != null) {
                 mUserLocationHandler.getLooper().quit();
             }

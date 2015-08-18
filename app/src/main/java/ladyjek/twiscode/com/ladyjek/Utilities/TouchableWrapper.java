@@ -23,11 +23,15 @@ public class TouchableWrapper extends FrameLayout {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 FragmentHome.hideKeyboard();
-                break;
-            case MotionEvent.ACTION_UP:
                 FragmentHome.layoutMarkerFrom.setVisibility(GONE);
                 FragmentHome.layoutMarkerDestination.setVisibility(GONE);
                 FragmentHome.mTouchMap = true;
+                if(FragmentHome.markerTemp!=null){
+                    FragmentHome.markerTemp.remove();
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+
                 break;
         }
         return super.dispatchTouchEvent(event);
