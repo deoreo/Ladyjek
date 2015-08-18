@@ -5,17 +5,18 @@
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:orientation="vertical"
-    tools:context="ladyjek.twiscode.com.ladyjek.Activity.ActivityTransport"
+    tools:context="ladyjek.twiscode.com.ladyjek.Fragment.FragmentHome"
     >
-    <LinearLayout
+    <RelativeLayout
+        android:id="@+id/mapWrapper"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        >
         <fragment xmlns:map="http://schemas.android.com/apk/res-auto"
             android:id="@+id/mapView"
-            class="com.google.android.gms.maps.SupportMapFragment"
+            class="ladyjek.twiscode.com.ladyjek.Utilities.MySupportMapFragment"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"/>
         <RelativeLayout
             android:id="@+id/wrapperRegister"
@@ -61,17 +62,109 @@
             </RelativeLayout>
 
         </RelativeLayout>
-    </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutMarkerFrom"
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center"
+            android:layout_marginBottom="120dp"
+            android:visibility="gone"
+            >
+            <Button
+                android:id="@+id/btnLocationFrom"
+                android:layout_width="230dp"
+                android:layout_height="40dp"
+                android:background="@color/line_blue"
+                android:text="Use This Location"
+                android:textSize="12sp"
+                android:textColor="#000000"
+                />
+
+            <RelativeLayout
+                android:layout_width="230dp"
+                android:layout_height="35dp"
+                android:gravity="center"
+                >
+                <TextView
+                    android:id="@+id/txtLocationFrom"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:background="@color/white_color"
+                    android:gravity="center"
+                    android:padding="3dp"
+                    android:textSize="12sp"
+                    android:singleLine="true"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    />
+                <ProgressBar
+                    android:id="@+id/progressMapFrom"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:padding="10dp"
+                    style="@android:style/Widget.ProgressBar.Small"
+                    />
+
+            </RelativeLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutMarkerDestination"
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center"
+            android:layout_marginBottom="120dp"
+            android:visibility="gone"
+            >
+            <Button
+                android:id="@+id/btnLocationDestination"
+                android:layout_width="230dp"
+                android:layout_height="40dp"
+                android:background="@color/bg_grad_2"
+                android:text="Use This Location"
+                android:textSize="12sp"
+                android:textColor="#ffffff"
+                />
+
+            <RelativeLayout
+                android:layout_width="230dp"
+                android:layout_height="35dp"
+                android:gravity="center"
+                >
+                <TextView
+                    android:id="@+id/txtLocationDestination"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:background="@color/white_color"
+                    android:gravity="center"
+                    android:padding="3dp"
+                    android:textSize="12sp"
+                    android:singleLine="true"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    />
+                <ProgressBar
+                    android:id="@+id/progressMapDestination"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:padding="10dp"
+                    style="@android:style/Widget.ProgressBar.Small"
+                    />
+
+            </RelativeLayout>
+        </LinearLayout>
+
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/layoutfillForm"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
-
+        android:layout_height="wrap_content">
         <RelativeLayout
-
             android:layout_marginTop="50dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -80,6 +173,7 @@
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
             android:background="@drawable/bg_white_transparent"
+
             >
             <LinearLayout
                 android:id="@+id/layFrom"
@@ -195,8 +289,6 @@
                     </RelativeLayout>
 
                 </LinearLayout>
-
-
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
@@ -204,8 +296,6 @@
             </LinearLayout>
 
         </RelativeLayout>
-
-
     </LinearLayout>
 
     <RelativeLayout

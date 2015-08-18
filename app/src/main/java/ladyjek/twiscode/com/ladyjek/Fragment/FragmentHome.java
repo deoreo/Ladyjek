@@ -35,8 +35,10 @@ import android.view.MotionEvent;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -90,10 +92,10 @@ import java.util.concurrent.TimeoutException;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
-/**
+/**ladyjek.twiscode.com.ladyjek.Utilities
  * Created by Unity on 18/05/2015.
  */
-public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListener {
+public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListener{
 
     private Toolbar mToolbar;
     ModelPlace mPlace, selectedPlaceFrom, selectedPlaceDestination;
@@ -119,13 +121,17 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
     private Activity mActivity;
     private ProgressBar pSuggestion;
     private AdapterSuggestion mAdapter;
-    private RelativeLayout layoutSuggestion;
+    private RelativeLayout layoutSuggestion, wrapperRegister, mapWrapper;
+    private LinearLayout layoutfillForm;
+    public static LinearLayout layoutMarkerFrom, layoutMarkerDestination;
     private FrameLayout itemCurrent;
     private ListView mListView;
+    private Button btnLocationFrom, btnLocationDestination;
     private Location location;
     private SupportMapFragment fm;
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 1000 * 60 * 1;
     private static final long MIN_TIME_BW_UPDATES = 1;
+    public static boolean mTouchMap = true;
     private ApplicationManager appManager;
     public FragmentHome() {
         // Required empty public constructor
@@ -134,6 +140,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("TouchableWrapper", "OnCreate");
         mActivity = getActivity();
         appManager = new ApplicationManager(mActivity);
         posFrom = ApplicationData.posFrom;
@@ -146,6 +153,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         final View rootView = inflater.inflate(R.layout.activity_transport4, container, false);
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
+        Log.d("TouchableWrapper", "OnCreateView");
 
         btnRequestRide = (TextView) rootView.findViewById(R.id.btnRequestRide);
         txtFrom = (EditText) rootView.findViewById(R.id.txtFrom);
@@ -155,6 +163,14 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         layoutSuggestion = (RelativeLayout) rootView.findViewById(R.id.layoutSuggestion);
         itemCurrent = (FrameLayout) rootView.findViewById(R.id.itemCurrent);
         txtAddressCurrent = (TextView) rootView.findViewById(R.id.txtAddressCurrent);
+        wrapperRegister = (RelativeLayout) rootView.findViewById(R.id.wrapperRegister);
+        layoutfillForm = (LinearLayout) rootView.findViewById(R.id.layoutfillForm);
+        btnLocationFrom = (Button) rootView.findViewById(R.id.btnLocationFrom);
+        btnLocationDestination = (Button) rootView.findViewById(R.id.btnLocationDestination);
+        layoutMarkerFrom = (LinearLayout) rootView.findViewById(R.id.layoutMarkerFrom);
+        layoutMarkerDestination = (LinearLayout) rootView.findViewById(R.id.layoutMarkerDestination);
+        mapWrapper = (RelativeLayout) rootView.findViewById(R.id.mapWrapper);
+
         SupportMapFragment fm = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapView);
         googleMap = fm.getMap();
 
@@ -165,13 +181,24 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
             DialogManager.showDialog(mActivity,"Warning", "No internet connection");
         }
 
+        wrapperRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            }
+        });
+        layoutfillForm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
         btnRequestRide.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(strDistance.isEmpty()&&strDuration.isEmpty()){
-                    DialogManager.showDialog(mActivity,"Warning", "Tentukan lokasi awal dan akhir!");
-                }
-                else {
+                if (strDistance.isEmpty() && strDuration.isEmpty()) {
+                    DialogManager.showDialog(mActivity, "Warning", "Tentukan lokasi awal dan akhir!");
+                } else {
                     ApplicationData.addressFrom = txtFrom.getText().toString();
                     ApplicationData.addressDestination = txtDestination.getText().toString();
                     ApplicationData.detailFrom = strDetailFrom;
@@ -192,6 +219,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     //do stuff here
                     tagLocation = TAG_FROM;
+                    /*
                     if (posFrom != null) {
                         layoutSuggestion.setVisibility(VISIBLE);
                         itemCurrent.setVisibility(VISIBLE);
@@ -201,7 +229,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                     } else {
                         itemCurrent.setVisibility(GONE);
                         mListView.setVisibility(VISIBLE);
-                    }
+                    }*/
                     Log.d("ActivityTransport", tagLocation);
                 }
                 return false;
@@ -216,6 +244,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     //do stuff here
                     tagLocation = TAG_DESTINATION;
+                    /*
                     if (posDest != null) {
                         layoutSuggestion.setVisibility(VISIBLE);
                         itemCurrent.setVisibility(VISIBLE);
@@ -227,6 +256,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                         mListView.setVisibility(VISIBLE);
                         layoutSuggestion.setVisibility(GONE);
                     }
+                    */
                     Log.d("ActivityTransport", tagLocation);
                 }
 
@@ -241,7 +271,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
             public boolean onTouch(View v, MotionEvent event) {
                 // TODO Auto-generated method stub
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    if(itemCurrent.getVisibility()==GONE)
+                    if (itemCurrent.getVisibility() == GONE)
                         layoutSuggestion.setVisibility(GONE);
                 }
 
@@ -250,6 +280,16 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
             }
         });
 
+
+        mapWrapper.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                Log.d("touch", "Map Touch");
+                layoutMarkerFrom.setVisibility(GONE);
+                layoutMarkerDestination.setVisibility(GONE);
+                return false;
+            }
+        });
 
 
         txtFrom.addTextChangedListener(new TextWatcher() {
@@ -268,8 +308,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                                       int before, int count) {
                 if (s.length() >= 3) {
                     new GetSuggestion(s.toString(), tagLocation).execute();
-                }
-                else if(s.length()==0){
+                } else if (s.length() == 0) {
                     layoutSuggestion.setVisibility(GONE);
                 }
             }
@@ -290,8 +329,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                                       int before, int count) {
                 if (s.length() >= 3) {
                     new GetSuggestion(s.toString(), tagLocation).execute();
-                }
-                else if(s.length()==0){
+                } else if (s.length() == 0) {
                     layoutSuggestion.setVisibility(GONE);
                 }
             }
@@ -316,7 +354,11 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
             }
         });
 
+
         googleMap.setOnMapClickListener(this);
+
+
+
         // Inflate the layout for this fragment
         return rootView;
     }
@@ -411,11 +453,14 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
 
     }
 
+
+
     @Override
     public void onMapClick(LatLng latLng) {
         //drawNewMarker
-        Log.d("FragmentHome", "OnMapClick: "+ latLng.toString());
+        Log.d("FragmentHome", "OnMapClick: " + latLng.toString());
         String address = null;
+
         if (driveLine != null) {
             driveLine.remove();
         }
@@ -433,9 +478,22 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                     new MarkerOptions()
                             .position(latLng)
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15), new GoogleMap.CancelableCallback() {
+                @Override
+                public void onFinish() {
+                    layoutMarkerFrom.setVisibility(VISIBLE);
+                    layoutMarkerDestination.setVisibility(GONE);
+                }
 
-            cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
-            googleMap.animateCamera(cameraUpdate);
+                @Override
+                public void onCancel() {
+
+                }
+
+
+            });
+
+
 
         }
         else if(tagLocation.equals(TAG_DESTINATION)){
@@ -452,11 +510,24 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                     new MarkerOptions()
                             .position(posDest)
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_destination)));
-            cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 13);
-            googleMap.animateCamera(cameraUpdate);
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15), new GoogleMap.CancelableCallback() {
+                @Override
+                public void onFinish() {
+                    layoutMarkerFrom.setVisibility(GONE);
+                    layoutMarkerDestination.setVisibility(VISIBLE);
+                }
+
+                @Override
+                public void onCancel() {
+
+                }
+
+
+            });
 
         }
         layoutSuggestion.setVisibility(GONE);
+        /*
         if(posFrom!=null && posDest!=null) {
             Document doc = GoogleAPIManager.getRoute(posFrom, posDest, "driving");
 
@@ -470,6 +541,11 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
             strDuration = "" + GoogleAPIManager.getDurationText(doc);
             driveLine = googleMap.addPolyline(rectLine);
         }
+        */
+
+    }
+
+    public void clickListenerEmpty(View v){
 
     }
 
@@ -611,6 +687,8 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
             progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             progressDialog.show();
         }
+
+
 
         @Override
         protected String doInBackground(String... params) {
