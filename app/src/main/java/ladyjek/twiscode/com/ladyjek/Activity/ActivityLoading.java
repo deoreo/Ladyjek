@@ -35,7 +35,7 @@ public class ActivityLoading extends Activity {
         Dummy();
     }
     private void Dummy(){
-        new CountDownTimer(7000, 1000) {
+        new CountDownTimer(5000, 1000) {
             public void onTick(long millisUntilFinished) {
                 mProgressBar.setIndeterminate(true);
             }

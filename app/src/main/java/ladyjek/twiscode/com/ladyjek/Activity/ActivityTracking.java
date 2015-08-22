@@ -132,7 +132,7 @@ public class ActivityTracking extends ActionBarActivity implements LocationListe
 
 
     private void Dummy(){
-        new CountDownTimer(20000, 1000) {
+        new CountDownTimer(5000, 1000) {
 
             public void onTick(long millisUntilFinished) {
                 //mTextField.setText("seconds remaining: " + millisUntilFinished / 1000);

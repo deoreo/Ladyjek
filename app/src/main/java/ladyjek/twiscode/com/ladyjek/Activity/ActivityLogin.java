@@ -327,22 +327,24 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
         @Override
         protected String doInBackground(String... params) {
             try {
-
+                ApplicationManager appManager = new ApplicationManager(activity);
                 String email = params[0];
                 String password = params[1];
 
                 JSONControl jsControl = new JSONControl();
                 JSONObject response = jsControl.postLogin(email,password);
                 JSONObject responseUser = response.getJSONObject("user");
-                Log.d("json response", response.toString());
+                String responseToken = response.getString("token");
+                appManager.setUserToken(responseToken);
+                Log.d("json response",responseToken );
                 try {
+
                     String _id = responseUser.getString("_id");
                     Log.d("json response id",_id.toString());
                     if(_id!=null){
                         userLogin = new ModelUser();
                         userLogin.setEmail(email);
                         userLogin.setPassword(password);
-                        //ApplicationManager.getInstance(mActivity).setUserMail(email);
                         db.insertUser(userLogin);
                         ApplicationData.login_id = _id.toString();
                         return "OK";
@@ -372,7 +374,6 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
                     DialogManager.showDialog(activity, "Warning", "Please register!");
                     break;
                 case "OK":
-
                     Intent i = new Intent(getBaseContext(), Main.class);
                     startActivity(i);
                     finish();

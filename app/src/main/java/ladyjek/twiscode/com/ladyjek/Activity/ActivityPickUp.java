@@ -59,6 +59,7 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
     private final String TAG_FROM = "FROM";
     private final String TAG_DRIVER = "DRIVER";
     private String driverDuration;
+    private Boolean isArrive = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,17 +134,21 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
             }
         });
 
-        Dummy();
+        if(!appManager.isArrive()) {
+            Dummy();
+        }
+        else{
+            MovetoTracking();
+        }
 
 
 
     }
 
     private void Dummy(){
-        new CountDownTimer(20000, 1000) {
+        new CountDownTimer(10000, 1000) {
 
             public void onTick(long millisUntilFinished) {
-                //mTextField.setText("seconds remaining: " + millisUntilFinished / 1000);
             }
 
             public void onFinish() {
@@ -153,6 +158,7 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
     }
 
     private void MovetoTracking(){
+        appManager.setArrive(true);
         new AlertDialogWrapper.Builder(ActivityPickUp.this)
                 .setTitle("Driver telah sampai di tempat Anda")
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {

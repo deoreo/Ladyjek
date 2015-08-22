@@ -180,8 +180,10 @@ public class ActivityConfirm extends ActionBarActivity {
     @Override
     public void onBackPressed()
     {
+        super.onBackPressed();
+        Intent i = new Intent(getBaseContext(), Main.class);
+        startActivity(i);
         finish();
-        super.onBackPressed();  // optional depending on your needs
     }
 
 

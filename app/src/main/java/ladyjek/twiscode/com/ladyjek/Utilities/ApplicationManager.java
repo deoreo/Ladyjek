@@ -23,6 +23,7 @@ public class ApplicationManager {
     private static final String KEY_EXPIRED_ON = "expiredOn";
     private static final String KEY_USER_EMAIL = "userEmail";
     private static final String KEY_TOKEN = "token";
+    private static final String KEY_ARRIVE = "isArrive";
     private static final String KEY_ACTIVITY = "activity";
     private static final String KEY_FROM = "userFrom";
     private static final String KEY_DESTINATION = "userDestination";
@@ -132,6 +133,33 @@ public class ApplicationManager {
         ModelPlace obj = gson.fromJson(json, ModelPlace.class);
         return obj;
     }
+
+    public void setUserToken(String userToken) {
+        try {
+            mEditor.putString(KEY_TOKEN, userToken);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new NullPointerException();
+        }
+        mEditor.commit();
+    }
+    public String getUserToken() {
+        return mPref.getString(KEY_TOKEN, null);
+    }
+
+    public void setArrive(Boolean userToken) {
+        try {
+            mEditor.putBoolean(KEY_ARRIVE, userToken);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new NullPointerException();
+        }
+        mEditor.commit();
+    }
+    public Boolean isArrive() {
+        return mPref.getBoolean(KEY_ARRIVE,false);
+    }
+
 
 
 }
