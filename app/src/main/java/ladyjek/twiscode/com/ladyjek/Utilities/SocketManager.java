@@ -12,6 +12,7 @@ import com.github.nkzawa.socketio.client.Socket;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,10 +31,7 @@ public class SocketManager {
         this.act = act;
         try {
             socket = IO.socket(ApplicationData.server);
-            Log.d("socket io", "init success");
         } catch (URISyntaxException e) {
-            Log.d("socket io", "init fail");
-            Log.d("socket io", e.toString());
         }
 
     }
@@ -57,31 +55,7 @@ public class SocketManager {
         socket.disconnect();
     }
 
-    public void InitRoom(Socket sock,String room){
-        sock.on(Socket.EVENT_CONNECT, onConnectedRooms);
-        sock.on(Socket.EVENT_CONNECT_ERROR, onConnectErrorRoom);
-        sock.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectTimeOutRoom);
-        sock.on("group message", onNewGroupMessage);
-        rooms.put(room, sock);
-        sock.connect();
-    }
 
-    public void JoinRoom(){
-        ArrayList<Socket> room = new ArrayList<>(rooms.values());
-        for(int i=0;i<rooms.size();i++){
-            room.get(i).connect();
-        }
-    }
-
-    public void LeaveRoom(String room){
-        Socket sRoom = rooms.get(room);
-        sRoom.off(Socket.EVENT_CONNECT);
-        sRoom.off(Socket.EVENT_CONNECT_ERROR);
-        sRoom.off(Socket.EVENT_CONNECT_TIMEOUT);
-        sRoom.off("group message");
-        sRoom.disconnect();
-        rooms.remove(room);
-    }
 
     private Emitter.Listener onUnauthorized = new Emitter.Listener() {
         @Override
@@ -93,22 +67,7 @@ public class SocketManager {
     private Emitter.Listener onAuthenticated = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
-            /*Log.d("Socket io", "Authenticated");
-            SendBroadcast("auth", "auth");
-            Log.d("socket io", "send broadcast");
-            ArrayList<String> grup = new ArrayList<>(ApplicationData.grup.keySet());
-            for(int i=0;i<grup.size();i++){
-                try {
-                    Socket sRoom = IO.socket(ApplicationData.room+grup.get(i));
-                    InitRoom(sRoom, grup.get(i));
-                    //Log.d("socket io", "room "+grup.get(i));
-                } catch (URISyntaxException e) {
-                    //Log.d("socket io",e.toString());
-                }
-
-
-            }
-            */
+            Log.d("Socket io", "Authenticated");
         }
     };
 
@@ -148,7 +107,7 @@ public class SocketManager {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    socket.emit("authentication", obj);
+                    socket.emit("post create order", obj);
                 }
             });
 
@@ -159,7 +118,21 @@ public class SocketManager {
     private Emitter.Listener onLastOrder = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
-            //Log.d("Socket io", "Unauthorized");
+            JSONObject obj = new JSONObject();
+            try {
+                String[] fromGeo = new String[2];
+                String[] toGeo = new String[2];
+                fromGeo[0] = ""+ApplicationData.posFrom.longitude;
+                fromGeo[1] =  ""+ApplicationData.posFrom.latitude;
+                toGeo[0] = ""+ApplicationData.posDestination.longitude;
+                toGeo[1] =  ""+ApplicationData.posDestination.latitude;
+                obj.put("fromGeo", fromGeo);
+                obj.put("toGeo", toGeo);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            socket.emit("authentication", obj);
         }
     };
 
