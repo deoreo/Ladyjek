@@ -3,6 +3,7 @@ package ladyjek.twiscode.com.ladyjek.Utilities;
 import android.app.Activity;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
@@ -29,8 +30,10 @@ public class SocketManager {
         this.act = act;
         try {
             socket = IO.socket(ApplicationData.server);
+            Log.d("socket io", "init success");
         } catch (URISyntaxException e) {
-            //Log.d("socket io",e.toString());
+            Log.d("socket io", "init fail");
+            Log.d("socket io", e.toString());
         }
 
     }
@@ -41,7 +44,6 @@ public class SocketManager {
         socket.on(Socket.EVENT_CONNECT, onConnected);
         socket.on(Socket.EVENT_CONNECT_ERROR, onConnectError);
         socket.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectTimeOut);
-
         socket.connect();
     }
 
@@ -143,17 +145,25 @@ public class SocketManager {
                     JSONObject obj = new JSONObject();
                     try {
                         obj.put("token", ApplicationManager.getInstance(act).getUserToken());
-
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-
                     socket.emit("authentication", obj);
                 }
             });
 
         }
     };
+
+
+    private Emitter.Listener onLastOrder = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            //Log.d("Socket io", "Unauthorized");
+        }
+    };
+
+
 
     private Emitter.Listener onConnectedRooms = new Emitter.Listener() {
         @Override

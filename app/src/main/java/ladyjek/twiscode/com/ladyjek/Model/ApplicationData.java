@@ -10,7 +10,7 @@ import com.google.android.gms.maps.model.LatLng;
  */
 public class ApplicationData {
 
-    public static String server = "http://192.168.1.101:3000";
+    public static String server = "http://playpal.id:5051/";
     private static String id="1";
     private static String nama ="Edo";
     private static String email = "edo@gmail.com";

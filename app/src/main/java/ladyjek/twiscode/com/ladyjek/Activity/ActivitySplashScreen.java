@@ -9,17 +9,19 @@ import ladyjek.twiscode.com.ladyjek.Database.DatabaseHandler;
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
+import ladyjek.twiscode.com.ladyjek.Utilities.SocketManager;
 
 public class ActivitySplashScreen extends Activity {
 
     private DatabaseHandler db;
     private ProgressBar mProgressBar;
     private int mWaited = 0;
-
+    private SocketManager socketManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
+        socketManager = new SocketManager();
         db = new DatabaseHandler(this);
         mProgressBar = (ProgressBar) findViewById(R.id.splash_progress);
     }
@@ -40,6 +42,8 @@ public class ActivitySplashScreen extends Activity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } finally {
+                    socketManager.InitSocket(ActivitySplashScreen.this);
+                    socketManager.Connect();
                     int countUser = db.getUserCount();
                     if(countUser > 0) {
                         ApplicationManager um = new ApplicationManager(ActivitySplashScreen.this);
