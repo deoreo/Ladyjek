@@ -100,17 +100,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:orientation="horizontal"
-                    android:layout_below="@id/lblFeedback">
+                    android:layout_below="@id/lblFeedback"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp">
                     <EditText
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginRight="20dp"
+
                         android:id="@+id/feedbackDriver"
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
                         android:minHeight="40dp"
-                        android:padding="10dp"
-
                         android:layout_marginTop="10dp"
                         android:background="@null"
                         android:textColor="@color/black_color"
@@ -120,8 +119,7 @@
                     <RelativeLayout
                         android:id="@+id/btnFeedback"
                         android:layout_width="20dp"
-                        android:layout_height="40dp"
-                        android:visibility="gone">
+                        android:layout_height="40dp">
                         <ImageView
                             android:layout_width="20dp"
                             android:layout_height="20dp"
