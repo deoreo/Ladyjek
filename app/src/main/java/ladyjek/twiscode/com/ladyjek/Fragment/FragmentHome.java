@@ -836,6 +836,7 @@ private class GetMyLocation extends AsyncTask<String, Void, String> implements L
                                     longitude = location.getLongitude();
                                     posFrom = new LatLng(latitude, longitude);
                                     ApplicationData.posFrom = posFrom;
+                                    appManager.setUserFrom(new ModelPlace(posFrom.latitude, posFrom.longitude));
                                 }
                             }
                         }

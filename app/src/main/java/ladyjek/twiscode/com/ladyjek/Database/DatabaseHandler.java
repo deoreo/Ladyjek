@@ -55,7 +55,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_DRIVER_NOPOL = "nopol_driver";
     private static final String KEY_DRIVER_PHONE = "phone_driver";
     private static final String KEY_DRIVER_RATE = "rate_driver";
-    
+
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }

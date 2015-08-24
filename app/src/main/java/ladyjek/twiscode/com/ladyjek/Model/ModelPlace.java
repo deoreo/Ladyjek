@@ -11,8 +11,8 @@ public class ModelPlace {
     private String placeId="";
     private String address="";
     private String addressDetail="";
-    private Double latitude;
-    private Double longitude;
+    private Double latitude = 0.0;
+    private Double longitude = 0.0;
 
     public ModelPlace(String placeId, String address, String addressDetail ) {
         this.placeId = placeId;
