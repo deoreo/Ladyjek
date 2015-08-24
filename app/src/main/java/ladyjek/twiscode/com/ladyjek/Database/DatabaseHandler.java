@@ -51,13 +51,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     private static final String KEY_DRIVER_ID = "id_driver";
     private static final String KEY_DRIVER_NAME = "name_driver";
-    private static final String KEY_DRIVER_IMAGE = "phone_driver";
+    private static final String KEY_DRIVER_IMAGE = "image_driver";
     private static final String KEY_DRIVER_NOPOL = "nopol_driver";
     private static final String KEY_DRIVER_PHONE = "phone_driver";
     private static final String KEY_DRIVER_RATE = "rate_driver";
-
-
-
+    
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -95,7 +93,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         String CREATE_TABLE_DRIVER = "CREATE TABLE " + T_DRIVER + "("
                 + KEY_DRIVER_ID + " TEXT PRIMARY KEY,"
                 + KEY_DRIVER_NAME + " TEXT,"
-                + KEY_DRIVER_NAME + " TEXT,"
+                + KEY_DRIVER_IMAGE + " TEXT,"
                 + KEY_DRIVER_NOPOL + " TEXT,"
                 + KEY_DRIVER_PHONE + " TEXT,"
                 + KEY_DRIVER_RATE + " TEXT"

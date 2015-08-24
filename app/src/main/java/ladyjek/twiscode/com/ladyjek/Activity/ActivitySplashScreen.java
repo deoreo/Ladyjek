@@ -42,8 +42,8 @@ public class ActivitySplashScreen extends Activity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } finally {
-                    socketManager.InitSocket(ActivitySplashScreen.this);
-                    socketManager.Connect();
+                    ///socketManager.InitSocket(ActivitySplashScreen.this);
+                    //socketManager.Connect();
                     int countUser = db.getUserCount();
                     if(countUser > 0) {
                         ApplicationManager um = new ApplicationManager(ActivitySplashScreen.this);
