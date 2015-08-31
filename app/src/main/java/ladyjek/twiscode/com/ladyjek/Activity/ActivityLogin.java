@@ -25,6 +25,7 @@ import ladyjek.twiscode.com.ladyjek.Control.JSONControl;
 import ladyjek.twiscode.com.ladyjek.Database.DatabaseHandler;
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.Model.ModelUser;
+import ladyjek.twiscode.com.ladyjek.Parse.ParseUtils;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.KeyboardManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
@@ -48,7 +49,8 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
+        // Verifying parse configuration. This is method is for developers only.
+        ParseUtils.verifyParseConfiguration(this);
         mActivity = this;
 
         db = new DatabaseHandler(mActivity);

@@ -45,6 +45,13 @@ public class ApplicationData {
     public static  String price = "";
 
 
+    public static final String PARSE_CHANNEL = "ladyjek";
+    public static final String PARSE_APPLICATION_ID = "OqKceLUMcPo769myUmHlAlNLNGa0PxWgu6xNEYRD";
+    public static final String PARSE_CLIENT_KEY = "WVJeHzaOwLUH5pQHTwnk9laqfQOrWIdRSPzcbGpC";
+    public static final int NOTIFICATION_ID = 100;
+
+
+
 
 
 

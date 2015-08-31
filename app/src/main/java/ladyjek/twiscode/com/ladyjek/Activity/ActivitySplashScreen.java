@@ -24,6 +24,7 @@ public class ActivitySplashScreen extends Activity {
         socketManager = new SocketManager();
         db = new DatabaseHandler(this);
         mProgressBar = (ProgressBar) findViewById(R.id.splash_progress);
+
     }
 
     @Override
