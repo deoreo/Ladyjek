@@ -43,7 +43,7 @@ public class NotificationUtils {
 
         if (isAppIsInBackground(mContext)) {
             // notification icon
-            int icon = R.mipmap.ic_launcher;
+            int icon = R.drawable.ladyjek_icon;
 
             int mNotificationId = ApplicationData.NOTIFICATION_ID;
 
@@ -56,6 +56,7 @@ public class NotificationUtils {
                     );
 
             NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
+
 
             NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
                     mContext);

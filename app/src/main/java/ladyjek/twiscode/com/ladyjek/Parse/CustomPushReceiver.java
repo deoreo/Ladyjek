@@ -74,7 +74,7 @@ public class CustomPushReceiver extends ParsePushBroadcastReceiver {
             String message = data.getString("message");
 
             if (!isBackground) {
-                Intent resultIntent = new Intent(context, Main.class);
+                Intent resultIntent = new Intent(context, ActivityNotif.class);
                 showNotificationMessage(context, title, message, resultIntent);
             }
 

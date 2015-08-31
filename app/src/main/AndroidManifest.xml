@@ -114,6 +114,10 @@
             android:name=".Activity.ActivityChangeLocation"
             android:label="@string/title_activity_personal_info" >
         </activity>
+        <activity
+            android:name=".Parse.ActivityNotif"
+            android:label="@string/title_activity_personal_info" >
+        </activity>
         <!-- Added for Parse push notifications -->
 
         <service android:name="com.parse.PushService" />
