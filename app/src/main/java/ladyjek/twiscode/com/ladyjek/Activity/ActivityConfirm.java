@@ -25,6 +25,7 @@ import java.util.Locale;
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
+import ladyjek.twiscode.com.ladyjek.Utilities.SocketManager;
 
 public class ActivityConfirm extends ActionBarActivity {
 
@@ -93,6 +94,9 @@ public class ActivityConfirm extends ActionBarActivity {
         wrapperRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                SocketManager socketManager = new SocketManager();
+                socketManager.InitSocket(ActivityConfirm.this);
+                socketManager.Connect();
                 Intent i = new Intent(getBaseContext(), ActivityLoading.class);
                 startActivity(i);
                 finish();
@@ -107,7 +111,6 @@ public class ActivityConfirm extends ActionBarActivity {
         txtDuration.setText(strDuration);
         txtTotal.setText("Rp " + decimalFormat.format(totalPrice));
         ApplicationData.price = txtTotal.getText().toString();
-
 
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
