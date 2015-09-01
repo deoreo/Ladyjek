@@ -39,6 +39,7 @@ public class SocketManager {
     public void Connect(){
         socket.on("unauthorized", onUnauthorized);
         socket.on("authenticated", onAuthenticated);
+        socket.on("post create order", onPostCreateOrder);
         socket.on(Socket.EVENT_CONNECT, onConnected);
         socket.on(Socket.EVENT_CONNECT_ERROR, onConnectError);
         socket.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectTimeOut);
@@ -51,7 +52,6 @@ public class SocketManager {
         socket.off(Socket.EVENT_CONNECT);
         socket.off(Socket.EVENT_CONNECT_ERROR);
         socket.off(Socket.EVENT_CONNECT_TIMEOUT);
-
         socket.disconnect();
     }
 
@@ -132,7 +132,28 @@ public class SocketManager {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            socket.emit("authentication", obj);
+        }
+    };
+
+    private Emitter.Listener onPostCreateOrder = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            JSONObject obj = new JSONObject();
+            try {
+                Log.d("socket io", ""+args);
+                String[] fromGeo = new String[2];
+                String[] toGeo = new String[2];
+                fromGeo[0] = ""+ApplicationData.posFrom.longitude;
+                fromGeo[1] =  ""+ApplicationData.posFrom.latitude;
+                toGeo[0] = ""+ApplicationData.posDestination.longitude;
+                toGeo[1] =  ""+ApplicationData.posDestination.latitude;
+                obj.put("fromGeo", fromGeo);
+                obj.put("toGeo", toGeo);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            socket.emit("post create order", obj);
         }
     };
 
