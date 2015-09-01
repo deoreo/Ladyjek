@@ -15,13 +15,19 @@
 
     <string-array name="payList">
         <item>Tunai</item>
-        <item>Dompet</item>
+        <item>Mandiri e-Cash</item>
+        <item>xL Tunai</item>
     </string-array>
     <string name="title_activity_activity_transport">Masukan lokasi awal dan akhir</string>
     <string name="title_activity_change_location_rumah">Masukan lokasi rumah</string>
     <string name="title_activity_change_location_kantor">Masukan lokasi kantor</string>
     <string name="title_activity_personal_info">Informasi pribadi</string>
     <string name="title_activity_edit_password">Edit password</string>
+    <string name="title_activity_cashless">Cashless</string>
+    <string name="title_activity_mandiri">Mandiri e-Cash</string>
+    <string name="title_activity_about">Tentang Ladyjek</string>
+    <string name="title_activity_promo">Promo</string>
+    <string name="title_activity_bantuan">Bantuan</string>
 
     <string name="lbl_register">Baru disini?</string>
     <string name="lbl_register2">Great Job!</string>
@@ -49,7 +55,7 @@
     <string-array name="nav_drawer_labels">
         <item>Informasi Pribadi</item>
         <item>Riwayat Transaksi</item>
-        <item>Dompet</item>
+        <item>Cashless</item>
         <item>Promo</item>
         <item>Tentang ladyjek</item>
         <item>Bantuan</item>

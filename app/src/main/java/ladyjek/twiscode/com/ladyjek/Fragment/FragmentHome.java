@@ -14,6 +14,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -183,6 +184,8 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         txtLocationFrom = (TextView) rootView.findViewById(R.id.txtLocationFrom);
         btnLocationFrom = (Button) rootView.findViewById(R.id.btnLocationFrom);
         btnLocationDestination = (Button) rootView.findViewById(R.id.btnLocationDestination);
+
+        btnRequestRide.setText(Html.fromHtml(getResources().getString(R.string.pesan)));
 
 
         SupportMapFragment fm = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapView);

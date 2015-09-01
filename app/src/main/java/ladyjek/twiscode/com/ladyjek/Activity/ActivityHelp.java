@@ -1,42 +1,33 @@
 package ladyjek.twiscode.com.ladyjek.Activity;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.text.Html;
+import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
+import ladyjek.twiscode.com.ladyjek.Adapter.ColorPagerAdapter;
 import ladyjek.twiscode.com.ladyjek.R;
+import me.relex.circleindicator.CircleIndicator;
 
-public class ActivityChangeLocation extends FragmentActivity {
+public class ActivityHelp extends FragmentActivity {
 
-    private TextView lblChange,btnSimpan;
     private ImageView btnBack;
+    private TextView btnOpen;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_change_location);
+        setContentView(R.layout.activity_help);
 
-        btnSimpan = (TextView) findViewById(R.id.btnPesan);
-        lblChange = (TextView) findViewById(R.id.txtLocation);
+
+
         btnBack = (ImageView) findViewById(R.id.btnBack);
 
-        btnSimpan.setText(Html.fromHtml(getResources().getString(R.string.simpan)));
-
-        if(ApplicationData.editHome){
-            lblChange.setText(R.string.title_activity_change_location_rumah);
-        }
-        else{
-            lblChange.setText(R.string.title_activity_change_location_kantor);
-        }
 
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,6 +35,12 @@ public class ActivityChangeLocation extends FragmentActivity {
                 onBackPressed();
             }
         });
+
+        ViewPager defaultViewpager = (ViewPager) findViewById(R.id.viewpager_default);
+        CircleIndicator defaultIndicator = (CircleIndicator) findViewById(R.id.indicator_default);
+        ColorPagerAdapter defaultPagerAdapter = new ColorPagerAdapter(getSupportFragmentManager(),3);
+        defaultViewpager.setAdapter(defaultPagerAdapter);
+        defaultIndicator.setViewPager(defaultViewpager);
 
 
 

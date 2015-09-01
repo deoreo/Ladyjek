@@ -111,6 +111,26 @@
             android:label="@string/title_activity_personal_info" >
         </activity>
         <activity
+            android:name=".Activity.ActivityCashless"
+            android:label="@string/title_activity_cashless" >
+        </activity>
+        <activity
+            android:name=".Activity.ActivityAbout"
+            android:label="@string/title_activity_about" >
+        </activity>
+        <activity
+            android:name=".Activity.ActivityPromo"
+            android:label="@string/title_activity_promo" >
+        </activity>
+        <activity
+            android:name=".Activity.ActivityHelp"
+            android:label="@string/title_activity_bantuan" >
+        </activity>
+        <activity
+            android:name=".Activity.ActivityMandiri"
+            android:label="@string/title_activity_mandiri" >
+        </activity>
+        <activity
             android:name=".Activity.ActivityChangeLocation"
             android:label="@string/title_activity_personal_info" >
         </activity>

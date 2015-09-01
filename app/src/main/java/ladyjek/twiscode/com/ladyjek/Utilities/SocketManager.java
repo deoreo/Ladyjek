@@ -138,57 +138,7 @@ public class SocketManager {
 
 
 
-    private Emitter.Listener onConnectedRooms = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            act.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    //Log.d("socket io", "rooms connected");
-                }
-            });
 
-        }
-    };
-
-    private Emitter.Listener onConnectTimeOutRoom = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            act.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    //Log.d("Socket io", "Rooms Time Out");
-                }
-            });
-
-        }
-    };
-
-    private Emitter.Listener onConnectErrorRoom = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            act.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    //Log.d("Socket io", "Rooms Error");
-                }
-            });
-
-        }
-    };
-
-    private Emitter.Listener onNewGroupMessage = new Emitter.Listener() {
-        @Override
-        public void call(final Object... args) {
-            act.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    //Log.d("Socket io", "New Group Message");
-                }
-            });
-
-        }
-    };
 
     private void SendBroadcast(String typeBroadcast,String type){
         Intent intent = new Intent(typeBroadcast);
