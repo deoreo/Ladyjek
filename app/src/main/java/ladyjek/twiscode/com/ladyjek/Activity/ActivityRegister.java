@@ -124,13 +124,6 @@ public class ActivityRegister extends ActionBarActivity {
                     txtPassword.setText("");
                     txtConfirm.setText("");
                 } else {
-
-                    /*
-                    ApplicationData.user = new User("1","nama kamu",email,password,"",new LatLng(0,0),new LatLng(0,0));
-                    Intent i = new Intent(getBaseContext(), ActivityHandphone.class);
-                    startActivity(i);
-                    finish();
-                    */
                     new DoRegister(act).execute(
                             email,
                             password
@@ -382,7 +375,8 @@ public class ActivityRegister extends ActionBarActivity {
                 JSONObject response = jsControl.postRegister(email,password);
                 Log.d("json response",response.toString());
                 try {
-                    String _id = response.getString("_id");
+                    JSONObject user = response.getJSONObject("user");
+                    String _id = user.getString("_id");
                     Log.d("json response id",_id.toString());
                     if(_id!=null){
                         ApplicationData.registered_id = _id.toString();

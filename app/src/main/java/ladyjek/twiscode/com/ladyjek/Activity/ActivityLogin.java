@@ -133,8 +133,6 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
                     txtPassword.setText("");
                 } else {
                     hideKeyboard();
-                    //txtEmail.setText("");
-                    //txtPassword.setText("");
                     new DoLogin(mActivity).execute(
                             email,
                             password
@@ -160,12 +158,11 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
                     txtPassword.setText("");
                 } else {
                     hideKeyboard();
-                    //txtEmail.setText("");
-                    //txtPassword.setText("");
                     new DoLogin(mActivity).execute(
                             email,
                             password
                     );
+
                 }
             }
         });
@@ -340,7 +337,6 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
                 appManager.setUserToken(responseToken);
                 Log.d("json response",responseToken );
                 try {
-
                     String _id = responseUser.getString("_id");
                     Log.d("json response id",_id.toString());
                     if(_id!=null){
@@ -373,7 +369,7 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
             progressDialog.dismiss();
             switch (result) {
                 case "FAIL":
-                    DialogManager.showDialog(activity, "Warning", "Please register!");
+                    DialogManager.showDialog(activity, "Warning", "Silahkan Mendaftar!");
                     break;
                 case "OK":
                     Intent i = new Intent(getBaseContext(), Main.class);
