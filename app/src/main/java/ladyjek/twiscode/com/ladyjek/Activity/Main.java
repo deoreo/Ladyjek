@@ -102,6 +102,22 @@ public class Main extends AppCompatActivity implements FragmentDrawer.FragmentDr
                 Intent i = new Intent(getBaseContext(), ActivityInformasiPribadi.class);
                 startActivity(i);
             }
+            else if (position == 3) {
+                Intent i = new Intent(getBaseContext(), ActivityCashless.class);
+                startActivity(i);
+            }
+            else if (position == 4) {
+                Intent i = new Intent(getBaseContext(), ActivityPromo.class);
+                startActivity(i);
+            }
+            else if (position == 5) {
+                Intent i = new Intent(getBaseContext(), ActivityAbout.class);
+                startActivity(i);
+            }
+            else if (position == 6) {
+                Intent i = new Intent(getBaseContext(), ActivityHelp.class);
+                startActivity(i);
+            }
         }
 
 

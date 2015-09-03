@@ -5,7 +5,6 @@
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:orientation="vertical"
-    tools:context="ladyjek.twiscode.com.ladyjek.Activity.ActivityEditPassword"
     android:background="@color/white_color"
     >
 
