@@ -37,10 +37,10 @@ public class ActivityLoading extends Activity {
     private void Dummy(){
         new CountDownTimer(5000, 1000) {
             public void onTick(long millisUntilFinished) {
-                mProgressBar.setIndeterminate(true);
+                //mProgressBar.setIndeterminate(true);
             }
             public void onFinish() {
-                mProgressBar.setVisibility(View.GONE);
+                //mProgressBar.setVisibility(View.GONE);
                 MovetoTracking();
             }
         }.start();

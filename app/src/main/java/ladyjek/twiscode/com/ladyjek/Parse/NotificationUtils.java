@@ -55,7 +55,8 @@ public class NotificationUtils {
                             PendingIntent.FLAG_CANCEL_CURRENT
                     );
 
-            NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
+            //NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
+            NotificationCompat.BigTextStyle inboxStyle = new NotificationCompat.BigTextStyle();
 
 
             NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
@@ -68,6 +69,8 @@ public class NotificationUtils {
                     .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                     .setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), icon))
                     .setContentText(message)
+                    .setPriority(Notification.PRIORITY_HIGH)
+                    .setVibrate(new long[0])
                     .build();
 
             NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);

@@ -53,7 +53,7 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
     private GoogleMap googleMap;
     private LatLng posFrom, posDriver;
     private Marker markerFrom, markerDriver;
-    private Button btnCall,btnSMS;
+    private Button btnCall, btnSMS;
     private TextView txtEstimate;
     private ApplicationManager appManager;
     private final String TAG_FROM = "FROM";
@@ -73,9 +73,8 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
         appManager = new ApplicationManager(ActivityPickUp.this);
         Double latitude = appManager.getUserFrom().getLatitude();
         Double longitude = appManager.getUserFrom().getLongitude();
-        posFrom = new LatLng(latitude,longitude);
+        posFrom = new LatLng(latitude, longitude);
         posDriver = ApplicationData.posDriver;
-
 
 
         int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());
@@ -95,9 +94,9 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
             appManager = new ApplicationManager(ActivityPickUp.this);
             Double latFrom = appManager.getUserFrom().getLatitude();
             Double longFrom = appManager.getUserFrom().getLongitude();
-            posFrom = new LatLng(latFrom,longFrom);
+            posFrom = new LatLng(latFrom, longFrom);
             posDriver = ApplicationData.posDriver;
-            drawNewMarker(posFrom,TAG_FROM);
+            drawNewMarker(posFrom, TAG_FROM);
             drawNewMarker(posDriver, TAG_DRIVER);
             drawDriveLine(googleMap, posDriver, posFrom);
             drawDriverMarker(googleMap, posFrom, posDriver);
@@ -106,7 +105,7 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
         PhoneCallListener phoneListener = new PhoneCallListener();
         TelephonyManager telephonyManager = (TelephonyManager) this
                 .getSystemService(Context.TELEPHONY_SERVICE);
-        telephonyManager.listen(phoneListener,PhoneStateListener.LISTEN_CALL_STATE);
+        telephonyManager.listen(phoneListener, PhoneStateListener.LISTEN_CALL_STATE);
 
         btnCall.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -129,23 +128,16 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
                     startActivity(sendIntent);
 
                 } catch (Exception e) {
-                    Log.d("error sms",e.toString());
+                    Log.d("error sms", e.toString());
                 }
             }
         });
-
-        if(!appManager.isArrive()) {
-            Dummy();
-        }
-        else{
-            MovetoTracking();
-        }
-
+        Dummy();
 
 
     }
 
-    private void Dummy(){
+    private void Dummy() {
         new CountDownTimer(10000, 1000) {
 
             public void onTick(long millisUntilFinished) {
@@ -157,14 +149,14 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
         }.start();
     }
 
-    private void MovetoTracking(){
+    private void MovetoTracking() {
         appManager.setArrive(true);
         new AlertDialogWrapper.Builder(ActivityPickUp.this)
                 .setTitle("Driver telah sampai di tempat Anda")
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Intent i=new Intent(getBaseContext(),ActivityTracking.class);
+                        Intent i = new Intent(getBaseContext(), ActivityTracking.class);
                         ApplicationManager um = new ApplicationManager(ActivityPickUp.this);
                         um.setActivity("ActivityTracking");
                         startActivity(i);
@@ -174,7 +166,6 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
                 })
                 .setIcon(R.drawable.ladyjek_icon)
                 .show();
-
 
 
     }
@@ -247,12 +238,12 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
             }
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(posFrom, 12);
             googleMap.animateCamera(cameraUpdate);
-        } catch (Exception e){
+        } catch (Exception e) {
 
         }
     }
 
-    private void drawDriveLine(GoogleMap gMap, LatLng pFrom, LatLng pDest){
+    private void drawDriveLine(GoogleMap gMap, LatLng pFrom, LatLng pDest) {
         try {
             Document doc = GoogleAPIManager.getRoute(pFrom, pDest, "driving");
 
@@ -263,8 +254,7 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
                 rectLine.add(directionPoint.get(i));
             }
             gMap.addPolyline(rectLine);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
 
         }
     }
@@ -277,7 +267,7 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
         Document doc = GoogleAPIManager.getRoute(pFrom, pDriver, "driving");
         ArrayList<LatLng> directionPoint = GoogleAPIManager.getDirection(doc);
         driverDuration = "" + GoogleAPIManager.getDurationText(doc);
-        txtEstimate.setText("Estimasi waktu menunggu : "+ driverDuration);
+        txtEstimate.setText("Estimasi waktu menunggu : " + driverDuration);
     }
 
     public String getAddress(LatLng latlng) {

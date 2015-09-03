@@ -209,10 +209,8 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                     ApplicationData.detailDestination = strDetailDestination;
                     ApplicationData.distance = strDistance;
                     ApplicationData.duration = strDuration;
-
                     Intent intent = new Intent(mActivity, ActivityConfirm.class);
                     startActivity(intent);
-
                     mActivity.finish();
                 }
             }
@@ -878,7 +876,7 @@ private class GetMyLocation extends AsyncTask<String, Void, String> implements L
         Log.d("posisi gps", "onPost");
         switch (result) {
             case "FAIL":
-                DialogManager.showDialog(activity, "Warning", "Can not find your location!");
+                DialogManager.showDialog(activity, "Peringatan", "Can not find your location!");
 
                 break;
             case "OK":
