@@ -2,6 +2,7 @@ package ladyjek.twiscode.com.ladyjek.Fragment;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
@@ -47,6 +48,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityConfirm;
+import ladyjek.twiscode.com.ladyjek.Activity.ActivityLoading;
 import ladyjek.twiscode.com.ladyjek.Adapter.AdapterAddress;
 import ladyjek.twiscode.com.ladyjek.Adapter.AdapterSuggestion;
 import ladyjek.twiscode.com.ladyjek.Control.JSONControl;
@@ -140,6 +142,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
     private static final long MIN_TIME_BW_UPDATES = 1;
     public static boolean mTouchMap = true;
     private ApplicationManager appManager;
+    private final String TAG = "FragmentHome";
 
     public FragmentHome() {
         // Required empty public constructor
@@ -153,6 +156,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         appManager = new ApplicationManager(mActivity);
         posFrom = ApplicationData.posFrom;
         tagLocation = TAG_FROM;
+
     }
 
     @Override

@@ -92,6 +92,26 @@ public class JSONControl {
         return jsonObj;
     }
 
+    public JSONObject postRefreshToken(String token) {
+        JSONObject jsonObj = null;
+
+        try {
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new BasicNameValuePair("token", token));
+            jsonObj = _JSONResponse.POSTResponse(ConfigManager.REFRESH_TOKEN, params);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Log.d("url token",ConfigManager.LOGIN);
+        Log.d("params token",token);
+        Log.d("return token",jsonObj.toString());
+        return jsonObj;
+
+    }
+
+
 
 
 

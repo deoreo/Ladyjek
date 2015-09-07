@@ -24,8 +24,7 @@ import org.json.JSONObject;
 import ladyjek.twiscode.com.ladyjek.Control.JSONControl;
 import ladyjek.twiscode.com.ladyjek.Database.DatabaseHandler;
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
-import ladyjek.twiscode.com.ladyjek.Model.ModelUser;
-import ladyjek.twiscode.com.ladyjek.Parse.ParseUtils;
+import ladyjek.twiscode.com.ladyjek.Model.ModelUserOrder;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.KeyboardManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
@@ -40,7 +39,7 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
     private TextView btnRegister, btnLogin;
     private EditText txtEmail, txtPassword;
     private RelativeLayout wrapperLogin, wrapperRegister;
-    private ModelUser userLogin;
+    private ModelUserOrder userLogin;
     private ApplicationManager applicationManager;
     private DatabaseHandler db;
     private RelativeLayout btnClearEmail, btnClearPassword;
@@ -49,8 +48,7 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        // Verifying parse configuration. This is method is for developers only.
-        ParseUtils.verifyParseConfiguration(this);
+
         mActivity = this;
 
         db = new DatabaseHandler(mActivity);
@@ -133,6 +131,8 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
                     txtPassword.setText("");
                 } else {
                     hideKeyboard();
+                    //txtEmail.setText("");
+                    //txtPassword.setText("");
                     new DoLogin(mActivity).execute(
                             email,
                             password
@@ -158,11 +158,12 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
                     txtPassword.setText("");
                 } else {
                     hideKeyboard();
+                    //txtEmail.setText("");
+                    //txtPassword.setText("");
                     new DoLogin(mActivity).execute(
                             email,
                             password
                     );
-
                 }
             }
         });
@@ -337,10 +338,11 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
                 appManager.setUserToken(responseToken);
                 Log.d("json response",responseToken );
                 try {
+
                     String _id = responseUser.getString("_id");
                     Log.d("json response id",_id.toString());
                     if(_id!=null){
-                        userLogin = new ModelUser();
+                        userLogin = new ModelUserOrder();
                         userLogin.setEmail(email);
                         userLogin.setPassword(password);
                         db.insertUser(userLogin);
@@ -369,7 +371,7 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
             progressDialog.dismiss();
             switch (result) {
                 case "FAIL":
-                    DialogManager.showDialog(activity, "Warning", "Silahkan Mendaftar!");
+                    DialogManager.showDialog(activity, "Warning", "Please register!");
                     break;
                 case "OK":
                     Intent i = new Intent(getBaseContext(), Main.class);

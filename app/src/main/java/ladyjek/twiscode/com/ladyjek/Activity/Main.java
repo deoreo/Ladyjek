@@ -35,6 +35,8 @@ public class Main extends AppCompatActivity implements FragmentDrawer.FragmentDr
     private Toolbar mToolbar;
     private FragmentDrawer drawerFragment;
 
+    private BroadcastReceiver createOrder;
+    private final String TAG = "Main";
 
     private ActionBar actionBarCustom;
 
@@ -42,21 +44,25 @@ public class Main extends AppCompatActivity implements FragmentDrawer.FragmentDr
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle(Html.fromHtml("<font color='#bd3b97'>Masukan lokasi awal dan akhir</font>"));
-
-
         drawerFragment = (FragmentDrawer) getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
-        //getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
         drawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), mToolbar);
         drawerFragment.setDrawerListener(this);
-
-
         displayView(0);
+
+        createOrder = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Log.d(TAG, "broadcast createOrder");
+                Intent i = new Intent(getBaseContext(), ActivityLoading.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i);
+                finish();
+            }
+        };
 
 
     }
@@ -143,7 +149,8 @@ public class Main extends AppCompatActivity implements FragmentDrawer.FragmentDr
         super.onResume();
         // Register mMessageReceiver to receive messages.
         Log.i("adding receiver", "fragment ontainer for profile");
-
+        LocalBroadcastManager.getInstance(this).registerReceiver(createOrder,
+                new IntentFilter("createOrder"));
 
     }
 
@@ -151,7 +158,7 @@ public class Main extends AppCompatActivity implements FragmentDrawer.FragmentDr
     public void onPause() {
         // Unregister since the activity is not visible
         Log.i("unreg receiver", "fragment unregister");
-
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(createOrder);
         super.onPause();
     }
 

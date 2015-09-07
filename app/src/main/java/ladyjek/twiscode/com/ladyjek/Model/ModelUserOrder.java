@@ -7,12 +7,12 @@ import java.io.Serializable;
 /**
  * Created by Unity on 08/08/2015.
  */
-public class ModelUser implements Serializable {
+public class ModelUserOrder implements Serializable {
     public String id, name, email, password, phone, payment, homeLat, homeLon, officeLat, officeLon;
     public LatLng rumah, kantor;
-    public ModelUser(){}
+    public ModelUserOrder(){}
 
-    public ModelUser(String id, String name, String email, String password, String hp, LatLng kantor, LatLng rumah){
+    public ModelUserOrder(String id, String name, String email, String password, String hp, LatLng kantor, LatLng rumah){
         this.id = id;
         this.name = name;
         this.email = email;
@@ -22,9 +22,9 @@ public class ModelUser implements Serializable {
         this.kantor = kantor;
     }
 
-    public ModelUser(String id, String name, String email, String password,
-                     String phone, String payment, String homeLat, String homeLon,
-                     String officeLat, String officeLon
+    public ModelUserOrder(String id, String name, String email, String password,
+                          String phone, String payment, String homeLat, String homeLon,
+                          String officeLat, String officeLon
     ){
         this.id = id;
         this.name = name;

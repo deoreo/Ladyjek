@@ -1,16 +1,18 @@
 package ladyjek.twiscode.com.ladyjek.Model;
 
 
-import android.app.Activity;
-
 import com.google.android.gms.maps.model.LatLng;
+
+import org.json.JSONArray;
+
+import ladyjek.twiscode.com.ladyjek.Utilities.SocketManager;
 
 /**
  * Created by Unity on 19/05/2015.
  */
 public class ApplicationData {
 
-    public static String server = "http://playpal.id:5051/";
+
     private static String id="1";
     private static String nama ="Edo";
     private static String email = "edo@gmail.com";
@@ -24,15 +26,15 @@ public class ApplicationData {
 
 
 
-    public static ModelUser modelUser = new ModelUser(id,nama,email,password,hp,null,null);
-    public static ModelUser userLogin;
+    public static ModelUserOrder modelUserOrder = new ModelUserOrder(id,nama,email,password,hp,null,null);
+    public static ModelUserOrder userLogin;
     public static String phone = "2789";
     public static Boolean editPhone = false;
     public static Boolean editHome = false;
 
     public static LatLng posFrom;
     public static LatLng posDestination;
-    public static LatLng posDriver = new LatLng(-7.26545746,112.70968597);
+    public static LatLng posDriver = new LatLng(-7.2855448024207226,112.7096968626571);
 
     public static Class act = null;
 
@@ -43,15 +45,10 @@ public class ApplicationData {
     public static String distance="";
     public static String duration="";
     public static  String price = "";
-
-
-    public static final String PARSE_CHANNEL = "ladyjek";
-    public static final String PARSE_APPLICATION_ID = "OqKceLUMcPo769myUmHlAlNLNGa0PxWgu6xNEYRD";
-    public static final String PARSE_CLIENT_KEY = "WVJeHzaOwLUH5pQHTwnk9laqfQOrWIdRSPzcbGpC";
-    public static final int NOTIFICATION_ID = 100;
-
-
-
+    public static SocketManager socketManager = null;
+    public static boolean isLogin = false;
+    public static boolean isFindLocation = false;
+    public static JSONArray getOrder = new JSONArray();
 
 
 

@@ -13,7 +13,7 @@ import android.util.Log;
 
 import ladyjek.twiscode.com.ladyjek.Model.ModelDriver;
 import ladyjek.twiscode.com.ladyjek.Model.ModelHistory;
-import ladyjek.twiscode.com.ladyjek.Model.ModelUser;
+import ladyjek.twiscode.com.ladyjek.Model.ModelUserOrder;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
 
@@ -121,20 +121,20 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      */
 
     // Adding new modelUser
-    public void insertUser(ModelUser modelUser) {
+    public void insertUser(ModelUserOrder modelUserOrder) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(KEY_USER_ID, modelUser.getId());
-        values.put(KE_USER_NAME, modelUser.getName());
-        values.put(KEY_USER_EMAIL, modelUser.getEmail());
-        values.put(KEY_USER_PASSWORD, modelUser.getPassword());
-        values.put(KEY_USER_PHONE, modelUser.getPhone());
-        values.put(KEY_USER_PAYMENT, modelUser.getPayment());
-        values.put(KEY_USER_HOMELAT, modelUser.getHomeLat());
-        values.put(KEY_USER_HOMELON, modelUser.getHomeLon());
-        values.put(KEY_USER_OFFICELAT, modelUser.getOfficeLat());
-        values.put(KEY_USER_OFFICELON, modelUser.getOfficeLon());
+        values.put(KEY_USER_ID, modelUserOrder.getId());
+        values.put(KE_USER_NAME, modelUserOrder.getName());
+        values.put(KEY_USER_EMAIL, modelUserOrder.getEmail());
+        values.put(KEY_USER_PASSWORD, modelUserOrder.getPassword());
+        values.put(KEY_USER_PHONE, modelUserOrder.getPhone());
+        values.put(KEY_USER_PAYMENT, modelUserOrder.getPayment());
+        values.put(KEY_USER_HOMELAT, modelUserOrder.getHomeLat());
+        values.put(KEY_USER_HOMELON, modelUserOrder.getHomeLon());
+        values.put(KEY_USER_OFFICELAT, modelUserOrder.getOfficeLat());
+        values.put(KEY_USER_OFFICELON, modelUserOrder.getOfficeLon());
 
         // Inserting Row
         db.insert(T_USER, null, values);
@@ -169,7 +169,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_DRIVER_NAME, modelDriver.getName());
         values.put(KEY_DRIVER_IMAGE, modelDriver.getImage());
         values.put(KEY_DRIVER_NOPOL, modelDriver.getNopol());
-        values.put(KEY_USER_PHONE, modelDriver.getPhone());
+        values.put(KEY_DRIVER_PHONE, modelDriver.getPhone());
         values.put(KEY_DRIVER_RATE, modelDriver.getRate());
 
         // Inserting Row
@@ -178,21 +178,21 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
 
-    public ModelUser getUser() {
+    public ModelUserOrder getUser() {
         String allData = "SELECT  * FROM " + T_USER;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(allData, null);
         cursor.close();
 
-        ModelUser modelUser = new ModelUser(cursor.getString(0),
+        ModelUserOrder modelUserOrder = new ModelUserOrder(cursor.getString(0),
                 cursor.getString(1), cursor.getString(2), cursor.getString(3),
                 cursor.getString(4), cursor.getString(5), cursor.getString(6),
                 cursor.getString(7), cursor.getString(8), cursor.getString(9)
         );
-        return modelUser;
+        return modelUserOrder;
     }
 
-    public ModelUser getUser(String id) {
+    public ModelUserOrder getUser(String id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(T_USER, new String[]{KEY_USER_ID,
@@ -203,13 +203,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         if (cursor != null)
             cursor.moveToFirst();
 
-        ModelUser modelUser = new ModelUser(cursor.getString(0),
+        ModelUserOrder modelUserOrder = new ModelUserOrder(cursor.getString(0),
                 cursor.getString(1), cursor.getString(2), cursor.getString(3),
                 cursor.getString(4), cursor.getString(5), cursor.getString(6),
                 cursor.getString(7), cursor.getString(8), cursor.getString(9)
 
         );
-        return modelUser;
+        return modelUserOrder;
     }
 
     public ModelHistory getHistory(String id) {

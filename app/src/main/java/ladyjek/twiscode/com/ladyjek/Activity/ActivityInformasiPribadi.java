@@ -3,7 +3,6 @@ package ladyjek.twiscode.com.ladyjek.Activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,7 +15,7 @@ import android.widget.TextView;
 import com.google.android.gms.maps.model.LatLng;
 
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
-import ladyjek.twiscode.com.ladyjek.Model.ModelUser;
+import ladyjek.twiscode.com.ladyjek.Model.ModelUserOrder;
 import ladyjek.twiscode.com.ladyjek.R;
 
 public class ActivityInformasiPribadi extends Activity {
@@ -145,10 +144,10 @@ public class ActivityInformasiPribadi extends Activity {
         btnSimpan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LatLng kantor = ApplicationData.modelUser.kantor;
-                LatLng rumah = ApplicationData.modelUser.rumah;
-                String id = ApplicationData.modelUser.id;
-                ApplicationData.modelUser = new ModelUser(id,nama.getText().toString(),email.getText().toString(),password.getText().toString(),hp.getText().toString(),kantor,rumah);
+                LatLng kantor = ApplicationData.modelUserOrder.kantor;
+                LatLng rumah = ApplicationData.modelUserOrder.rumah;
+                String id = ApplicationData.modelUserOrder.id;
+                ApplicationData.modelUserOrder = new ModelUserOrder(id,nama.getText().toString(),email.getText().toString(),password.getText().toString(),hp.getText().toString(),kantor,rumah);
             }
         });
 
@@ -188,10 +187,10 @@ public class ActivityInformasiPribadi extends Activity {
     }
 
     private void SetData(){
-        nama.setText(ApplicationData.modelUser.name);
-        email.setText(ApplicationData.modelUser.email);
-        password.setText(ApplicationData.modelUser.password);
-        hp.setText(ApplicationData.modelUser.phone);
+        nama.setText(ApplicationData.modelUserOrder.name);
+        email.setText(ApplicationData.modelUserOrder.email);
+        password.setText(ApplicationData.modelUserOrder.password);
+        hp.setText(ApplicationData.modelUserOrder.phone);
     }
 
     @Override

@@ -12,4 +12,5 @@ public class ConfigManager {
     public static final String REGISTER = SERVER+"/register";
     public static final String REFRESH_TOKEN = SERVER+"/refresh-token";
     public static final String PHONE_NUMBER = SERVER+"/phone-number";
+    public static final String SERVER_SOCKET = "http://playpal.id:5051/";
 }
