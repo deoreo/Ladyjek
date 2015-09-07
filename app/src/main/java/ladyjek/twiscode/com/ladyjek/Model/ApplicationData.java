@@ -50,6 +50,10 @@ public class ApplicationData {
     public static boolean isFindLocation = false;
     public static JSONArray getOrder = new JSONArray();
 
+    public static final String PARSE_CHANNEL = "ladyjek";
+    public static final String PARSE_APPLICATION_ID = "OqKceLUMcPo769myUmHlAlNLNGa0PxWgu6xNEYRD";
+    public static final String PARSE_CLIENT_KEY = "WVJeHzaOwLUH5pQHTwnk9laqfQOrWIdRSPzcbGpC";
+    public static final int NOTIFICATION_ID = 100;
 
 
 }
