@@ -55,5 +55,7 @@ public class ApplicationData {
     public static final String PARSE_CLIENT_KEY = "WVJeHzaOwLUH5pQHTwnk9laqfQOrWIdRSPzcbGpC";
     public static final int NOTIFICATION_ID = 100;
 
+    public static ModelOrder order = new ModelOrder();
+
 
 }

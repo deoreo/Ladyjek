@@ -1,14 +1,18 @@
 package ladyjek.twiscode.com.ladyjek.Utilities;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.github.nkzawa.emitter.Emitter;
+import com.github.nkzawa.socketio.client.Ack;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
+import com.google.android.gms.maps.model.LatLng;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -17,146 +21,339 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import ladyjek.twiscode.com.ladyjek.Control.JSONControl;
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
+import ladyjek.twiscode.com.ladyjek.Model.ModelOrder;
 
 /**
  * Created by Unity on 05/08/2015.
  */
 public class SocketManager {
     private Socket socket;
-    private HashMap<String,Socket> rooms = new HashMap<>();
-    private Activity act;
+    private Context context;
+    private ApplicationManager appManager;
+    private boolean onAuth = true;
+    private final String TAG = "SocketManager";
 
-    public void InitSocket(Activity act){
-        this.act = act;
+    public void InitSocket(Context context) {
+        Log.d(TAG, "InitSocket");
+        this.context = context;
+        this.appManager = new ApplicationManager(context);
         try {
-            socket = IO.socket(ApplicationData.server);
+            socket = IO.socket(ConfigManager.SERVER_SOCKET);
         } catch (URISyntaxException e) {
         }
-
     }
 
-    public void Connect(){
-        socket.on("unauthorized", onUnauthorized);
-        socket.on("authenticated", onAuthenticated);
-        socket.on("post create order", onPostCreateOrder);
+
+    public void Connect() {
+        Log.d(TAG, "Connect");
         socket.on(Socket.EVENT_CONNECT, onConnected);
-        socket.on(Socket.EVENT_CONNECT_ERROR, onConnectError);
-        socket.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectTimeOut);
+        socket.on(Socket.EVENT_DISCONNECT, onDisconnected);
+        socket.on("authenticated", onAuthenticated);
+        socket.on("unauthorized", onUnauthorized);
+        socket.on("last order", onLastOrder);
+        socket.on("order taken",onOrderTaken);
+        socket.on("order canceled",onOrderCanceled);
+        socket.on("driver location change",onDriverChangeLocation);
+        socket.on("order pickedup",onOrderPickUp);
+        socket.on("order started",onOrderStarted);
+        socket.on("order ended",onOrderEnded);
         socket.connect();
     }
 
-    public void Disconnect(){
-        socket.off("unauthorized");
-        socket.off("authenticated");
-        socket.off(Socket.EVENT_CONNECT);
-        socket.off(Socket.EVENT_CONNECT_ERROR);
-        socket.off(Socket.EVENT_CONNECT_TIMEOUT);
+    public void doConnect(){
+        socket.connect();
+    }
+
+    public void Disconnect() {
+        Log.d(TAG, "Disconnect");
+        socket.off(Socket.EVENT_CONNECT, onConnected);
+        socket.off(Socket.EVENT_DISCONNECT, onDisconnected);
+        socket.off("authenticated", onAuthenticated);
+        socket.off("unauthorized", onUnauthorized);
+        socket.off("last order", onLastOrder);
+        socket.on("order taken", onOrderTaken);
+        socket.off("order canceled", onOrderCanceled);
+        socket.off("driver location change", onDriverChangeLocation);
+        socket.off("order pickedup", onOrderPickUp);
+        socket.off("order started", onOrderStarted);
+        socket.off("order ended", onOrderEnded);
         socket.disconnect();
     }
 
-
-
-    private Emitter.Listener onUnauthorized = new Emitter.Listener() {
+    private Emitter.Listener onConnected = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
-            //Log.d("Socket io", "Unauthorized");
+            Log.d(TAG,"onConnected");
+            JSONObject obj = new JSONObject();
+            try {
+                obj.put("token", appManager.getUserToken());
+                Log.d(TAG,"onConnected token:"+obj.toString());
+                socket.emit("authentication", obj);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
+    };
+
+    private Emitter.Listener onDisconnected = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            Log.d(TAG,"onDisconnected");
+            if (!onAuth) {
+                socket.connect();
+            }
         }
     };
 
     private Emitter.Listener onAuthenticated = new Emitter.Listener() {
         @Override
-        public void call(Object... args) {
-            Log.d("Socket io", "Authenticated");
+        public void call(final Object... args) {
+            Log.d(TAG,"onAuthenticated");
+            onAuth = true;
         }
     };
 
-    private Emitter.Listener onConnectTimeOut = new Emitter.Listener() {
+    private Emitter.Listener onUnauthorized = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
-            act.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                }
-            });
-
-        }
-    };
-
-    private Emitter.Listener onConnectError = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            act.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                }
-            });
-
-        }
-    };
-
-    private Emitter.Listener onConnected = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            act.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    JSONObject obj = new JSONObject();
-                    try {
-                        obj.put("token", ApplicationManager.getInstance(act).getUserToken());
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+            Log.d(TAG,"onUnauthorized");
+            onAuth = false;
+            try {
+                JSONObject obj = (JSONObject) args[0];
+                if (obj != null) {
+                    Log.d(TAG, "onUnauthorized " + obj.toString());
+                    String msg = obj.getString("message");
+                    if (msg.equalsIgnoreCase("jwt expired")) {
+                        JSONControl jsControl = new JSONControl();
+                        JSONObject response = jsControl.postRefreshToken(appManager.getUserToken());
+                        Log.d(TAG, "onUnauthorized respose" + response.toString());
+                        try {
+                            String token = response.getString("token");
+                            appManager.setUserToken(token);
+                            onAuth = true;
+                            Log.d(TAG, "onUnauthorized true");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Log.d(TAG, "onUnauthorized false");
+                        }
                     }
-                    socket.emit("post create order", obj);
+                } else {
+                    Log.d(TAG,"onUnauthorized null order");
                 }
-            });
 
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
     };
-
 
     private Emitter.Listener onLastOrder = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
-            JSONObject obj = new JSONObject();
+            Log.d(TAG,"onLastOrder");
             try {
-                String[] fromGeo = new String[2];
-                String[] toGeo = new String[2];
-                fromGeo[0] = ""+ApplicationData.posFrom.longitude;
-                fromGeo[1] =  ""+ApplicationData.posFrom.latitude;
-                toGeo[0] = ""+ApplicationData.posDestination.longitude;
-                toGeo[1] =  ""+ApplicationData.posDestination.latitude;
-                obj.put("fromGeo", fromGeo);
-                obj.put("toGeo", toGeo);
+                //Log.d("Socket io",""+args[0].toString());
+                JSONObject obj = (JSONObject) args[0];
+                if (obj != null) {
+                    Log.d(TAG, "onLastOrder : " + obj.toString());
+                    String id = obj.getString("_id");
+                    String userID = obj.getString("user");
+                    String to = obj.getString("to");
+                    String from = obj.getString("from");
+                    String distance = obj.getJSONObject("distance").getString("text");
+                    String duration = obj.getJSONObject("duration").getString("text");
+                    String status = obj.getString("status");
+                    String toLatitude = obj.getJSONObject("toGeo").getJSONArray("coordinates").getString(1);
+                    String toLongitude = obj.getJSONObject("toGeo").getJSONArray("coordinates").getString(0);
+                    String fromLatitude = obj.getJSONObject("fromGeo").getJSONArray("coordinates").getString(1);
+                    String fromLongitude = obj.getJSONObject("fromGeo").getJSONArray("coordinates").getString(0);
+                    String name = "Nabila";
+                    String payment = "TUNAI";
+                    String member = "12 Feb 2015";
+                    String phone = "089682587567";
+                    String rate = "4.5";
+                    String price = "";
+                    ModelOrder order = new ModelOrder(id, userID, name, to, from, distance, duration, status, toLongitude, toLatitude, fromLatitude, fromLongitude, rate, phone, member, payment, price);
+                    ApplicationData.order = order;
+                    SendBroadcast("lastOrder", "true");
+                } else {
+                    Log.d(TAG,"onLastOrder null order");
+                    SendBroadcast("lastOrder", "false");
+                }
 
-            } catch (JSONException e) {
-                e.printStackTrace();
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
+
         }
     };
 
-    private Emitter.Listener onPostCreateOrder = new Emitter.Listener() {
+
+    private Emitter.Listener onOrderCanceled = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            Log.d(TAG,"onOrderCanceled");
+            SendBroadcast("doCancel", "true");
+        }
+    };
+
+    private Emitter.Listener onOrderPickUp = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            Log.d(TAG,"onOrderPickUp");
+            SendBroadcast("goTrip", "true");
+        }
+    };
+
+    private Emitter.Listener onOrderStarted = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            Log.d(TAG,"onOrderStarted");
+            SendBroadcast("goStart", "true");
+        }
+    };
+
+    private Emitter.Listener onOrderEnded = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            Log.d(TAG,"onOrderEnded");
+            SendBroadcast("goEnd", "true");
+        }
+    };
+
+    private Emitter.Listener onDriverChangeLocation = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            Log.d(TAG, "onDriverChangeLocation");
+            JSONArray data = (JSONArray)args[0];
+            try {
+                if(data != null){
+                    ApplicationData.posDriver = new LatLng(data.getDouble(1),data.getDouble(0));
+                    SendBroadcast("goDriverChange", "true");
+                }
+                else {
+                    SendBroadcast("goDriverChange", "false");
+                }
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
+
+
+        }
+    };
+
+    private Emitter.Listener onOrderTaken = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
-            JSONObject obj = new JSONObject();
-            try {
-                Log.d("socket io", ""+args);
-                String[] fromGeo = new String[2];
-                String[] toGeo = new String[2];
-                fromGeo[0] = ""+ApplicationData.posFrom.longitude;
-                fromGeo[1] =  ""+ApplicationData.posFrom.latitude;
-                toGeo[0] = ""+ApplicationData.posDestination.longitude;
-                toGeo[1] =  ""+ApplicationData.posDestination.latitude;
-                obj.put("fromGeo", fromGeo);
-                obj.put("toGeo", toGeo);
+            Log.d(TAG,"onOrderTaken");
+            SendBroadcast("onOrderTaken", "true");
 
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            socket.emit("post create order", obj);
+
         }
     };
 
+    public void PostLocation(LatLng pos) {
+        try {
+
+                JSONArray loc = new JSONArray();
+                loc.put(0, pos.longitude);
+                loc.put(1, pos.latitude);
+                socket.emit("post location", loc);
+                //Log.d(TAG,"PostLocation active:"+ pos.toString());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    public void CancelOrder(){
+        Log.d(TAG, "cancel");
+        socket.emit("post cancel order", new Ack() {
+            @Override
+            public void call(Object... args) {
+                try {
+                    Log.d(TAG, "cancel args:" + args[0]);
+                    JSONObject order = (JSONObject) args[0];
+                    if (order == null) {
+                        Log.d(TAG, "cancel true");
+                        SendBroadcast("doCancel", "true");
+                    } else {
+                        Log.d(TAG, "cancel false");
+                        SendBroadcast("doCancel", "false");
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+
+            }
+
+        });
+    }
+
+    public void CreateOrder(LatLng from, LatLng destination){
+        Log.d(TAG, "create order");
+        JSONObject objs = new JSONObject();
+        JSONArray fr = new JSONArray();
+        JSONArray dt = new JSONArray();
+        try {
+            fr.put(0,from.longitude);
+            fr.put(1,from.latitude);
+            dt.put(0,destination.longitude);
+            dt.put(1,destination.latitude);
+            objs.put("fromGeo",fr);
+            objs.put("toGeo",dt);
+            socket.emit("post create order",objs, new Ack() {
+                @Override
+                public void call(Object... args) {
+                    try {
+                        Log.d(TAG, "order args:" + args[1]);
+                        JSONObject obj = (JSONObject) args[1];
+                        if (obj == null) {
+                            String id = obj.getString("_id");
+                            String userID = obj.getString("user");
+                            String to = obj.getString("to");
+                            String from = obj.getString("from");
+                            String distance = obj.getJSONObject("distance").getString("text");
+                            String duration = obj.getJSONObject("duration").getString("text");
+                            String status = obj.getString("status");
+                            String toLatitude = obj.getJSONObject("toGeo").getJSONArray("coordinates").getString(1);
+                            String toLongitude = obj.getJSONObject("toGeo").getJSONArray("coordinates").getString(0);
+                            String fromLatitude = obj.getJSONObject("fromGeo").getJSONArray("coordinates").getString(1);
+                            String fromLongitude = obj.getJSONObject("fromGeo").getJSONArray("coordinates").getString(0);
+                            String name = "Nabila";
+                            String payment = "TUNAI";
+                            String member = "12 Feb 2015";
+                            String phone = "089682587567";
+                            String rate = "4.5";
+                            String price = "";
+                            ModelOrder order = new ModelOrder(id, userID, name, to, from, distance, duration, status, toLongitude, toLatitude, fromLatitude, fromLongitude, rate, phone, member, payment, price);
+                            ApplicationData.order = order;
+                            //Log.d(TAG, "cancel true");
+                            SendBroadcast("createOrder", "true");
+                        } else {
+                            //Log.d(TAG, "cancel false");
+                            SendBroadcast("createOrder", "false");
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+
+                }
+
+            });
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
 
 
 
@@ -164,6 +361,6 @@ public class SocketManager {
     private void SendBroadcast(String typeBroadcast,String type){
         Intent intent = new Intent(typeBroadcast);
         intent.putExtra("message", type);
-        LocalBroadcastManager.getInstance(act).sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 }
