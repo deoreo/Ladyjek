@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -24,8 +25,10 @@ import android.view.View;
 
 import ladyjek.twiscode.com.ladyjek.Fragment.FragmentDrawer;
 import ladyjek.twiscode.com.ladyjek.Fragment.FragmentHome;
+import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
+import ladyjek.twiscode.com.ladyjek.Utilities.SocketManager;
 
 import static ladyjek.twiscode.com.ladyjek.Utilities.DialogManager.*;
 
@@ -35,10 +38,12 @@ public class Main extends AppCompatActivity implements FragmentDrawer.FragmentDr
     private Toolbar mToolbar;
     private FragmentDrawer drawerFragment;
 
-    private BroadcastReceiver createOrder;
+
     private final String TAG = "Main";
 
     private ActionBar actionBarCustom;
+    private SocketManager socketManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,17 +57,6 @@ public class Main extends AppCompatActivity implements FragmentDrawer.FragmentDr
         drawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), mToolbar);
         drawerFragment.setDrawerListener(this);
         displayView(0);
-
-        createOrder = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                Log.d(TAG, "broadcast createOrder");
-                Intent i = new Intent(getBaseContext(), ActivityLoading.class);
-                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(i);
-                finish();
-            }
-        };
 
 
     }
@@ -149,8 +143,6 @@ public class Main extends AppCompatActivity implements FragmentDrawer.FragmentDr
         super.onResume();
         // Register mMessageReceiver to receive messages.
         Log.i("adding receiver", "fragment ontainer for profile");
-        LocalBroadcastManager.getInstance(this).registerReceiver(createOrder,
-                new IntentFilter("createOrder"));
 
     }
 
@@ -158,7 +150,6 @@ public class Main extends AppCompatActivity implements FragmentDrawer.FragmentDr
     public void onPause() {
         // Unregister since the activity is not visible
         Log.i("unreg receiver", "fragment unregister");
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(createOrder);
         super.onPause();
     }
 

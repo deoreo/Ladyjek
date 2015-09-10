@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.AsyncTask;
@@ -14,6 +15,7 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
@@ -49,17 +51,20 @@ import android.widget.TextView;
 
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityConfirm;
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityLoading;
+import ladyjek.twiscode.com.ladyjek.Activity.Main;
 import ladyjek.twiscode.com.ladyjek.Adapter.AdapterAddress;
 import ladyjek.twiscode.com.ladyjek.Adapter.AdapterSuggestion;
 import ladyjek.twiscode.com.ladyjek.Control.JSONControl;
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.Model.ModelGeocode;
 import ladyjek.twiscode.com.ladyjek.Model.ModelPlace;
+import ladyjek.twiscode.com.ladyjek.Model.ModelUserOrder;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.GoogleAPIManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.NetworkManager;
+import ladyjek.twiscode.com.ladyjek.Utilities.SocketManager;
 
 
 import com.google.android.gms.common.ConnectionResult;
@@ -143,6 +148,8 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
     public static boolean mTouchMap = true;
     private ApplicationManager appManager;
     private final String TAG = "FragmentHome";
+    private SocketManager socketManager;
+    private BroadcastReceiver createOrder;
 
     public FragmentHome() {
         // Required empty public constructor
@@ -188,8 +195,21 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         txtLocationFrom = (TextView) rootView.findViewById(R.id.txtLocationFrom);
         btnLocationFrom = (Button) rootView.findViewById(R.id.btnLocationFrom);
         btnLocationDestination = (Button) rootView.findViewById(R.id.btnLocationDestination);
-
         btnRequestRide.setText(Html.fromHtml(getResources().getString(R.string.pesan)));
+        socketManager = new SocketManager();
+        socketManager.InitSocket(mActivity);
+        socketManager.Connect();
+        ApplicationData.socketManager = socketManager;
+        createOrder = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Log.d(TAG, "broadcast createOrder");
+                Intent i = new Intent(mActivity, ActivityLoading.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i);
+                mActivity.finish();
+            }
+        };
 
 
         SupportMapFragment fm = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapView);
@@ -213,9 +233,11 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                     ApplicationData.detailDestination = strDetailDestination;
                     ApplicationData.distance = strDistance;
                     ApplicationData.duration = strDuration;
+                    socketManager.CreateOrder(posFrom, posDest);
                     Intent intent = new Intent(mActivity, ActivityConfirm.class);
                     startActivity(intent);
-                    mActivity.finish();
+
+                    // /new DoPesan(mActivity,socketManager, posFrom, posDest);
                 }
             }
         });
@@ -238,7 +260,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                     ApplicationData.detailDestination = strDetailDestination;
                     ApplicationData.distance = strDistance;
                     ApplicationData.duration = strDuration;
-
+                    socketManager.CreateOrder(posFrom, posDest);
                     Intent intent = new Intent(mActivity, ActivityConfirm.class);
                     startActivity(intent);
                 }
@@ -943,5 +965,86 @@ private class GetMyLocation extends AsyncTask<String, Void, String> implements L
     }
 }
 
+
+    private class DoPesan extends AsyncTask<String, Void, String> {
+        private Activity activity;
+        private Context context;
+        private Resources resources;
+        private ProgressDialog progressDialog;
+        private SocketManager socketManager;
+        private LatLng pFrom, pDestination;
+
+        public DoPesan(Activity activity, SocketManager socketManager, LatLng pFrom, LatLng pDestination) {
+            super();
+            this.activity = activity;
+            this.context = activity.getApplicationContext();
+            this.resources = activity.getResources();
+            this.socketManager = socketManager;
+            this.pFrom = pFrom;
+            this.pDestination = pDestination;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = new ProgressDialog(activity);
+            progressDialog.setMessage("Sedang Memesan. . .");
+            progressDialog.setIndeterminate(false);
+            progressDialog.setCancelable(false);
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressDialog.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+                socketManager.CreateOrder(pFrom, pDestination);
+                return "OK";
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return "FAIL";
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            progressDialog.dismiss();
+            switch (result) {
+                case "FAIL":
+                    DialogManager.showDialog(activity, "Warning", "Gagal memesan, Silakan mencoba lagi!");
+                    break;
+                case "OK":
+                    Intent intent = new Intent(activity, ActivityConfirm.class);
+                    startActivity(intent);
+                    activity.finish();
+                    break;
+            }
+
+
+        }
+
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Register mMessageReceiver to receive messages.
+        Log.i("adding receiver", "fragment ontainer for profile");
+        LocalBroadcastManager.getInstance(mActivity).registerReceiver(createOrder,
+                new IntentFilter("createOrder"));
+
+    }
+
+    @Override
+    public void onPause() {
+        // Unregister since the activity is not visible
+        Log.i("unreg receiver", "fragment unregister");
+        LocalBroadcastManager.getInstance(mActivity).unregisterReceiver(createOrder);
+        super.onPause();
+    }
 
 }
