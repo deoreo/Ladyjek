@@ -41,10 +41,12 @@ public class ActivityConfirm extends ActionBarActivity {
     private int totalPrice = 0;
     private NumberFormat numberFormat;
     private DecimalFormat decimalFormat;
+    private SocketManager socketManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm);
+        socketManager = ApplicationData.socketManager;
         DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.US);
         otherSymbols.setDecimalSeparator(',');
         otherSymbols.setGroupingSeparator('.');
@@ -82,6 +84,7 @@ public class ActivityConfirm extends ActionBarActivity {
         txtConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                socketManager.CreateOrder(ApplicationData.posFrom, ApplicationData.posDestination);
                 Intent i = new Intent(getBaseContext(), ActivityLoading.class);
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 ApplicationManager um = new ApplicationManager(ActivityConfirm.this);
@@ -94,10 +97,11 @@ public class ActivityConfirm extends ActionBarActivity {
         wrapperRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SocketManager socketManager = new SocketManager();
-                socketManager.InitSocket(ActivityConfirm.this);
-                socketManager.Connect();
+                socketManager.CreateOrder(ApplicationData.posFrom, ApplicationData.posDestination);
                 Intent i = new Intent(getBaseContext(), ActivityLoading.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                ApplicationManager um = new ApplicationManager(ActivityConfirm.this);
+                um.setActivity("ActivityLoading");
                 startActivity(i);
                 finish();
             }

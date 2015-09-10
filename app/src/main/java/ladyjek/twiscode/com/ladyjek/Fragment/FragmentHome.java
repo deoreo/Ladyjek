@@ -238,7 +238,6 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                     ApplicationData.detailDestination = strDetailDestination;
                     ApplicationData.distance = strDistance;
                     ApplicationData.duration = strDuration;
-                    socketManager.CreateOrder(posFrom, posDest);
                     Intent intent = new Intent(mActivity, ActivityConfirm.class);
                     startActivity(intent);
 
@@ -265,7 +264,6 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                     ApplicationData.detailDestination = strDetailDestination;
                     ApplicationData.distance = strDistance;
                     ApplicationData.duration = strDuration;
-                    socketManager.CreateOrder(posFrom, posDest);
                     Intent intent = new Intent(mActivity, ActivityConfirm.class);
                     startActivity(intent);
                 }
