@@ -23,6 +23,7 @@ import java.util.HashMap;
 
 import ladyjek.twiscode.com.ladyjek.Control.JSONControl;
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
+import ladyjek.twiscode.com.ladyjek.Model.ModelDriver;
 import ladyjek.twiscode.com.ladyjek.Model.ModelOrder;
 
 /**
@@ -59,6 +60,8 @@ public class SocketManager {
         socket.on("order pickedup",onOrderPickUp);
         socket.on("order started",onOrderStarted);
         socket.on("order ended",onOrderEnded);
+        socket.on("last feedback", onLastFeedback);
+        socket.on("order timeout", onOrderTimeout);
         socket.connect();
     }
 
@@ -102,7 +105,7 @@ public class SocketManager {
     private Emitter.Listener onDisconnected = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {
-            Log.d(TAG,"onDisconnected");
+            Log.d(TAG,"onDisconnected "+onAuth);
             if (!onAuth) {
                 socket.connect();
             }
@@ -121,7 +124,7 @@ public class SocketManager {
         @Override
         public void call(Object... args) {
             Log.d(TAG,"onUnauthorized");
-            onAuth = false;
+            onAuth = true;
             try {
                 JSONObject obj = (JSONObject) args[0];
                 if (obj != null) {
@@ -134,7 +137,7 @@ public class SocketManager {
                         try {
                             String token = response.getString("token");
                             appManager.setUserToken(token);
-                            onAuth = true;
+                            onAuth = false;
                             Log.d(TAG, "onUnauthorized true");
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -162,11 +165,15 @@ public class SocketManager {
                     Log.d(TAG, "onLastOrder : " + obj.toString());
                     String id = obj.getString("_id");
                     String userID = obj.getString("user");
+                    String driverID = "";
                     String to = obj.getString("to");
                     String from = obj.getString("from");
                     String distance = obj.getJSONObject("distance").getString("text");
                     String duration = obj.getJSONObject("duration").getString("text");
                     String status = obj.getString("status");
+                    if(!status.contains("queued")){
+                        driverID = obj.getString("driver");
+                    }
                     String toLatitude = obj.getJSONObject("toGeo").getJSONArray("coordinates").getString(1);
                     String toLongitude = obj.getJSONObject("toGeo").getJSONArray("coordinates").getString(0);
                     String fromLatitude = obj.getJSONObject("fromGeo").getJSONArray("coordinates").getString(1);
@@ -177,7 +184,7 @@ public class SocketManager {
                     String phone = "089682587567";
                     String rate = "4.5";
                     String price = "";
-                    ModelOrder order = new ModelOrder(id, userID, name, to, from, distance, duration, status, toLongitude, toLatitude, fromLatitude, fromLongitude, rate, phone, member, payment, price);
+                    ModelOrder order = new ModelOrder(id, userID, driverID, name, to, from, distance, duration, status, toLongitude, toLatitude, fromLatitude, fromLongitude, rate, phone, member, payment, price);
                     ApplicationData.order = order;
                     SendBroadcast("lastOrder", "true");
                 } else {
@@ -199,6 +206,14 @@ public class SocketManager {
         public void call(final Object... args) {
             Log.d(TAG,"onOrderCanceled");
             SendBroadcast("doCancel", "true");
+        }
+    };
+
+    private Emitter.Listener onOrderTimeout = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            Log.d(TAG,"onOrderTimeout");
+            SendBroadcast("doOrderTimeout", "true");
         }
     };
 
@@ -234,10 +249,10 @@ public class SocketManager {
             try {
                 if(data != null){
                     ApplicationData.posDriver = new LatLng(data.getDouble(1),data.getDouble(0));
-                    SendBroadcast("goDriverChange", "true");
+                    SendBroadcast("driverChange", "true");
                 }
                 else {
-                    SendBroadcast("goDriverChange", "false");
+                    //SendBroadcast("goDriverChange", "false");
                 }
             }
             catch (Exception e){
@@ -251,8 +266,28 @@ public class SocketManager {
     private Emitter.Listener onOrderTaken = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
-            Log.d(TAG,"onOrderTaken");
-            SendBroadcast("onOrderTaken", "true");
+            Log.d(TAG, "onOrderTaken");
+            try {
+                JSONObject obj = (JSONObject) args[0];
+                Log.d("orderTaken", obj.toString());
+                if(obj != null){
+                    String id = obj.getString("_id");
+                    String name = obj.getString("name");
+                    String rate = obj.getString("rating");
+                    String nopol = obj.getString("vehicleNumber");
+                    String hp = obj.getString("phoneNumber");
+                    String img = "";
+                    ModelDriver driver = new ModelDriver(id,name,img,nopol,hp,rate);
+                    ApplicationData.driver = driver;
+                    SendBroadcast("onOrderTaken", "true");
+                }
+
+            }
+
+            catch (Exception e){
+                e.printStackTrace();
+            }
+
 
 
         }
@@ -281,7 +316,7 @@ public class SocketManager {
             public void call(Object... args) {
                 try {
                     Log.d(TAG, "cancel args:" + args[0]);
-                    JSONObject order = (JSONObject) args[0];
+                    String order = args[0].toString();
                     if (order == null) {
                         Log.d(TAG, "cancel true");
                         SendBroadcast("doCancel", "true");
@@ -319,6 +354,7 @@ public class SocketManager {
                         if (obj == null) {
                             String id = obj.getString("_id");
                             String userID = obj.getString("user");
+                            String driverID = obj.getString("driver");
                             String to = obj.getString("to");
                             String from = obj.getString("from");
                             String distance = obj.getJSONObject("distance").getString("text");
@@ -334,7 +370,7 @@ public class SocketManager {
                             String phone = "089682587567";
                             String rate = "4.5";
                             String price = "";
-                            ModelOrder order = new ModelOrder(id, userID, name, to, from, distance, duration, status, toLongitude, toLatitude, fromLatitude, fromLongitude, rate, phone, member, payment, price);
+                            ModelOrder order = new ModelOrder(id, userID, driverID, name, to, from, distance, duration, status, toLongitude, toLatitude, fromLatitude, fromLongitude, rate, phone, member, payment, price);
                             ApplicationData.order = order;
                             //Log.d(TAG, "cancel true");
                             SendBroadcast("createOrder", "true");
@@ -354,6 +390,100 @@ public class SocketManager {
         }
 
     }
+
+    private Emitter.Listener onLastFeedback = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            Log.d(TAG, "onLastFeedback");
+            String id = args[0].toString();
+            if(id!=null){
+                ApplicationData.driverID = id;
+                SendBroadcast("lastFeedback", "true");
+            }
+
+
+        }
+    };
+
+    public void GetDriver(String id){
+        Log.d(TAG, "getDriver : "+id);
+        //JSONObject ret = new JSONObject();
+        socket.emit("get driver", id, new Ack() {
+            @Override
+            public void call(Object... args) {
+                Log.d(TAG, "getDriver cuy");
+                try {
+                    Log.d(TAG, "getDriver : ");
+                    Log.d(TAG, "id args:" + args[0]);
+                    Log.d(TAG, "id args:" + args[1]);
+                    JSONObject err = (JSONObject) args[0];
+                    if (err == null) {
+                        Log.d(TAG, "no error getDriver : ");
+                        JSONObject user = (JSONObject) args[1];
+                        if (user != null) {
+                            Log.d(TAG, "get driver true");
+                            String id = user.getString("_id");
+                            String name = user.getString("name");
+                            String rate = user.getString("rating");
+                            String nopol = user.getString("vehicleNumber");
+                            String hp = user.getString("phoneNumber");
+                            String img = "";
+                            ModelDriver driver = new ModelDriver(id,name,img,nopol,hp,rate);
+                            ApplicationData.driver = driver;
+                            //ApplicationData.driver = user;
+                            SendBroadcast("getDriver", "true");
+                            //ret = user;
+                        } else {
+                            Log.d(TAG, "getDriver false");
+                        }
+                    } else {
+                        Log.d(TAG, "getDriver null");
+                    }
+                } catch (Exception ex) {
+                    Log.d(TAG, "catch getDriver : ");
+                    ex.printStackTrace();
+                }
+            }
+
+        });
+        //return ApplicationData.driver;
+    }
+
+    public void Feedback(int rate, String description){
+        Log.d(TAG, "feedback");
+        //boolean feed = false;
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("rate",rate);
+            obj.put("description",description);
+            socket.emit("post feedback", obj, new Ack() {
+                @Override
+                public void call(Object... args) {
+                    try {
+                        JSONObject err = (JSONObject) args[0];
+                        if (err == null) {
+                            Log.d(TAG, "getfeedback true");
+                            SendBroadcast("doFeedback","true");
+                        } else {
+                            Log.d(TAG, "getfeedback false");
+                        }
+                    } catch (Exception ex) {
+                        Log.d(TAG, "getfeedback error");
+                        ex.printStackTrace();
+                    }
+
+                }
+
+            });
+        }
+        catch (Exception ex){
+            ex.printStackTrace();
+        }
+
+
+    }
+
+
 
 
 

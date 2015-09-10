@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
 
+import ladyjek.twiscode.com.ladyjek.Model.ModelOrder;
 import ladyjek.twiscode.com.ladyjek.Model.ModelPlace;
 
 /**
@@ -29,6 +30,8 @@ public class ApplicationManager {
     private static final String KEY_DESTINATION = "userDestination";
     private static final String KEY_DRIVER = "driverlocation";
     private static final String TAG = "ApplicationManager";
+    private static final String KEY_ORDER = "order";
+    private static final String KEY_TRIP = "trip";
     private Context mContext;
 
 
@@ -157,7 +160,36 @@ public class ApplicationManager {
         mEditor.commit();
     }
     public Boolean isArrive() {
-        return mPref.getBoolean(KEY_ARRIVE,false);
+        return mPref.getBoolean(KEY_ARRIVE, false);
+    }
+
+    public void setOrder(ModelOrder modelOrder){
+        Gson gson = new Gson();
+        String dataJson = gson.toJson(modelOrder);
+        mEditor.putString(KEY_ORDER, dataJson);
+        mEditor.commit();
+
+    }
+
+    public ModelOrder getOrder(){
+        Gson gson = new Gson();
+        String json = mPref.getString(KEY_ORDER, "");
+        ModelOrder obj = gson.fromJson(json, ModelOrder.class);
+        return obj;
+    }
+
+    public String getTrip() {
+        return mPref.getString(KEY_TRIP, "");
+    }
+
+    public void setTrip(String act) {
+        try {
+            mEditor.putString(KEY_TRIP, act);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new NullPointerException();
+        }
+        mEditor.commit();
     }
 
 

@@ -4,6 +4,7 @@ package ladyjek.twiscode.com.ladyjek.Model;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import ladyjek.twiscode.com.ladyjek.Utilities.SocketManager;
 
@@ -56,6 +57,7 @@ public class ApplicationData {
     public static final int NOTIFICATION_ID = 100;
 
     public static ModelOrder order = new ModelOrder();
-
+    public static String driverID = "";
+    public static ModelDriver driver = new ModelDriver();
 
 }

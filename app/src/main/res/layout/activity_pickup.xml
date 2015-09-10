@@ -73,6 +73,7 @@
                                     android:orientation="horizontal"
                                     >
                                     <TextView
+                                        android:id="@+id/nameDriver"
                                         android:layout_width="0dp"
                                         android:layout_height="wrap_content"
                                         android:layout_weight="1"
@@ -92,11 +93,13 @@
                                             android:textColor="@color/white_color"
                                             android:textStyle="bold"
                                             android:textSize="16dp"
-                                            android:text="4.8"/>
+                                            android:text="4.8"
+                                            android:layout_gravity="center"/>
                                         <ImageView
                                             android:layout_width="18dp"
                                             android:layout_height="18dp"
-                                            android:src="@drawable/white_arrow"/>
+                                            android:src="@drawable/white_arrow"
+                                            android:layout_gravity="center"/>
                                     </LinearLayout>
                                 </LinearLayout>
                                 <TextView
@@ -151,13 +154,15 @@
                 android:textAllCaps="true"
                 android:textStyle="bold"
                 android:textColor="@color/white_color"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/rounded_black"
                 android:layout_alignParentRight="true"
                 android:padding="10dp"
                 android:layout_marginTop="20dp"
+                android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
+                android:gravity="center"
                 />
         </RelativeLayout>
 

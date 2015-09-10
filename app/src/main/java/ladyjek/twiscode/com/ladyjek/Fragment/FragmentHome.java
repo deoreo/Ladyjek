@@ -51,11 +51,15 @@ import android.widget.TextView;
 
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityConfirm;
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityLoading;
+import ladyjek.twiscode.com.ladyjek.Activity.ActivityPickUp;
+import ladyjek.twiscode.com.ladyjek.Activity.ActivityRate;
+import ladyjek.twiscode.com.ladyjek.Activity.ActivityTracking;
 import ladyjek.twiscode.com.ladyjek.Activity.Main;
 import ladyjek.twiscode.com.ladyjek.Adapter.AdapterAddress;
 import ladyjek.twiscode.com.ladyjek.Adapter.AdapterSuggestion;
 import ladyjek.twiscode.com.ladyjek.Control.JSONControl;
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
+import ladyjek.twiscode.com.ladyjek.Model.ModelDriver;
 import ladyjek.twiscode.com.ladyjek.Model.ModelGeocode;
 import ladyjek.twiscode.com.ladyjek.Model.ModelPlace;
 import ladyjek.twiscode.com.ladyjek.Model.ModelUserOrder;
@@ -149,7 +153,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
     private ApplicationManager appManager;
     private final String TAG = "FragmentHome";
     private SocketManager socketManager;
-    private BroadcastReceiver createOrder;
+    private BroadcastReceiver createOrder,lastOrder,lastFeedback;
 
     public FragmentHome() {
         // Required empty public constructor
@@ -173,7 +177,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         Log.d("TouchableWrapper", "OnCreateView");
-
+        ApplicationData.driver = new ModelDriver();
         btnRequestRide = (TextView) rootView.findViewById(R.id.btnRequestRide);
         txtFrom = (ClearableEditText) rootView.findViewById(R.id.txtFrom);
         txtDestination = (ClearableEditText) rootView.findViewById(R.id.txtDestination);
@@ -214,12 +218,13 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
 
         SupportMapFragment fm = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapView);
         googleMap = fm.getMap();
-
+/*
         if (NetworkManager.getInstance(mActivity).isConnectedInternet()) {
             new GetMyLocation(mActivity).execute();
         } else {
             DialogManager.showDialog(mActivity, "Warning", "No internet connection");
         }
+        */
 
         wrapperRegister.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -340,7 +345,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(txtFrom.getText().toString().equals("")) {
+                if (txtFrom.getText().toString().equals("")) {
                     if (markerFrom != null) {
                         markerFrom.remove();
                         posFrom = null;
@@ -417,24 +422,24 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
 
     itemCurrent.setOnClickListener(new View.OnClickListener()
 
-    {
-        @Override
-        public void onClick (View v){
+                                   {
+                                       @Override
+                                       public void onClick(View v) {
 
-        if (txtFrom.getText().toString().isEmpty() || txtDestination.getText().toString().isEmpty()) {
-            if (tagLocation.equals(TAG_FROM)) {
-                txtFrom.setText(txtAddressCurrent.getText().toString());
-            }
-            if (tagLocation.equals(TAG_DESTINATION)) {
-                txtDestination.setText(txtAddressCurrent.getText().toString());
+                                           if (txtFrom.getText().toString().isEmpty() || txtDestination.getText().toString().isEmpty()) {
+                                               if (tagLocation.equals(TAG_FROM)) {
+                                                   txtFrom.setText(txtAddressCurrent.getText().toString());
+                                               }
+                                               if (tagLocation.equals(TAG_DESTINATION)) {
+                                                   txtDestination.setText(txtAddressCurrent.getText().toString());
 
-            }
-        }
-        hideKeyboard();
-        layoutSuggestion.setVisibility(GONE);
+                                               }
+                                           }
+                                           hideKeyboard();
+                                           layoutSuggestion.setVisibility(GONE);
 
-    }
-    }
+                                       }
+                                   }
 
     );
 
@@ -533,19 +538,87 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
     googleMap.setOnMapClickListener(this);
     googleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener()
 
-    {
-        @Override
-        public void onCameraChange (CameraPosition cameraPosition){
-        mapCenter = googleMap.getCameraPosition().target;
-        add = getAddress(mapCenter);
-        txtLocationFrom.setText(add);
-        txtLocationDestinton.setText(add);
-        progressMapFrom.setVisibility(View.GONE);
-        progressMapDestination.setVisibility(View.GONE);
-    }
-    }
+                                        {
+                                            @Override
+                                            public void onCameraChange(CameraPosition cameraPosition) {
+                                                mapCenter = googleMap.getCameraPosition().target;
+                                                add = getAddress(mapCenter);
+                                                txtLocationFrom.setText(add);
+                                                txtLocationDestinton.setText(add);
+                                                progressMapFrom.setVisibility(View.GONE);
+                                                progressMapDestination.setVisibility(View.GONE);
+                                            }
+                                        }
 
     );
+
+        lastOrder = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                // Extract data included in the Intent
+                Log.d(TAG, "broadcast lastOrder");
+                String message = intent.getStringExtra("message");
+                Intent i = null;
+                String pref = appManager.getActivity();
+                if (message.equals("true")) {
+                    ApplicationData.socketManager = socketManager;
+                    appManager.setOrder(ApplicationData.order);
+
+                    if (ApplicationData.order.getStatus().contains("taken")) {
+                        i = new Intent(getActivity(), ActivityPickUp.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(i);
+                        getActivity().finish();
+                    } else if (ApplicationData.order.getStatus().contains("pickedup")) {
+                        i = new Intent(getActivity(), ActivityTracking.class);
+                        appManager.setTrip("");
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(i);
+                        getActivity().finish();
+                    } else if (ApplicationData.order.getStatus().contains("started")) {
+                        i = new Intent(getActivity(), ActivityTracking.class);
+                        appManager.setTrip("end");
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(i);
+                        getActivity().finish();
+                    } else if (ApplicationData.order.getStatus().contains("queued")) {
+                        i = new Intent(getActivity(), ActivityLoading.class);
+                        appManager.setTrip("end");
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(i);
+                        getActivity().finish();
+                    }
+
+
+
+                }
+                else {
+                    if (NetworkManager.getInstance(mActivity).isConnectedInternet()) {
+                        new GetMyLocation(mActivity).execute();
+                    } else {
+                        DialogManager.showDialog(mActivity, "Warning", "No internet connection");
+                    }
+                }
+
+
+            }
+        };
+
+
+        lastFeedback = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                // Extract data included in the Intent
+                Log.d(TAG, "broadcast lastFeedback");
+                String message = intent.getStringExtra("message");
+                if(message.equalsIgnoreCase("true")){
+                    Intent i = new Intent(getActivity(), ActivityRate.class);
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(i);
+                    getActivity().finish();
+                }
+            }
+        };
 
 
     // Inflate the layout for this fragment
@@ -1036,6 +1109,10 @@ private class GetMyLocation extends AsyncTask<String, Void, String> implements L
         Log.i("adding receiver", "fragment ontainer for profile");
         LocalBroadcastManager.getInstance(mActivity).registerReceiver(createOrder,
                 new IntentFilter("createOrder"));
+        LocalBroadcastManager.getInstance(mActivity).registerReceiver(lastOrder,
+                new IntentFilter("lastOrder"));
+        LocalBroadcastManager.getInstance(mActivity).registerReceiver(lastFeedback,
+                new IntentFilter("lastFeedback"));
 
     }
 
@@ -1044,6 +1121,7 @@ private class GetMyLocation extends AsyncTask<String, Void, String> implements L
         // Unregister since the activity is not visible
         Log.i("unreg receiver", "fragment unregister");
         LocalBroadcastManager.getInstance(mActivity).unregisterReceiver(createOrder);
+        LocalBroadcastManager.getInstance(mActivity).unregisterReceiver(lastFeedback);
         super.onPause();
     }
 

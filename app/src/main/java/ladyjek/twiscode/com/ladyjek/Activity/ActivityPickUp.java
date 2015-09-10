@@ -1,9 +1,11 @@
 package ladyjek.twiscode.com.ladyjek.Activity;
 
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -11,6 +13,8 @@ import android.location.LocationListener;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.PowerManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.telephony.PhoneStateListener;
@@ -23,6 +27,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
+import com.github.nkzawa.socketio.client.Socket;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdate;
@@ -35,6 +40,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import org.json.JSONObject;
 import org.w3c.dom.Document;
 
 import java.io.IOException;
@@ -45,7 +51,10 @@ import java.util.Locale;
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
+import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.GoogleAPIManager;
+import ladyjek.twiscode.com.ladyjek.Utilities.NetworkManager;
+import ladyjek.twiscode.com.ladyjek.Utilities.SocketManager;
 
 public class ActivityPickUp extends ActionBarActivity implements LocationListener {
 
@@ -54,12 +63,19 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
     private LatLng posFrom, posDriver;
     private Marker markerFrom, markerDriver;
     private Button btnCall, btnSMS;
-    private TextView txtEstimate;
+    private TextView txtEstimate,txtName,txtRate,txtNopol,btnCancel;
     private ApplicationManager appManager;
     private final String TAG_FROM = "FROM";
     private final String TAG_DRIVER = "DRIVER";
     private String driverDuration;
     private Boolean isArrive = false;
+    private SocketManager socketManager;
+    private BroadcastReceiver goTrip,doCancel,driverChange,getDriver;
+    private Boolean isCancel = false, isPhone = false, isSMS = false;
+
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,12 +85,21 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
 
         btnCall = (Button) findViewById(R.id.btnCall);
         btnSMS = (Button) findViewById(R.id.btnSMS);
+        btnCancel = (TextView) findViewById(R.id.btnCancel);
         txtEstimate = (TextView) findViewById(R.id.txtEstimate);
+        txtName = (TextView) findViewById(R.id.nameDriver);
+        txtNopol = (TextView) findViewById(R.id.platDriver);
+        txtRate = (TextView) findViewById(R.id.rateDriver);
+
         appManager = new ApplicationManager(ActivityPickUp.this);
+        socketManager = ApplicationData.socketManager;
+
         Double latitude = appManager.getUserFrom().getLatitude();
         Double longitude = appManager.getUserFrom().getLongitude();
         posFrom = new LatLng(latitude, longitude);
         posDriver = ApplicationData.posDriver;
+
+
 
 
         int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());
@@ -110,62 +135,178 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
         btnCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent callIntent = new Intent(Intent.ACTION_CALL);
-                callIntent.setData(Uri.parse("tel:" + ApplicationData.phoneNumber));
-                startActivity(callIntent);
+                if (isPhone) {
+                    Intent callIntent = new Intent(Intent.ACTION_CALL);
+                    callIntent.setData(Uri.parse("tel:" + ApplicationData.driver.getPhone()));
+                    startActivity(callIntent);
+                }
+
             }
         });
 
         btnSMS.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
+                if(isSMS){
+                    try {
 
-                    Intent sendIntent = new Intent(Intent.ACTION_VIEW);
-                    sendIntent.putExtra("address", ApplicationData.phoneNumber);
-                    sendIntent.putExtra("sms_body", "Halo cantik, jemput aku dong !");
-                    sendIntent.setType("vnd.android-dir/mms-sms");
-                    startActivity(sendIntent);
+                        Intent sendIntent = new Intent(Intent.ACTION_VIEW);
+                        sendIntent.putExtra("address", ApplicationData.driver.getPhone());
+                        sendIntent.putExtra("sms_body", "Halo cantik, jemput aku dong !");
+                        sendIntent.setType("vnd.android-dir/mms-sms");
+                        startActivity(sendIntent);
 
-                } catch (Exception e) {
-                    Log.d("error sms", e.toString());
+                    } catch (Exception e) {
+                        Log.d("error sms", e.toString());
+                    }
+                }
+
+            }
+        });
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(NetworkManager.getInstance(ActivityPickUp.this).isConnectedInternet()){
+                    if(!isCancel){
+                        socketManager.CancelOrder();
+                        isCancel = true;
+                    }
+
+                }
+                else {
+                    DialogManager.showDialog(ActivityPickUp.this, "Peringatan", "Tidak ada koneksi internet!");
                 }
             }
         });
-        Dummy();
+
+
+
+
+        goTrip  = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                // Extract data included in the Intent
+                String message = intent.getStringExtra("message");
+                Log.d("goTrip", message);
+                if(message=="true"){
+                    appManager.setArrive(true);
+                    new AlertDialogWrapper.Builder(ActivityPickUp.this)
+                            .setTitle("Driver telah sampai di tempat Anda")
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Intent i = new Intent(getBaseContext(), ActivityTracking.class);
+                                    ApplicationManager um = new ApplicationManager(ActivityPickUp.this);
+                                    um.setActivity("ActivityTracking");
+                                    startActivity(i);
+                                    finish();
+                                    dialog.dismiss();
+                                }
+                            })
+                            .setIcon(R.drawable.ladyjek_icon)
+                            .show();
+                }
+                else {
+                    Log.d("cant goTrip","");
+                }
+
+            }
+        };
+        doCancel  = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                // Extract data included in the Intent
+                String message = intent.getStringExtra("message");
+                Log.d("doCancel", message);
+                if(message=="true"){
+                    Intent i = new Intent(getBaseContext(), Main.class);
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(i);
+                    finish();
+                }
+                else {
+                    new AlertDialogWrapper.Builder(ActivityPickUp.this)
+                            .setTitle("Driver sudah dekat !!")
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            })
+                            .setIcon(R.drawable.ladyjek_icon)
+                            .show();
+                }
+                isCancel = false;
+
+            }
+        };
+
+        driverChange  = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                // Extract data included in the Intent
+                String message = intent.getStringExtra("message");
+                Log.d("driverChange", message);
+                if(message=="true"){
+                    Log.d("driver change", "true");
+
+
+                }
+                else {
+                    Log.d("driver change","false");
+                }
+
+            }
+        };
+
+        getDriver  = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                // Extract data included in the Intent
+                String message = intent.getStringExtra("message");
+                Log.d("getDriver", message);
+                if(message=="true"){
+                    Log.d("getdriver","true");
+                    Log.d("socket","driver : "+ApplicationData.driver.toString());
+                    isSMS = true;
+                    isPhone = true;
+                    txtName.setText(ApplicationData.driver.getName());
+                    txtNopol.setText(ApplicationData.driver.getNopol());
+                    txtRate.setText(ApplicationData.driver.getRate());
+                }
+                else {
+                    Log.d("getdriver","false");
+                }
+
+            }
+        };
+
+        if(ApplicationData.driver != null){
+            isSMS = true;
+            isPhone = true;
+            txtName.setText(ApplicationData.driver.getName());
+            txtNopol.setText(ApplicationData.driver.getNopol());
+            txtRate.setText(ApplicationData.driver.getRate());
+        }
+        else {
+            if(NetworkManager.getInstance(ActivityPickUp.this).isConnectedInternet()){
+                socketManager.GetDriver(ApplicationData.order.getDriverID());
+            }
+            else {
+                DialogManager.showDialog(ActivityPickUp.this, "Peringatan", "Tidak ada koneksi internet!");
+            }
+        }
+
+
 
 
     }
 
-    private void Dummy() {
-        new CountDownTimer(10000, 1000) {
 
-            public void onTick(long millisUntilFinished) {
-            }
-
-            public void onFinish() {
-                MovetoTracking();
-            }
-        }.start();
-    }
 
     private void MovetoTracking() {
-        appManager.setArrive(true);
-        new AlertDialogWrapper.Builder(ActivityPickUp.this)
-                .setTitle("Driver telah sampai di tempat Anda")
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent i = new Intent(getBaseContext(), ActivityTracking.class);
-                        ApplicationManager um = new ApplicationManager(ActivityPickUp.this);
-                        um.setActivity("ActivityTracking");
-                        startActivity(i);
-                        finish();
-                        dialog.dismiss();
-                    }
-                })
-                .setIcon(R.drawable.ladyjek_icon)
-                .show();
+
 
 
     }
@@ -339,6 +480,39 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
             }
         }
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Register mMessageReceiver to receive messages.
+        LocalBroadcastManager.getInstance(this).registerReceiver(goTrip,
+                new IntentFilter("goTrip"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(doCancel,
+                new IntentFilter("doCancel"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(driverChange,
+                new IntentFilter("driverChange"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(getDriver,
+                new IntentFilter("getDriver"));
+    }
+
+
+
+
+    @Override
+    public void onPause() {
+        // Unregister since the activity is not visible
+
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(goTrip);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(doCancel);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(driverChange);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(getDriver);
+        PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+        boolean isScreenOn = powerManager.isScreenOn();
+
+        super.onPause();
+    }
+
+
 
 
 }
