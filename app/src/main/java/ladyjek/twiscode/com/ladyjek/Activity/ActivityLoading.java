@@ -32,7 +32,7 @@ public class ActivityLoading extends Activity {
         setContentView(R.layout.activity_loading);
         mProgressBar = (ProgressBar)findViewById(R.id.progressBarPickUp);
         act = this;
-        Dummy();
+        //Dummy();
     }
     private void Dummy(){
         new CountDownTimer(5000, 1000) {
