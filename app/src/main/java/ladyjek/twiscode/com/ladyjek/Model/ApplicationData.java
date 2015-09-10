@@ -2,6 +2,7 @@ package ladyjek.twiscode.com.ladyjek.Model;
 
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -59,5 +60,6 @@ public class ApplicationData {
     public static ModelOrder order = new ModelOrder();
     public static String driverID = "";
     public static ModelDriver driver = new ModelDriver();
+    public static Marker markerFrom = null;
 
 }

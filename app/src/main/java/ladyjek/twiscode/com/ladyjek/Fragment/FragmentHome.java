@@ -64,6 +64,7 @@ import ladyjek.twiscode.com.ladyjek.Model.ModelGeocode;
 import ladyjek.twiscode.com.ladyjek.Model.ModelPlace;
 import ladyjek.twiscode.com.ladyjek.Model.ModelUserOrder;
 import ladyjek.twiscode.com.ladyjek.R;
+import ladyjek.twiscode.com.ladyjek.Service.ServiceLocation;
 import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.GoogleAPIManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
@@ -153,7 +154,8 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
     private ApplicationManager appManager;
     private final String TAG = "FragmentHome";
     private SocketManager socketManager;
-    private BroadcastReceiver createOrder,lastOrder,lastFeedback;
+    private BroadcastReceiver createOrder, lastOrder, lastFeedback;
+    private ServiceLocation serviceLocation;
 
     public FragmentHome() {
         // Required empty public constructor
@@ -375,180 +377,180 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         });
         txtDestination.addTextChangedListener(new TextWatcher() {
 
-            @Override
-            public void afterTextChanged(Editable s) {
-                if(txtDestination.getText().toString().equals("")) {
-                    if (markerDestination != null) {
-                        markerDestination.remove();
-                        posDest = null;
-                    }
-                    if (driveLine != null) {
-                        driveLine.remove();
-                    }
-                }
-            }
+                                                  @Override
+                                                  public void afterTextChanged(Editable s) {
+                                                      if (txtDestination.getText().toString().equals("")) {
+                                                          if (markerDestination != null) {
+                                                              markerDestination.remove();
+                                                              posDest = null;
+                                                          }
+                                                          if (driveLine != null) {
+                                                              driveLine.remove();
+                                                          }
+                                                      }
+                                                  }
 
-            @Override
-            public void beforeTextChanged(CharSequence s, int start,
-                                          int count, int after) {
-            }
+                                                  @Override
+                                                  public void beforeTextChanged(CharSequence s, int start,
+                                                                                int count, int after) {
+                                                  }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start,
-                                      int before, int count) {
-                if (!mTouchMap) {
-                    if (s.length() >= 3) {
-                        new GetSuggestion(s.toString(), tagLocation).execute();
-                    } else if (s.length() == 0) {
-                        layoutSuggestion.setVisibility(GONE);
-                            if (markerDestination != null) {
-                                markerDestination.remove();
-                            }
-                            if (driveLine != null) {
-                                driveLine.remove();
-                            }
+                                                  @Override
+                                                  public void onTextChanged(CharSequence s, int start,
+                                                                            int before, int count) {
+                                                      if (!mTouchMap) {
+                                                          if (s.length() >= 3) {
+                                                              new GetSuggestion(s.toString(), tagLocation).execute();
+                                                          } else if (s.length() == 0) {
+                                                              layoutSuggestion.setVisibility(GONE);
+                                                              if (markerDestination != null) {
+                                                                  markerDestination.remove();
+                                                              }
+                                                              if (driveLine != null) {
+                                                                  driveLine.remove();
+                                                              }
 
-                    }
-                }
-            }
-
-
-    }
-
-    );
+                                                          }
+                                                      }
+                                                  }
 
 
-    itemCurrent.setOnClickListener(new View.OnClickListener()
+                                              }
 
-                                   {
-                                       @Override
-                                       public void onClick(View v) {
+        );
 
-                                           if (txtFrom.getText().toString().isEmpty() || txtDestination.getText().toString().isEmpty()) {
-                                               if (tagLocation.equals(TAG_FROM)) {
-                                                   txtFrom.setText(txtAddressCurrent.getText().toString());
+
+        itemCurrent.setOnClickListener(new View.OnClickListener()
+
+                                       {
+                                           @Override
+                                           public void onClick(View v) {
+
+                                               if (txtFrom.getText().toString().isEmpty() || txtDestination.getText().toString().isEmpty()) {
+                                                   if (tagLocation.equals(TAG_FROM)) {
+                                                       txtFrom.setText(txtAddressCurrent.getText().toString());
+                                                   }
+                                                   if (tagLocation.equals(TAG_DESTINATION)) {
+                                                       txtDestination.setText(txtAddressCurrent.getText().toString());
+
+                                                   }
                                                }
-                                               if (tagLocation.equals(TAG_DESTINATION)) {
-                                                   txtDestination.setText(txtAddressCurrent.getText().toString());
+                                               hideKeyboard();
+                                               layoutSuggestion.setVisibility(GONE);
+
+                                           }
+                                       }
+
+        );
+
+        btnLocationFrom.setOnClickListener(new View.OnClickListener()
+
+                                           {
+                                               @Override
+                                               public void onClick(View v) {
+                                                   posFrom = posTemp;
+                                                   if (driveLine != null) {
+                                                       driveLine.remove();
+                                                   }
+                                                   if (markerFrom != null) {
+                                                       markerFrom.remove();
+                                                   }
+                                                   if (markerTemp != null) {
+                                                       markerTemp.remove();
+                                                   }
+                                                   layoutMarkerDestination.setVisibility(GONE);
+                                                   layoutMarkerFrom.setVisibility(GONE);
+                                                   String address = getAddress(posFrom);
+                                                   txtFrom.setText(address);
+                                                   strDetailFrom = address;
+                                                   ApplicationData.posFrom = posFrom;
+                                                   appManager.setUserFrom(new ModelPlace(posFrom.latitude, posFrom.longitude));
+
+                                                   markerFrom = googleMap.addMarker(
+                                                           new MarkerOptions()
+                                                                   .position(posFrom)
+                                                                   .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
+                                                   if (posFrom != null && posDest != null) {
+                                                       Document doc = GoogleAPIManager.getRoute(posFrom, posDest, "driving");
+
+                                                       ArrayList<LatLng> directionPoint = GoogleAPIManager.getDirection(doc);
+                                                       PolylineOptions rectLine = new PolylineOptions().width(15).color(getResources().getColor(R.color.bg_grad_2));
+
+                                                       for (int i = 0; i < directionPoint.size(); i++) {
+                                                           rectLine.add(directionPoint.get(i));
+                                                       }
+                                                       strDistance = "" + GoogleAPIManager.getDistanceText(doc);
+                                                       strDuration = "" + GoogleAPIManager.getDurationText(doc);
+                                                       driveLine = googleMap.addPolyline(rectLine);
+                                                   }
 
                                                }
                                            }
-                                           hideKeyboard();
-                                           layoutSuggestion.setVisibility(GONE);
 
-                                       }
-                                   }
+        );
 
-    );
+        btnLocationDestination.setOnClickListener(new View.OnClickListener()
 
-    btnLocationFrom.setOnClickListener(new View.OnClickListener()
+                                                  {
+                                                      @Override
+                                                      public void onClick(View v) {
+                                                          posDest = posTemp;
+                                                          if (driveLine != null) {
+                                                              driveLine.remove();
+                                                          }
+                                                          if (markerDestination != null) {
+                                                              markerDestination.remove();
+                                                          }
+                                                          if (markerTemp != null) {
+                                                              markerTemp.remove();
+                                                          }
+                                                          layoutMarkerDestination.setVisibility(GONE);
+                                                          layoutMarkerFrom.setVisibility(GONE);
+                                                          String address = getAddress(posDest);
+                                                          txtDestination.setText(address);
+                                                          strDetailDestination = address;
+                                                          ApplicationData.posDestination = posDest;
+                                                          appManager.setUserDestination(new ModelPlace(posDest.latitude, posDest.longitude));
+                                                          markerDestination = googleMap.addMarker(
+                                                                  new MarkerOptions()
+                                                                          .position(posDest)
+                                                                          .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_destination)));
 
-    {
-        @Override
-        public void onClick (View v){
-        posFrom = posTemp;
-        if (driveLine != null) {
-            driveLine.remove();
-        }
-        if (markerFrom != null) {
-            markerFrom.remove();
-        }
-        if (markerTemp != null) {
-            markerTemp.remove();
-        }
-        layoutMarkerDestination.setVisibility(GONE);
-        layoutMarkerFrom.setVisibility(GONE);
-        String address = getAddress(posFrom);
-        txtFrom.setText(address);
-        strDetailFrom = address;
-        ApplicationData.posFrom = posFrom;
-        appManager.setUserFrom(new ModelPlace(posFrom.latitude, posFrom.longitude));
+                                                          if (posFrom != null && posDest != null) {
+                                                              Document doc = GoogleAPIManager.getRoute(posFrom, posDest, "driving");
 
-        markerFrom = googleMap.addMarker(
-                new MarkerOptions()
-                        .position(posFrom)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
-        if (posFrom != null && posDest != null) {
-            Document doc = GoogleAPIManager.getRoute(posFrom, posDest, "driving");
+                                                              ArrayList<LatLng> directionPoint = GoogleAPIManager.getDirection(doc);
+                                                              PolylineOptions rectLine = new PolylineOptions().width(15).color(getResources().getColor(R.color.bg_grad_2));
 
-            ArrayList<LatLng> directionPoint = GoogleAPIManager.getDirection(doc);
-            PolylineOptions rectLine = new PolylineOptions().width(15).color(getResources().getColor(R.color.bg_grad_2));
+                                                              for (int i = 0; i < directionPoint.size(); i++) {
+                                                                  rectLine.add(directionPoint.get(i));
+                                                              }
+                                                              strDistance = "" + GoogleAPIManager.getDistanceText(doc);
+                                                              strDuration = "" + GoogleAPIManager.getDurationText(doc);
+                                                              driveLine = googleMap.addPolyline(rectLine);
+                                                          }
 
-            for (int i = 0; i < directionPoint.size(); i++) {
-                rectLine.add(directionPoint.get(i));
-            }
-            strDistance = "" + GoogleAPIManager.getDistanceText(doc);
-            strDuration = "" + GoogleAPIManager.getDurationText(doc);
-            driveLine = googleMap.addPolyline(rectLine);
-        }
+                                                      }
+                                                  }
 
-    }
-    }
+        );
 
-    );
+        googleMap.setOnMapClickListener(this);
+        googleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener()
 
-    btnLocationDestination.setOnClickListener(new View.OnClickListener()
-
-    {
-        @Override
-        public void onClick (View v){
-        posDest = posTemp;
-        if (driveLine != null) {
-            driveLine.remove();
-        }
-        if (markerDestination != null) {
-            markerDestination.remove();
-        }
-        if (markerTemp != null) {
-            markerTemp.remove();
-        }
-        layoutMarkerDestination.setVisibility(GONE);
-        layoutMarkerFrom.setVisibility(GONE);
-        String address = getAddress(posDest);
-        txtDestination.setText(address);
-        strDetailDestination = address;
-        ApplicationData.posDestination = posDest;
-        appManager.setUserDestination(new ModelPlace(posDest.latitude, posDest.longitude));
-        markerDestination = googleMap.addMarker(
-                new MarkerOptions()
-                        .position(posDest)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_destination)));
-
-        if (posFrom != null && posDest != null) {
-            Document doc = GoogleAPIManager.getRoute(posFrom, posDest, "driving");
-
-            ArrayList<LatLng> directionPoint = GoogleAPIManager.getDirection(doc);
-            PolylineOptions rectLine = new PolylineOptions().width(15).color(getResources().getColor(R.color.bg_grad_2));
-
-            for (int i = 0; i < directionPoint.size(); i++) {
-                rectLine.add(directionPoint.get(i));
-            }
-            strDistance = "" + GoogleAPIManager.getDistanceText(doc);
-            strDuration = "" + GoogleAPIManager.getDurationText(doc);
-            driveLine = googleMap.addPolyline(rectLine);
-        }
-
-    }
-    }
-
-    );
-
-    googleMap.setOnMapClickListener(this);
-    googleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener()
-
-                                        {
-                                            @Override
-                                            public void onCameraChange(CameraPosition cameraPosition) {
-                                                mapCenter = googleMap.getCameraPosition().target;
-                                                add = getAddress(mapCenter);
-                                                txtLocationFrom.setText(add);
-                                                txtLocationDestinton.setText(add);
-                                                progressMapFrom.setVisibility(View.GONE);
-                                                progressMapDestination.setVisibility(View.GONE);
+                                            {
+                                                @Override
+                                                public void onCameraChange(CameraPosition cameraPosition) {
+                                                    mapCenter = googleMap.getCameraPosition().target;
+                                                    add = getAddress(mapCenter);
+                                                    txtLocationFrom.setText(add);
+                                                    txtLocationDestinton.setText(add);
+                                                    progressMapFrom.setVisibility(View.GONE);
+                                                    progressMapDestination.setVisibility(View.GONE);
+                                                }
                                             }
-                                        }
 
-    );
+        );
 
         lastOrder = new BroadcastReceiver() {
             @Override
@@ -588,11 +590,10 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                     }
 
 
-
-                }
-                else {
+                } else {
                     if (NetworkManager.getInstance(mActivity).isConnectedInternet()) {
                         new GetMyLocation(mActivity).execute();
+                        serviceLocation
                     } else {
                         DialogManager.showDialog(mActivity, "Warning", "No internet connection");
                     }
@@ -609,7 +610,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                 // Extract data included in the Intent
                 Log.d(TAG, "broadcast lastFeedback");
                 String message = intent.getStringExtra("message");
-                if(message.equalsIgnoreCase("true")){
+                if (message.equalsIgnoreCase("true")) {
                     Intent i = new Intent(getActivity(), ActivityRate.class);
                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(i);
@@ -619,9 +620,9 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         };
 
 
-    // Inflate the layout for this fragment
-    return rootView;
-}
+        // Inflate the layout for this fragment
+        return rootView;
+    }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -760,319 +761,208 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
     }
 
 
-public class GetSuggestion extends AsyncTask<String, Void, JSONArray> {
-    String address, tag;
+    public class GetSuggestion extends AsyncTask<String, Void, JSONArray> {
+        String address, tag;
 
-    public GetSuggestion(String address, String tag) {
-        this.address = address;
-        this.tag = tag;
-    }
-
-    @Override
-    protected void onPreExecute() {
-        layoutSuggestion.setVisibility(VISIBLE);
-        pSuggestion.setVisibility(VISIBLE);
-        itemCurrent.setVisibility(GONE);
-        mListView.setVisibility(VISIBLE);
-        mListView.setAdapter(null);
-    }
-
-    @Override
-    protected JSONArray doInBackground(String... arg) {
-        JSONArray json = null;
-        LIST_PLACE = new ArrayList<ModelPlace>();
-        JSONControl JSONControl = new JSONControl();
-        try {
-            json = JSONControl.listPlace(address);
-        } catch (Exception e) {
-        }
-        if (json != null) {
-            for (int i = 0; i < json.length(); i++) {
-                String id = "";
-                description = "";
-                address = "";
-                String detail = "";
-                boolean status = true;
-                try {
-                    JSONObject jsonObject = json.getJSONObject(i);
-                    id = jsonObject.getString(KEY_ID);
-                    description = jsonObject.getString(KEY_DESCRIPTION);
-                    String[] descSplit = description.split(",");
-                    address = descSplit[0];
-                    detail = descSplit[1] + "," + descSplit[2];
-                    status = true;
-
-                } catch (JSONException e) {
-                } catch (Exception e) {
-
-                }
-
-                if (status) {
-                    mPlace = new ModelPlace(id, address, detail);
-                    LIST_PLACE.add(mPlace);
-                }
-            }
-            try {
-                mAdapter = new AdapterSuggestion(getActivity(), LIST_PLACE);
-            } catch (NullPointerException e) {
-            }
-        } else {
-            LIST_PLACE = null;
+        public GetSuggestion(String address, String tag) {
+            this.address = address;
+            this.tag = tag;
         }
 
-        return json;
-    }
+        @Override
+        protected void onPreExecute() {
+            layoutSuggestion.setVisibility(VISIBLE);
+            pSuggestion.setVisibility(VISIBLE);
+            itemCurrent.setVisibility(GONE);
+            mListView.setVisibility(VISIBLE);
+            mListView.setAdapter(null);
+        }
 
-    @Override
-    protected void onPostExecute(final JSONArray json) {
-        // TODO Auto-generated method stub
-        super.onPostExecute(json);
-        pSuggestion.setVisibility(GONE);
-        mListView.setAdapter(mAdapter);
-        mListView.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                try {
-                    ModelPlace selectedPlace = LIST_PLACE.get(position);
-                    if (tag.equals(TAG_FROM)) {
-                        txtFrom.setText(selectedPlace.getAddress());
-                        strDetailFrom = selectedPlace.getAddressDetail();
-                        if (markerFrom != null) {
-                            markerFrom.remove();
-                        }
-                        ModelGeocode geocode = GoogleAPIManager.geocode(selectedPlace.getAddress());
-                        ApplicationData.posFrom = new LatLng(geocode.getLat(), geocode.getLon());
-                        appManager.setUserFrom(new ModelPlace(geocode.getLat(), geocode.getLon()));
-
-                    } else if (tag.equals(TAG_DESTINATION)) {
-                        txtDestination.setText(selectedPlace.getAddress());
-                        strDetailDestination = selectedPlace.getAddressDetail();
-                        if (markerDestination != null) {
-                            markerDestination.remove();
-                        }
-                        ModelGeocode geocode = GoogleAPIManager.geocode(selectedPlace.getAddress());
-                        ApplicationData.posDestination = new LatLng(geocode.getLat(), geocode.getLon());
-                        appManager.setUserDestination(new ModelPlace(geocode.getLat(), geocode.getLon()));
-                    }
-                    layoutSuggestion.setVisibility(GONE);
-                    hideKeyboard();
-                    drawNewMarker(selectedPlace.getAddress());
-                } catch (Exception e) {
-                }
-            }
-        });
-
-    }
-}
-
-
-private class GetMyLocation extends AsyncTask<String, Void, String> implements LocationListener {
-    private Activity activity;
-    private Context context;
-    private Resources resources;
-    private ProgressDialog progressDialog;
-    private Handler mUserLocationHandler = null;
-    private Handler handler = null;
-    double latitude, longitude;
-    private GoogleMap gMap;
-    LocationManager locationManager;
-
-    public GetMyLocation(Activity activity) {
-        super();
-        this.activity = activity;
-        this.context = activity.getApplicationContext();
-        this.resources = activity.getResources();
-    }
-
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
-
-        progressDialog = new ProgressDialog(activity);
-        progressDialog.setMessage("Memuat lokasi anda. . .");
-        progressDialog.setIndeterminate(false);
-        progressDialog.setCancelable(false);
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        progressDialog.show();
-    }
-
-
-    @Override
-    protected String doInBackground(String... params) {
-        Log.d("posisi gps", "doInbackground");
-        try {
+        @Override
+        protected JSONArray doInBackground(String... arg) {
+            JSONArray json = null;
+            LIST_PLACE = new ArrayList<ModelPlace>();
+            JSONControl JSONControl = new JSONControl();
             try {
-                Looper.prepare();
-                mUserLocationHandler = new Handler();
-                Log.d("loc", "get current location");
-                SupportMapFragment fm = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapView);
-                gMap = fm.getMap();
-                int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(mActivity);
-                if (status != ConnectionResult.SUCCESS) {
-                    int requestCode = 10;
-                    Dialog dialog = GooglePlayServicesUtil.getErrorDialog(status, mActivity, requestCode);
-                    dialog.show();
-                } else {
-
-                    locationManager = (LocationManager) mActivity.getSystemService(Context.LOCATION_SERVICE);
-                    boolean isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-                    boolean isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-                    Criteria criteria = new Criteria();
-                    String provider = locationManager.getBestProvider(criteria, true);
-                    location = locationManager.getLastKnownLocation(provider);
-                    if (!isGPSEnabled && !isNetworkEnabled) {
-                        return "FAIL";
-                    } else {
-                        if (isNetworkEnabled) {
-                            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
-                            Log.d("locationManager", "Network");
-                            if (locationManager != null) {
-                                location = locationManager
-                                        .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                                if (location != null) {
-                                    latitude = location.getLatitude();
-                                    longitude = location.getLongitude();
-                                    posFrom = new LatLng(latitude, longitude);
-                                    ApplicationData.posFrom = posFrom;
-                                    appManager.setUserFrom(new ModelPlace(posFrom.latitude, posFrom.longitude));
-                                }
-                            }
-                        }
-                        if (isGPSEnabled) {
-                            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
-                            Log.d("locationManager", "GPS");
-                            if (locationManager != null) {
-                                location = locationManager
-                                        .getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                                if (location != null) {
-                                    latitude = location.getLatitude();
-                                    longitude = location.getLongitude();
-                                    posFrom = new LatLng(latitude, longitude);
-                                    ApplicationData.posFrom = posFrom;
-
-                                }
-                            }
-                        }
-                    }
-                }
-
-                Looper.loop();
+                json = JSONControl.listPlace(address);
             } catch (Exception e) {
             }
-            return "OK";
-        } catch (Exception e) {
+            if (json != null) {
+                for (int i = 0; i < json.length(); i++) {
+                    String id = "";
+                    description = "";
+                    address = "";
+                    String detail = "";
+                    boolean status = true;
+                    try {
+                        JSONObject jsonObject = json.getJSONObject(i);
+                        id = jsonObject.getString(KEY_ID);
+                        description = jsonObject.getString(KEY_DESCRIPTION);
+                        String[] descSplit = description.split(",");
+                        address = descSplit[0];
+                        detail = descSplit[1] + "," + descSplit[2];
+                        status = true;
 
-        }
-        return "FAIL";
+                    } catch (JSONException e) {
+                    } catch (Exception e) {
 
-    }
-
-    @Override
-    protected void onPostExecute(String result) {
-        super.onPostExecute(result);
-        Log.d("posisi gps", "onPost");
-        switch (result) {
-            case "FAIL":
-                DialogManager.showDialog(activity, "Peringatan", "Can not find your location!");
-
-                break;
-            case "OK":
-                try {
-                    LatLng pFrom = ApplicationData.posFrom;
-                    Log.d("posisi gps", "pFrom");
-                    if (gMap == null) {
-                        SupportMapFragment fm = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapView);
-                        gMap = fm.getMap();
-                    } else {
-                        Log.d("posisi gps", "map not null");
                     }
-                    gMap.moveCamera(CameraUpdateFactory.newLatLng(pFrom));
-                    gMap.animateCamera(CameraUpdateFactory.zoomTo(15));
-                    markerFrom = gMap.addMarker(
-                            new MarkerOptions()
-                                    .position(pFrom)
-                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
-                    cameraUpdate = CameraUpdateFactory.newLatLngZoom(pFrom, 15);
-                    txtFrom.setText(getAddress(pFrom));
-                    gMap.animateCamera(cameraUpdate);
-                    Log.d("posisi gps", pFrom.toString());
-                } catch (Exception e) {
+
+                    if (status) {
+                        mPlace = new ModelPlace(id, address, detail);
+                        LIST_PLACE.add(mPlace);
+                    }
                 }
-                break;
+                try {
+                    mAdapter = new AdapterSuggestion(getActivity(), LIST_PLACE);
+                } catch (NullPointerException e) {
+                }
+            } else {
+                LIST_PLACE = null;
+            }
+
+            return json;
         }
 
-        progressDialog.dismiss();
-    }
+        @Override
+        protected void onPostExecute(final JSONArray json) {
+            // TODO Auto-generated method stub
+            super.onPostExecute(json);
+            pSuggestion.setVisibility(GONE);
+            mListView.setAdapter(mAdapter);
+            mListView.setOnItemClickListener(new OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    try {
+                        ModelPlace selectedPlace = LIST_PLACE.get(position);
+                        if (tag.equals(TAG_FROM)) {
+                            txtFrom.setText(selectedPlace.getAddress());
+                            strDetailFrom = selectedPlace.getAddressDetail();
+                            if (markerFrom != null) {
+                                markerFrom.remove();
+                            }
+                            ModelGeocode geocode = GoogleAPIManager.geocode(selectedPlace.getAddress());
+                            ApplicationData.posFrom = new LatLng(geocode.getLat(), geocode.getLon());
+                            appManager.setUserFrom(new ModelPlace(geocode.getLat(), geocode.getLon()));
 
+                        } else if (tag.equals(TAG_DESTINATION)) {
+                            txtDestination.setText(selectedPlace.getAddress());
+                            strDetailDestination = selectedPlace.getAddressDetail();
+                            if (markerDestination != null) {
+                                markerDestination.remove();
+                            }
+                            ModelGeocode geocode = GoogleAPIManager.geocode(selectedPlace.getAddress());
+                            ApplicationData.posDestination = new LatLng(geocode.getLat(), geocode.getLon());
+                            appManager.setUserDestination(new ModelPlace(geocode.getLat(), geocode.getLon()));
+                        }
+                        layoutSuggestion.setVisibility(GONE);
+                        hideKeyboard();
+                        drawNewMarker(selectedPlace.getAddress());
+                    } catch (Exception e) {
+                    }
+                }
+            });
 
-    @Override
-    public void onLocationChanged(Location location) {
-        try {
-            LatLng pFrom = new LatLng(latitude, longitude);
-            ApplicationData.posFrom = pFrom;
-        } catch (Exception e) {
-            Log.d("FragmentHome", "OnLocationChange");
         }
-        Message msg = new Message();
-        handler.sendMessage(msg);
-        if (mUserLocationHandler != null) {
-            mUserLocationHandler.getLooper().quit();
-        }
     }
 
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
 
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-
-    }
-}
-
-
-    private class DoPesan extends AsyncTask<String, Void, String> {
+    private class GetMyLocation extends AsyncTask<String, Void, String> implements LocationListener {
         private Activity activity;
         private Context context;
         private Resources resources;
         private ProgressDialog progressDialog;
-        private SocketManager socketManager;
-        private LatLng pFrom, pDestination;
+        private Handler mUserLocationHandler = null;
+        private Handler handler = null;
+        double latitude, longitude;
+        private GoogleMap gMap;
+        LocationManager locationManager;
 
-        public DoPesan(Activity activity, SocketManager socketManager, LatLng pFrom, LatLng pDestination) {
+        public GetMyLocation(Activity activity) {
             super();
             this.activity = activity;
             this.context = activity.getApplicationContext();
             this.resources = activity.getResources();
-            this.socketManager = socketManager;
-            this.pFrom = pFrom;
-            this.pDestination = pDestination;
         }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+
             progressDialog = new ProgressDialog(activity);
-            progressDialog.setMessage("Sedang Memesan. . .");
+            progressDialog.setMessage("Memuat lokasi anda. . .");
             progressDialog.setIndeterminate(false);
             progressDialog.setCancelable(false);
             progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             progressDialog.show();
         }
 
+
         @Override
         protected String doInBackground(String... params) {
+            Log.d("posisi gps", "doInbackground");
             try {
-                socketManager.CreateOrder(pFrom, pDestination);
+                try {
+                    Looper.prepare();
+                    mUserLocationHandler = new Handler();
+                    Log.d("loc", "get current location");
+                    SupportMapFragment fm = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapView);
+                    gMap = fm.getMap();
+                    int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(mActivity);
+                    if (status != ConnectionResult.SUCCESS) {
+                        int requestCode = 10;
+                        Dialog dialog = GooglePlayServicesUtil.getErrorDialog(status, mActivity, requestCode);
+                        dialog.show();
+                    } else {
+
+                        locationManager = (LocationManager) mActivity.getSystemService(Context.LOCATION_SERVICE);
+                        boolean isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+                        boolean isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+                        Criteria criteria = new Criteria();
+                        String provider = locationManager.getBestProvider(criteria, true);
+                        location = locationManager.getLastKnownLocation(provider);
+                        if (!isGPSEnabled && !isNetworkEnabled) {
+                            return "FAIL";
+                        } else {
+                            if (isNetworkEnabled) {
+                                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
+                                Log.d("locationManager", "Network");
+                                if (locationManager != null) {
+                                    location = locationManager
+                                            .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                                    if (location != null) {
+                                        latitude = location.getLatitude();
+                                        longitude = location.getLongitude();
+                                        posFrom = new LatLng(latitude, longitude);
+                                        ApplicationData.posFrom = posFrom;
+                                        appManager.setUserFrom(new ModelPlace(posFrom.latitude, posFrom.longitude));
+                                    }
+                                }
+                            }
+                            if (isGPSEnabled) {
+                                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+                                Log.d("locationManager", "GPS");
+                                if (locationManager != null) {
+                                    location = locationManager
+                                            .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                                    if (location != null) {
+                                        latitude = location.getLatitude();
+                                        longitude = location.getLongitude();
+                                        posFrom = new LatLng(latitude, longitude);
+                                        ApplicationData.posFrom = posFrom;
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    Looper.loop();
+                } catch (Exception e) {
+                }
                 return "OK";
             } catch (Exception e) {
-                e.printStackTrace();
+
             }
             return "FAIL";
 
@@ -1081,23 +971,70 @@ private class GetMyLocation extends AsyncTask<String, Void, String> implements L
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-
-            progressDialog.dismiss();
+            Log.d("posisi gps", "onPost");
             switch (result) {
                 case "FAIL":
-                    DialogManager.showDialog(activity, "Warning", "Gagal memesan, Silakan mencoba lagi!");
+                    DialogManager.showDialog(activity, "Peringatan", "Can not find your location!");
+
                     break;
                 case "OK":
-                    Intent intent = new Intent(activity, ActivityConfirm.class);
-                    startActivity(intent);
-                    activity.finish();
+                    try {
+                        LatLng pFrom = ApplicationData.posFrom;
+                        Log.d("posisi gps", "pFrom");
+                        if (gMap == null) {
+                            SupportMapFragment fm = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapView);
+                            gMap = fm.getMap();
+                        } else {
+                            Log.d("posisi gps", "map not null");
+                        }
+                        gMap.moveCamera(CameraUpdateFactory.newLatLng(pFrom));
+                        gMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+                        markerFrom = gMap.addMarker(
+                                new MarkerOptions()
+                                        .position(pFrom)
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
+                        cameraUpdate = CameraUpdateFactory.newLatLngZoom(pFrom, 15);
+                        txtFrom.setText(getAddress(pFrom));
+                        gMap.animateCamera(cameraUpdate);
+                        Log.d("posisi gps", pFrom.toString());
+                    } catch (Exception e) {
+                    }
                     break;
             }
 
-
+            progressDialog.dismiss();
         }
 
 
+        @Override
+        public void onLocationChanged(Location location) {
+            try {
+                LatLng pFrom = new LatLng(latitude, longitude);
+                ApplicationData.posFrom = pFrom;
+            } catch (Exception e) {
+                Log.d("FragmentHome", "OnLocationChange");
+            }
+            Message msg = new Message();
+            handler.sendMessage(msg);
+            if (mUserLocationHandler != null) {
+                mUserLocationHandler.getLooper().quit();
+            }
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+
+        }
     }
 
     @Override

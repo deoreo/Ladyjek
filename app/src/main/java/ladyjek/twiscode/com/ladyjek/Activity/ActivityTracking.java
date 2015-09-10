@@ -88,7 +88,6 @@ public class ActivityTracking extends ActionBarActivity implements LocationListe
             Circle mapCircle = googleMap.addCircle(circleOptions);
             drawDriveLine(googleMap , posFrom , posDest);
         }
-        Dummy();
 
     }
 
