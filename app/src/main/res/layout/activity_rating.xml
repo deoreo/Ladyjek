@@ -33,19 +33,16 @@
                     android:text="Terima kasih!"
                     android:textColor="@color/black_color"
                     android:textStyle="bold"
-                    android:textSize="36dp"/>
+                    android:textSize="20dp"/>
 
-                <TextView
-                    android:id="@+id/txtTotal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <View
+                    android:id="@+id/line1"
                     android:layout_marginTop="10dp"
-                    android:layout_centerHorizontal="true"
-                    android:textAllCaps="false"
-                    android:text="Total : Rp. 25.000"
-                    android:textColor="@color/black_color"
-                    android:textStyle="bold"
-                    android:textSize="18dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/grey_color_dark"
                     android:layout_below="@id/lblThx"/>
 
                 <de.hdodenhof.circleimageview.CircleImageView
@@ -56,8 +53,8 @@
                     android:layout_centerHorizontal="true"
                     android:src="@drawable/driver_photo_circle"
                     app:border_overlay="true"
-                    android:layout_below="@id/txtTotal"
-                    android:layout_marginTop="15dp"
+                    android:layout_below="@id/line1"
+                    android:layout_marginTop="10dp"
                     />
                 <TextView
                     android:id="@+id/nameDriver"
@@ -83,38 +80,31 @@
                     android:stepSize="1"
                     android:layout_centerHorizontal="true"/>
 
-                <TextView
-                    android:layout_marginLeft="20dp"
-                    android:id="@+id/lblFeedback"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:textAllCaps="false"
-                    android:text="Feedback untuk Dewi"
-                    android:textColor="@color/black_color"
-                    android:textSize="18dp"
-                    android:layout_below="@id/rateDriver"/>
-
                 <LinearLayout
                     android:id="@+id/layFeedback"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
+                    android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_below="@id/lblFeedback"
+                    android:background="@drawable/rounded_grey_smooth_10"
+                    android:padding="5dp"
+                    android:layout_below="@id/rateDriver"
                     android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp">
+                    android:layout_marginRight="20dp"
+                    >
                     <EditText
 
                         android:id="@+id/feedbackDriver"
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:minHeight="40dp"
+                        android:minHeight="30dp"
                         android:layout_marginTop="10dp"
                         android:background="@null"
                         android:textColor="@color/black_color"
                         android:gravity="top"
                         android:maxLines="7"
+                        android:hint="feedback"
+                        android:padding="5dp"
                         />
                     <RelativeLayout
                         android:id="@+id/btnFeedback"
@@ -130,35 +120,151 @@
                     </RelativeLayout>
                 </LinearLayout>
 
-
-
                 <View
-                    android:id="@+id/line"
+                    android:id="@+id/line2"
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
                     android:background="@color/grey_color_dark"
                     android:layout_below="@id/layFeedback"
-                    android:layout_marginBottom="30dp"/>
+                    android:layout_marginTop="30dp"/>
+
+                <LinearLayout
+                    android:id="@+id/rateInfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:orientation="vertical"
+                    android:layout_below="@+id/line2"
+                    >
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        >
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/black_color"
+                            android:text="Jarak"
+                            android:textSize="16dp"
+                            android:layout_alignParentBottom="true"
+                            />
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                            <TextView
+                                android:id="@+id/txtDistance"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/black_color"
+                                android:text="xx km"
+                                android:textSize="16dp"
+                                android:layout_alignParentRight="true"
+                                />
+                        </RelativeLayout>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="10dp"
+                        >
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/black_color"
+                            android:text="Waktu perjalanan"
+                            android:textSize="16dp"
+                            android:layout_alignParentBottom="true"
+                            />
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                            <TextView
+                                android:id="@+id/txtDuration"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/black_color"
+                                android:text="xx min"
+                                android:textSize="16dp"
+                                android:layout_alignParentRight="true"
+                                />
+                        </RelativeLayout>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="10dp"
+                        >
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/black_color"
+                            android:text="Total harga"
+                            android:textSize="16dp"
+                            android:layout_alignParentBottom="true"
+                            />
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                            <TextView
+                                android:id="@+id/txtTotal"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/black_color"
+                                android:text="Rp. xx"
+                                android:textStyle="bold"
+                                android:textSize="16dp"
+                                android:layout_alignParentRight="true"
+                                />
+                        </RelativeLayout>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="10dp"
+                        >
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/black_color"
+                            android:text="Metode"
+                            android:textSize="16dp"
+                            android:layout_alignParentBottom="true"
+                            />
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                            <TextView
+                                android:id="@+id/txtMetode"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/black_color"
+                                android:text="TUNAI"
+                                android:textStyle="bold"
+                                android:textSize="16dp"
+                                android:layout_alignParentRight="true"
+                                />
+                        </RelativeLayout>
+                    </LinearLayout>
+
+
+                </LinearLayout>
 
                 <RelativeLayout
                     android:id="@+id/wrapperRegister"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/plain_gradient_bg_btn"
-                    android:padding="20dp"
-                    android:layout_below="@id/line">
-
-                    <TextView
-                        android:id="@+id/txtLabel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:text="@string/lbl_feedback"
-                        android:textColor="@color/white_color"
-                        android:textSize="18dp"
-                        android:textStyle="bold" />
+                    android:padding="10dp"
+                    android:layout_below="@+id/rateInfo">
 
                     <RelativeLayout
                         android:layout_width="wrap_content"
@@ -176,17 +282,18 @@
                             android:gravity="center_horizontal"
                             android:textColor="@color/white_color"
                             android:textSize="18dp"
-
+                            android:textStyle="bold"
+                            android:textAllCaps="true"
                             />
 
                         <ImageView
-                            android:layout_width="34dp"
-                            android:layout_height="38dp"
+                            android:layout_width="42dp"
+                            android:layout_height="42dp"
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="10dp"
                             android:layout_marginTop="-8dp"
-                            android:layout_toRightOf="@id/btnSaran"
-                            android:src="@drawable/right_arrow_white" />
+                            android:layout_alignParentRight="true"
+                            android:src="@drawable/next_white" />
                     </RelativeLayout>
 
                 </RelativeLayout>

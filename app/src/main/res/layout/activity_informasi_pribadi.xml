@@ -21,12 +21,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
                 <ImageView
-                    android:padding="10dp"
+                    android:padding="5dp"
                     android:id="@+id/btnBack"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/ic_back"/>
+                    android:src="@drawable/back_pink"/>
                 <TextView
                     android:layout_toRightOf="@id/btnBack"
                     android:padding="10dp"
@@ -37,6 +37,7 @@
                     android:textStyle="bold"
                     android:textColor="@color/bg_grad_2"
                     android:layout_centerVertical="true"
+                    android:textAllCaps="true"
                     />
             </RelativeLayout>
 
@@ -75,10 +76,10 @@
                     android:imeOptions="actionDone"/>
                     <ImageView
                         android:id="@+id/editNama"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
                         android:layout_marginLeft="10dp"
-                        android:src="@drawable/edit_text_icon"
+                        android:src="@drawable/edit_text"
                         />
             </LinearLayout>
             <LinearLayout
@@ -105,10 +106,10 @@
                     android:imeOptions="actionDone"/>
                 <ImageView
                     android:id="@+id/editEmail"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
                     android:layout_marginLeft="10dp"
-                    android:src="@drawable/edit_text_icon"
+                    android:src="@drawable/edit_text"
                     />
             </LinearLayout>
             <LinearLayout
@@ -149,10 +150,10 @@
                     android:enabled="false"/>
                 <ImageView
                     android:id="@+id/editPassword"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
                     android:layout_marginLeft="10dp"
-                    android:src="@drawable/edit_text_icon"
+                    android:src="@drawable/edit_text"
                     />
             </LinearLayout>
             <LinearLayout
@@ -194,10 +195,10 @@
                     android:imeOptions="actionDone"/>
                 <ImageView
                     android:id="@+id/editPhone"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
                     android:layout_marginLeft="10dp"
-                    android:src="@drawable/edit_text_icon"
+                    android:src="@drawable/edit_text"
                     />
             </LinearLayout>
             <View
@@ -258,10 +259,10 @@
                                     />
                                 <ImageView
                                     android:id="@+id/editRumah"
-                                    android:layout_width="30dp"
-                                    android:layout_height="30dp"
+                                    android:layout_width="36dp"
+                                    android:layout_height="36dp"
                                     android:layout_marginLeft="10dp"
-                                    android:src="@drawable/edit_text_icon"
+                                    android:src="@drawable/edit_text"
                                     />
                             </LinearLayout>
 
@@ -312,10 +313,10 @@
                                     />
                                 <ImageView
                                     android:id="@+id/editKantor"
-                                    android:layout_width="30dp"
-                                    android:layout_height="30dp"
+                                    android:layout_width="36dp"
+                                    android:layout_height="36dp"
                                     android:layout_marginLeft="10dp"
-                                    android:src="@drawable/edit_text_icon"
+                                    android:src="@drawable/edit_text"
                                     />
                             </LinearLayout>
 
@@ -350,16 +351,18 @@
                             android:text="@string/simpan"
                             android:textSize="18dp"
                             android:layout_centerHorizontal="true"
+                            android:textAllCaps="true"
+                            android:textStyle="bold"
 
                             />
                         <ImageView
-                            android:layout_width="34dp"
-                            android:layout_height="38dp"
-                            android:src="@drawable/right_arrow_white"
-                            android:layout_toRightOf="@id/btnSimpan"
+                            android:layout_width="42dp"
+                            android:layout_height="42dp"
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="10dp"
-                            android:layout_marginTop="-8dp"/>
+                            android:layout_marginTop="-8dp"
+                            android:layout_alignParentRight="true"
+                            android:src="@drawable/next_white" />
                     </RelativeLayout>
 
                 </RelativeLayout>
@@ -385,16 +388,17 @@
                             android:text="@string/verify"
                             android:textSize="18dp"
                             android:layout_centerHorizontal="true"
-
+                            android:textAllCaps="true"
+                            android:textStyle="bold"
                             />
                         <ImageView
-                            android:layout_width="34dp"
-                            android:layout_height="38dp"
-                            android:src="@drawable/right_arrow_white"
-                            android:layout_toRightOf="@id/btnVerifikasi"
+                            android:layout_width="42dp"
+                            android:layout_height="42dp"
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="10dp"
-                            android:layout_marginTop="-8dp"/>
+                            android:layout_marginTop="-8dp"
+                            android:layout_alignParentRight="true"
+                            android:src="@drawable/next_white" />
                     </RelativeLayout>
 
                 </RelativeLayout>
