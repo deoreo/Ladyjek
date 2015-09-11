@@ -51,7 +51,6 @@ import android.widget.TextView;
 
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityConfirm;
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityLoading;
-import ladyjek.twiscode.com.ladyjek.Activity.ActivityLogin;
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityPickUp;
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityRate;
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityTracking;
@@ -59,7 +58,6 @@ import ladyjek.twiscode.com.ladyjek.Activity.Main;
 import ladyjek.twiscode.com.ladyjek.Adapter.AdapterAddress;
 import ladyjek.twiscode.com.ladyjek.Adapter.AdapterSuggestion;
 import ladyjek.twiscode.com.ladyjek.Control.JSONControl;
-import ladyjek.twiscode.com.ladyjek.Database.DatabaseHandler;
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.Model.ModelDriver;
 import ladyjek.twiscode.com.ladyjek.Model.ModelGeocode;
@@ -156,9 +154,8 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
     private ApplicationManager appManager;
     private final String TAG = "FragmentHome";
     private SocketManager socketManager;
-    private BroadcastReceiver createOrder, lastOrder, lastFeedback,logout;
+    private BroadcastReceiver createOrder, lastOrder, lastFeedback;
     private ServiceLocation serviceLocation;
-    private DatabaseHandler db;
 
     public FragmentHome() {
         // Required empty public constructor
@@ -170,7 +167,6 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         Log.d("TouchableWrapper", "OnCreate");
         mActivity = getActivity();
         appManager = new ApplicationManager(mActivity);
-        db = new DatabaseHandler(getActivity());
         posFrom = ApplicationData.posFrom;
         tagLocation = TAG_FROM;
 
@@ -587,6 +583,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                         getActivity().finish();
                     } else if (ApplicationData.order.getStatus().contains("queued")) {
                         i = new Intent(getActivity(), ActivityLoading.class);
+                        appManager.setTrip("end");
                         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(i);
                         getActivity().finish();
@@ -596,7 +593,6 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                 } else {
                     if (NetworkManager.getInstance(mActivity).isConnectedInternet()) {
                         new GetMyLocation(mActivity).execute();
-                        //serviceLocation
                     } else {
                         DialogManager.showDialog(mActivity, "Warning", "No internet connection");
                     }
@@ -615,22 +611,6 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                 String message = intent.getStringExtra("message");
                 if (message.equalsIgnoreCase("true")) {
                     Intent i = new Intent(getActivity(), ActivityRate.class);
-                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(i);
-                    getActivity().finish();
-                }
-            }
-        };
-        logout = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                // Extract data included in the Intent
-                Log.d(TAG, "broadcast logout");
-                String message = intent.getStringExtra("message");
-                if (message.equalsIgnoreCase("true")) {
-                    appManager.logoutUser();
-                    db.logout();
-                    Intent i = new Intent(getActivity(), ActivityLogin.class);
                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(i);
                     getActivity().finish();
@@ -1067,8 +1047,6 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                 new IntentFilter("lastOrder"));
         LocalBroadcastManager.getInstance(mActivity).registerReceiver(lastFeedback,
                 new IntentFilter("lastFeedback"));
-        LocalBroadcastManager.getInstance(mActivity).registerReceiver(logout,
-                new IntentFilter("logout"));
 
     }
 
@@ -1078,7 +1056,6 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         Log.i("unreg receiver", "fragment unregister");
         LocalBroadcastManager.getInstance(mActivity).unregisterReceiver(createOrder);
         LocalBroadcastManager.getInstance(mActivity).unregisterReceiver(lastFeedback);
-        LocalBroadcastManager.getInstance(mActivity).unregisterReceiver(logout);
         super.onPause();
     }
 

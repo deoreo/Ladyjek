@@ -1,11 +1,8 @@
 package ladyjek.twiscode.com.ladyjek.Activity;
 
 import android.app.Dialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
@@ -13,6 +10,8 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.PowerManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -44,13 +43,17 @@ import org.w3c.dom.Document;
 import java.util.ArrayList;
 
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
+import ladyjek.twiscode.com.ladyjek.Model.ModelOrder;
 import ladyjek.twiscode.com.ladyjek.R;
+import ladyjek.twiscode.com.ladyjek.Service.ServiceLocation;
 import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.GoogleAPIManager;
+import ladyjek.twiscode.com.ladyjek.Utilities.NetworkManager;
 
 public class ActivityTracking extends ActionBarActivity implements LocationListener, OnMapReadyCallback {
 
     private Toolbar mToolbar;
+    private android.app.Activity mActivity;
     private GoogleMap googleMap;
     private LatLng posFrom, posDest;
     private Marker markerFrom, markerDestination;
@@ -58,21 +61,39 @@ public class ActivityTracking extends ActionBarActivity implements LocationListe
     private final String TAG_DESTINATION = "DESTINATION";
     private ApplicationManager appManager;
     private RelativeLayout wrapperRegister;
-    private BroadcastReceiver orderStart,orderEnd;
+    private Double latFrom, lonFrom, latDest, lonDest;
+    private ServiceLocation serviceLocation;
+    private Runnable mRunnable;
+    private Handler mHandler;
+    private final int AUTOUPDATE_INTERVAL_TIME =  15 * 1000; // 15 detik
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tracking);
+        mActivity = this;
         wrapperRegister = (RelativeLayout) findViewById(R.id.wrapperRegister);
         appManager = new ApplicationManager(ActivityTracking.this);
-        Double latFrom = appManager.getUserFrom().getLatitude();
-        Double longFrom = appManager.getUserFrom().getLongitude();
-        posFrom = new LatLng(latFrom,longFrom);
+        ModelOrder order = ApplicationData.order;
+        if(appManager.getUserFrom()!=null) {
+            latFrom = appManager.getUserFrom().getLatitude();
+            lonFrom = appManager.getUserFrom().getLongitude();
+        }
+        else{
+            latFrom = Double.parseDouble(order.getFromLatitude());
+            lonFrom = Double.parseDouble(order.getFromLongitude());
+        }
 
-        Double latDestination = appManager.getUserDestination().getLatitude();
-        Double longDestination = appManager.getUserDestination().getLongitude();
-        posDest = new LatLng(latDestination,longDestination);
+        if(appManager.getUserDestination()!=null) {
+            latFrom = appManager.getUserDestination().getLatitude();
+            lonFrom = appManager.getUserDestination().getLongitude();
+        }
+        else{
+            latDest = Double.parseDouble(order.getToLatitude());
+            lonDest = Double.parseDouble(order.getToLongitude());
+        }
+        posFrom = new LatLng(latFrom, lonFrom);
+        posDest = new LatLng(latDest, lonDest);
 
         int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());
         if(status!= ConnectionResult.SUCCESS){
@@ -94,64 +115,17 @@ public class ActivityTracking extends ActionBarActivity implements LocationListe
             Circle mapCircle = googleMap.addCircle(circleOptions);
             drawDriveLine(googleMap , posFrom , posDest);
         }
-
-        orderStart  = new BroadcastReceiver() {
+        mRunnable = new Runnable() {
             @Override
-            public void onReceive(Context context, Intent intent) {
-                // Extract data included in the Intent
-                String message = intent.getStringExtra("message");
-                Log.d("orderTaken", message);
-                if(message=="true"){
-                    Log.d("taken","true");
-                    new AlertDialogWrapper.Builder(ActivityTracking.this)
-                            .setTitle("order start !!")
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-
-                                    dialog.dismiss();
-                                }
-                            })
-                            .setIcon(R.drawable.ladyjek_icon)
-                            .show();
+            public void run() {
+                mHandler.postDelayed(this, AUTOUPDATE_INTERVAL_TIME);
+                if (NetworkManager.getInstance(mActivity).isConnectedInternet()) {
+                    Log.d("ServiceLocation", "Running");
+                    serviceLocation.GetMap(mActivity, googleMap);
                 }
-                else {
-                    Log.d("getStart","false");
-                }
-
             }
         };
-
-        orderEnd  = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                // Extract data included in the Intent
-                String message = intent.getStringExtra("message");
-                Log.d("orderTaken", message);
-                if(message=="true"){
-                    Log.d("taken","true");
-                    new AlertDialogWrapper.Builder(ActivityTracking.this)
-                            .setTitle("anda sudah sampai ditujuan !!")
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    Intent i = new Intent(getBaseContext(), ActivityRate.class);
-                                    ApplicationManager um = new ApplicationManager(ActivityTracking.this);
-                                    //um.setActivity("ActivityTracking");
-                                    startActivity(i);
-                                    finish();
-                                    dialog.dismiss();
-                                }
-                            })
-                            .setIcon(R.drawable.ladyjek_icon)
-                            .show();
-                }
-                else {
-                    Log.d("getTimeout","false");
-                }
-
-            }
-        };
+        mRunnable.run();
 
     }
 
@@ -301,22 +275,19 @@ public class ActivityTracking extends ActionBarActivity implements LocationListe
     @Override
     public void onResume() {
         super.onResume();
-        // Register mMessageReceiver to receive messages.
-        Log.i("adding receiver", "fragment ontainer for profile");
-        LocalBroadcastManager.getInstance(ActivityTracking.this).registerReceiver(orderStart,
-                new IntentFilter("goStart"));
-        LocalBroadcastManager.getInstance(ActivityTracking.this).registerReceiver(orderEnd,
-                new IntentFilter("goEnd"));
-
-
+        mHandler.postDelayed(mRunnable, AUTOUPDATE_INTERVAL_TIME);
     }
 
     @Override
     public void onPause() {
         // Unregister since the activity is not visible
-        Log.i("unreg receiver", "fragment unregister");
-        LocalBroadcastManager.getInstance(ActivityTracking.this).unregisterReceiver(orderStart);
-        LocalBroadcastManager.getInstance(ActivityTracking.this).unregisterReceiver(orderEnd);
+        PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+        boolean isScreenOn = powerManager.isScreenOn();
+        mHandler.removeCallbacks(mRunnable);
+        if (!isScreenOn) {
+            mRunnable.run();
+        }
         super.onPause();
     }
+
 }
