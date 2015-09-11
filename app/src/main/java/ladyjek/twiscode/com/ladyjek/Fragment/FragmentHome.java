@@ -206,10 +206,15 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         btnLocationFrom = (Button) rootView.findViewById(R.id.btnLocationFrom);
         btnLocationDestination = (Button) rootView.findViewById(R.id.btnLocationDestination);
         btnRequestRide.setText(Html.fromHtml(getResources().getString(R.string.pesan)));
-        socketManager = new SocketManager();
-        socketManager.InitSocket(mActivity);
-        socketManager.Connect();
-        ApplicationData.socketManager = socketManager;
+        if(ApplicationData.socketManager == null){
+            socketManager = new SocketManager();
+            socketManager.InitSocket(mActivity);
+            socketManager.Connect();
+            ApplicationData.socketManager = socketManager;
+        }
+        else {
+            socketManager = ApplicationData.socketManager;
+        }
         createOrder = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {

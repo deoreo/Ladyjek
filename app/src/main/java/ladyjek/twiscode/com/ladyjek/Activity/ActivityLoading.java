@@ -58,7 +58,7 @@ public class ActivityLoading extends Activity {
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Intent i = new Intent(getBaseContext(), Main.class);
+                                    Intent i = new Intent(getBaseContext(), ActivityConfirm.class);
                                     ApplicationManager um = new ApplicationManager(ActivityLoading.this);
                                     //um.setActivity("ActivityTracking");
                                     startActivity(i);
@@ -134,7 +134,7 @@ public class ActivityLoading extends Activity {
         LocalBroadcastManager.getInstance(this).registerReceiver(orderTaken,
                 new IntentFilter("onOrderTaken"));
         LocalBroadcastManager.getInstance(this).registerReceiver(orderTimeout,
-                new IntentFilter("orderTimeout"));
+                new IntentFilter("doOrderTimeout"));
 
     }
 
