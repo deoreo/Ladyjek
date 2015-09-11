@@ -135,6 +135,10 @@
             android:label="@string/title_activity_personal_info" >
         </activity>
         <activity
+            android:name=".Activity.ActivityVerifyPayment"
+            android:label="@string/title_activity_personal_info" >
+        </activity>
+        <activity
             android:name=".Parse.ActivityNotif"
             android:label="@string/title_activity_personal_info" >
         </activity>

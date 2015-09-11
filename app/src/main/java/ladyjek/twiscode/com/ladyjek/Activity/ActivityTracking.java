@@ -1,8 +1,11 @@
 package ladyjek.twiscode.com.ladyjek.Activity;
 
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
@@ -10,8 +13,10 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.RelativeLayout;
@@ -53,6 +58,7 @@ public class ActivityTracking extends ActionBarActivity implements LocationListe
     private final String TAG_DESTINATION = "DESTINATION";
     private ApplicationManager appManager;
     private RelativeLayout wrapperRegister;
+    private BroadcastReceiver orderStart,orderEnd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +94,64 @@ public class ActivityTracking extends ActionBarActivity implements LocationListe
             Circle mapCircle = googleMap.addCircle(circleOptions);
             drawDriveLine(googleMap , posFrom , posDest);
         }
+
+        orderStart  = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                // Extract data included in the Intent
+                String message = intent.getStringExtra("message");
+                Log.d("orderTaken", message);
+                if(message=="true"){
+                    Log.d("taken","true");
+                    new AlertDialogWrapper.Builder(ActivityTracking.this)
+                            .setTitle("order start !!")
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                    dialog.dismiss();
+                                }
+                            })
+                            .setIcon(R.drawable.ladyjek_icon)
+                            .show();
+                }
+                else {
+                    Log.d("getStart","false");
+                }
+
+            }
+        };
+
+        orderEnd  = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                // Extract data included in the Intent
+                String message = intent.getStringExtra("message");
+                Log.d("orderTaken", message);
+                if(message=="true"){
+                    Log.d("taken","true");
+                    new AlertDialogWrapper.Builder(ActivityTracking.this)
+                            .setTitle("anda sudah sampai ditujuan !!")
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Intent i = new Intent(getBaseContext(), ActivityRate.class);
+                                    ApplicationManager um = new ApplicationManager(ActivityTracking.this);
+                                    //um.setActivity("ActivityTracking");
+                                    startActivity(i);
+                                    finish();
+                                    dialog.dismiss();
+                                }
+                            })
+                            .setIcon(R.drawable.ladyjek_icon)
+                            .show();
+                }
+                else {
+                    Log.d("getTimeout","false");
+                }
+
+            }
+        };
 
     }
 
@@ -232,5 +296,27 @@ public class ActivityTracking extends ActionBarActivity implements LocationListe
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Register mMessageReceiver to receive messages.
+        Log.i("adding receiver", "fragment ontainer for profile");
+        LocalBroadcastManager.getInstance(ActivityTracking.this).registerReceiver(orderStart,
+                new IntentFilter("goStart"));
+        LocalBroadcastManager.getInstance(ActivityTracking.this).registerReceiver(orderEnd,
+                new IntentFilter("goEnd"));
+
+
+    }
+
+    @Override
+    public void onPause() {
+        // Unregister since the activity is not visible
+        Log.i("unreg receiver", "fragment unregister");
+        LocalBroadcastManager.getInstance(ActivityTracking.this).unregisterReceiver(orderStart);
+        LocalBroadcastManager.getInstance(ActivityTracking.this).unregisterReceiver(orderEnd);
+        super.onPause();
     }
 }

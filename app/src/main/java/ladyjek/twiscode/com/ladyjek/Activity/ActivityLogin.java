@@ -334,6 +334,7 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
                 JSONControl jsControl = new JSONControl();
                 JSONObject response = jsControl.postLogin(email,password);
                 JSONObject responseUser = response.getJSONObject("user");
+                Log.d("login",responseUser.toString());
                 String responseToken = response.getString("token");
                 appManager.setUserToken(responseToken);
                 Log.d("json response",responseToken );

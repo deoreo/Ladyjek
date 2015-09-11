@@ -49,6 +49,10 @@ public class ActivitySplashScreen extends Activity {
                     if(countUser > 0) {
                         ApplicationManager um = new ApplicationManager(ActivitySplashScreen.this);
                         String pref = um.getActivity();
+                        Intent i = new Intent(getBaseContext(), Main.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(i);
+                        /*
                         if(pref==""){
                             Intent i = new Intent(getBaseContext(), Main.class);
                             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -71,6 +75,7 @@ public class ActivitySplashScreen extends Activity {
                             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(i);
                         }
+                        */
 
                     }
                     else{

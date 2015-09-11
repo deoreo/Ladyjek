@@ -42,6 +42,7 @@ public class ActivityConfirm extends ActionBarActivity {
     private NumberFormat numberFormat;
     private DecimalFormat decimalFormat;
     private SocketManager socketManager;
+    int pembayaran = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,13 +85,23 @@ public class ActivityConfirm extends ActionBarActivity {
         txtConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                socketManager.CreateOrder(ApplicationData.posFrom, ApplicationData.posDestination);
-                Intent i = new Intent(getBaseContext(), ActivityLoading.class);
-                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                ApplicationManager um = new ApplicationManager(ActivityConfirm.this);
-                um.setActivity("ActivityLoading");
-                startActivity(i);
-                finish();
+                if(pembayaran==0){
+                    socketManager.CreateOrder(ApplicationData.posFrom, ApplicationData.posDestination);
+                    Intent i = new Intent(getBaseContext(), ActivityLoading.class);
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    ApplicationManager um = new ApplicationManager(ActivityConfirm.this);
+                    //um.setActivity("ActivityLoading");
+                    startActivity(i);
+                    finish();
+                }
+                else {
+                    Intent i = new Intent(getBaseContext(), ActivityVerifyPayment.class);
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    ApplicationManager um = new ApplicationManager(ActivityConfirm.this);
+                    startActivity(i);
+                    finish();
+                }
+
             }
         });
 
@@ -170,11 +181,7 @@ public class ActivityConfirm extends ActionBarActivity {
         pay.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 0) {
-
-                } else if (position == 1) {
-
-                }
+                pembayaran = position;
             }
 
             @Override

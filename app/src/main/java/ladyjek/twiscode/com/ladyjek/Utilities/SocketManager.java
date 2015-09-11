@@ -34,6 +34,7 @@ public class SocketManager {
     private Context context;
     private ApplicationManager appManager;
     private boolean onAuth = true;
+    private boolean doLogout = false;
     private final String TAG = "SocketManager";
 
     public void InitSocket(Context context) {
@@ -109,6 +110,12 @@ public class SocketManager {
             if (!onAuth) {
                 socket.connect();
             }
+            Log.d(TAG,"onDisconnected "+doLogout);
+            if(doLogout){
+
+                SendBroadcast("logout", "true");
+                Log.d(TAG, "send logout");
+            }
         }
     };
 
@@ -117,6 +124,7 @@ public class SocketManager {
         public void call(final Object... args) {
             Log.d(TAG,"onAuthenticated");
             onAuth = true;
+            doLogout = false;
         }
     };
 
@@ -133,23 +141,40 @@ public class SocketManager {
                     if (msg.equalsIgnoreCase("jwt expired")) {
                         JSONControl jsControl = new JSONControl();
                         JSONObject response = jsControl.postRefreshToken(appManager.getUserToken());
-                        Log.d(TAG, "onUnauthorized respose" + response.toString());
+
                         try {
-                            String token = response.getString("token");
-                            appManager.setUserToken(token);
-                            onAuth = false;
-                            Log.d(TAG, "onUnauthorized true");
+                            if(response != null){
+                                Log.d(TAG, "onUnauthorized respose" + response.toString());
+                                String token = response.getString("token");
+                                appManager.setUserToken(token);
+                                onAuth = false;
+                                Log.d(TAG, "onUnauthorized true");
+                            }
+                            else {
+                                Log.d(TAG, "null respose" + response.toString());
+                                doLogout = true;
+                                //SendBroadcast("logout","true");
+                            }
+
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            //e.printStackTrace();
                             Log.d(TAG, "onUnauthorized false");
+                            doLogout = true;
+                            //SendBroadcast("logout", "true");
                         }
                     }
+                    Log.d(TAG, "onUnauthorized logout");
+                    doLogout = true;
+                    //SendBroadcast("logout", "true");
                 } else {
-                    Log.d(TAG,"onUnauthorized null order");
+                    Log.d(TAG, "onUnauthorized null order");
+                    doLogout = true;
+                    //SendBroadcast("logout", "true");
                 }
 
             } catch (Exception ex) {
-                ex.printStackTrace();
+                Log.d(TAG, "onUnauthorized error");
+                doLogout = true;
             }
         }
     };
