@@ -1,8 +1,11 @@
 package ladyjek.twiscode.com.ladyjek.Activity;
 
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
@@ -18,6 +21,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
@@ -49,6 +53,7 @@ import ladyjek.twiscode.com.ladyjek.Service.ServiceLocation;
 import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.GoogleAPIManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.NetworkManager;
+import ladyjek.twiscode.com.ladyjek.Utilities.SocketManager;
 
 public class ActivityTracking extends ActionBarActivity implements LocationListener, OnMapReadyCallback {
 
@@ -66,33 +71,75 @@ public class ActivityTracking extends ActionBarActivity implements LocationListe
     private Runnable mRunnable;
     private Handler mHandler;
     private final int AUTOUPDATE_INTERVAL_TIME =  15 * 1000; // 15 detik
+    private BroadcastReceiver start,end;
+    private Boolean isStart = false,isEnd = false;
+    private SocketManager socketManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tracking);
+
+        start  = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                // Extract data included in the Intent
+                String message = intent.getStringExtra("message");
+                Log.d("start", message);
+                if(message=="true"){
+                    appManager.setTrip("end");
+                }
+                else {
+                    Log.d("cant start","");
+                }
+                isStart = false;
+
+            }
+        };
+
+        end  = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                // Extract data included in the Intent
+                String message = intent.getStringExtra("message");
+                Log.d("end", message);
+                if(message=="true"){
+                    ApplicationData.socketManager = socketManager;
+                    appManager.setTrip("");
+                    appManager.setActivity("ActivityRate");
+                    Intent i = new Intent(mActivity, ActivityRate.class);
+                    startActivity(i);
+                    finish();
+                }
+                else {
+                    Log.d("cant end","");
+                }
+                isEnd = false;
+
+            }
+        };
+
         mActivity = this;
         wrapperRegister = (RelativeLayout) findViewById(R.id.wrapperRegister);
         appManager = new ApplicationManager(ActivityTracking.this);
         mHandler = new Handler();
         serviceLocation = new ServiceLocation();
-        ModelOrder order = ApplicationData.order;
         if(appManager.getUserFrom()!=null) {
             latFrom = appManager.getUserFrom().getLatitude();
             lonFrom = appManager.getUserFrom().getLongitude();
         }
         else{
-            latFrom = Double.parseDouble(order.getFromLatitude());
-            lonFrom = Double.parseDouble(order.getFromLongitude());
+            latFrom = Double.parseDouble(ApplicationData.order.getFromLatitude());
+            lonFrom = Double.parseDouble(ApplicationData.order.getFromLongitude());
         }
 
         if(appManager.getUserDestination()!=null) {
-            latFrom = appManager.getUserDestination().getLatitude();
-            lonFrom = appManager.getUserDestination().getLongitude();
+            latDest = appManager.getUserDestination().getLatitude();
+            lonDest = appManager.getUserDestination().getLongitude();
         }
         else{
-            latDest = Double.parseDouble(order.getToLatitude());
-            lonDest = Double.parseDouble(order.getToLongitude());
+            latDest = Double.parseDouble(ApplicationData.order.getToLatitude());
+            lonDest = Double.parseDouble(ApplicationData.order.getToLongitude());
         }
         posFrom = new LatLng(latFrom, lonFrom);
         posDest = new LatLng(latDest, lonDest);
@@ -130,6 +177,7 @@ public class ActivityTracking extends ActionBarActivity implements LocationListe
         mRunnable.run();
 
     }
+
 
     public void drawNewMarker(LatLng latLng, String taglocation) {
         try {
@@ -278,6 +326,10 @@ public class ActivityTracking extends ActionBarActivity implements LocationListe
     public void onResume() {
         super.onResume();
         mHandler.postDelayed(mRunnable, AUTOUPDATE_INTERVAL_TIME);
+        LocalBroadcastManager.getInstance(this).registerReceiver(start,
+                new IntentFilter("goStart"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(end,
+                new IntentFilter("goEnd"));
     }
 
     @Override
