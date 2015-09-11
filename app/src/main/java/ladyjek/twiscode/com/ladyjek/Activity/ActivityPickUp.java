@@ -97,10 +97,10 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
         txtName = (TextView) findViewById(R.id.nameDriver);
         txtNopol = (TextView) findViewById(R.id.platDriver);
         txtRate = (TextView) findViewById(R.id.rateDriver);
-
+        mHandler = new Handler();
         appManager = new ApplicationManager(ActivityPickUp.this);
         socketManager = ApplicationData.socketManager;
-
+        serviceLocation = new ServiceLocation();
         if(appManager.getUserFrom()!=null) {
             latFrom = appManager.getUserFrom().getLatitude();
             lonFrom = appManager.getUserFrom().getLongitude();
@@ -129,10 +129,6 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
             // Getting GoogleMap object from the fragment
             googleMap = fm.getMap();
             appManager = new ApplicationManager(ActivityPickUp.this);
-            Double latFrom = appManager.getUserFrom().getLatitude();
-            Double longFrom = appManager.getUserFrom().getLongitude();
-            posFrom = new LatLng(latFrom, longFrom);
-            posDriver = ApplicationData.posDriver;
             drawNewMarker(posFrom, TAG_FROM);
             drawNewMarker(posDriver, TAG_DRIVER);
             drawDriveLine(googleMap, posDriver, posFrom);
@@ -143,10 +139,10 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
             @Override
             public void run() {
                 mHandler.postDelayed(this, AUTOUPDATE_INTERVAL_TIME);
-                if (NetworkManager.getInstance(ActivityPickUp.this).isConnectedInternet()) {
+                if (NetworkManager.getInstance(mActivity).isConnectedInternet()) {
                     Log.d("ServiceLocation", "Running");
                     socketManager.DriverChange();
-                    serviceLocation.GetDriverMarker(ActivityPickUp.this, googleMap);
+                    serviceLocation.GetDriverMarker(mActivity, googleMap);
 
                 }
             }
@@ -309,6 +305,7 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
         };
 
         if(ApplicationData.driver != null){
+            Log.d("driver","not null");
             isSMS = true;
             isPhone = true;
             txtName.setText(ApplicationData.driver.getName());
@@ -316,6 +313,7 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
             txtRate.setText(ApplicationData.driver.getRate());
         }
         else {
+            Log.d("driver","null");
             if(NetworkManager.getInstance(ActivityPickUp.this).isConnectedInternet()){
                 socketManager.GetDriver(ApplicationData.order.getDriverID());
             }

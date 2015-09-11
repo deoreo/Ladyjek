@@ -34,7 +34,7 @@ public class SocketManager {
     private Context context;
     private ApplicationManager appManager;
     private boolean onAuth = true;
-    private boolean doLogout = false;
+    private int doLogout = 0;
     private final String TAG = "SocketManager";
 
     public void InitSocket(Context context) {
@@ -115,10 +115,14 @@ public class SocketManager {
                 socket.connect();
             }
             Log.d(TAG,"onDisconnected "+doLogout);
-            if(doLogout){
+            if(doLogout==1){
 
                 SendBroadcast("logout", "true");
                 Log.d(TAG, "send logout");
+            }
+            else if(doLogout==2){
+                SendBroadcast("unverify", "true");
+                Log.d(TAG, "send unverify");
             }
         }
     };
@@ -128,7 +132,7 @@ public class SocketManager {
         public void call(final Object... args) {
             Log.d(TAG,"onAuthenticated");
             onAuth = true;
-            doLogout = false;
+            doLogout = 0;
         }
     };
 
@@ -156,29 +160,32 @@ public class SocketManager {
                             }
                             else {
                                 Log.d(TAG, "null respose" + response.toString());
-                                doLogout = true;
+                                doLogout = 1;
                                 //SendBroadcast("logout","true");
                             }
 
                         } catch (Exception e) {
                             //e.printStackTrace();
                             Log.d(TAG, "onUnauthorized false");
-                            doLogout = true;
+                            doLogout = 1;
                             //SendBroadcast("logout", "true");
                         }
                     }
-                    Log.d(TAG, "onUnauthorized logout");
-                    doLogout = true;
+                    else {
+                        Log.d(TAG, "onUnauthorized logout");
+                        //doLogout = true;
+                    }
+
                     //SendBroadcast("logout", "true");
                 } else {
                     Log.d(TAG, "onUnauthorized null order");
-                    doLogout = true;
+                    doLogout = 1;
                     //SendBroadcast("logout", "true");
                 }
 
             } catch (Exception ex) {
                 Log.d(TAG, "onUnauthorized error");
-                doLogout = true;
+                doLogout = 1;
             }
         }
     };
@@ -215,6 +222,7 @@ public class SocketManager {
                     String price = "";
                     ModelOrder order = new ModelOrder(id, userID, driverID, name, to, from, distance, duration, status, toLongitude, toLatitude, fromLatitude, fromLongitude, rate, phone, member, payment, price);
                     ApplicationData.order = order;
+                    ApplicationData.driver = new ModelDriver();
                     SendBroadcast("lastOrder", "true");
                 } else {
                     Log.d(TAG,"onLastOrder null order");

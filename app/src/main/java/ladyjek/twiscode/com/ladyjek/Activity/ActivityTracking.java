@@ -74,6 +74,8 @@ public class ActivityTracking extends ActionBarActivity implements LocationListe
         mActivity = this;
         wrapperRegister = (RelativeLayout) findViewById(R.id.wrapperRegister);
         appManager = new ApplicationManager(ActivityTracking.this);
+        mHandler = new Handler();
+        serviceLocation = new ServiceLocation();
         ModelOrder order = ApplicationData.order;
         if(appManager.getUserFrom()!=null) {
             latFrom = appManager.getUserFrom().getLatitude();
