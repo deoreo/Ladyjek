@@ -145,8 +145,8 @@ public class ActivityLoading extends Activity {
     public void onPause() {
         // Unregister since the activity is not visible
 
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(orderTaken);
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(orderTimeout);
+        //LocalBroadcastManager.getInstance(this).unregisterReceiver(orderTaken);
+        //LocalBroadcastManager.getInstance(this).unregisterReceiver(orderTimeout);
         PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
         boolean isScreenOn = powerManager.isScreenOn();
 

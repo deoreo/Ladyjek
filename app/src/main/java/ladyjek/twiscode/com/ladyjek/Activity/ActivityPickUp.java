@@ -527,10 +527,10 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
     public void onPause() {
         // Unregister since the activity is not visible
 
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(goTrip);
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(doCancel);
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(driverChange);
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(getDriver);
+        //LocalBroadcastManager.getInstance(this).unregisterReceiver(goTrip);
+        //LocalBroadcastManager.getInstance(this).unregisterReceiver(doCancel);
+        //LocalBroadcastManager.getInstance(this).unregisterReceiver(driverChange);
+        //LocalBroadcastManager.getInstance(this).unregisterReceiver(getDriver);
         PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
         boolean isScreenOn = powerManager.isScreenOn();
         mHandler.removeCallbacks(mRunnable);
