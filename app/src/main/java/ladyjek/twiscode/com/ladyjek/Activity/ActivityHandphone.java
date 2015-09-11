@@ -175,37 +175,12 @@ public class ActivityHandphone extends Activity {
                 String id = params[0];
                 String phone = params[1];
 
-                /*
-                if (email.equals(ApplicationData.user.email) && password.equals(ApplicationData.user.password)) {
-                    return "OK";
-                }
-                */
                 JSONControl jsControl = new JSONControl();
                 String response = jsControl.postPhone(id, phone);
                 Log.d("json response phone",response);
                 if(response.contains("true")){
                     return "OK";
                 }
-                /*
-                try {
-                    JSONObject _id = response.getJSONObject("_id");
-                    if(_id!=null){
-                        ApplicationData.registered_id = _id.toString();
-                        return "OK";
-                    }
-                    else {
-                        return "FAIL";
-                    }
-                }
-                catch (Exception e) {
-                    e.printStackTrace();
-                }
-                */
-
-
-
-
-
             } catch (Exception e) {
                 e.printStackTrace();
             }

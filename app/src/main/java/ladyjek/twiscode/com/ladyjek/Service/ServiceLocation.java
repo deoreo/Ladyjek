@@ -207,6 +207,7 @@ public class ServiceLocation implements LocationListener {
                                         longitude = location.getLongitude();
                                         posFrom = new LatLng(latitude, longitude);
                                         ApplicationData.posFrom = posFrom;
+
                                         mPosition = posFrom;
                                     }
                                 }

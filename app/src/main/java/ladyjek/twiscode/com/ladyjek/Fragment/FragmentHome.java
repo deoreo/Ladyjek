@@ -14,6 +14,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
+import android.os.PowerManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
@@ -156,6 +157,9 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
     private SocketManager socketManager;
     private BroadcastReceiver createOrder, lastOrder, lastFeedback;
     private ServiceLocation serviceLocation;
+    private Runnable mRunnable;
+    private Handler mHandler;
+    private final int AUTOUPDATE_INTERVAL_TIME = 60 * 60 * 1000; // 15 detik
 
     public FragmentHome() {
         // Required empty public constructor
@@ -220,13 +224,23 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
 
         SupportMapFragment fm = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapView);
         googleMap = fm.getMap();
-/*
-        if (NetworkManager.getInstance(mActivity).isConnectedInternet()) {
-            new GetMyLocation(mActivity).execute();
-        } else {
-            DialogManager.showDialog(mActivity, "Warning", "No internet connection");
-        }
-        */
+        mHandler = new Handler();
+        serviceLocation = new ServiceLocation(mActivity);
+        mRunnable = new Runnable() {
+            @Override
+            public void run() {
+                mHandler.postDelayed(this, AUTOUPDATE_INTERVAL_TIME);
+                if (NetworkManager.getInstance(mActivity).isConnectedInternet()) {
+                    Log.d("ServiceLocation", "Running");
+                        serviceLocation.GetMap(mActivity, googleMap);
+                        posFrom = serviceLocation.updateLocation(mActivity);
+                        socketManager.PostLocation(posFrom);
+                        txtFrom.setText(getAddress(posFrom));
+                        appManager.setUserFrom(new ModelPlace(posFrom.latitude, posFrom.longitude));
+                }
+            }
+        };
+        mRunnable.run();
 
         wrapperRegister.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -590,14 +604,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                     }
 
 
-                } else {
-                    if (NetworkManager.getInstance(mActivity).isConnectedInternet()) {
-                        new GetMyLocation(mActivity).execute();
-                    } else {
-                        DialogManager.showDialog(mActivity, "Warning", "No internet connection");
-                    }
                 }
-
 
             }
         };
@@ -1039,8 +1046,10 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
     @Override
     public void onResume() {
         super.onResume();
+        mHandler.postDelayed(mRunnable, AUTOUPDATE_INTERVAL_TIME);
         // Register mMessageReceiver to receive messages.
         Log.i("adding receiver", "fragment ontainer for profile");
+
         LocalBroadcastManager.getInstance(mActivity).registerReceiver(createOrder,
                 new IntentFilter("createOrder"));
         LocalBroadcastManager.getInstance(mActivity).registerReceiver(lastOrder,
@@ -1056,6 +1065,13 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         Log.i("unreg receiver", "fragment unregister");
         LocalBroadcastManager.getInstance(mActivity).unregisterReceiver(createOrder);
         LocalBroadcastManager.getInstance(mActivity).unregisterReceiver(lastFeedback);
+        mHandler.removeCallbacks(mRunnable);
+        // If the screen is off then the device has been locked
+        PowerManager powerManager = (PowerManager) mActivity.getSystemService(mActivity.POWER_SERVICE);
+        boolean isScreenOn = powerManager.isScreenOn();
+        if (!isScreenOn) {
+            mRunnable.run();
+        }
         super.onPause();
     }
 
