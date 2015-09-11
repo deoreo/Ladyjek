@@ -121,7 +121,7 @@ public class ApplicationManager {
         ModelPlace obj = gson.fromJson(json, ModelPlace.class);
         return obj;
     }
-
+/*
     public void setDriver(ModelPlace modelPlace){
         Gson gson = new Gson();
         String dataJson = gson.toJson(modelPlace);
@@ -136,6 +136,7 @@ public class ApplicationManager {
         ModelPlace obj = gson.fromJson(json, ModelPlace.class);
         return obj;
     }
+*/
 
     public void setUserToken(String userToken) {
         try {
