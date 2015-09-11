@@ -123,6 +123,7 @@ public class ServiceLocation implements LocationListener {
         new UpdateDriverMarker(activity, googleMap).execute();
     }
 
+
     @Override
     public void onLocationChanged(Location location) {
 

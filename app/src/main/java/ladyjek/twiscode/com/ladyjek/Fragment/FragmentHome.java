@@ -237,11 +237,16 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                 mHandler.postDelayed(this, AUTOUPDATE_INTERVAL_TIME);
                 if (NetworkManager.getInstance(mActivity).isConnectedInternet()) {
                     Log.d("ServiceLocation", "Running");
+                    if(ApplicationData.isFindLocation) {
                         serviceLocation.GetMap(mActivity, googleMap);
                         posFrom = serviceLocation.updateLocation(mActivity);
                         socketManager.PostLocation(posFrom);
                         txtFrom.setText(getAddress(posFrom));
                         appManager.setUserFrom(new ModelPlace(posFrom.latitude, posFrom.longitude));
+                    }
+                    else{
+                        new GetMyLocation(mActivity).execute();
+                    }
                 }
             }
         };
@@ -485,10 +490,12 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                                                    ApplicationData.posFrom = posFrom;
                                                    appManager.setUserFrom(new ModelPlace(posFrom.latitude, posFrom.longitude));
 
+
                                                    markerFrom = googleMap.addMarker(
                                                            new MarkerOptions()
                                                                    .position(posFrom)
                                                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
+
                                                    if (posFrom != null && posDest != null) {
                                                        Document doc = GoogleAPIManager.getRoute(posFrom, posDest, "driving");
 
@@ -882,7 +889,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         private Activity activity;
         private Context context;
         private Resources resources;
-        private ProgressDialog progressDialog;
+        //private ProgressDialog progressDialog;
         private Handler mUserLocationHandler = null;
         private Handler handler = null;
         double latitude, longitude;
@@ -899,13 +906,14 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
+            /*
             progressDialog = new ProgressDialog(activity);
             progressDialog.setMessage("Memuat lokasi anda. . .");
             progressDialog.setIndeterminate(false);
             progressDialog.setCancelable(false);
             progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             progressDialog.show();
+            */
         }
 
 
@@ -1013,7 +1021,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                     break;
             }
 
-            progressDialog.dismiss();
+            //progressDialog.dismiss();
         }
 
 

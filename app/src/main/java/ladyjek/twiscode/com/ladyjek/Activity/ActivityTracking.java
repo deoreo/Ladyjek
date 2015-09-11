@@ -76,23 +76,22 @@ public class ActivityTracking extends ActionBarActivity implements LocationListe
         appManager = new ApplicationManager(ActivityTracking.this);
         mHandler = new Handler();
         serviceLocation = new ServiceLocation();
-        ModelOrder order = ApplicationData.order;
         if(appManager.getUserFrom()!=null) {
             latFrom = appManager.getUserFrom().getLatitude();
             lonFrom = appManager.getUserFrom().getLongitude();
         }
         else{
-            latFrom = Double.parseDouble(order.getFromLatitude());
-            lonFrom = Double.parseDouble(order.getFromLongitude());
+            latFrom = Double.parseDouble(ApplicationData.order.getFromLatitude());
+            lonFrom = Double.parseDouble(ApplicationData.order.getFromLongitude());
         }
 
         if(appManager.getUserDestination()!=null) {
-            latFrom = appManager.getUserDestination().getLatitude();
-            lonFrom = appManager.getUserDestination().getLongitude();
+            latDest = appManager.getUserDestination().getLatitude();
+            lonDest = appManager.getUserDestination().getLongitude();
         }
         else{
-            latDest = Double.parseDouble(order.getToLatitude());
-            lonDest = Double.parseDouble(order.getToLongitude());
+            latDest = Double.parseDouble(ApplicationData.order.getToLatitude());
+            lonDest = Double.parseDouble(ApplicationData.order.getToLongitude());
         }
         posFrom = new LatLng(latFrom, lonFrom);
         posDest = new LatLng(latDest, lonDest);
