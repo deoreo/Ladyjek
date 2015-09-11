@@ -1,5 +1,6 @@
 package ladyjek.twiscode.com.ladyjek.Activity;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -13,6 +14,7 @@ import android.location.LocationListener;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.os.PowerManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBarActivity;
@@ -50,6 +52,7 @@ import java.util.Locale;
 
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.R;
+import ladyjek.twiscode.com.ladyjek.Service.ServiceLocation;
 import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.GoogleAPIManager;
@@ -59,8 +62,9 @@ import ladyjek.twiscode.com.ladyjek.Utilities.SocketManager;
 public class ActivityPickUp extends ActionBarActivity implements LocationListener {
 
     private Toolbar mToolbar;
+    private Activity mActivity;
     private GoogleMap googleMap;
-    private LatLng posFrom, posDriver;
+    private LatLng posFrom, posDriver, updatedPosition;
     private Marker markerFrom, markerDriver;
     private Button btnCall, btnSMS;
     private TextView txtEstimate,txtName,txtRate,txtNopol,btnCancel;
@@ -72,7 +76,11 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
     private SocketManager socketManager;
     private BroadcastReceiver goTrip,doCancel,driverChange,getDriver;
     private Boolean isCancel = false, isPhone = false, isSMS = false;
-
+    private Double latFrom, lonFrom;
+    private ServiceLocation serviceLocation;
+    private Runnable mRunnable;
+    private Handler mHandler;
+    private final int AUTOUPDATE_INTERVAL_TIME =  15 * 1000; // 15 detik
 
 
 
@@ -81,8 +89,7 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pickup);
-
-
+        mActivity = this;
         btnCall = (Button) findViewById(R.id.btnCall);
         btnSMS = (Button) findViewById(R.id.btnSMS);
         btnCancel = (TextView) findViewById(R.id.btnCancel);
@@ -94,13 +101,18 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
         appManager = new ApplicationManager(ActivityPickUp.this);
         socketManager = ApplicationData.socketManager;
 
-        Double latitude = appManager.getUserFrom().getLatitude();
-        Double longitude = appManager.getUserFrom().getLongitude();
-        posFrom = new LatLng(latitude, longitude);
+        if(appManager.getUserFrom()!=null) {
+            latFrom = appManager.getUserFrom().getLatitude();
+            lonFrom = appManager.getUserFrom().getLongitude();
+            posFrom = new LatLng(latFrom, lonFrom);
+        }
+        else{
+            posFrom = serviceLocation.updateLocation(mActivity);
+            latFrom = posFrom.latitude;
+            lonFrom = posFrom.longitude;
+        }
+
         posDriver = ApplicationData.posDriver;
-
-
-
 
         int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());
 
@@ -126,6 +138,20 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
             drawDriveLine(googleMap, posDriver, posFrom);
             drawDriverMarker(googleMap, posFrom, posDriver);
         }
+
+        mRunnable = new Runnable() {
+            @Override
+            public void run() {
+                mHandler.postDelayed(this, AUTOUPDATE_INTERVAL_TIME);
+                if (NetworkManager.getInstance(ActivityPickUp.this).isConnectedInternet()) {
+                    Log.d("ServiceLocation", "Running");
+                    socketManager.DriverChange();
+                    serviceLocation.GetDriverMarker(ActivityPickUp.this, googleMap);
+
+                }
+            }
+        };
+        mRunnable.run();
 
         PhoneCallListener phoneListener = new PhoneCallListener();
         TelephonyManager telephonyManager = (TelephonyManager) this
@@ -484,6 +510,7 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
     @Override
     public void onResume() {
         super.onResume();
+        mHandler.postDelayed(mRunnable, AUTOUPDATE_INTERVAL_TIME);
         // Register mMessageReceiver to receive messages.
         LocalBroadcastManager.getInstance(this).registerReceiver(goTrip,
                 new IntentFilter("goTrip"));
@@ -508,7 +535,10 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
         LocalBroadcastManager.getInstance(this).unregisterReceiver(getDriver);
         PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
         boolean isScreenOn = powerManager.isScreenOn();
-
+        mHandler.removeCallbacks(mRunnable);
+        if (!isScreenOn) {
+            mRunnable.run();
+        }
         super.onPause();
     }
 

@@ -10,8 +10,12 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.PowerManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.RelativeLayout;
@@ -39,13 +43,17 @@ import org.w3c.dom.Document;
 import java.util.ArrayList;
 
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
+import ladyjek.twiscode.com.ladyjek.Model.ModelOrder;
 import ladyjek.twiscode.com.ladyjek.R;
+import ladyjek.twiscode.com.ladyjek.Service.ServiceLocation;
 import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.GoogleAPIManager;
+import ladyjek.twiscode.com.ladyjek.Utilities.NetworkManager;
 
 public class ActivityTracking extends ActionBarActivity implements LocationListener, OnMapReadyCallback {
 
     private Toolbar mToolbar;
+    private android.app.Activity mActivity;
     private GoogleMap googleMap;
     private LatLng posFrom, posDest;
     private Marker markerFrom, markerDestination;
@@ -53,20 +61,39 @@ public class ActivityTracking extends ActionBarActivity implements LocationListe
     private final String TAG_DESTINATION = "DESTINATION";
     private ApplicationManager appManager;
     private RelativeLayout wrapperRegister;
+    private Double latFrom, lonFrom, latDest, lonDest;
+    private ServiceLocation serviceLocation;
+    private Runnable mRunnable;
+    private Handler mHandler;
+    private final int AUTOUPDATE_INTERVAL_TIME =  15 * 1000; // 15 detik
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tracking);
+        mActivity = this;
         wrapperRegister = (RelativeLayout) findViewById(R.id.wrapperRegister);
         appManager = new ApplicationManager(ActivityTracking.this);
-        Double latFrom = appManager.getUserFrom().getLatitude();
-        Double longFrom = appManager.getUserFrom().getLongitude();
-        posFrom = new LatLng(latFrom,longFrom);
+        ModelOrder order = ApplicationData.order;
+        if(appManager.getUserFrom()!=null) {
+            latFrom = appManager.getUserFrom().getLatitude();
+            lonFrom = appManager.getUserFrom().getLongitude();
+        }
+        else{
+            latFrom = Double.parseDouble(order.getFromLatitude());
+            lonFrom = Double.parseDouble(order.getFromLongitude());
+        }
 
-        Double latDestination = appManager.getUserDestination().getLatitude();
-        Double longDestination = appManager.getUserDestination().getLongitude();
-        posDest = new LatLng(latDestination,longDestination);
+        if(appManager.getUserDestination()!=null) {
+            latFrom = appManager.getUserDestination().getLatitude();
+            lonFrom = appManager.getUserDestination().getLongitude();
+        }
+        else{
+            latDest = Double.parseDouble(order.getToLatitude());
+            lonDest = Double.parseDouble(order.getToLongitude());
+        }
+        posFrom = new LatLng(latFrom, lonFrom);
+        posDest = new LatLng(latDest, lonDest);
 
         int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());
         if(status!= ConnectionResult.SUCCESS){
@@ -88,6 +115,17 @@ public class ActivityTracking extends ActionBarActivity implements LocationListe
             Circle mapCircle = googleMap.addCircle(circleOptions);
             drawDriveLine(googleMap , posFrom , posDest);
         }
+        mRunnable = new Runnable() {
+            @Override
+            public void run() {
+                mHandler.postDelayed(this, AUTOUPDATE_INTERVAL_TIME);
+                if (NetworkManager.getInstance(mActivity).isConnectedInternet()) {
+                    Log.d("ServiceLocation", "Running");
+                    serviceLocation.GetMap(mActivity, googleMap);
+                }
+            }
+        };
+        mRunnable.run();
 
     }
 
@@ -233,4 +271,23 @@ public class ActivityTracking extends ActionBarActivity implements LocationListe
     public void onMapReady(GoogleMap googleMap) {
 
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mHandler.postDelayed(mRunnable, AUTOUPDATE_INTERVAL_TIME);
+    }
+
+    @Override
+    public void onPause() {
+        // Unregister since the activity is not visible
+        PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+        boolean isScreenOn = powerManager.isScreenOn();
+        mHandler.removeCallbacks(mRunnable);
+        if (!isScreenOn) {
+            mRunnable.run();
+        }
+        super.onPause();
+    }
+
 }

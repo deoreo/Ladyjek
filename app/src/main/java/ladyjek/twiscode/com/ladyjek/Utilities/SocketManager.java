@@ -69,6 +69,10 @@ public class SocketManager {
         socket.connect();
     }
 
+    public void DriverChange(){
+        socket.on("driver location change",onDriverChangeLocation);
+    }
+
     public void Disconnect() {
         Log.d(TAG, "Disconnect");
         socket.off(Socket.EVENT_CONNECT, onConnected);

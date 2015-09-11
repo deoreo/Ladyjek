@@ -61,5 +61,6 @@ public class ApplicationData {
     public static String driverID = "";
     public static ModelDriver driver = new ModelDriver();
     public static Marker markerFrom = null;
+    public static Marker markerDriver = null;
 
 }

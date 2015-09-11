@@ -119,6 +119,10 @@ public class ServiceLocation implements LocationListener {
         new UpdateMap(activity, googleMap).execute();
     }
 
+    public void GetDriverMarker(Activity activity, GoogleMap googleMap){
+        new UpdateDriverMarker(activity, googleMap).execute();
+    }
+
     @Override
     public void onLocationChanged(Location location) {
 
@@ -296,5 +300,82 @@ public class ServiceLocation implements LocationListener {
     }
 
 
+    private class UpdateDriverMarker extends AsyncTask<String, Void, String> {
+        private Activity activity;
+        private Context context;
+        private Resources resources;
+        private Handler mUserLocationHandler = null;
+        private Handler handler = null;
+        double latitude, longitude;
+        private GoogleMap gMap;
+        private LocationManager locationManager;
+        private CameraUpdate cameraUpdate;
+        private Location location;
+        private LatLng posFrom;
+        public UpdateDriverMarker(Activity activity, GoogleMap gMap) {
+            super();
+            this.activity = activity;
+            this.context = activity.getApplicationContext();
+            this.resources = activity.getResources();
+            this.gMap = gMap;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            Log.d(TAG, "doInbackground posisi gps");
+            try {
+                try {
+                    Looper.prepare();
+                    mUserLocationHandler = new Handler();
+                    mPosition = ApplicationData.posDriver;
+                    Looper.loop();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return "OK";
+            } catch (Exception e) {
+
+            }
+            return "FAIL";
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            switch (result) {
+                case "FAIL":
+                    DialogManager.showDialog(activity, "Peringatan", "Tidak dapat menemukan lokasi driver!");
+                    break;
+                case "OK":
+                    try {
+                        float zoom = gMap.getCameraPosition().zoom;
+                        if(zoom<=13){
+                            zoom=13;
+                        }
+                        if(ApplicationData.markerDriver!=null) {
+                            ApplicationData.markerDriver.remove();
+                        }
+                        ApplicationData.markerDriver = gMap.addMarker(
+                                new MarkerOptions()
+                                        .position(mPosition)
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_driver)));
+                        cameraUpdate = CameraUpdateFactory.newLatLngZoom(mPosition, zoom);
+                        gMap.animateCamera(cameraUpdate);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+            }
+        }
+
+    }
 }
 

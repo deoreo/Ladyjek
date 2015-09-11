@@ -593,7 +593,6 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                 } else {
                     if (NetworkManager.getInstance(mActivity).isConnectedInternet()) {
                         new GetMyLocation(mActivity).execute();
-                        serviceLocation
                     } else {
                         DialogManager.showDialog(mActivity, "Warning", "No internet connection");
                     }
