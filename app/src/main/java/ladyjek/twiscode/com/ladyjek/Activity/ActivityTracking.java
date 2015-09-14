@@ -170,7 +170,7 @@ public class ActivityTracking extends ActionBarActivity implements LocationListe
                 mHandler.postDelayed(this, AUTOUPDATE_INTERVAL_TIME);
                 if (NetworkManager.getInstance(mActivity).isConnectedInternet()) {
                     Log.d("ServiceLocation", "Running");
-                    serviceLocation.GetMap(mActivity, googleMap);
+                    serviceLocation.GetMap(mActivity, googleMap, "");
                 }
             }
         };

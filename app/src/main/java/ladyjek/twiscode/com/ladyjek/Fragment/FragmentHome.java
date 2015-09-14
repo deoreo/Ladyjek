@@ -159,7 +159,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
     private ServiceLocation serviceLocation;
     private Runnable mRunnable;
     private Handler mHandler;
-    private final int AUTOUPDATE_INTERVAL_TIME = 60 * 60 * 1000; // 15 detik
+    private final int AUTOUPDATE_INTERVAL_TIME = 1 * 15 * 1000; // 15 detik
 
     public FragmentHome() {
         // Required empty public constructor
@@ -231,6 +231,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         googleMap = fm.getMap();
         mHandler = new Handler();
         serviceLocation = new ServiceLocation(mActivity);
+        serviceLocation.GetMap(mActivity, googleMap, "Home");
         mRunnable = new Runnable() {
             @Override
             public void run() {
@@ -238,7 +239,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                 if (NetworkManager.getInstance(mActivity).isConnectedInternet()) {
                     Log.d("ServiceLocation", "Running");
                     if(ApplicationData.isFindLocation) {
-                        serviceLocation.GetMap(mActivity, googleMap);
+                        serviceLocation.GetMap(mActivity, googleMap, "Home");
                         posFrom = serviceLocation.updateLocation(mActivity);
                         socketManager.PostLocation(posFrom);
                         txtFrom.setText(getAddress(posFrom));

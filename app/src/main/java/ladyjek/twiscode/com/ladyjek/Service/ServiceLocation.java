@@ -115,8 +115,8 @@ public class ServiceLocation implements LocationListener {
 
     }
 
-    public void GetMap(Activity activity, GoogleMap googleMap){
-        new UpdateMap(activity, googleMap).execute();
+    public void GetMap(Activity activity, GoogleMap googleMap, String tagActivity){
+        new UpdateMap(activity, googleMap, tagActivity).execute();
     }
 
     public void GetDriverMarker(Activity activity, GoogleMap googleMap){
@@ -154,23 +154,35 @@ public class ServiceLocation implements LocationListener {
         private Resources resources;
         private Handler mUserLocationHandler = null;
         private Handler handler = null;
-        double latitude, longitude;
+        private Double latitude, longitude;
         private GoogleMap gMap;
         private LocationManager locationManager;
         private CameraUpdate cameraUpdate;
         private Location location;
         private LatLng posFrom;
-        public UpdateMap(Activity activity, GoogleMap gMap) {
+        private String tagActivity;
+        private ProgressDialog progressDialog;
+
+        public UpdateMap(Activity activity, GoogleMap gMap, String tagActivity) {
             super();
             this.activity = activity;
             this.context = activity.getApplicationContext();
             this.resources = activity.getResources();
             this.gMap = gMap;
+            this.tagActivity = tagActivity;
         }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            if(tagActivity.equalsIgnoreCase("Home")){
+                progressDialog = new ProgressDialog(activity);
+                progressDialog.setMessage("Memuat Lokasi Anda. . .");
+                progressDialog.setIndeterminate(false);
+                progressDialog.setCancelable(false);
+                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                progressDialog.show();
+            }
 
         }
 
@@ -251,6 +263,9 @@ public class ServiceLocation implements LocationListener {
                     DialogManager.showDialog(activity, "Peringatan", "Tidak dapat menemukan lokasi anda!");
                     break;
                 case "OK":
+                    if(tagActivity.equalsIgnoreCase("Home")){
+                        progressDialog.dismiss();
+                    }
                     ApplicationData.isFindLocation = true;
                     try {
                         float zoom = gMap.getCameraPosition().zoom;
