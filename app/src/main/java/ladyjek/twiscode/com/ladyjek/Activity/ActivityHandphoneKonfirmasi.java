@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,14 +25,18 @@ import org.json.JSONObject;
 import ladyjek.twiscode.com.ladyjek.Control.JSONControl;
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.R;
+import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
+
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
 public class ActivityHandphoneKonfirmasi extends Activity {
 
     private Activity act;
     private TextView txtConfirmSmsCode;
     private EditText txtSmsCode;
-    private RelativeLayout wrapperRegister;
+    private RelativeLayout wrapperRegister, btnClearCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +47,7 @@ public class ActivityHandphoneKonfirmasi extends Activity {
         txtConfirmSmsCode = (TextView)findViewById(R.id.txtConfirmSmsCode);
         txtSmsCode = (EditText) findViewById(R.id.txtSmsCode);
         wrapperRegister = (RelativeLayout) findViewById(R.id.wrapperRegister);
+        btnClearCode = (RelativeLayout) findViewById(R.id.btnClearCode);
 
         if(ApplicationData.editPhone){
             txtConfirmSmsCode.setText(R.string.lanjut);
@@ -48,10 +55,6 @@ public class ActivityHandphoneKonfirmasi extends Activity {
         else {
             txtConfirmSmsCode.setText(R.string.login);
         }
-
-        txtSmsCode.setText(ApplicationData.phone);
-
-
 
         txtConfirmSmsCode.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,6 +71,35 @@ public class ActivityHandphoneKonfirmasi extends Activity {
             }
         });
 
+        txtSmsCode.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+                if (s.length() >= 1) {
+                    btnClearCode.setVisibility(VISIBLE);
+                } else if (s.length() == 0) {
+                    btnClearCode.setVisibility(GONE);
+                }
+            }
+        });
+        btnClearCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                txtSmsCode.setText("");
+                btnClearCode.setVisibility(GONE);
+            }
+        });
+
         wrapperRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -76,7 +108,6 @@ public class ActivityHandphoneKonfirmasi extends Activity {
                 }
                 else{
                     new DoVerifyCode(act).execute(
-                            ApplicationData.token,
                             txtSmsCode.getText().toString()
                     );
                 }
@@ -128,11 +159,12 @@ public class ActivityHandphoneKonfirmasi extends Activity {
                 String code = params[0];
 
                 JSONControl jsonControl = new JSONControl();
-                JSONObject objRefreshToken = jsonControl.postRefreshToken(ApplicationData.token);
+                JSONObject objRefreshToken = jsonControl.postRefreshToken(ApplicationManager.getInstance(context).getUserToken());
+                Log.d("refresh token", objRefreshToken.toString());
                 String token = objRefreshToken.getString("token");
                 String response = jsonControl.postVerifyPhone(token, code);
                 Log.d("json response phone", response);
-                if(response.equalsIgnoreCase("true")){
+                if(response.contains("true") && !response.contains("jwt")){
                     return "OK";
                 }
             } catch (Exception e) {

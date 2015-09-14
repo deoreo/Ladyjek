@@ -31,7 +31,7 @@ public class ApplicationData {
 
     public static ModelUserOrder modelUserOrder = new ModelUserOrder(id,nama,email,password,hp,null,null);
     public static ModelUserOrder userLogin;
-    public static String phone = "2789";
+    //public static String phone = "2789";
     public static Boolean editPhone = false;
     public static Boolean editHome = false;
 

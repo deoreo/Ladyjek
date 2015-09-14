@@ -88,7 +88,7 @@
                                         android:layout_weight="1"
                                         android:layout_height="50dp"
                                         android:background="@null"
-                                        android:hint="alamat e-mail"
+                                        android:hint="nomor ponsel"
                                         android:inputType="textEmailAddress"
                                         android:padding="10dp"
                                         android:textColor="@color/white_color"

@@ -102,7 +102,6 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
             public void onClick(View v) {
                 Intent i = new Intent(getBaseContext(), ActivityRegister.class);
                 startActivity(i);
-                finish();
             }
         });
 
@@ -111,7 +110,6 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
             public void onClick(View v) {
                 Intent i = new Intent(getBaseContext(), ActivityRegister.class);
                 startActivity(i);
-                finish();
             }
         });
 
@@ -122,19 +120,9 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
                 String email = txtEmail.getText().toString();
                 String password = txtPassword.getText().toString();
                 if (email == null || password == null || email.trim().isEmpty() || password.trim().isEmpty()) {
-                    DialogManager.showDialog(mActivity, "Warning", "Email or Password is empty!");
-                    txtEmail.setText("");
-                    txtPassword.setText("");
-                } else if (!email.trim().contains("@") ||
-                        !email.trim().contains(".") ||
-                        email.trim().contains(" ")) {
-                    DialogManager.showDialog(mActivity, "Warning", "Wrong email format!");
-                    txtEmail.setText("");
-                    txtPassword.setText("");
+                    DialogManager.showDialog(mActivity, "Warning", "Isi Email dan Password!");
                 } else {
                     hideKeyboard();
-                    //txtEmail.setText("");
-                    //txtPassword.setText("");
                     new DoLogin(mActivity).execute(
                             email,
                             password
@@ -149,19 +137,9 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
                 String email = txtEmail.getText().toString();
                 String password = txtPassword.getText().toString();
                 if (email == null || password == null || email.trim().isEmpty() || password.trim().isEmpty()) {
-                    DialogManager.showDialog(mActivity, "Warning", "Email or Password is empty!");
-                    txtEmail.setText("");
-                    txtPassword.setText("");
-                } else if (!email.trim().contains("@") ||
-                        !email.trim().contains(".") ||
-                        email.trim().contains(" ")) {
-                    DialogManager.showDialog(mActivity, "Warning", "Wrong email format!");
-                    txtEmail.setText("");
-                    txtPassword.setText("");
+                    DialogManager.showDialog(mActivity, "Warning", "Isi Email dan Password!");
                 } else {
                     hideKeyboard();
-                    //txtEmail.setText("");
-                    //txtPassword.setText("");
                     new DoLogin(mActivity).execute(
                             email,
                             password
@@ -336,21 +314,24 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
                 JSONControl jsControl = new JSONControl();
                 JSONObject response = jsControl.postLogin(phoneNumber,password);
                 JSONObject responseUser = response.getJSONObject("user");
-                Log.d("login",responseUser.toString());
                 String responseToken = response.getString("token");
                 appManager.setUserToken(responseToken);
+
                 Log.d("json response",responseToken );
                 try {
-
+                    String _verified = responseUser.getString("verified");
                     String _id = responseUser.getString("_id");
                     Log.d("json response id",_id.toString());
-                    if(_id!=null){
+                    if(_id!=null && _verified.equals("true")){
                         userLogin = new ModelUserOrder();
                         userLogin.setEmail(phoneNumber);
                         userLogin.setPassword(password);
                         db.insertUser(userLogin);
                         ApplicationData.login_id = _id.toString();
                         return "OK";
+                    }
+                    else if(!_verified.contains("true")){
+                        return "VERIFY";
                     }
                     else {
                         return "FAIL";
@@ -374,7 +355,12 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
             progressDialog.dismiss();
             switch (result) {
                 case "FAIL":
-                    DialogManager.showDialog(activity, "Warning", "Please register!");
+                    DialogManager.showDialog(activity, "Warning", "Anda belum terdaftar!");
+                    break;
+                case "VERIFY":
+                    Intent verify = new Intent(getBaseContext(), ActivityHandphoneKonfirmasi.class);
+                    startActivity(verify);
+                    finish();
                     break;
                 case "OK":
                     Intent i = new Intent(getBaseContext(), Main.class);

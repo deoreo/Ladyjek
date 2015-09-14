@@ -24,6 +24,7 @@ import org.json.JSONObject;
 import ladyjek.twiscode.com.ladyjek.Control.JSONControl;
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.R;
+import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
 
 import static android.view.View.GONE;
@@ -113,6 +114,7 @@ public class ActivityRegister extends ActionBarActivity {
                 }
             }
         });
+
         txtPassword.addTextChangedListener(new TextWatcher() {
 
             @Override
@@ -325,7 +327,7 @@ public class ActivityRegister extends ActionBarActivity {
                 String phoneNumber = params[0];
                 String password = params[1];
                 JSONControl jsControl = new JSONControl();
-                JSONObject responseRegister = jsControl.postRegister("",phoneNumber, password);
+                JSONObject responseRegister = jsControl.postRegister("Ladyjek",phoneNumber, password);
                 Log.d("json responseRegister", responseRegister.toString());
                 try {
                     String token = responseRegister.getString("token");
@@ -334,7 +336,7 @@ public class ActivityRegister extends ActionBarActivity {
                     Log.d("json response token",token);
                     Log.d("json response id",_id.toString());
                     if (!token.isEmpty() && _id != null) {
-                        ApplicationData.token = token;
+                        ApplicationManager.getInstance(context).setUserToken(token);
                         ApplicationData.registered_id = _id.toString();
                         return "OK";
                     }
