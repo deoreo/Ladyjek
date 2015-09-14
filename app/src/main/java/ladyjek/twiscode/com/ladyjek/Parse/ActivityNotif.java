@@ -8,8 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -54,7 +52,7 @@ public class ActivityNotif extends AppCompatActivity {
         String email = intent.getStringExtra("email");
 
         if (email != null) {
-            ParseUtils.subscribeWithEmail(pref.getUserMail());
+            ParseManager.subscribeWithEmail(pref.getUserMail());
         }
     }
 

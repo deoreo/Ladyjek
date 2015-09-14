@@ -62,7 +62,7 @@ public class ActivityHandphone extends Activity {
                 else{
 
                     new DoPhone(act).execute(
-                            ApplicationData.registered_id,
+                            ApplicationData.token,
                             "+62"+hp
                     );
                 }
@@ -79,9 +79,8 @@ public class ActivityHandphone extends Activity {
                     txtPhoneNumber.setText("");
                 }
                 else{
-
                     new DoPhone(act).execute(
-                            ApplicationData.registered_id,
+                            ApplicationData.token,
                             "+62"+hp
                     );
                 }
@@ -172,15 +171,16 @@ public class ActivityHandphone extends Activity {
         protected String doInBackground(String... params) {
             try {
 
-                String id = params[0];
+                String token = params[0];
                 String phone = params[1];
 
                 JSONControl jsControl = new JSONControl();
-                String response = jsControl.postPhone(id, phone);
+                String response = jsControl.postPhone(token, phone);
                 Log.d("json response phone",response);
-                if(response.contains("true")){
+                if(response.equalsIgnoreCase("true")){
                     return "OK";
                 }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }

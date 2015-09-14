@@ -2,8 +2,6 @@ package ladyjek.twiscode.com.ladyjek.Parse;
 
 import android.app.Application;
 
-import ladyjek.twiscode.com.ladyjek.Parse.ParseUtils;
-
 public class MyApplication extends Application {
 
     private static MyApplication mInstance;
@@ -14,7 +12,7 @@ public class MyApplication extends Application {
         mInstance = this;
 
         // register with parse
-        ParseUtils.registerParse(this);
+        //ParseManager.registerParse(this);
     }
 
 

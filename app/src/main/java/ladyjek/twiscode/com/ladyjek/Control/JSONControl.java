@@ -44,12 +44,12 @@ public class JSONControl {
 
     }
 
-    public JSONObject postLogin(String email, String password) {
+    public JSONObject postLogin(String phoneNumber, String password) {
         JSONObject jsonObj = null;
 
         try {
             List<NameValuePair> params = new ArrayList<NameValuePair>();
-            params.add(new BasicNameValuePair("email", email));
+            params.add(new BasicNameValuePair("phoneNumber", phoneNumber));
             params.add(new BasicNameValuePair("password", password));
             jsonObj = _JSONResponse.POSTResponse(ConfigManager.LOGIN, params);
 
@@ -60,14 +60,15 @@ public class JSONControl {
 
     }
 
-    public JSONObject postRegister(String email, String password) {
+    public JSONObject postRegister(String name, String email, String password) {
 
         JSONObject jsonObj = null;
 
         try {
                 List<NameValuePair> params = new ArrayList<NameValuePair>();
-                params.add(new BasicNameValuePair("email", email));
-            params.add(new BasicNameValuePair("password", password));
+                params.add(new BasicNameValuePair("name", name));
+                params.add(new BasicNameValuePair("phoneNumber", email));
+                params.add(new BasicNameValuePair("password", password));
                 jsonObj = _JSONResponse.POSTResponse(ConfigManager.REGISTER, params);
 
         } catch (Exception e) {
@@ -84,6 +85,21 @@ public class JSONControl {
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             params.add(new BasicNameValuePair("phoneNumber", phone));
             jsonObj = _JSONResponse.POSTPhone(ConfigManager.PHONE_NUMBER, token, params);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return jsonObj;
+    }
+
+    public String postVerifyPhone(String token, String verificationCode) {
+
+        String jsonObj = null;
+
+        try {
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new BasicNameValuePair("verificationCode", verificationCode));
+            jsonObj = _JSONResponse.POSTPhone(ConfigManager.VERIFY_PHONE_NUMBER, token, params);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -108,6 +124,21 @@ public class JSONControl {
         Log.d("return token",jsonObj.toString());
         return jsonObj;
 
+    }
+
+    public String postDeviceToken(String token, String deviceToken) {
+
+        String jsonObj = null;
+
+        try {
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new BasicNameValuePair("deviceToken", deviceToken));
+            jsonObj = _JSONResponse.POSTDeviceToken(ConfigManager.DEVICE_TOKEN, token, params);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return jsonObj;
     }
 
 

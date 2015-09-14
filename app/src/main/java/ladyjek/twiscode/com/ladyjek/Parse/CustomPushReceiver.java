@@ -1,8 +1,5 @@
 package ladyjek.twiscode.com.ladyjek.Parse;
 
-/**
- * Created by User on 8/31/2015.
- */
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -14,14 +11,10 @@ import org.json.JSONObject;
 
 import ladyjek.twiscode.com.ladyjek.Activity.Main;
 
-
-/**
- * Created by Ravi on 01/06/15.
- */
 public class CustomPushReceiver extends ParsePushBroadcastReceiver {
     private final String TAG = CustomPushReceiver.class.getSimpleName();
 
-    private NotificationUtils notificationUtils;
+    private NotificationManager notificationManager;
 
     private Intent parseIntent;
 
@@ -92,9 +85,9 @@ public class CustomPushReceiver extends ParsePushBroadcastReceiver {
      * @param intent
      */
     private void showNotificationMessage(Context context, String title, String message, Intent intent) {
-        notificationUtils = new NotificationUtils(context);
+        notificationManager = new NotificationManager(context);
         intent.putExtras(parseIntent.getExtras());
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        notificationUtils.showNotificationMessage(title, message, intent);
+        notificationManager.showNotificationMessage(title, message, intent);
     }
 }

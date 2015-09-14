@@ -31,7 +31,7 @@ import static android.view.View.VISIBLE;
 
 public class ActivityRegister extends ActionBarActivity {
 
-    private EditText txtEmail,txtPassword,txtConfirm;
+    private EditText txtPhone,txtPassword,txtConfirm;
     private TextView btnRegister;
     private RelativeLayout btnClearEmail, btnClearPassword, btnClearConfirmPassword, wrapperRegister;
     private Activity act;
@@ -42,7 +42,7 @@ public class ActivityRegister extends ActionBarActivity {
         setContentView(R.layout.activity_register);
 
         act = this;
-        txtEmail = (EditText) findViewById(R.id.txtEmail);
+        txtPhone = (EditText) findViewById(R.id.txtPhone);
         txtPassword = (EditText) findViewById(R.id.txtPassword);
         txtConfirm = (EditText) findViewById(R.id.txtConfirmPassword);
         btnRegister = (TextView) findViewById(R.id.btnRegister);
@@ -55,36 +55,16 @@ public class ActivityRegister extends ActionBarActivity {
             @Override
             public void onClick(View v) {
 
-                String email = txtEmail.getText().toString();
+                String phoneNumber = txtPhone.getText().toString();
                 String password = txtPassword.getText().toString();
                 String confirm = txtConfirm.getText().toString();
-                if (email == null || password == null || email.trim().isEmpty() || password.trim().isEmpty() || confirm == null || confirm.trim().isEmpty()) {
-                    DialogManager.showDialog(act, "Warning", "please fill all data!");
-                    txtEmail.setText("");
-                    txtPassword.setText("");
-                    txtConfirm.setText("");
-                } else if (!email.trim().contains("@") ||
-                        !email.trim().contains(".") ||
-                        email.trim().contains(" ")) {
-                    DialogManager.showDialog(act, "Warning", "Wrong email format!");
-                    txtEmail.setText("");
-                    txtPassword.setText("");
-                    txtConfirm.setText("");
+                if (phoneNumber == null || password == null || phoneNumber.trim().isEmpty() || password.trim().isEmpty() || confirm == null || confirm.trim().isEmpty()) {
+                    DialogManager.showDialog(act, "Warning", "Masukkan semua data Anda!");
                 } else if (!confirm.equals(password)) {
-                    DialogManager.showDialog(act, "Warning", "Confirmation password not match!");
-                    txtEmail.setText("");
-                    txtPassword.setText("");
-                    txtConfirm.setText("");
+                    DialogManager.showDialog(act, "Warning", "Password tidak sesuai!");
                 } else {
-
-                    /*
-                    ApplicationData.user = new User("1","nama kamu",email,password,"",new LatLng(0,0),new LatLng(0,0));
-                    Intent i = new Intent(getBaseContext(), ActivityHandphone.class);
-                    startActivity(i);
-                    finish();
-                    */
                     new DoRegister(act).execute(
-                            email,
+                            phoneNumber,
                             password
                     );
                 }
@@ -95,36 +75,23 @@ public class ActivityRegister extends ActionBarActivity {
             @Override
             public void onClick(View v) {
 
-                String email = txtEmail.getText().toString();
+                String phoneNumber = txtPhone.getText().toString();
                 String password = txtPassword.getText().toString();
                 String confirm = txtConfirm.getText().toString();
-                if (email == null || password == null || email.trim().isEmpty() || password.trim().isEmpty() || confirm == null || confirm.trim().isEmpty()) {
-                    DialogManager.showDialog(act, "Warning", "please fill all data!");
-                    txtEmail.setText("");
-                    txtPassword.setText("");
-                    txtConfirm.setText("");
-                } else if (!email.trim().contains("@") ||
-                        !email.trim().contains(".") ||
-                        email.trim().contains(" ")) {
-                    DialogManager.showDialog(act, "Warning", "Wrong email format!");
-                    txtEmail.setText("");
-                    txtPassword.setText("");
-                    txtConfirm.setText("");
+                if (phoneNumber == null || password == null || phoneNumber.trim().isEmpty() || password.trim().isEmpty() || confirm == null || confirm.trim().isEmpty()) {
+                    DialogManager.showDialog(act, "Warning", "Masukkan semua data Anda!");
                 } else if (!confirm.equals(password)) {
-                    DialogManager.showDialog(act, "Warning", "Confirmation password not match!");
-                    txtEmail.setText("");
-                    txtPassword.setText("");
-                    txtConfirm.setText("");
+                    DialogManager.showDialog(act, "Warning", "Password tidak sesuai!");
                 } else {
                     new DoRegister(act).execute(
-                            email,
+                            phoneNumber,
                             password
                     );
                 }
             }
         });
 
-        txtEmail.addTextChangedListener(new TextWatcher() {
+        txtPhone.addTextChangedListener(new TextWatcher() {
 
             @Override
             public void afterTextChanged(Editable s) {
@@ -193,7 +160,7 @@ public class ActivityRegister extends ActionBarActivity {
         btnClearEmail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                txtEmail.setText("");
+                txtPhone.setText("");
                 btnClearEmail.setVisibility(GONE);
                 btnClearConfirmPassword.setVisibility(GONE);
             }
@@ -215,14 +182,14 @@ public class ActivityRegister extends ActionBarActivity {
             }
         });
 
-        txtEmail.setOnTouchListener(new View.OnTouchListener() {
+        txtPhone.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 // TODO Auto-generated method stub
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     btnClearPassword.setVisibility(GONE);
                     btnClearConfirmPassword.setVisibility(GONE);
-                    if (!txtEmail.getText().toString().isEmpty()) {
+                    if (!txtPhone.getText().toString().isEmpty()) {
                         btnClearEmail.setVisibility(VISIBLE);
                     }
                 }
@@ -258,7 +225,7 @@ public class ActivityRegister extends ActionBarActivity {
             }
         });
 
-        txtEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        txtPhone.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -355,22 +322,19 @@ public class ActivityRegister extends ActionBarActivity {
         protected String doInBackground(String... params) {
             try {
 
-                String email = params[0];
+                String phoneNumber = params[0];
                 String password = params[1];
-
-                /*
-                if (email.equals(ApplicationData.user.email) && password.equals(ApplicationData.user.password)) {
-                    return "OK";
-                }
-                */
                 JSONControl jsControl = new JSONControl();
-                JSONObject response = jsControl.postRegister(email,password);
-                Log.d("json response",response.toString());
+                JSONObject responseRegister = jsControl.postRegister("",phoneNumber, password);
+                Log.d("json responseRegister", responseRegister.toString());
                 try {
-                    JSONObject user = response.getJSONObject("user");
+                    String token = responseRegister.getString("token");
+                    JSONObject user = responseRegister.getJSONObject("user");
                     String _id = user.getString("_id");
+                    Log.d("json response token",token);
                     Log.d("json response id",_id.toString());
-                    if(_id!=null){
+                    if (!token.isEmpty() && _id != null) {
+                        ApplicationData.token = token;
                         ApplicationData.registered_id = _id.toString();
                         return "OK";
                     }
@@ -381,11 +345,6 @@ public class ActivityRegister extends ActionBarActivity {
                 catch (Exception e) {
                     e.printStackTrace();
                 }
-
-
-
-
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -400,16 +359,14 @@ public class ActivityRegister extends ActionBarActivity {
             progressDialog.dismiss();
             switch (result) {
                 case "FAIL":
-                    DialogManager.showDialog(activity, "Warning", "Sign up Failed!");
+                    DialogManager.showDialog(activity, "Warning", "Tidak dapat registrasi!");
                     break;
                 case "OK":
-                    Intent i = new Intent(getBaseContext(), ActivityHandphone.class);
+                    Intent i = new Intent(getBaseContext(), ActivityHandphoneKonfirmasi.class);
                     startActivity(i);
                     finish();
                     break;
             }
-
-
         }
 
 

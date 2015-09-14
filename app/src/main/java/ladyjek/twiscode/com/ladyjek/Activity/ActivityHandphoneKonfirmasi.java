@@ -1,9 +1,14 @@
 package ladyjek.twiscode.com.ladyjek.Activity;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,8 +18,12 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 
+import org.json.JSONObject;
+
+import ladyjek.twiscode.com.ladyjek.Control.JSONControl;
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.R;
+import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
 
 public class ActivityHandphoneKonfirmasi extends Activity {
 
@@ -50,19 +59,10 @@ public class ActivityHandphoneKonfirmasi extends Activity {
                 if (ApplicationData.editPhone) {
                     finish();
                 } else {
-                    new AlertDialogWrapper.Builder(ActivityHandphoneKonfirmasi.this)
-                            .setTitle("Success register!")
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    Intent i = new Intent(ActivityHandphoneKonfirmasi.this, ActivityLogin.class);
-                                    startActivity(i);
-                                    finish();
-                                    dialog.dismiss();
-                                }
-                            })
-                            .setIcon(R.drawable.ladyjek_icon)
-                            .show();
+                    new DoVerifyCode(act).execute(
+                            ApplicationData.token,
+                            txtSmsCode.getText().toString()
+                    );
                 }
 
             }
@@ -75,6 +75,83 @@ public class ActivityHandphoneKonfirmasi extends Activity {
                     finish();
                 }
                 else{
+                    new DoVerifyCode(act).execute(
+                            ApplicationData.token,
+                            txtSmsCode.getText().toString()
+                    );
+                }
+
+            }
+        });
+
+    }
+
+
+
+    @Override
+    public void onBackPressed()
+    {
+        if(ApplicationData.editPhone){
+            ApplicationData.editPhone = false;
+        }
+        finish();
+        super.onBackPressed();  // optional depending on your needs
+    }
+    private class DoVerifyCode extends AsyncTask<String, Void, String> {
+        private Activity activity;
+        private Context context;
+        private Resources resources;
+        private ProgressDialog progressDialog;
+
+        public DoVerifyCode(Activity activity) {
+            super();
+            this.activity = activity;
+            this.context = activity.getApplicationContext();
+            this.resources = activity.getResources();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = new ProgressDialog(activity);
+            progressDialog.setMessage("Verifying. . .");
+            progressDialog.setIndeterminate(false);
+            progressDialog.setCancelable(false);
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressDialog.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+
+                String code = params[0];
+
+                JSONControl jsonControl = new JSONControl();
+                JSONObject objRefreshToken = jsonControl.postRefreshToken(ApplicationData.token);
+                String token = objRefreshToken.getString("token");
+                String response = jsonControl.postVerifyPhone(token, code);
+                Log.d("json response phone", response);
+                if(response.equalsIgnoreCase("true")){
+                    return "OK";
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return "FAIL";
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            progressDialog.dismiss();
+            switch (result) {
+                case "FAIL":
+                    DialogManager.showDialog(activity, "Warning", "Verify Phone Number failed!");
+                    break;
+                case "OK":
                     new AlertDialogWrapper.Builder(ActivityHandphoneKonfirmasi.this)
                             .setTitle("Success register!")
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -88,47 +165,14 @@ public class ActivityHandphoneKonfirmasi extends Activity {
                             })
                             .setIcon(R.drawable.ladyjek_icon)
                             .show();
-                }
-
+                    break;
             }
-        });
-
-    }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_activity_splash_screen, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-
-        if (id == R.id.action_settings) {
-            return true;
         }
 
-        return super.onOptionsItemSelected(item);
-    }
 
-    @Override
-    public void onBackPressed()
-    {
-        if(ApplicationData.editPhone){
-            ApplicationData.editPhone = false;
-        }
-        finish();
-        super.onBackPressed();  // optional depending on your needs
     }
-
 
 }
 

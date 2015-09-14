@@ -156,8 +156,6 @@ public class JSONResponse {
 
     public JSONObject PATCHResponse(String url, List<NameValuePair> params) {
         try {
-
-
             DefaultHttpClient httpClient = new DefaultHttpClient();
             HttpPatch httpPatch = new HttpPatch(url);
             httpPatch.setEntity(new UrlEncodedFormEntity(params));
@@ -209,6 +207,45 @@ public class JSONResponse {
     }
 
     public String POSTPhone(String url, String token, List<NameValuePair> params) {
+        try {
+
+            DefaultHttpClient httpClient = new DefaultHttpClient();
+            HttpPost httpPost = new HttpPost(url);
+            httpPost.setEntity(new UrlEncodedFormEntity(params));
+            httpPost.setHeader("x-access-token", token);
+            HttpResponse httpResponse = httpClient.execute(httpPost);
+            HttpEntity httpEntity = httpResponse.getEntity();
+            _inputStream = httpEntity.getContent();
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    _inputStream, "iso-8859-1"), 8);
+            StringBuilder sb = new StringBuilder();
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line + "\n");
+            }
+            _inputStream.close();
+            _json = sb.toString();
+
+        } catch (Exception e) {
+            Log.e("Buffer Error", "Error converting result " + e.toString());
+        }
+
+        // return JSON String
+        return _json;
+
+    }
+
+    public String POSTDeviceToken(String url, String token, List<NameValuePair> params) {
         try {
 
             DefaultHttpClient httpClient = new DefaultHttpClient();

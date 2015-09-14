@@ -13,5 +13,6 @@ public class ConfigManager {
     public static final String REFRESH_TOKEN = SERVER+"/refresh-token";
     public static final String PHONE_NUMBER = SERVER+"/phone-number";
     public static final String VERIFY_PHONE_NUMBER = SERVER+"/verify";
+    public static final String DEVICE_TOKEN = SERVER+"/device-token/create";
     public static final String SERVER_SOCKET = "http://playpal.id:5051/";
 }

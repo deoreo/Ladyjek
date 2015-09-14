@@ -102,6 +102,7 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
             public void onClick(View v) {
                 Intent i = new Intent(getBaseContext(), ActivityRegister.class);
                 startActivity(i);
+                finish();
             }
         });
 
@@ -110,6 +111,7 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
             public void onClick(View v) {
                 Intent i = new Intent(getBaseContext(), ActivityRegister.class);
                 startActivity(i);
+                finish();
             }
         });
 
@@ -328,11 +330,11 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
         protected String doInBackground(String... params) {
             try {
                 ApplicationManager appManager = new ApplicationManager(activity);
-                String email = params[0];
+                String phoneNumber = params[0];
                 String password = params[1];
 
                 JSONControl jsControl = new JSONControl();
-                JSONObject response = jsControl.postLogin(email,password);
+                JSONObject response = jsControl.postLogin(phoneNumber,password);
                 JSONObject responseUser = response.getJSONObject("user");
                 Log.d("login",responseUser.toString());
                 String responseToken = response.getString("token");
@@ -344,7 +346,7 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
                     Log.d("json response id",_id.toString());
                     if(_id!=null){
                         userLogin = new ModelUserOrder();
-                        userLogin.setEmail(email);
+                        userLogin.setEmail(phoneNumber);
                         userLogin.setPassword(password);
                         db.insertUser(userLogin);
                         ApplicationData.login_id = _id.toString();
