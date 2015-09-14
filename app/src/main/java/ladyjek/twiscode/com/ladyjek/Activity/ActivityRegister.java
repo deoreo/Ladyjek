@@ -337,6 +337,7 @@ public class ActivityRegister extends ActionBarActivity {
                     Log.d("json response token",token);
                     Log.d("json response id",_id.toString());
                     if (!token.isEmpty() && _id != null) {
+                        ParseManager.registerParse(activity);
                         String deviceToken = ApplicationData.PARSE_DEVICE_TOKEN;
                         ApplicationManager.getInstance(context).setUserToken(token);
                         ApplicationData.registered_id = _id.toString();

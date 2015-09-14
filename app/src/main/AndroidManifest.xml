@@ -144,7 +144,7 @@
         </activity>
         <!-- Added for Parse push notifications -->
 
-        <!--<service android:name="com.parse.PushService" />-->
+        <service android:name="com.parse.PushService" />
 
        <receiver
            android:name=".Parse.CustomPushReceiver"
@@ -153,6 +153,7 @@
                <action android:name="android.intent.action.BOOT_COMPLETED" />
                <action android:name="android.intent.action.USER_PRESENT" />
                <action android:name="com.parse.push.intent.RECEIVE" />
+               <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
                <action android:name="com.parse.push.intent.DELETE" />
                <action android:name="com.parse.push.intent.OPEN" />
            </intent-filter>

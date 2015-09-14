@@ -92,14 +92,12 @@ public class ActivityConfirm extends ActionBarActivity {
                     ApplicationManager um = new ApplicationManager(ActivityConfirm.this);
                     //um.setActivity("ActivityLoading");
                     startActivity(i);
-                    finish();
                 }
                 else {
                     Intent i = new Intent(getBaseContext(), ActivityVerifyPayment.class);
                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     ApplicationManager um = new ApplicationManager(ActivityConfirm.this);
                     startActivity(i);
-                    finish();
                 }
 
             }
@@ -114,7 +112,6 @@ public class ActivityConfirm extends ActionBarActivity {
                 ApplicationManager um = new ApplicationManager(ActivityConfirm.this);
                 um.setActivity("ActivityLoading");
                 startActivity(i);
-                finish();
             }
         });
 

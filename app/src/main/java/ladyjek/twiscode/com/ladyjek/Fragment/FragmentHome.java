@@ -1076,8 +1076,8 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
     public void onPause() {
         // Unregister since the activity is not visible
         Log.i("unreg receiver", "fragment unregister");
-        //LocalBroadcastManager.getInstance(mActivity).unregisterReceiver(createOrder);
-        //LocalBroadcastManager.getInstance(mActivity).unregisterReceiver(lastFeedback);
+        LocalBroadcastManager.getInstance(mActivity).unregisterReceiver(createOrder);
+        LocalBroadcastManager.getInstance(mActivity).unregisterReceiver(lastFeedback);
         mHandler.removeCallbacks(mRunnable);
         // If the screen is off then the device has been locked
         PowerManager powerManager = (PowerManager) mActivity.getSystemService(mActivity.POWER_SERVICE);

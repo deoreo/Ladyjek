@@ -54,11 +54,11 @@ public class ApplicationData {
     public static JSONArray getOrder = new JSONArray();
 
     public static final String PARSE_CHANNEL = "ladyjek";
-    //public static final String PARSE_APPLICATION_ID = "OqKceLUMcPo769myUmHlAlNLNGa0PxWgu6xNEYRD";
-    //public static final String PARSE_CLIENT_KEY = "WVJeHzaOwLUH5pQHTwnk9laqfQOrWIdRSPzcbGpC";
+    public static final String PARSE_APPLICATION_ID = "OqKceLUMcPo769myUmHlAlNLNGa0PxWgu6xNEYRD";
+    public static final String PARSE_CLIENT_KEY = "WVJeHzaOwLUH5pQHTwnk9laqfQOrWIdRSPzcbGpC";
 
-    public static final String PARSE_APPLICATION_ID = "6v8hpUwe9Ba2BgUlgeuN8eQPulFFuGvVkiHPfEZ6";
-    public static final String PARSE_CLIENT_KEY = "iqG01ZjXfCODRvzejdb0qLX8ULoaP853jTEFi1xJ";
+    //public static final String PARSE_APPLICATION_ID = "6v8hpUwe9Ba2BgUlgeuN8eQPulFFuGvVkiHPfEZ6";
+    //public static final String PARSE_CLIENT_KEY = "iqG01ZjXfCODRvzejdb0qLX8ULoaP853jTEFi1xJ";
     public static final int NOTIFICATION_ID = 100;
     public static String PARSE_DEVICE_TOKEN = "";
 
