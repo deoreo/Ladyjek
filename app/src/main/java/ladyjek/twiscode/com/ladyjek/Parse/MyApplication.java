@@ -2,6 +2,8 @@ package ladyjek.twiscode.com.ladyjek.Parse;
 
 import android.app.Application;
 
+import com.parse.PushService;
+
 public class MyApplication extends Application {
 
     private static MyApplication mInstance;
@@ -10,9 +12,9 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         mInstance = this;
+        ParseManager.registerParse(this);
+        ParseManager.setDeviceToken(this);
 
-        // register with parse
-        //ParseManager.registerParse(this);
     }
 
 

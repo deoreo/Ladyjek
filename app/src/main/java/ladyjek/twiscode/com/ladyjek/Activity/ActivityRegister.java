@@ -23,6 +23,7 @@ import org.json.JSONObject;
 
 import ladyjek.twiscode.com.ladyjek.Control.JSONControl;
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
+import ladyjek.twiscode.com.ladyjek.Parse.ParseManager;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
@@ -336,9 +337,22 @@ public class ActivityRegister extends ActionBarActivity {
                     Log.d("json response token",token);
                     Log.d("json response id",_id.toString());
                     if (!token.isEmpty() && _id != null) {
+                        String deviceToken = ApplicationData.PARSE_DEVICE_TOKEN;
                         ApplicationManager.getInstance(context).setUserToken(token);
                         ApplicationData.registered_id = _id.toString();
-                        return "OK";
+                        JSONControl jsonControl = new JSONControl();
+                        JSONObject objRefreshToken = jsonControl.postRefreshToken(ApplicationManager.getInstance(context).getUserToken());
+                        Log.d("refresh token", objRefreshToken.toString());
+                        String refreshToken = objRefreshToken.getString("token");
+                        String response = jsonControl.postDeviceToken(refreshToken, deviceToken);
+                        Log.d("json response phone", response);
+                        if(response.contains("true") && !response.contains("jwt")){
+                            return "OK";
+                        }
+                        else{
+                            return "FAIL";
+                        }
+
                     }
                     else {
                         return "FAIL";
