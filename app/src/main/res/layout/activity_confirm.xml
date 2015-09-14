@@ -15,22 +15,23 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <ImageView
-                android:padding="10dp"
+                android:padding="5dp"
                 android:id="@+id/btnBack"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="52dp"
+                android:layout_height="52dp"
                 android:layout_centerVertical="true"
-                android:src="@drawable/ic_back"/>
+                android:src="@drawable/back_pink"/>
             <TextView
                 android:layout_toRightOf="@id/btnBack"
                 android:padding="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Review pesanan"
+                android:text="Review Order"
                 android:textSize="18dp"
                 android:textStyle="bold"
                 android:textColor="@color/bg_grad_2"
                 android:layout_centerVertical="true"
+                android:textAllCaps="true"
                 />
         </RelativeLayout>
 
