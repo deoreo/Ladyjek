@@ -42,18 +42,14 @@ public class ParseManager {
             public void done(ParseException e) {
                 Log.e(TAG, "Successfully subscribed to Parse!");
                 ApplicationData.PARSE_DEVICE_TOKEN = (String) ParseInstallation.getCurrentInstallation().get("deviceToken");
-                Log.e(TAG, "Device Token : "+ ApplicationData.PARSE_DEVICE_TOKEN);
+                Log.e(TAG, "Device Token : " + ApplicationData.PARSE_DEVICE_TOKEN);
             }
         });
     }
 
     public static void getDeviceToken(Context context){
-        String  android_id = Secure.getString(context.getContentResolver(), Secure.ANDROID_ID);
-        ParseInstallation installation = ParseInstallation.getCurrentInstallation();
-        installation.put("device_token",android_id);
-        installation.put("channels",ApplicationData.PARSE_CHANNEL);
-        installation.saveInBackground();
-        ApplicationData.PARSE_DEVICE_TOKEN = android_id;
+        ApplicationData.PARSE_DEVICE_TOKEN = (String) ParseInstallation.getCurrentInstallation().get("deviceToken");
+        Log.e(TAG, "Device Token : "+ ApplicationData.PARSE_DEVICE_TOKEN);
     }
 
 

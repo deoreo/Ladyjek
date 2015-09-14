@@ -314,10 +314,10 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
                 JSONControl jsControl = new JSONControl();
                 JSONObject response = jsControl.postLogin(phoneNumber,password);
                 JSONObject responseUser = response.getJSONObject("user");
-                String responseToken = response.getString("token");
-                appManager.setUserToken(responseToken);
+                String token = response.getString("token");
+                appManager.setUserToken(token);
 
-                Log.d("json response",responseToken );
+                Log.d("json response",token );
                 try {
                     String _verified = responseUser.getString("verified");
                     String _id = responseUser.getString("_id");
@@ -328,7 +328,19 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
                         userLogin.setPassword(password);
                         db.insertUser(userLogin);
                         ApplicationData.login_id = _id.toString();
-                        return "OK";
+
+                        String deviceToken = ApplicationData.PARSE_DEVICE_TOKEN;
+                        ApplicationManager.getInstance(context).setUserToken(token);
+                        ApplicationData.registered_id = _id.toString();
+                        JSONControl jsonControl = new JSONControl();
+                        JSONObject objRefreshToken = jsonControl.postRefreshToken(ApplicationManager.getInstance(context).getUserToken());
+                        Log.d("refresh token", objRefreshToken.toString());
+                        String refreshToken = objRefreshToken.getString("token");
+                        String responseDeviceToken = jsonControl.postDeviceToken(refreshToken, deviceToken);
+                        Log.d("json response phone", responseDeviceToken);
+                        if(responseDeviceToken.contains("true") && !responseDeviceToken.contains("jwt")){
+                            return "OK";
+                        }
                     }
                     else if(!_verified.contains("true")){
                         return "VERIFY";

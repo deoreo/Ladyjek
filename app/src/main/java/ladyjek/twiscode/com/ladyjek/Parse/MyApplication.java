@@ -12,7 +12,8 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         mInstance = this;
-        //ParseManager.registerParse(this);
+        ParseManager.registerParse(this);
+        ParseManager.getDeviceToken(this);
     }
 
 

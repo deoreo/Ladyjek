@@ -239,7 +239,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                 if (NetworkManager.getInstance(mActivity).isConnectedInternet()) {
                     Log.d("ServiceLocation", "Running");
                     if(ApplicationData.isFindLocation) {
-                        serviceLocation.GetMap(mActivity, googleMap, "Home");
+                        serviceLocation.GetMap(mActivity, googleMap, "");
                         posFrom = serviceLocation.updateLocation(mActivity);
                         socketManager.PostLocation(posFrom);
                         txtFrom.setText(getAddress(posFrom));
