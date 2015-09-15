@@ -25,6 +25,7 @@ import android.widget.RelativeLayout;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 
+import ladyjek.twiscode.com.ladyjek.Fragment.FragmentHome;
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.Model.ModelOrder;
 import ladyjek.twiscode.com.ladyjek.R;
@@ -154,6 +155,7 @@ public class ActivityRate extends ActionBarActivity {
                                     appManager.setActivity("");
                                     Intent i = new Intent(getBaseContext(), Main.class);
                                     ApplicationManager um = new ApplicationManager(ActivityRate.this);
+                                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                                     //um.setActivity("ActivityTracking");
                                     startActivity(i);
                                     finish();

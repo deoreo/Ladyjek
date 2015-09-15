@@ -361,6 +361,7 @@ public class ServiceLocation implements LocationListener {
                 case "FAIL":
                     break;
                 case "OK":
+                    mPosition = ApplicationData.posDriver;
                     try {
                         float zoom = gMap.getCameraPosition().zoom;
                         if(zoom<=13){
