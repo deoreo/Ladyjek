@@ -486,6 +486,60 @@ public class SocketManager {
         //return ApplicationData.driver;
     }
 
+    public void GetLastOrder(){
+        Log.d(TAG, "get lastorder");
+        socket.emit("get last order",new Ack() {
+            @Override
+            public void call(Object... args) {
+                try {
+                    JSONObject err = (JSONObject) args[0];
+                    if (err == null) {
+                        JSONObject obj = (JSONObject) args[1];
+                        Log.d(TAG, obj.toString());
+                        if (obj != null) {
+                            Log.d(TAG, "onLastOrder : " + obj.toString());
+                            String id = obj.getString("_id");
+                            String userID = obj.getString("user");
+                            String driverID = "";
+                            String to = obj.getString("to");
+                            String from = obj.getString("from");
+                            String distance = obj.getJSONObject("distance").getString("text");
+                            String duration = obj.getJSONObject("duration").getString("text");
+                            String status = obj.getString("status");
+                            if(!status.contains("queued")){
+                                driverID = obj.getString("driver");
+                            }
+                            String toLatitude = obj.getJSONObject("toGeo").getJSONArray("coordinates").getString(1);
+                            String toLongitude = obj.getJSONObject("toGeo").getJSONArray("coordinates").getString(0);
+                            String fromLatitude = obj.getJSONObject("fromGeo").getJSONArray("coordinates").getString(1);
+                            String fromLongitude = obj.getJSONObject("fromGeo").getJSONArray("coordinates").getString(0);
+                            String name = "Nabila";
+                            String payment = "TUNAI";
+                            String member = "12 Feb 2015";
+                            String phone = "089682587567";
+                            String rate = "4.5";
+                            String price = "";
+                            ModelOrder order = new ModelOrder(id, userID, driverID, name, to, from, distance, duration, status, toLongitude, toLatitude, fromLatitude, fromLongitude, rate, phone, member, payment, price);
+                            ApplicationData.order = order;
+                            ApplicationData.driver = new ModelDriver();
+                            SendBroadcast("lastOrder", "true");
+                        } else {
+                            Log.d(TAG,"onLastOrder null order");
+                            SendBroadcast("lastOrder", "false");
+                        }
+                    } else {
+                        Log.d(TAG, "getfeedback false");
+                    }
+                } catch (Exception ex) {
+                    Log.d(TAG, "getfeedback error");
+                    ex.printStackTrace();
+                }
+
+            }
+
+        });
+    }
+
     public void Feedback(int rate, String description){
         Log.d(TAG, "feedback");
         //boolean feed = false;

@@ -51,8 +51,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityConfirm;
-import ladyjek.twiscode.com.ladyjek.Activity.ActivityHandphoneKonfirmasi;
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityLoading;
+import ladyjek.twiscode.com.ladyjek.Activity.ActivityLogin;
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityPickUp;
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityRate;
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityTracking;
@@ -60,6 +60,7 @@ import ladyjek.twiscode.com.ladyjek.Activity.Main;
 import ladyjek.twiscode.com.ladyjek.Adapter.AdapterAddress;
 import ladyjek.twiscode.com.ladyjek.Adapter.AdapterSuggestion;
 import ladyjek.twiscode.com.ladyjek.Control.JSONControl;
+import ladyjek.twiscode.com.ladyjek.Database.DatabaseHandler;
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.Model.ModelDriver;
 import ladyjek.twiscode.com.ladyjek.Model.ModelGeocode;
@@ -74,6 +75,7 @@ import ladyjek.twiscode.com.ladyjek.Utilities.NetworkManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.SocketManager;
 
 
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdate;
@@ -156,11 +158,12 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
     private ApplicationManager appManager;
     private final String TAG = "FragmentHome";
     private SocketManager socketManager;
-    private BroadcastReceiver createOrder, lastOrder, lastFeedback;
+    private BroadcastReceiver createOrder, lastOrder, lastFeedback,logout;
     private ServiceLocation serviceLocation;
     private Runnable mRunnable;
     private Handler mHandler;
-    private final int AUTOUPDATE_INTERVAL_TIME = 15 * 60 * 1000; // 15 menit
+    private final int AUTOUPDATE_INTERVAL_TIME = 1 * 15 * 1000; // 15 detik
+    private DatabaseHandler db;
 
     public FragmentHome() {
         // Required empty public constructor
@@ -172,6 +175,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         Log.d("TouchableWrapper", "OnCreate");
         mActivity = getActivity();
         appManager = new ApplicationManager(mActivity);
+        db = new DatabaseHandler(mActivity);
         posFrom = ApplicationData.posFrom;
         tagLocation = TAG_FROM;
 
@@ -231,10 +235,8 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         SupportMapFragment fm = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapView);
         googleMap = fm.getMap();
         mHandler = new Handler();
-
         serviceLocation = new ServiceLocation(mActivity);
-        new GetLocation(mActivity,serviceLocation).execute();
-
+        serviceLocation.GetMap(mActivity, googleMap, "Home");
         mRunnable = new Runnable() {
             @Override
             public void run() {
@@ -242,7 +244,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                 if (NetworkManager.getInstance(mActivity).isConnectedInternet()) {
                     Log.d("ServiceLocation", "Running");
                     if(ApplicationData.isFindLocation) {
-                        serviceLocation.GetMap(mActivity, googleMap);
+                        serviceLocation.GetMap(mActivity, googleMap, "");
                         posFrom = serviceLocation.updateLocation(mActivity);
                         socketManager.PostLocation(posFrom);
                         txtFrom.setText(getAddress(posFrom));
@@ -641,6 +643,33 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
             }
         };
 
+        logout = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                // Extract data included in the Intent
+                Log.d(TAG, "broadcast logout");
+                String message = intent.getStringExtra("message");
+                if (message.equalsIgnoreCase("true")) {
+                    new AlertDialogWrapper.Builder(mActivity)
+                            .setTitle("Token expired! silahkan login kembali")
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    appManager.logoutUser();
+                                    db.logout();
+                                    Intent i = new Intent(getActivity(), ActivityLogin.class);
+                                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    startActivity(i);
+                                    getActivity().finish();
+                                }
+                            })
+                            .setIcon(R.drawable.ladyjek_icon)
+                            .show();
+
+                }
+            }
+        };
+
 
         // Inflate the layout for this fragment
         return rootView;
@@ -889,9 +918,6 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
     }
 
 
-
-
-
     private class GetMyLocation extends AsyncTask<String, Void, String> implements LocationListener {
         private Activity activity;
         private Context context;
@@ -1063,75 +1089,6 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         }
     }
 
-
-    private class GetLocation extends AsyncTask<String, Void, String> {
-        private Activity activity;
-        private Context context;
-        private Resources resources;
-        private ProgressDialog progressDialog;
-        private ServiceLocation serviceLocation;
-        private String address;
-        private LatLng posFrom;
-
-        public GetLocation(Activity activity, ServiceLocation serviceLocation) {
-            super();
-            this.activity = activity;
-            this.context = activity.getApplicationContext();
-            this.resources = activity.getResources();
-            this.serviceLocation = serviceLocation;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressDialog = new ProgressDialog(activity);
-            progressDialog.setMessage("Memuat Lokasi Anda. . .");
-            progressDialog.setIndeterminate(false);
-            progressDialog.setCancelable(false);
-            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            progressDialog.show();
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            try {
-                if(serviceLocation==null){
-                    serviceLocation = new ServiceLocation();
-                }
-                serviceLocation.GetMap(mActivity, googleMap);
-                posFrom = serviceLocation.updateLocation(mActivity);
-                socketManager.PostLocation(posFrom);
-                address = getAddress(posFrom);
-                ApplicationManager.getInstance(activity).setUserFrom(new ModelPlace(posFrom.latitude, posFrom.longitude));
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return "FAIL";
-
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-
-            progressDialog.dismiss();
-            switch (result) {
-                case "FAIL":
-                    DialogManager.showDialog(activity, "Warning", "Tidak dapat memuat lokasi anda!");
-                    break;
-                case "OK":
-                    txtFrom.setText(address);
-                    break;
-            }
-
-
-        }
-
-
-    }
-
-
     @Override
     public void onResume() {
         super.onResume();
@@ -1145,6 +1102,8 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                 new IntentFilter("lastOrder"));
         LocalBroadcastManager.getInstance(mActivity).registerReceiver(lastFeedback,
                 new IntentFilter("lastFeedback"));
+        LocalBroadcastManager.getInstance(mActivity).registerReceiver(lastFeedback,
+                new IntentFilter("logout"));
 
     }
 

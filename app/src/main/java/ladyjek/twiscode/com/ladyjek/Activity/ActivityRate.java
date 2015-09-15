@@ -1,12 +1,19 @@
 package ladyjek.twiscode.com.ladyjek.Activity;
 
+import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.PowerManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
@@ -18,8 +25,11 @@ import android.widget.RelativeLayout;
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
+import ladyjek.twiscode.com.ladyjek.Model.ModelOrder;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
+import ladyjek.twiscode.com.ladyjek.Utilities.NetworkManager;
+import ladyjek.twiscode.com.ladyjek.Utilities.SocketManager;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -28,16 +38,28 @@ public class ActivityRate extends ActionBarActivity {
 
 
     private Toolbar mToolbar;
-    private TextView txtPrice, btnSaran;
+    private TextView txtPrice, txtName, txtJarak, txtWaktu, txtPembayaran, btnSaran;
     private EditText txtFeedback;
     private RelativeLayout btnClearFeedback, wrapperRegister;
+    ApplicationManager appManager;
+    Activity mActivity;
+    ModelOrder order = new ModelOrder();
+    SocketManager socketManager;
+    private BroadcastReceiver lastOrder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rating);
+        mActivity = this;
+        appManager = new ApplicationManager(mActivity);
+        socketManager = ApplicationData.socketManager;
         txtPrice = (TextView) findViewById(R.id.txtTotal);
-        txtPrice.setText("Total : " + ApplicationData.price);
+        txtName = (TextView) findViewById(R.id.nameDriver);
+        txtJarak = (TextView) findViewById(R.id.txtDistance);
+        txtWaktu = (TextView) findViewById(R.id.txtDuration);
+        txtPembayaran = (TextView) findViewById(R.id.txtMetode);
+        //txtPrice.setText("Total : " + ApplicationData.price);
         txtFeedback = (EditText) findViewById(R.id.feedbackDriver);
         btnClearFeedback = (RelativeLayout) findViewById(R.id.btnFeedback);
         btnSaran = (TextView) findViewById(R.id.btnSaran);
@@ -131,6 +153,44 @@ public class ActivityRate extends ActionBarActivity {
             }
         });
 
+        if(appManager.getOrder()!=null){
+            order = appManager.getOrder();
+            SetUI();
+        }
+        else {
+            if(NetworkManager.getInstance(mActivity).isConnectedInternet()){
+                socketManager.GetLastOrder();
+            }
+        }
+
+        lastOrder = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                // Extract data included in the Intent
+                Log.d("", "broadcast lastOrder");
+                String message = intent.getStringExtra("message");
+                Intent i = null;
+                String pref = appManager.getActivity();
+                if (message.equals("true")) {
+                    order = ApplicationData.order;
+                    SetUI();
+                }
+
+            }
+        };
+
+
+
+
+
+    }
+
+    private void SetUI(){
+        txtName.setText(ApplicationData.driver.getName());
+        txtJarak.setText(order.getDistance());
+        txtWaktu.setText(order.getDuration());
+        txtPrice.setText(order.getPrice());
+        txtPembayaran.setText(order.getPayment());
     }
 
     private void SetActionBar() {
@@ -151,6 +211,24 @@ public class ActivityRate extends ActionBarActivity {
         startActivity(intent);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Register mMessageReceiver to receive messages.
+        Log.i("adding receiver", "fragment ontainer for profile");
+
+        LocalBroadcastManager.getInstance(mActivity).registerReceiver(lastOrder,
+                new IntentFilter("lastOrder"));
+
+    }
+
+    @Override
+    public void onPause() {
+        // Unregister since the activity is not visible
+        Log.i("unreg receiver", "fragment unregister");
+
+        super.onPause();
+    }
 
 
 }
