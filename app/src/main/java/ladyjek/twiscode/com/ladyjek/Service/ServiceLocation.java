@@ -255,7 +255,6 @@ public class ServiceLocation implements LocationListener {
             switch (result) {
                 case "FAIL":
                     ApplicationData.isFindLocation = false;
-                    DialogManager.showDialog(activity, "Peringatan", "Tidak dapat menemukan lokasi anda!");
                     break;
                 case "OK":
                     ApplicationData.isFindLocation = true;
@@ -359,7 +358,6 @@ public class ServiceLocation implements LocationListener {
             super.onPostExecute(result);
             switch (result) {
                 case "FAIL":
-                    DialogManager.showDialog(activity, "Peringatan", "Tidak dapat menemukan lokasi driver!");
                     break;
                 case "OK":
                     try {
