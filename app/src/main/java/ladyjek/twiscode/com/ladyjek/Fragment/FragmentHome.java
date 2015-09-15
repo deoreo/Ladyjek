@@ -958,7 +958,52 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                 try {
                     //Looper.prepare();
                     //mUserLocationHandler = new Handler();
+                    Log.d("loc", "get current location");
+                    int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(mActivity);
+                    if (status != ConnectionResult.SUCCESS) {
+                        int requestCode = 10;
+                    } else {
+                        locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
+                        boolean isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+                        boolean isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+                        Criteria criteria = new Criteria();
+                        String provider = locationManager.getBestProvider(criteria, true);
+                        location = locationManager.getLastKnownLocation(provider);
+                        if (!isGPSEnabled && !isNetworkEnabled) {
+                            return "FAIL";
+                        } else {
+                            if (isNetworkEnabled) {
+                                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this, Looper.getMainLooper());
+                                Log.d("locationManager", "Network");
+                                if (locationManager != null) {
+                                    location = locationManager
+                                            .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                                    if (location != null) {
+                                        latitude = location.getLatitude();
+                                        longitude = location.getLongitude();
+                                        posFrom = new LatLng(latitude, longitude);
+                                        ApplicationData.posFrom = posFrom;
+                                        appManager.setUserFrom(new ModelPlace(posFrom.latitude, posFrom.longitude));
+                                    }
+                                }
+                            }
+                            if (isGPSEnabled) {
+                                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this, Looper.getMainLooper());
+                                Log.d("locationManager", "GPS");
+                                if (locationManager != null) {
+                                    location = locationManager
+                                            .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                                    if (location != null) {
+                                        latitude = location.getLatitude();
+                                        longitude = location.getLongitude();
+                                        posFrom = new LatLng(latitude, longitude);
+                                        ApplicationData.posFrom = posFrom;
 
+                                    }
+                                }
+                            }
+                        }
+                    }
 
                     //Looper.loop();
                 } catch (Exception e) {
