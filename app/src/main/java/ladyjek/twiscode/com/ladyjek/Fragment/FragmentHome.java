@@ -11,10 +11,8 @@ import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
-import android.os.PowerManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
@@ -26,7 +24,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.app.Dialog;
 import android.content.Intent;
-import android.graphics.Color;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
@@ -37,12 +34,10 @@ import android.os.StrictMode;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -56,7 +51,6 @@ import ladyjek.twiscode.com.ladyjek.Activity.ActivityLogin;
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityPickUp;
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityRate;
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityTracking;
-import ladyjek.twiscode.com.ladyjek.Activity.Main;
 import ladyjek.twiscode.com.ladyjek.Adapter.AdapterAddress;
 import ladyjek.twiscode.com.ladyjek.Adapter.AdapterSuggestion;
 import ladyjek.twiscode.com.ladyjek.Control.JSONControl;
@@ -65,13 +59,11 @@ import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.Model.ModelDriver;
 import ladyjek.twiscode.com.ladyjek.Model.ModelGeocode;
 import ladyjek.twiscode.com.ladyjek.Model.ModelPlace;
-import ladyjek.twiscode.com.ladyjek.Model.ModelUserOrder;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Service.ServiceLocation;
 import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.GoogleAPIManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
-import ladyjek.twiscode.com.ladyjek.Utilities.NetworkManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.SocketManager;
 
 
@@ -81,12 +73,10 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Circle;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -105,8 +95,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -235,7 +223,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         mHandler = new Handler();
         serviceLocation = new ServiceLocation(mActivity);
         //new GetLocation(mActivity, googleMap).execute();
-        new GetMyLocation(mActivity).execute();
+        new GetMyLocation(mActivity, googleMap).execute();
 
         /*
         mRunnable = new Runnable() {
@@ -628,6 +616,9 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                         startActivity(i);
                         getActivity().finish();
                     }
+                    else{
+                        Log.d(TAG, "Ga ada last order coy...");
+                    }
 
 
                 }
@@ -643,6 +634,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                 Log.d(TAG, "broadcast lastFeedback");
                 String message = intent.getStringExtra("message");
                 if (message.equalsIgnoreCase("true")) {
+                    ApplicationData.socketManager = socketManager;
                     Intent i = new Intent(getActivity(), ActivityRate.class);
                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(i);
@@ -761,6 +753,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         }
         return addressLine;
     }
+
 
     public static void hideKeyboard() {
         View view = mActivity.getCurrentFocus();
@@ -931,23 +924,23 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         private Context context;
         private Resources resources;
         private ProgressDialog progressDialog;
-        private Handler mUserLocationHandler = null;
-        private Handler handler = null;
-        double latitude, longitude;
-        private GoogleMap gMap;
-        LocationManager locationManager;
+        //private Handler mUserLocationHandler = null;
+        //private Handler handler = null;
+        private double latitude, longitude;
+        private GoogleMap googleMap;
+        private LocationManager locationManager;
 
-        public GetMyLocation(Activity activity) {
+        public GetMyLocation(Activity activity, GoogleMap googleMap) {
             super();
             this.activity = activity;
             this.context = activity.getApplicationContext();
             this.resources = activity.getResources();
+            this.googleMap = googleMap;
         }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
             progressDialog = new ProgressDialog(activity);
             progressDialog.setMessage("Memuat lokasi anda. . .");
             progressDialog.setIndeterminate(false);
@@ -963,66 +956,16 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
             Log.d("posisi gps", "doInbackground");
             try {
                 try {
-                    Looper.prepare();
-                    mUserLocationHandler = new Handler();
-                    Log.d("loc", "get current location");
-                    SupportMapFragment fm = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapView);
-                    gMap = fm.getMap();
-                    int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(mActivity);
-                    if (status != ConnectionResult.SUCCESS) {
-                        int requestCode = 10;
-                        Dialog dialog = GooglePlayServicesUtil.getErrorDialog(status, mActivity, requestCode);
-                        dialog.show();
-                    } else {
+                    //Looper.prepare();
+                    //mUserLocationHandler = new Handler();
 
-                        locationManager = (LocationManager) mActivity.getSystemService(Context.LOCATION_SERVICE);
-                        boolean isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-                        boolean isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-                        Criteria criteria = new Criteria();
-                        String provider = locationManager.getBestProvider(criteria, true);
-                        location = locationManager.getLastKnownLocation(provider);
-                        if (!isGPSEnabled && !isNetworkEnabled) {
-                            return "FAIL";
-                        } else {
-                            if (isNetworkEnabled) {
-                                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
-                                Log.d("locationManager", "Network");
-                                if (locationManager != null) {
-                                    location = locationManager
-                                            .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                                    if (location != null) {
-                                        latitude = location.getLatitude();
-                                        longitude = location.getLongitude();
-                                        posFrom = new LatLng(latitude, longitude);
-                                        ApplicationData.posFrom = posFrom;
-                                        appManager.setUserFrom(new ModelPlace(posFrom.latitude, posFrom.longitude));
-                                    }
-                                }
-                            }
-                            if (isGPSEnabled) {
-                                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
-                                Log.d("locationManager", "GPS");
-                                if (locationManager != null) {
-                                    location = locationManager
-                                            .getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                                    if (location != null) {
-                                        latitude = location.getLatitude();
-                                        longitude = location.getLongitude();
-                                        posFrom = new LatLng(latitude, longitude);
-                                        ApplicationData.posFrom = posFrom;
 
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    Looper.loop();
+                    //Looper.loop();
                 } catch (Exception e) {
                 }
                 return "OK";
             } catch (Exception e) {
-
+                e.printStackTrace();
             }
             return "FAIL";
 
@@ -1032,33 +975,32 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             Log.d("posisi gps", "onPost");
+            progressDialog.dismiss();
             switch (result) {
                 case "FAIL":
                     DialogManager.showDialog(activity, "Peringatan", "Can not find your location!");
-
                     break;
                 case "OK":
                     try {
                         LatLng pFrom = ApplicationData.posFrom;
-                        Log.d("posisi gps", "pFrom");
-                        if (gMap == null) {
-                            SupportMapFragment fm = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapView);
-                            gMap = fm.getMap();
-                        } else {
-                            Log.d("posisi gps", "map not null");
-                        }
-                        gMap.moveCamera(CameraUpdateFactory.newLatLng(pFrom));
-                        gMap.animateCamera(CameraUpdateFactory.zoomTo(15));
-                        markerFrom = gMap.addMarker(
+
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLng(pFrom));
+                        googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+                        markerFrom = googleMap.addMarker(
                                 new MarkerOptions()
                                         .position(pFrom)
                                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
                         cameraUpdate = CameraUpdateFactory.newLatLngZoom(pFrom, 15);
                         txtFrom.setText(getAddress(pFrom));
-                        gMap.animateCamera(cameraUpdate);
-                        progressDialog.dismiss();
+                        googleMap.animateCamera(cameraUpdate);
                         Log.d("posisi gps", pFrom.toString());
+                        Message msg = new Message();
+                        //handler.sendMessage(msg);
+                        //if (mUserLocationHandler != null) {
+                        //    mUserLocationHandler.getLooper().quit();
+                        //}
                     } catch (Exception e) {
+                        e.printStackTrace();
                     }
                     break;
             }
@@ -1075,11 +1017,11 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
             } catch (Exception e) {
                 Log.d("FragmentHome", "OnLocationChange");
             }
-            Message msg = new Message();
-            handler.sendMessage(msg);
-            if (mUserLocationHandler != null) {
-                mUserLocationHandler.getLooper().quit();
-            }
+            //Message msg = new Message();
+            //handler.sendMessage(msg);
+            //if (mUserLocationHandler != null) {
+            //    mUserLocationHandler.getLooper().quit();
+            //}
         }
 
         @Override
@@ -1098,6 +1040,11 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+    }
 
     @Override
     public void onResume() {

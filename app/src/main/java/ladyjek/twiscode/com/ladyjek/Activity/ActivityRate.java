@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.view.View;
 import android.widget.EditText;
@@ -28,6 +29,7 @@ import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.Model.ModelOrder;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
+import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.NetworkManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.SocketManager;
 
@@ -45,7 +47,8 @@ public class ActivityRate extends ActionBarActivity {
     Activity mActivity;
     ModelOrder order = new ModelOrder();
     SocketManager socketManager;
-    private BroadcastReceiver lastOrder;
+    private BroadcastReceiver lastOrder, feedback;
+    private RatingBar txtRate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +66,11 @@ public class ActivityRate extends ActionBarActivity {
         txtFeedback = (EditText) findViewById(R.id.feedbackDriver);
         btnClearFeedback = (RelativeLayout) findViewById(R.id.btnFeedback);
         btnSaran = (TextView) findViewById(R.id.btnSaran);
+        txtRate = (RatingBar) findViewById(R.id.rateDriver);
         wrapperRegister = (RelativeLayout) findViewById(R.id.wrapperRegister);
+
+
+
         txtFeedback.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 
             @Override
@@ -114,23 +121,54 @@ public class ActivityRate extends ActionBarActivity {
         btnSaran.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new AlertDialogWrapper.Builder(ActivityRate.this)
-                        .setTitle("Terima kasih!")
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Intent i = new Intent(getBaseContext(), Main.class);
-                                ApplicationManager um = new ApplicationManager(ActivityRate.this);
-                                um.setActivity("ActivityRate");
-                                startActivity(i);
-                                finish();
-                                dialog.dismiss();
-                            }
-                        })
-                        .setIcon(R.drawable.ladyjek_icon)
-                        .show();
+
+                int rate = 0;
+
+                if(txtRate.getRating() > 0 || txtFeedback.getText().toString().equals("")){
+                    rate = Math.round(txtRate.getRating());
+                    if(NetworkManager.getInstance(ActivityRate.this).isConnectedInternet()){
+                        socketManager.Feedback(rate,txtFeedback.getText().toString());
+                    }
+                    else {
+                        DialogManager.showDialog(ActivityRate.this, "Peringatan", "Tidak ada koneksi internet!");
+                    }
+                }
+                else {
+                    DialogManager.showDialog(ActivityRate.this, "Peringatan", "Beri feedback untuk driver!");
+                }
             }
         });
+        feedback = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                // Extract data included in the Intent
+                Log.d("broadcast", "feedback");
+                String message = intent.getStringExtra("message");
+
+                if (message.equals("true")) {
+                    new AlertDialogWrapper.Builder(ActivityRate.this)
+                            .setTitle("Terima kasih!")
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    appManager.setActivity("");
+                                    Intent i = new Intent(getBaseContext(), Main.class);
+                                    ApplicationManager um = new ApplicationManager(ActivityRate.this);
+                                    //um.setActivity("ActivityTracking");
+                                    startActivity(i);
+                                    finish();
+                                    dialog.dismiss();
+                                }
+                            })
+                            .setIcon(R.drawable.ladyjek_icon)
+                            .show();
+                }
+
+
+            }
+        };
+
+
         wrapperRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -219,6 +257,8 @@ public class ActivityRate extends ActionBarActivity {
 
         LocalBroadcastManager.getInstance(mActivity).registerReceiver(lastOrder,
                 new IntentFilter("lastOrder"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(feedback,
+                new IntentFilter("doFeedback"));
 
     }
 
@@ -226,7 +266,7 @@ public class ActivityRate extends ActionBarActivity {
     public void onPause() {
         // Unregister since the activity is not visible
         Log.i("unreg receiver", "fragment unregister");
-
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(feedback);
         super.onPause();
     }
 

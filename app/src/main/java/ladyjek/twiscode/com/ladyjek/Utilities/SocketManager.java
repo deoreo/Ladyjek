@@ -437,7 +437,7 @@ public class SocketManager {
     private Emitter.Listener onLastFeedback = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {
-            Log.d(TAG, "onLastFeedback");
+            Log.d(TAG, "onLastFeedback "+args[0].toString());
             String id = args[0].toString();
             if(id!=null){
                 ApplicationData.driverID = id;
@@ -579,7 +579,6 @@ public class SocketManager {
 
 
     }
-
 
 
 

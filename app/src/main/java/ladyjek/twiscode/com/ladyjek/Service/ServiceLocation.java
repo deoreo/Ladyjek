@@ -319,6 +319,7 @@ public class ServiceLocation implements LocationListener {
         private CameraUpdate cameraUpdate;
         private Location location;
         private LatLng posFrom;
+
         public UpdateDriverMarker(Activity activity, GoogleMap gMap) {
             super();
             this.activity = activity;

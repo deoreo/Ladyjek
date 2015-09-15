@@ -103,6 +103,12 @@ public class ActivityLoading extends Activity {
                 Log.d("orderTaken", message);
                 if(message=="true"){
                     Log.d("taken","true");
+                    Toast.makeText(ActivityLoading.this, "Driver ladyjek sedang menjemput. . .", Toast.LENGTH_LONG).show();
+                    Intent i = new Intent(getBaseContext(), ActivityPickUp.class);
+                    ApplicationManager um = new ApplicationManager(ActivityLoading.this);
+                    startActivity(i);
+                    finish();
+                    /*
                     new AlertDialogWrapper.Builder(ActivityLoading.this)
                             .setTitle("order sudah diterima !!")
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -118,8 +124,9 @@ public class ActivityLoading extends Activity {
                             })
                             .setIcon(R.drawable.ladyjek_icon)
                             .show();
+                    */
                 } else {
-                    Log.d("getTimeout","false");
+                    Log.d("getTimeout", "false");
                 }
 
             }
