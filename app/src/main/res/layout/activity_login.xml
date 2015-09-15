@@ -201,7 +201,7 @@
                             android:layout_marginLeft="10dp"
                             android:layout_marginTop="-8dp"
                             android:layout_alignParentRight="true"
-                            android:src="@drawable/next_white" />
+                            android:src="@drawable/down_pink" />
                     </RelativeLayout>
 
                 </RelativeLayout>
@@ -241,7 +241,7 @@
                             android:layout_marginLeft="10dp"
                             android:layout_marginTop="-8dp"
                             android:layout_alignParentRight="true"
-                            android:src="@drawable/next_white" />
+                            android:src="@drawable/next_pink" />
                     </RelativeLayout>
 
                 </RelativeLayout>

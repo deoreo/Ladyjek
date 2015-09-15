@@ -52,6 +52,7 @@ import android.widget.TextView;
 
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityConfirm;
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityLoading;
+import ladyjek.twiscode.com.ladyjek.Activity.ActivityLogin;
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityPickUp;
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityRate;
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityTracking;
@@ -59,6 +60,7 @@ import ladyjek.twiscode.com.ladyjek.Activity.Main;
 import ladyjek.twiscode.com.ladyjek.Adapter.AdapterAddress;
 import ladyjek.twiscode.com.ladyjek.Adapter.AdapterSuggestion;
 import ladyjek.twiscode.com.ladyjek.Control.JSONControl;
+import ladyjek.twiscode.com.ladyjek.Database.DatabaseHandler;
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.Model.ModelDriver;
 import ladyjek.twiscode.com.ladyjek.Model.ModelGeocode;
@@ -73,6 +75,7 @@ import ladyjek.twiscode.com.ladyjek.Utilities.NetworkManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.SocketManager;
 
 
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdate;
@@ -155,11 +158,12 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
     private ApplicationManager appManager;
     private final String TAG = "FragmentHome";
     private SocketManager socketManager;
-    private BroadcastReceiver createOrder, lastOrder, lastFeedback;
+    private BroadcastReceiver createOrder, lastOrder, lastFeedback,logout;
     private ServiceLocation serviceLocation;
     private Runnable mRunnable;
     private Handler mHandler;
     private final int AUTOUPDATE_INTERVAL_TIME = 1 * 15 * 1000; // 15 detik
+    private DatabaseHandler db;
 
     public FragmentHome() {
         // Required empty public constructor
@@ -171,6 +175,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         Log.d("TouchableWrapper", "OnCreate");
         mActivity = getActivity();
         appManager = new ApplicationManager(mActivity);
+        db = new DatabaseHandler(mActivity);
         posFrom = ApplicationData.posFrom;
         tagLocation = TAG_FROM;
 
@@ -638,6 +643,33 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
             }
         };
 
+        logout = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                // Extract data included in the Intent
+                Log.d(TAG, "broadcast logout");
+                String message = intent.getStringExtra("message");
+                if (message.equalsIgnoreCase("true")) {
+                    new AlertDialogWrapper.Builder(mActivity)
+                            .setTitle("Token expired! silahkan login kembali")
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    appManager.logoutUser();
+                                    db.logout();
+                                    Intent i = new Intent(getActivity(), ActivityLogin.class);
+                                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    startActivity(i);
+                                    getActivity().finish();
+                                }
+                            })
+                            .setIcon(R.drawable.ladyjek_icon)
+                            .show();
+
+                }
+            }
+        };
+
 
         // Inflate the layout for this fragment
         return rootView;
@@ -1070,6 +1102,8 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                 new IntentFilter("lastOrder"));
         LocalBroadcastManager.getInstance(mActivity).registerReceiver(lastFeedback,
                 new IntentFilter("lastFeedback"));
+        LocalBroadcastManager.getInstance(mActivity).registerReceiver(lastFeedback,
+                new IntentFilter("logout"));
 
     }
 
