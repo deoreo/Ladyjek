@@ -336,9 +336,10 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
                         JSONObject objRefreshToken = jsonControl.postRefreshToken(ApplicationManager.getInstance(context).getUserToken());
                         Log.d("refresh token", objRefreshToken.toString());
                         String refreshToken = objRefreshToken.getString("token");
+                        ApplicationManager.getInstance(context).setUserToken(refreshToken);
                         String responseDeviceToken = jsonControl.postDeviceToken(refreshToken, deviceToken);
                         Log.d("json response phone", responseDeviceToken);
-                        if(responseDeviceToken.contains("true") && !responseDeviceToken.contains("jwt")){
+                        if(responseDeviceToken.contains("true") && !responseDeviceToken.contains("jwt") && !responseDeviceToken.contains("error")){
                             return "OK";
                         }
                     }

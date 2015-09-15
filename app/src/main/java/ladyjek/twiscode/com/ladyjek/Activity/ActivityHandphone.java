@@ -23,6 +23,7 @@ import org.json.JSONObject;
 import ladyjek.twiscode.com.ladyjek.Control.JSONControl;
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.R;
+import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
 
 import static android.view.View.GONE;
@@ -62,7 +63,7 @@ public class ActivityHandphone extends Activity {
                 else{
 
                     new DoPhone(act).execute(
-                            ApplicationData.token,
+                            ApplicationManager.getInstance(ActivityHandphone.this).getUserToken(),
                             "+62"+hp
                     );
                 }
@@ -80,7 +81,7 @@ public class ActivityHandphone extends Activity {
                 }
                 else{
                     new DoPhone(act).execute(
-                            ApplicationData.token,
+                            ApplicationManager.getInstance(ActivityHandphone.this).getUserToken(),
                             "+62"+hp
                     );
                 }

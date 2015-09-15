@@ -51,6 +51,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityConfirm;
+import ladyjek.twiscode.com.ladyjek.Activity.ActivityHandphoneKonfirmasi;
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityLoading;
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityPickUp;
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityRate;
@@ -159,7 +160,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
     private ServiceLocation serviceLocation;
     private Runnable mRunnable;
     private Handler mHandler;
-    private final int AUTOUPDATE_INTERVAL_TIME = 1 * 15 * 1000; // 15 detik
+    private final int AUTOUPDATE_INTERVAL_TIME = 15 * 60 * 1000; // 15 menit
 
     public FragmentHome() {
         // Required empty public constructor
@@ -230,8 +231,10 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         SupportMapFragment fm = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapView);
         googleMap = fm.getMap();
         mHandler = new Handler();
+
         serviceLocation = new ServiceLocation(mActivity);
-        serviceLocation.GetMap(mActivity, googleMap, "Home");
+        new GetLocation(mActivity,serviceLocation).execute();
+
         mRunnable = new Runnable() {
             @Override
             public void run() {
@@ -239,7 +242,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                 if (NetworkManager.getInstance(mActivity).isConnectedInternet()) {
                     Log.d("ServiceLocation", "Running");
                     if(ApplicationData.isFindLocation) {
-                        serviceLocation.GetMap(mActivity, googleMap, "");
+                        serviceLocation.GetMap(mActivity, googleMap);
                         posFrom = serviceLocation.updateLocation(mActivity);
                         socketManager.PostLocation(posFrom);
                         txtFrom.setText(getAddress(posFrom));
@@ -886,6 +889,9 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
     }
 
 
+
+
+
     private class GetMyLocation extends AsyncTask<String, Void, String> implements LocationListener {
         private Activity activity;
         private Context context;
@@ -1056,6 +1062,75 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
 
         }
     }
+
+
+    private class GetLocation extends AsyncTask<String, Void, String> {
+        private Activity activity;
+        private Context context;
+        private Resources resources;
+        private ProgressDialog progressDialog;
+        private ServiceLocation serviceLocation;
+        private String address;
+        private LatLng posFrom;
+
+        public GetLocation(Activity activity, ServiceLocation serviceLocation) {
+            super();
+            this.activity = activity;
+            this.context = activity.getApplicationContext();
+            this.resources = activity.getResources();
+            this.serviceLocation = serviceLocation;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = new ProgressDialog(activity);
+            progressDialog.setMessage("Memuat Lokasi Anda. . .");
+            progressDialog.setIndeterminate(false);
+            progressDialog.setCancelable(false);
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressDialog.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+                if(serviceLocation==null){
+                    serviceLocation = new ServiceLocation();
+                }
+                serviceLocation.GetMap(mActivity, googleMap);
+                posFrom = serviceLocation.updateLocation(mActivity);
+                socketManager.PostLocation(posFrom);
+                address = getAddress(posFrom);
+                ApplicationManager.getInstance(activity).setUserFrom(new ModelPlace(posFrom.latitude, posFrom.longitude));
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return "FAIL";
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            progressDialog.dismiss();
+            switch (result) {
+                case "FAIL":
+                    DialogManager.showDialog(activity, "Warning", "Tidak dapat memuat lokasi anda!");
+                    break;
+                case "OK":
+                    txtFrom.setText(address);
+                    break;
+            }
+
+
+        }
+
+
+    }
+
 
     @Override
     public void onResume() {

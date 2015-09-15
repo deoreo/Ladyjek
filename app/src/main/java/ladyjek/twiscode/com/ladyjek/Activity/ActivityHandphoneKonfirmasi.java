@@ -63,7 +63,6 @@ public class ActivityHandphoneKonfirmasi extends Activity {
                     finish();
                 } else {
                     new DoVerifyCode(act).execute(
-                            ApplicationData.token,
                             txtSmsCode.getText().toString()
                     );
                 }
@@ -162,9 +161,10 @@ public class ActivityHandphoneKonfirmasi extends Activity {
                 JSONObject objRefreshToken = jsonControl.postRefreshToken(ApplicationManager.getInstance(context).getUserToken());
                 Log.d("refresh token", objRefreshToken.toString());
                 String token = objRefreshToken.getString("token");
+                ApplicationManager.getInstance(context).setUserToken(token);
                 String response = jsonControl.postVerifyPhone(token, code);
                 Log.d("json response phone", response);
-                if(response.contains("true") && !response.contains("jwt")){
+                if(response.contains("true") && !response.contains("jwt") && !response.contains("error")){
                     return "OK";
                 }
             } catch (Exception e) {

@@ -345,9 +345,11 @@ public class ActivityRegister extends ActionBarActivity {
                         JSONObject objRefreshToken = jsonControl.postRefreshToken(ApplicationManager.getInstance(context).getUserToken());
                         Log.d("refresh token", objRefreshToken.toString());
                         String refreshToken = objRefreshToken.getString("token");
+                        ApplicationManager.getInstance(context).setUserToken(refreshToken);
+
                         String response = jsonControl.postDeviceToken(refreshToken, deviceToken);
                         Log.d("json response phone", response);
-                        if(response.contains("true") && !response.contains("jwt")){
+                        if(response.contains("true") && !response.contains("jwt") && !response.contains("error")){
                             return "OK";
                         }
                         else{
