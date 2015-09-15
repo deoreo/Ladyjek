@@ -314,8 +314,14 @@ public class SocketManager {
                     String nopol = obj.getString("vehicleNumber");
                     String hp = obj.getString("phoneNumber");
                     String img = "";
+                    JSONObject objPosGeo = obj.getJSONObject("posGeo");
+                    JSONArray arrayCoodinates = objPosGeo.getJSONArray("coordinates");
+                    Double lon = arrayCoodinates.getDouble(0);
+                    Double lat = arrayCoodinates.getDouble(1);
+                    LatLng posDriver = new LatLng(lat,lon);
                     ModelDriver driver = new ModelDriver(id,name,img,nopol,hp,rate);
                     ApplicationData.driver = driver;
+                    ApplicationData.posDriver=posDriver;
                     SendBroadcast("onOrderTaken", "true");
                 }
 

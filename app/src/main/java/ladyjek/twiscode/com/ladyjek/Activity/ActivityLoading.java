@@ -11,11 +11,13 @@ import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.os.PowerManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 
@@ -52,22 +54,39 @@ public class ActivityLoading extends Activity {
                 String message = intent.getStringExtra("message");
                 Log.d("orderTimeout", message);
                 if(message=="true"){
-                    Log.d("timeout","true");
-                    new AlertDialogWrapper.Builder(ActivityLoading.this)
-                            .setTitle("sesi order sudah habis. silahkan coba lagi !!")
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    Intent i = new Intent(getBaseContext(), ActivityConfirm.class);
-                                    ApplicationManager um = new ApplicationManager(ActivityLoading.this);
-                                    //um.setActivity("ActivityTracking");
-                                    startActivity(i);
-                                    finish();
-                                    dialog.dismiss();
-                                }
-                            })
-                            .setIcon(R.drawable.ladyjek_icon)
-                            .show();
+                    Log.d("timeout", "true");
+                    Toast.makeText(ActivityLoading.this,"Tidak menemukan driver ladyjek. . .", Toast.LENGTH_LONG).show();
+                    Intent i = new Intent(getBaseContext(), ActivityConfirm.class);
+                    ApplicationManager um = new ApplicationManager(ActivityLoading.this);
+                    startActivity(i);
+                    finish();
+                    /*
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            new AlertDialogWrapper.Builder(ActivityLoading.this)
+                                    .setTitle("sesi order sudah habis. silahkan coba lagi !!")
+                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            Intent i = new Intent(getBaseContext(), ActivityConfirm.class);
+                                            ApplicationManager um = new ApplicationManager(ActivityLoading.this);
+                                            //um.setActivity("ActivityTracking");
+                                            startActivity(i);
+                                            finish();
+                                            dialog.dismiss();
+                                        }
+                                    })
+                                    .setIcon(R.drawable.ladyjek_icon)
+                                    .show();
+                            // start time consuming background process here
+                        }
+                    }, 1000);
+
+*/
+
+
+
                 }
                 else {
                     Log.d("getTimeout","false");
@@ -99,8 +118,7 @@ public class ActivityLoading extends Activity {
                             })
                             .setIcon(R.drawable.ladyjek_icon)
                             .show();
-                }
-                else {
+                } else {
                     Log.d("getTimeout","false");
                 }
 

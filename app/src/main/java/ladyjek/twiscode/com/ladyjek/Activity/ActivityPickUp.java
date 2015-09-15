@@ -100,6 +100,7 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
         mHandler = new Handler();
         appManager = new ApplicationManager(ActivityPickUp.this);
         socketManager = ApplicationData.socketManager;
+        socketManager.DriverChange();
         serviceLocation = new ServiceLocation();
         if(appManager.getUserFrom()!=null) {
             latFrom = appManager.getUserFrom().getLatitude();

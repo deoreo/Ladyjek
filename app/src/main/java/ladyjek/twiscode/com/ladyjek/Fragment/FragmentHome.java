@@ -160,9 +160,9 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
     private SocketManager socketManager;
     private BroadcastReceiver createOrder, lastOrder, lastFeedback,logout;
     private ServiceLocation serviceLocation;
-    private Runnable mRunnable;
+    //private Runnable mRunnable;
     private Handler mHandler;
-    private final int AUTOUPDATE_INTERVAL_TIME = 15 * 60 * 1000; // 15 menit
+    private final int AUTOUPDATE_INTERVAL_TIME = 1 * 30 * 1000; // 15 menit
     private DatabaseHandler db;
 
     public FragmentHome() {
@@ -237,26 +237,31 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         //new GetLocation(mActivity, googleMap).execute();
         new GetMyLocation(mActivity).execute();
 
+        /*
         mRunnable = new Runnable() {
             @Override
             public void run() {
                 mHandler.postDelayed(this, AUTOUPDATE_INTERVAL_TIME);
                 if (NetworkManager.getInstance(mActivity).isConnectedInternet()) {
                     Log.d("ServiceLocation", "Running");
-                    if(ApplicationData.isFindLocation) {
-                        serviceLocation.GetMap(mActivity, googleMap);
-                        posFrom = serviceLocation.updateLocation(mActivity);
-                        socketManager.PostLocation(posFrom);
-                        txtFrom.setText(getAddress(posFrom));
-                        appManager.setUserFrom(new ModelPlace(posFrom.latitude, posFrom.longitude));
-                    }
-                    else{
-                        new GetMyLocation(mActivity).execute();
+                    if(markerDestination==null) {
+                        try {
+                            googleMap.clear();
+                            serviceLocation.GetMap(mActivity, googleMap);
+                            posFrom = serviceLocation.updateLocation(mActivity);
+                            socketManager.PostLocation(posFrom);
+                            txtFrom.setText(getAddress(posFrom));
+                            appManager.setUserFrom(new ModelPlace(posFrom.latitude, posFrom.longitude));
+                        }
+                        catch(Exception e){
+
+                        }
                     }
                 }
             }
         };
         mRunnable.run();
+        */
 
         wrapperRegister.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1051,13 +1056,14 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                         cameraUpdate = CameraUpdateFactory.newLatLngZoom(pFrom, 15);
                         txtFrom.setText(getAddress(pFrom));
                         gMap.animateCamera(cameraUpdate);
+                        progressDialog.dismiss();
                         Log.d("posisi gps", pFrom.toString());
                     } catch (Exception e) {
                     }
                     break;
             }
 
-            progressDialog.dismiss();
+
         }
 
 
@@ -1096,7 +1102,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
     @Override
     public void onResume() {
         super.onResume();
-        mHandler.postDelayed(mRunnable, AUTOUPDATE_INTERVAL_TIME);
+        //mHandler.postDelayed(mRunnable, AUTOUPDATE_INTERVAL_TIME);
         // Register mMessageReceiver to receive messages.
         Log.i("adding receiver", "fragment ontainer for profile");
 
@@ -1117,13 +1123,13 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         Log.i("unreg receiver", "fragment unregister");
         LocalBroadcastManager.getInstance(mActivity).unregisterReceiver(createOrder);
         LocalBroadcastManager.getInstance(mActivity).unregisterReceiver(lastFeedback);
+        /*
         mHandler.removeCallbacks(mRunnable);
-        // If the screen is off then the device has been locked
         PowerManager powerManager = (PowerManager) mActivity.getSystemService(mActivity.POWER_SERVICE);
         boolean isScreenOn = powerManager.isScreenOn();
         if (!isScreenOn) {
             mRunnable.run();
-        }
+        }*/
         super.onPause();
     }
 
