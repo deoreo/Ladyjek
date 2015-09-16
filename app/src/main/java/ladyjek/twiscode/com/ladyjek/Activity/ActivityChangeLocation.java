@@ -25,7 +25,7 @@ public class ActivityChangeLocation extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_location);
 
-        btnSimpan = (TextView) findViewById(R.id.btnPesan);
+        btnSimpan = (TextView) findViewById(R.id.btnSimpan);
         lblChange = (TextView) findViewById(R.id.txtLocation);
         btnBack = (ImageView) findViewById(R.id.btnBack);
 
