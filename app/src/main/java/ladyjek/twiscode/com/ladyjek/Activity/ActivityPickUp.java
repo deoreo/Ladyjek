@@ -78,9 +78,9 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
     private Boolean isCancel = false, isPhone = false, isSMS = false;
     private Double latFrom, lonFrom;
     private ServiceLocation serviceLocation;
-    private Runnable mRunnable;
-    private Handler mHandler;
-    private final int AUTOUPDATE_INTERVAL_TIME =  15 * 1000; // 15 detik
+    //private Runnable mRunnable;
+    //private Handler mHandler;
+    //private final int AUTOUPDATE_INTERVAL_TIME =  5 * 1000; // 15 detik
 
 
 
@@ -97,10 +97,9 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
         txtName = (TextView) findViewById(R.id.nameDriver);
         txtNopol = (TextView) findViewById(R.id.platDriver);
         txtRate = (TextView) findViewById(R.id.rateDriver);
-        mHandler = new Handler();
+        //mHandler = new Handler();
         appManager = new ApplicationManager(ActivityPickUp.this);
         socketManager = ApplicationData.socketManager;
-        socketManager.DriverChange();
         serviceLocation = new ServiceLocation();
         if(appManager.getUserFrom()!=null) {
             latFrom = appManager.getUserFrom().getLatitude();
@@ -136,20 +135,19 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
             drawDriverMarker(googleMap, posFrom, posDriver);
         }
 
-        mRunnable = new Runnable() {
+      /*  mRunnable = new Runnable() {
             @Override
             public void run() {
                 mHandler.postDelayed(this, AUTOUPDATE_INTERVAL_TIME);
                 if (NetworkManager.getInstance(mActivity).isConnectedInternet()) {
                     Log.d("ServiceLocation", "Running");
-                    socketManager.DriverChange();
-                    serviceLocation.GetDriverMarker(mActivity, googleMap);
+                    serviceLocation.GetDriverMarker(googleMap);
 
                 }
             }
         };
         mRunnable.run();
-
+*/
         PhoneCallListener phoneListener = new PhoneCallListener();
         TelephonyManager telephonyManager = (TelephonyManager) this
                 .getSystemService(Context.TELEPHONY_SERVICE);
@@ -273,8 +271,7 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
                 Log.d("driverChange", message);
                 if(message=="true"){
                     Log.d("driver change", "true");
-
-
+                    serviceLocation.GetDriverMarker(googleMap);
                 }
                 else {
                     Log.d("driver change","false");
@@ -509,7 +506,7 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
     @Override
     public void onResume() {
         super.onResume();
-        mHandler.postDelayed(mRunnable, AUTOUPDATE_INTERVAL_TIME);
+        //mHandler.postDelayed(mRunnable, AUTOUPDATE_INTERVAL_TIME);
         // Register mMessageReceiver to receive messages.
         LocalBroadcastManager.getInstance(this).registerReceiver(goTrip,
                 new IntentFilter("goTrip"));
@@ -534,10 +531,10 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
         //LocalBroadcastManager.getInstance(this).unregisterReceiver(getDriver);
         PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
         boolean isScreenOn = powerManager.isScreenOn();
-        mHandler.removeCallbacks(mRunnable);
-        if (!isScreenOn) {
-            mRunnable.run();
-        }
+        //mHandler.removeCallbacks(mRunnable);
+        //if (!isScreenOn) {
+         //   mRunnable.run();
+        //}
         super.onPause();
     }
 

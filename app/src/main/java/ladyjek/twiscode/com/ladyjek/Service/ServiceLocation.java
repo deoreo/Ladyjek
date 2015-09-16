@@ -124,8 +124,28 @@ public class ServiceLocation implements LocationListener {
         new UpdateMap(activity, googleMap).execute();
     }
 
-    public void GetDriverMarker(Activity activity, GoogleMap googleMap){
-        new UpdateDriverMarker(activity, googleMap).execute();
+    public void GetDriverMarker(GoogleMap googleMap){
+        //new UpdateDriverMarker(activity, googleMap).execute();
+        mPosition = ApplicationData.posDriver;
+        Log.d(TAG, "ApplicationData.posDriver : "+ ApplicationData.posDriver);
+        try {
+            float zoom = googleMap.getCameraPosition().zoom;
+            if(zoom<=13){
+                zoom=13;
+            }
+            if(ApplicationData.markerDriver!=null) {
+                ApplicationData.markerDriver.remove();
+            }
+            ApplicationData.markerDriver = googleMap.addMarker(
+                    new MarkerOptions()
+                            .position(mPosition)
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_driver)));
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(mPosition, zoom);
+            googleMap.animateCamera(cameraUpdate);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -311,8 +331,6 @@ public class ServiceLocation implements LocationListener {
         private Activity activity;
         private Context context;
         private Resources resources;
-        private Handler mUserLocationHandler = null;
-        private Handler handler = null;
         double latitude, longitude;
         private GoogleMap gMap;
         private LocationManager locationManager;
@@ -339,10 +357,7 @@ public class ServiceLocation implements LocationListener {
             Log.d(TAG, "doInbackground posisi gps");
             try {
                 try {
-                    Looper.prepare();
-                    mUserLocationHandler = new Handler();
                     mPosition = ApplicationData.posDriver;
-                    Looper.loop();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -359,9 +374,13 @@ public class ServiceLocation implements LocationListener {
             super.onPostExecute(result);
             switch (result) {
                 case "FAIL":
+                    Log.d(TAG, "FAIL");
+                    Log.d(TAG, "ApplicationData.posDriver : "+ ApplicationData.posDriver);
                     break;
                 case "OK":
+                    Log.d(TAG, "OK");
                     mPosition = ApplicationData.posDriver;
+                    Log.d(TAG, "ApplicationData.posDriver : "+ ApplicationData.posDriver);
                     try {
                         float zoom = gMap.getCameraPosition().zoom;
                         if(zoom<=13){

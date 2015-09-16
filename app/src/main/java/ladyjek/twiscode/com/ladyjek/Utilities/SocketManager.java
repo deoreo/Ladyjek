@@ -70,9 +70,6 @@ public class SocketManager {
         socket.connect();
     }
 
-    public void DriverChange(){
-        socket.on("driver location change",onDriverChangeLocation);
-    }
 
     public void Disconnect() {
         Log.d(TAG, "Disconnect");
@@ -287,6 +284,7 @@ public class SocketManager {
                 if(data != null){
                     ApplicationData.posDriver = new LatLng(data.getDouble(1),data.getDouble(0));
                     SendBroadcast("driverChange", "true");
+                    Log.d(TAG, "onDriverChangeLocation: "+ApplicationData.posDriver);
                 }
                 else {
                     //SendBroadcast("goDriverChange", "false");
@@ -447,6 +445,45 @@ public class SocketManager {
 
         }
     };
+
+    public void GetNearestDrivers(LatLng pos){
+        Log.d(TAG, "GetNearestDrivers : "+pos);
+        JSONArray loc = new JSONArray();
+        try {
+            loc.put(0, pos.longitude);
+            loc.put(1, pos.latitude);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        socket.emit("get nearest drivers", loc, new Ack() {
+            @Override
+            public void call(Object... args) {
+                Log.d(TAG, "getNearestDrivers");
+                try {
+                    Log.d(TAG, "getNearestDrivers args 0 : " + args[0]);
+                    Log.d(TAG, "getNearestDrivers args 1 : " + args[1]);
+                    JSONArray drivers = (JSONArray)args[1];
+                    int lengthDrivers = drivers.length();
+                    Log.d(TAG, "getNearestDrivers lengthDrivers : " + lengthDrivers);
+                    ApplicationData.posDrivers = new LatLng[lengthDrivers];
+
+                    for(int i=0;i<lengthDrivers;i++){
+                        Double lon = drivers.getJSONArray(i).getDouble(1);
+                        Double lat = drivers.getJSONArray(i).getDouble(0);
+                        ApplicationData.posDrivers[i] = new LatLng(lon, lat);
+                    }
+
+                    SendBroadcast("nearestDrivers ", "true");
+                } catch (Exception ex) {
+                    Log.d(TAG, "catch getnearestDrivers : ");
+                    SendBroadcast("nearestDrivers ", "false");
+                    ex.printStackTrace();
+                }
+            }
+
+        });
+        //return ApplicationData.driver;
+    }
 
     public void GetDriver(String id){
         Log.d(TAG, "getDriver : "+id);

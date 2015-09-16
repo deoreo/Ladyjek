@@ -69,4 +69,6 @@ public class ApplicationData {
     public static Marker markerFrom = null;
     public static Marker markerDriver = null;
 
+    public static LatLng[] posDrivers;
+
 }
