@@ -620,6 +620,44 @@ public class SocketManager {
 
     }
 
+    public void EditPassword(String oldpas, String newpass, String deviceToken){
+        Log.d(TAG, "edit password");
+        //boolean feed = false;
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("oldPassword",oldpas);
+            obj.put("newPassword",newpass);
+            obj.put("deviceToken",deviceToken);
+            Log.d(TAG, "edit password : "+obj.toString());
+            socket.emit("change password", obj, new Ack() {
+                @Override
+                public void call(Object... args) {
+                    try {
+                        JSONObject err = (JSONObject) args[0];
+                        if (err == null) {
+                            Log.d(TAG, "editPassword true");
+                            SendBroadcast("editPassword","true");
+                        } else {
+                            Log.d(TAG, "editPassword false");
+                            SendBroadcast("editPassword", "false");
+                        }
+                    } catch (Exception ex) {
+                        Log.d(TAG, "editPassword error");
+                        ex.printStackTrace();
+                        SendBroadcast("editPassword","false");
+                    }
+
+                }
+
+            });
+        }
+        catch (Exception ex){
+            ex.printStackTrace();
+        }
+
+
+    }
+
 
 
 
