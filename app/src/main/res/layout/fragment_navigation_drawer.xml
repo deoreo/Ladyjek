@@ -30,31 +30,39 @@
         android:background="@color/grey_color_dark"
         android:layout_below="@id/title"/>
     <RelativeLayout
+        android:id="@+id/wrapperSimpan"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clickable="true"
-        android:background="@color/white_color"
-        >
+        android:padding="20dp"
+        android:background="@drawable/plain_gradient_bg_btn"
+        android:layout_alignParentBottom="true">
 
-        <TextView
-            android:id="@+id/btnLogout"
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Log out"
-            android:typeface="sans"
-            android:textSize="14dip"
-            android:padding= "30dp"
-            android:textStyle="bold"
-            android:layout_centerHorizontal="true"/>
+            android:layout_centerHorizontal="true">
+            <TextView
+                android:id="@+id/btnLogout"
+                android:layout_marginTop="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white_color"
+                android:text="Log out"
+                android:textSize="18dp"
+                android:layout_centerHorizontal="true"
+                android:textAllCaps="true"
+                android:textStyle="bold"
 
-        <!--
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/grey_color"
-            android:layout_below="@id/title"/>
-         -->
-
+                />
+            <ImageView
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="-8dp"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/next_white" />
+        </RelativeLayout>
 
     </RelativeLayout>
 
