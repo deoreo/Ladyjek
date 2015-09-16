@@ -586,6 +586,9 @@ public class SocketManager {
     public void Feedback(int rate, String description){
         Log.d(TAG, "feedback");
         //boolean feed = false;
+        if(description.equals("") || description.isEmpty()){
+            description = "feedback";
+        }
         JSONObject obj = new JSONObject();
         try {
             obj.put("rate",rate);
