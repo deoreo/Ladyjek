@@ -18,7 +18,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"/>
         <RelativeLayout
-            android:id="@+id/wrapperRegister"
+            android:id="@+id/wrapperSimpan"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="20dp"
@@ -30,24 +30,26 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true">
                 <TextView
-                    android:id="@+id/btnPesan"
+                    android:id="@+id/btnSimpan"
                     android:layout_marginTop="5dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white_color"
-                    android:text="@string/simpan"
+                    android:text="Simpan"
                     android:textSize="18dp"
                     android:layout_centerHorizontal="true"
+                    android:textAllCaps="true"
+                    android:textStyle="bold"
 
                     />
                 <ImageView
-                    android:layout_width="34dp"
-                    android:layout_height="38dp"
-                    android:src="@drawable/right_arrow_white"
-                    android:layout_toRightOf="@id/btnPesan"
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginTop="-8dp"/>
+                    android:layout_marginTop="-8dp"
+                    android:layout_alignParentRight="true"
+                    android:src="@drawable/next_white" />
             </RelativeLayout>
 
         </RelativeLayout>
