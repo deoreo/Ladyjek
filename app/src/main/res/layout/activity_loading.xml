@@ -23,6 +23,18 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="78dp" />
-        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/btnCancel"
+            android:layout_width="64dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="20dp"
+            android:src="@drawable/cancel_close"/>
+
+    </RelativeLayout>
+
+
 
 </RelativeLayout>
