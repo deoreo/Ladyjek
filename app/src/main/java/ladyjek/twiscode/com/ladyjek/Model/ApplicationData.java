@@ -37,7 +37,7 @@ public class ApplicationData {
 
     public static LatLng posFrom;
     public static LatLng posDestination;
-    public static LatLng posDriver = new LatLng(-7.2855448024207226,112.7096968626571);
+    //public static LatLng posDriver = new LatLng(-7.2855448024207226,112.7096968626571);
 
     public static Class act = null;
 

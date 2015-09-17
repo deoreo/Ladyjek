@@ -24,6 +24,7 @@ import java.util.HashMap;
 import ladyjek.twiscode.com.ladyjek.Control.JSONControl;
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.Model.ModelDriver;
+import ladyjek.twiscode.com.ladyjek.Model.ModelGeocode;
 import ladyjek.twiscode.com.ladyjek.Model.ModelOrder;
 
 /**
@@ -282,9 +283,9 @@ public class SocketManager {
             JSONArray data = (JSONArray)args[0];
             try {
                 if(data != null){
-                    ApplicationData.posDriver = new LatLng(data.getDouble(1),data.getDouble(0));
+                    //ApplicationData.posDriver = new LatLng(data.getDouble(1),data.getDouble(0));
+                    ApplicationManager.getInstance(context).setPosDriver(new ModelGeocode(data.getDouble(1), data.getDouble(0)));
                     SendBroadcast("driverChange", "true");
-                    Log.d(TAG, "onDriverChangeLocation: "+ApplicationData.posDriver);
                 }
                 else {
                     //SendBroadcast("goDriverChange", "false");
@@ -319,7 +320,8 @@ public class SocketManager {
                     LatLng posDriver = new LatLng(lat,lon);
                     ModelDriver driver = new ModelDriver(id,name,img,nopol,hp,rate);
                     ApplicationData.driver = driver;
-                    ApplicationData.posDriver=posDriver;
+                    //ApplicationData.posDriver=posDriver;
+                    ApplicationManager.getInstance(context).setPosDriver(new ModelGeocode(lat, lon));
                     SendBroadcast("onOrderTaken", "true");
                 }
 
@@ -334,19 +336,25 @@ public class SocketManager {
         }
     };
 
-    public void PostLocation(LatLng pos) {
+    public void PostLocation(LatLng pos){
+        Log.d(TAG, "PostLocation");
+        JSONArray loc = new JSONArray();
         try {
-
-                JSONArray loc = new JSONArray();
-                loc.put(0, pos.longitude);
-                loc.put(1, pos.latitude);
-                socket.emit("post location", loc);
-                //Log.d(TAG,"PostLocation active:"+ pos.toString());
-
+            loc.put(0, pos.longitude);
+            loc.put(1, pos.latitude);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
+        socket.emit("post location", loc, new Ack() {
+            @Override
+            public void call(Object... args) {
+                try {
+                    Log.d(TAG, "PostLocation"+args[0].toString());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
 
@@ -447,11 +455,12 @@ public class SocketManager {
     };
 
     public void GetNearestDrivers(LatLng pos){
-        Log.d(TAG, "GetNearestDrivers : "+pos);
+
         JSONArray loc = new JSONArray();
         try {
             loc.put(0, pos.longitude);
             loc.put(1, pos.latitude);
+            Log.d(TAG, "GetNearestDrivers : "+loc.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -460,7 +469,6 @@ public class SocketManager {
             public void call(Object... args) {
                 Log.d(TAG, "getNearestDrivers");
                 try {
-                    Log.d(TAG, "getNearestDrivers args 0 : " + args[0]);
                     Log.d(TAG, "getNearestDrivers args 1 : " + args[1]);
                     JSONArray drivers = (JSONArray)args[1];
                     int lengthDrivers = drivers.length();

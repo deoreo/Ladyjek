@@ -125,7 +125,7 @@ public class ActivityRate extends ActionBarActivity {
 
                 int rate = 0;
 
-                if(txtRate.getRating() > 0 || txtFeedback.getText().toString().equals("")){
+                if(txtRate.getRating() > 0 && txtFeedback.getText().length()==0){
                     rate = Math.round(txtRate.getRating());
                     if(NetworkManager.getInstance(ActivityRate.this).isConnectedInternet()){
                         socketManager.Feedback(rate,txtFeedback.getText().toString());
@@ -174,22 +174,20 @@ public class ActivityRate extends ActionBarActivity {
         wrapperRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new AlertDialogWrapper.Builder(ActivityRate.this)
-                        .setTitle("Terima kasih!")
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Intent i = new Intent(getBaseContext(), Main.class);
-                                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                ApplicationManager um = new ApplicationManager(ActivityRate.this);
-                                um.setActivity("ActivityRate");
-                                startActivity(i);
-                                finish();
-                                dialog.dismiss();
-                            }
-                        })
-                        .setIcon(R.drawable.ladyjek_icon)
-                        .show();
+                int rate = 0;
+
+                if(txtRate.getRating() > 0 && txtFeedback.getText().length()==0){
+                    rate = Math.round(txtRate.getRating());
+                    if(NetworkManager.getInstance(ActivityRate.this).isConnectedInternet()){
+                        socketManager.Feedback(rate,txtFeedback.getText().toString());
+                    }
+                    else {
+                        DialogManager.showDialog(ActivityRate.this, "Peringatan", "Tidak ada koneksi internet!");
+                    }
+                }
+                else {
+                    DialogManager.showDialog(ActivityRate.this, "Peringatan", "Beri feedback untuk driver!");
+                }
             }
         });
 

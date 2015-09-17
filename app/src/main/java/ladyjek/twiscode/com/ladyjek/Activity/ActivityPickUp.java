@@ -27,6 +27,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.github.nkzawa.socketio.client.Socket;
@@ -51,6 +52,7 @@ import java.util.List;
 import java.util.Locale;
 
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
+import ladyjek.twiscode.com.ladyjek.Model.ModelGeocode;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Service.ServiceLocation;
 import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
@@ -112,7 +114,12 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
             lonFrom = posFrom.longitude;
         }
 
-        posDriver = ApplicationData.posDriver;
+        //posDriver = ApplicationData.posDriver;
+
+        ApplicationManager.getInstance(ActivityPickUp.this).getPosDriver();
+        Double lat = ApplicationManager.getInstance(ActivityPickUp.this).getPosDriver().getLatitude();
+        Double lon = ApplicationManager.getInstance(ActivityPickUp.this).getPosDriver().getLongitude();
+        posDriver = new LatLng(lat,lon);
 
         int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());
 
@@ -212,6 +219,14 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
                 Log.d("goTrip", message);
                 if(message=="true"){
                     appManager.setArrive(true);
+
+                    Toast.makeText(ActivityPickUp.this, "Driver telah sampai di tempat Anda", Toast.LENGTH_LONG).show();
+                    Intent i = new Intent(getBaseContext(), ActivityTracking.class);
+                    ApplicationManager um = new ApplicationManager(ActivityPickUp.this);
+                    um.setActivity("ActivityTracking");
+                    startActivity(i);
+                    finish();
+                    /*
                     new AlertDialogWrapper.Builder(ActivityPickUp.this)
                             .setTitle("Driver telah sampai di tempat Anda")
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -227,6 +242,7 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
                             })
                             .setIcon(R.drawable.ladyjek_icon)
                             .show();
+                            */
                 }
                 else {
                     Log.d("cant goTrip","");
@@ -271,7 +287,11 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
                 Log.d("driverChange", message);
                 if(message=="true"){
                     Log.d("driver change", "true");
-                    serviceLocation.GetDriverMarker(googleMap);
+                    ApplicationManager.getInstance(ActivityPickUp.this).getPosDriver();
+                    Double lat = ApplicationManager.getInstance(ActivityPickUp.this).getPosDriver().getLatitude();
+                    Double lon = ApplicationManager.getInstance(ActivityPickUp.this).getPosDriver().getLongitude();
+                    posDriver = new LatLng(lat,lon);
+                    serviceLocation.GetDriverMarker(googleMap, posDriver);
                 }
                 else {
                     Log.d("driver change","false");

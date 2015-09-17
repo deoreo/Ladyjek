@@ -8,10 +8,17 @@ public class ModelGeocode {
 
     public String lat;
     public String lon;
+    public Double latitude;
+    public Double longitude;
 
     public ModelGeocode(String lat, String lon) {
         this.lat = lat;
         this.lon = lon;
+    }
+
+    public ModelGeocode(Double lat, Double lon) {
+        this.latitude = lat;
+        this.longitude = lon;
     }
 
     @Override
@@ -27,5 +34,29 @@ public class ModelGeocode {
     public Double getLon() {
         double lon = Double.parseDouble(this.lon);
         return lon;
+    }
+
+    public void setLat(String lat) {
+        this.lat = lat;
+    }
+
+    public void setLon(String lon) {
+        this.lon = lon;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
     }
 }

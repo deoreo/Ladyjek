@@ -3,8 +3,10 @@ package ladyjek.twiscode.com.ladyjek.Utilities;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 
+import ladyjek.twiscode.com.ladyjek.Model.ModelGeocode;
 import ladyjek.twiscode.com.ladyjek.Model.ModelOrder;
 import ladyjek.twiscode.com.ladyjek.Model.ModelPlace;
 
@@ -32,6 +34,7 @@ public class ApplicationManager {
     private static final String TAG = "ApplicationManager";
     private static final String KEY_ORDER = "order";
     private static final String KEY_TRIP = "trip";
+    private static final String KEY_POS_DRIVER = "trip";
     private Context mContext;
 
 
@@ -191,6 +194,21 @@ public class ApplicationManager {
             throw new NullPointerException();
         }
         mEditor.commit();
+    }
+
+    public void setPosDriver(ModelGeocode posDriver){
+        Gson gson = new Gson();
+        String dataJson = gson.toJson(posDriver);
+        mEditor.putString(KEY_POS_DRIVER, dataJson);
+        mEditor.commit();
+
+    }
+
+    public ModelGeocode getPosDriver(){
+        Gson gson = new Gson();
+        String json = mPref.getString(KEY_POS_DRIVER, "");
+        ModelGeocode obj = gson.fromJson(json,ModelGeocode.class);
+        return obj;
     }
 
 
