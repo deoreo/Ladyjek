@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
 
+import ladyjek.twiscode.com.ladyjek.Model.ModelGeocode;
 import ladyjek.twiscode.com.ladyjek.Model.ModelOrder;
 import ladyjek.twiscode.com.ladyjek.Model.ModelPlace;
 import ladyjek.twiscode.com.ladyjek.Model.ModelUserOrder;
@@ -34,6 +35,7 @@ public class ApplicationManager {
     private static final String KEY_ORDER = "order";
     private static final String KEY_TRIP = "trip";
     private static final String KEY_USER = "user";
+    private static final String KEY_POS_DRIVER = "trip";
     private Context mContext;
 
 
@@ -207,6 +209,20 @@ public class ApplicationManager {
         Gson gson = new Gson();
         String json = mPref.getString(KEY_USER, "");
         ModelUserOrder obj = gson.fromJson(json, ModelUserOrder.class);
+        return obj;
+    }
+
+    public void setPosDriver(ModelGeocode posDriver){
+        Gson gson = new Gson();
+        String dataJson = gson.toJson(posDriver);
+        mEditor.putString(KEY_POS_DRIVER, dataJson);
+        mEditor.commit();
+    }
+
+    public ModelGeocode getPosDriver(){
+        Gson gson = new Gson();
+        String json = mPref.getString(KEY_POS_DRIVER, "");
+        ModelGeocode obj = gson.fromJson(json,ModelGeocode.class);
         return obj;
     }
 
