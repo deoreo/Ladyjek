@@ -18,8 +18,11 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Array;
 import java.net.URISyntaxException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import javax.net.ssl.SSLContext;
 
 import ladyjek.twiscode.com.ladyjek.Control.JSONControl;
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
@@ -43,8 +46,14 @@ public class SocketManager {
         this.context = context;
         this.appManager = new ApplicationManager(context);
         try {
-            socket = IO.socket(ConfigManager.SERVER_SOCKET);
+            IO.Options opts = new IO.Options();
+            opts.secure = true;
+            opts.sslContext = SSLContext.getDefault();
+            socket = IO.socket(ConfigManager.SERVER_SOCKET, opts);
         } catch (URISyntaxException e) {
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
         }
     }
 
