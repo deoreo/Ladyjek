@@ -162,7 +162,7 @@ public class JSONResponse {
     public String POSTPhone(String url, String token, List<NameValuePair> params) {
         try {
 
-            DefaultHttpClient httpClient = new DefaultHttpClient();
+            DefaultHttpClient  httpClient = (DefaultHttpClient)createDevelopmentHttpClientInstance();
             HttpPost httpPost = new HttpPost(url);
             httpPost.setEntity(new UrlEncodedFormEntity(params));
             httpPost.setHeader("x-access-token", token);
@@ -201,7 +201,7 @@ public class JSONResponse {
     public String POSTDeviceToken(String url, String token, List<NameValuePair> params) {
         try {
 
-            DefaultHttpClient httpClient = new DefaultHttpClient();
+            DefaultHttpClient  httpClient = (DefaultHttpClient)createDevelopmentHttpClientInstance();
             HttpPost httpPost = new HttpPost(url);
             httpPost.setEntity(new UrlEncodedFormEntity(params));
             httpPost.setHeader("x-access-token", token);

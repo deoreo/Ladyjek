@@ -56,7 +56,6 @@ public class ActivityRegister extends ActionBarActivity {
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 String phoneNumber = txtPhone.getText().toString();
                 String password = txtPassword.getText().toString();
                 String confirm = txtConfirm.getText().toString();

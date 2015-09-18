@@ -49,6 +49,7 @@ public class SocketManager {
             IO.Options opts = new IO.Options();
             opts.secure = true;
             opts.sslContext = SSLContext.getDefault();
+            opts.forceNew = true;
             socket = IO.socket(ConfigManager.SERVER_SOCKET, opts);
         } catch (URISyntaxException e) {
 
