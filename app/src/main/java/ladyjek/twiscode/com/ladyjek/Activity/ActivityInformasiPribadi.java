@@ -1,9 +1,15 @@
 package ladyjek.twiscode.com.ladyjek.Activity;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,25 +17,32 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.google.android.gms.maps.model.LatLng;
 
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.Model.ModelUserOrder;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
+import ladyjek.twiscode.com.ladyjek.Utilities.NetworkManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.SocketManager;
 
 public class ActivityInformasiPribadi extends Activity {
 
     private EditText nama,email,password,hp;
     private ImageView editNama, editEmail,editPass,editHp,editKantor,editRumah,btnBack;
-    private TextView txtRumah,txtKantor,btnSimpan;
+    private TextView txtRumah,txtKantor;
+    private RelativeLayout btnSimpan,btnVerify;
     SocketManager socketManager;
     private BroadcastReceiver doEditNama,doEditEmail;
     ApplicationManager applicationManager;
     Activity act;
+    ModelUserOrder user = new ModelUserOrder();
+    ProgressDialog progressDialog;
+    private BroadcastReceiver changeName, changeMail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,9 +52,12 @@ public class ActivityInformasiPribadi extends Activity {
         act = this;
         applicationManager = new ApplicationManager(act);
         socketManager = ApplicationData.socketManager;
+        user = applicationManager.getUser();
 
 
-        btnSimpan = (TextView) findViewById(R.id.btnSimpan);
+        btnSimpan = (RelativeLayout) findViewById(R.id.wrapperSimpan);
+        btnVerify = (RelativeLayout) findViewById(R.id.wrapperVerify);
+
         txtRumah = (TextView) findViewById(R.id.txtRumah);
         txtKantor = (TextView) findViewById(R.id.txtKantor);
 
@@ -156,10 +172,28 @@ public class ActivityInformasiPribadi extends Activity {
         btnSimpan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LatLng kantor = ApplicationData.modelUserOrder.kantor;
-                LatLng rumah = ApplicationData.modelUserOrder.rumah;
-                String id = ApplicationData.modelUserOrder.id;
-                ApplicationData.modelUserOrder = new ModelUserOrder(id,nama.getText().toString(),email.getText().toString(),password.getText().toString(),hp.getText().toString(),kantor,rumah);
+                String name = nama.getText().toString();
+                if(!name.equals(user.getName())){
+                    if(NetworkManager.getInstance(act).isConnectedInternet()){
+                        if(socketManager.isConnected()){
+                            OpenLoading();
+                            socketManager.ChangeName(name);
+                        }
+                    }
+                }
+                else {
+                    String mail = email.getText().toString();
+                    if(mail.length() > 0){
+                        if(!mail.equals(user.getEmail())){
+                            if(NetworkManager.getInstance(act).isConnectedInternet()){
+                                if(socketManager.isConnected()){
+                                    OpenLoading();
+                                    socketManager.ChangeEmail(mail);
+                                }
+                            }
+                        }
+                    }
+                }
             }
         });
 
@@ -171,6 +205,82 @@ public class ActivityInformasiPribadi extends Activity {
         });
 
 
+        changeName = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                // Extract data included in the Intent
+                Log.d("broadcast", "changeName");
+                String message = intent.getStringExtra("message");
+                if (message.equals("true")) {
+                    user.setName(nama.getText().toString());
+                    applicationManager.setUser(user);
+                    String mail = email.getText().toString();
+                    if(mail.length() > 0){
+                        if(!mail.equals(user.getEmail())){
+                            if(NetworkManager.getInstance(act).isConnectedInternet()){
+                                if(socketManager.isConnected()){
+                                    socketManager.ChangeEmail(mail);
+                                }
+                            }
+                            else {
+                                progressDialog.dismiss();
+                            }
+                        }
+                        else {
+                            progressDialog.dismiss();
+                        }
+                    }
+                    else {
+                        progressDialog.dismiss();
+                    }
+
+                }
+                else {
+                    String mail = email.getText().toString();
+                    if(mail.length() > 0){
+                        if(!mail.equals(user.getEmail())){
+                            if(NetworkManager.getInstance(act).isConnectedInternet()){
+                                if(socketManager.isConnected()){
+                                    socketManager.ChangeEmail(mail);
+                                }
+                            }
+                            else {
+                                progressDialog.dismiss();
+                            }
+                        }
+                        else {
+                            progressDialog.dismiss();
+                        }
+                    }
+                    else {
+                        progressDialog.dismiss();
+                    }
+                }
+
+
+            }
+        };
+
+        changeMail = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                // Extract data included in the Intent
+                Log.d("broadcast", "changeMail");
+                String message = intent.getStringExtra("message");
+                if (message.equals("true")) {
+                    user.setEmail(email.getText().toString());
+                    applicationManager.setUser(user);
+
+                }
+                else {
+
+                }
+
+                progressDialog.dismiss();
+
+
+            }
+        };
 
 
 
@@ -199,10 +309,19 @@ public class ActivityInformasiPribadi extends Activity {
     }
 
     private void SetData(){
-        nama.setText(ApplicationData.modelUserOrder.name);
-        email.setText(ApplicationData.modelUserOrder.email);
-        password.setText(ApplicationData.modelUserOrder.password);
-        hp.setText(ApplicationData.modelUserOrder.phone);
+        try {
+            nama.setText(user.getName());
+            email.setText(user.getEmail());
+            password.setText(ApplicationData.modelUserOrder.password);
+            hp.setText(user.getPhone());
+        }
+        catch (Exception ex){
+            nama.setText("");
+            email.setText("");
+            password.setText(ApplicationData.modelUserOrder.password);
+            hp.setText("");
+        }
+
     }
 
     @Override
@@ -210,6 +329,28 @@ public class ActivityInformasiPribadi extends Activity {
     {
         finish();
         super.onBackPressed();  // optional depending on your needs
+    }
+
+    void OpenLoading(){
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Loading. . .");
+        progressDialog.setIndeterminate(false);
+        progressDialog.setCancelable(false);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.show();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Register mMessageReceiver to receive messages.
+        Log.i("adding receiver", "fragment ontainer for profile");
+
+        LocalBroadcastManager.getInstance(act).registerReceiver(changeName,
+                new IntentFilter("editName"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(changeMail,
+                new IntentFilter("editEmail"));
+
     }
 
 

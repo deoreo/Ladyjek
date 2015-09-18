@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import ladyjek.twiscode.com.ladyjek.Control.JSONControl;
@@ -125,7 +126,7 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
                 String email = txtEmail.getText().toString();
                 String password = txtPassword.getText().toString();
                 if (email == null || password == null || email.trim().isEmpty() || password.trim().isEmpty()) {
-                    DialogManager.showDialog(mActivity, "Warning", "Isi Nomor Ponsel dan Password!");
+                    DialogManager.showDialog(mActivity, "Warning", "Isi Email dan Password!");
                 } else {
                     hideKeyboard();
                     new DoLogin(mActivity).execute(
@@ -142,7 +143,7 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
                 String email = txtEmail.getText().toString();
                 String password = txtPassword.getText().toString();
                 if (email == null || password == null || email.trim().isEmpty() || password.trim().isEmpty()) {
-                    DialogManager.showDialog(mActivity, "Warning", "Isi Nomor Ponsel dan Password!");
+                    DialogManager.showDialog(mActivity, "Warning", "Isi Email dan Password!");
                 } else {
                     hideKeyboard();
                     new DoLogin(mActivity).execute(
@@ -329,11 +330,41 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
                     String _id = responseUser.getString("_id");
                     Log.d("json response id",_id.toString());
                     if(_id!=null && _verified.equals("true")){
+                        String name = responseUser.getString("name");
+                        String email = "";
+                        try {
+                            email = responseUser.getString("email");
+                        }
+                        catch (Exception ex){
+                            email="";
+                        }
+                        JSONObject rumah = responseUser.getJSONObject("houseGeo");
+                        JSONArray latlgRumah = rumah.getJSONArray("coordinates");
+                        String latRumah = latlgRumah.getString(1);
+                        String lonRumah = latlgRumah.getString(0);
+                        JSONObject kantor = responseUser.getJSONObject("officeGeo");
+                        JSONArray latlgKantor = rumah.getJSONArray("coordinates");
+                        String latKantor = latlgKantor.getString(1);
+                        String lonKantor = latlgKantor.getString(0);
+
                         userLogin = new ModelUserOrder();
-                        userLogin.setEmail(phoneNumber);
+                        userLogin.setPhone(phoneNumber);
                         userLogin.setPassword(password);
+                        userLogin.setId(_id);
+                        userLogin.setEmail(email);
+                        userLogin.setName(name);
+                        userLogin.setHomeLat(latRumah);
+                        userLogin.setHomeLon(lonRumah);
+                        userLogin.setOfficeLat(latKantor);
+                        userLogin.setOfficeLat(lonKantor);
                         db.insertUser(userLogin);
+                        appManager.setUser(userLogin);
                         ApplicationData.login_id = _id.toString();
+                        ApplicationData.userLogin = userLogin;
+
+
+
+
 
                         String deviceToken = ApplicationData.PARSE_DEVICE_TOKEN;
                         ApplicationManager.getInstance(context).setUserToken(token);
@@ -345,6 +376,7 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
                         ApplicationManager.getInstance(context).setUserToken(refreshToken);
                         String responseDeviceToken = jsonControl.postDeviceToken(refreshToken, deviceToken);
                         Log.d("json response phone", responseDeviceToken);
+
                         if(!responseDeviceToken.contains("jwt") && !responseDeviceToken.contains("error")){
                             return "OK";
                         }
@@ -374,8 +406,6 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
             progressDialog.dismiss();
             switch (result) {
                 case "FAIL":
-                    //DialogManager.showDialog(activity, "Warning", "Anda belum terdaftar!");
-
                     new AlertDialogWrapper.Builder(activity)
                             .setTitle("Anda belum terdaftar, silakan mendaftar")
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -389,6 +419,7 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
                             })
                             .setIcon(R.drawable.ladyjek_icon)
                             .show();
+
                     break;
                 case "VERIFY":
                     Intent verify = new Intent(getBaseContext(), ActivityHandphoneKonfirmasi.class);

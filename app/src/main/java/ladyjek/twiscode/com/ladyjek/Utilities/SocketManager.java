@@ -159,6 +159,8 @@ public class SocketManager {
         @Override
         public void call(Object... args) {
             Log.d(TAG, "onConnected");
+            onAuth = false;
+            doLogout = 0;
             JSONObject obj = new JSONObject();
             try {
                 obj.put("token", appManager.getUserToken());
@@ -176,7 +178,15 @@ public class SocketManager {
     private Emitter.Listener onDisconnected = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {
+            try {
+                String err = args[0].toString();
+                Log.d(TAG, "onDisconnected : " + err);
+            }
+            catch (Exception ex){
+                ex.printStackTrace();
+            }
             Log.d(TAG, "onDisconnected " + onAuth);
+
             if (!onAuth) {
                 socket.connect();
             }
@@ -191,6 +201,9 @@ public class SocketManager {
             }
             if(onAuth && doLogout==0){
                 socket.connect();
+            }
+            else {
+                onAuth = false;
             }
         }
     };
@@ -738,6 +751,70 @@ public class SocketManager {
 
     }
 
+    public void ChangeName(String name) {
+        Log.d(TAG, "edit nama");
+        //boolean feed = false;
+        try {
+            Log.d(TAG, "edit nama : " + name);
+            socket.emit("put name", name, new Ack() {
+                @Override
+                public void call(Object... args) {
+                    try {
+                        JSONObject err = (JSONObject) args[0];
+                        if (err == null) {
+                            Log.d(TAG, "editName true");
+                            SendBroadcast("editName", "true");
+                        } else {
+                            Log.d(TAG, "editName false");
+                            SendBroadcast("editName", "false");
+                        }
+                    } catch (Exception ex) {
+                        Log.d(TAG, "editName error");
+                        ex.printStackTrace();
+                        SendBroadcast("editName", "false");
+                    }
+
+                }
+
+            });
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void ChangeEmail(String email) {
+        Log.d(TAG, "edit nama");
+        //boolean feed = false;
+        try {
+            Log.d(TAG, "edit email : " +email);
+            socket.emit("put email", email, new Ack() {
+                @Override
+                public void call(Object... args) {
+                    try {
+                        JSONObject err = (JSONObject) args[0];
+                        if (err == null) {
+                            Log.d(TAG, "editEmail true");
+                            SendBroadcast("editEmail", "true");
+                        } else {
+                            Log.d(TAG, "editEmail false");
+                            SendBroadcast("editEmail", "false");
+                        }
+                    } catch (Exception ex) {
+                        Log.d(TAG, "editEmail error");
+                        ex.printStackTrace();
+                        SendBroadcast("editEmail", "false");
+                    }
+
+                }
+
+            });
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+
+    }
+
 
     private void SendBroadcast(String typeBroadcast, String type) {
         Intent intent = new Intent(typeBroadcast);
@@ -746,7 +823,11 @@ public class SocketManager {
     }
 
     public boolean isConnected(){
-        return socket.connected();
+        if(socket.connected()==true && onAuth){
+            return true;
+        }
+        return false;
+
     }
 
 
