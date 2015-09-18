@@ -53,30 +53,19 @@ public class ActivityRegister extends ActionBarActivity {
         btnClearConfirmPassword = (RelativeLayout) findViewById(R.id.btnClearConfirmPassword);
         wrapperRegister = (RelativeLayout) findViewById(R.id.wrapperRegister);
 
-        btnRegister.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String phoneNumber = txtPhone.getText().toString();
-                String password = txtPassword.getText().toString();
-                String confirm = txtConfirm.getText().toString();
-                if (phoneNumber == null || password == null || phoneNumber.trim().isEmpty() || password.trim().isEmpty() || confirm == null || confirm.trim().isEmpty()) {
-                    DialogManager.showDialog(act, "Warning", "Masukkan semua data Anda!");
-                } else if (!confirm.equals(password)) {
-                    DialogManager.showDialog(act, "Warning", "Password tidak sesuai!");
-                } else {
-                    new DoRegister(act).execute(
-                            phoneNumber,
-                            password
-                    );
-                }
-            }
-        });
+        txtPhone.setText(ApplicationData.nomorLogin);
+
+
 
         wrapperRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                String num="";
                 String phoneNumber = txtPhone.getText().toString();
+                int numLength = num.length();
+                if(num.substring(0) == "0"){
+                    phoneNumber = num.substring(1);
+                }
                 String password = txtPassword.getText().toString();
                 String confirm = txtConfirm.getText().toString();
                 if (phoneNumber == null || password == null || phoneNumber.trim().isEmpty() || password.trim().isEmpty() || confirm == null || confirm.trim().isEmpty()) {
@@ -89,6 +78,7 @@ public class ActivityRegister extends ActionBarActivity {
                             password
                     );
                 }
+
             }
         });
 

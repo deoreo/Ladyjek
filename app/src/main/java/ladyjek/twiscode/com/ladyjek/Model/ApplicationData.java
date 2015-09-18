@@ -25,6 +25,7 @@ public class ApplicationData {
 
     public static String registered_id = "";
     public static String login_id = "";
+    public static String nomorLogin = "";
     //public static String token = "";
 
 
