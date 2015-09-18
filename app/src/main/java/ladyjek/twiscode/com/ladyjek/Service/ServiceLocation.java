@@ -37,6 +37,7 @@ import java.util.Calendar;
 
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.R;
+import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
 
 
@@ -124,14 +125,14 @@ public class ServiceLocation implements LocationListener {
         new UpdateMap(activity, googleMap).execute();
     }
 
-    public void GetDriverMarker(GoogleMap googleMap){
+    public void GetDriverMarker(GoogleMap googleMap, LatLng pDriver){
         //new UpdateDriverMarker(activity, googleMap).execute();
-        mPosition = ApplicationData.posDriver;
-        Log.d(TAG, "ApplicationData.posDriver : "+ ApplicationData.posDriver);
+        mPosition = pDriver;
+        Log.d(TAG, "ApplicationData.posDriver : "+ pDriver);
         try {
             float zoom = googleMap.getCameraPosition().zoom;
-            if(zoom<=13){
-                zoom=13;
+            if(zoom<=15){
+                zoom=15;
             }
             if(ApplicationData.markerDriver!=null) {
                 ApplicationData.markerDriver.remove();
@@ -280,8 +281,8 @@ public class ServiceLocation implements LocationListener {
                     ApplicationData.isFindLocation = true;
                     try {
                         float zoom = gMap.getCameraPosition().zoom;
-                        if(zoom<=13){
-                            zoom=13;
+                        if(zoom<=15){
+                            zoom=15;
                         }
                         if(ApplicationData.markerFrom!=null) {
                             ApplicationData.markerFrom.remove();
@@ -336,14 +337,15 @@ public class ServiceLocation implements LocationListener {
         private LocationManager locationManager;
         private CameraUpdate cameraUpdate;
         private Location location;
-        private LatLng posFrom;
+        private LatLng posFrom, posDriver;
 
-        public UpdateDriverMarker(Activity activity, GoogleMap gMap) {
+        public UpdateDriverMarker(Activity activity, GoogleMap gMap, LatLng posDriver) {
             super();
             this.activity = activity;
             this.context = activity.getApplicationContext();
             this.resources = activity.getResources();
             this.gMap = gMap;
+            this.posDriver = posDriver;
         }
 
         @Override
@@ -357,7 +359,7 @@ public class ServiceLocation implements LocationListener {
             Log.d(TAG, "doInbackground posisi gps");
             try {
                 try {
-                    mPosition = ApplicationData.posDriver;
+                    mPosition = posDriver;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -375,16 +377,14 @@ public class ServiceLocation implements LocationListener {
             switch (result) {
                 case "FAIL":
                     Log.d(TAG, "FAIL");
-                    Log.d(TAG, "ApplicationData.posDriver : "+ ApplicationData.posDriver);
                     break;
                 case "OK":
                     Log.d(TAG, "OK");
-                    mPosition = ApplicationData.posDriver;
-                    Log.d(TAG, "ApplicationData.posDriver : "+ ApplicationData.posDriver);
+                    mPosition = posDriver;
                     try {
                         float zoom = gMap.getCameraPosition().zoom;
-                        if(zoom<=13){
-                            zoom=13;
+                        if(zoom<=15){
+                            zoom=15;
                         }
                         if(ApplicationData.markerDriver!=null) {
                             ApplicationData.markerDriver.remove();
