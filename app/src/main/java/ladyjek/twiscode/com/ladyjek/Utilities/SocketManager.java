@@ -159,6 +159,8 @@ public class SocketManager {
         @Override
         public void call(Object... args) {
             Log.d(TAG, "onConnected");
+            onAuth = false;
+            doLogout = 0;
             JSONObject obj = new JSONObject();
             try {
                 obj.put("token", appManager.getUserToken());
@@ -176,7 +178,15 @@ public class SocketManager {
     private Emitter.Listener onDisconnected = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {
+            try {
+                String err = args[0].toString();
+                Log.d(TAG, "onDisconnected : " + err);
+            }
+            catch (Exception ex){
+                ex.printStackTrace();
+            }
             Log.d(TAG, "onDisconnected " + onAuth);
+
             if (!onAuth) {
                 socket.connect();
             }
@@ -191,6 +201,9 @@ public class SocketManager {
             }
             if(onAuth && doLogout==0){
                 socket.connect();
+            }
+            else {
+                onAuth = false;
             }
         }
     };
@@ -746,7 +759,11 @@ public class SocketManager {
     }
 
     public boolean isConnected(){
-        return socket.connected();
+        if(socket.connected()==true && onAuth){
+            return true;
+        }
+        return false;
+
     }
 
 
