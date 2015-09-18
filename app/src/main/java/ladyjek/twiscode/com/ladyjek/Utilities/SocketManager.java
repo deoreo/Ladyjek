@@ -751,6 +751,70 @@ public class SocketManager {
 
     }
 
+    public void ChangeName(String name) {
+        Log.d(TAG, "edit nama");
+        //boolean feed = false;
+        try {
+            Log.d(TAG, "edit nama : " + name);
+            socket.emit("put name", name, new Ack() {
+                @Override
+                public void call(Object... args) {
+                    try {
+                        JSONObject err = (JSONObject) args[0];
+                        if (err == null) {
+                            Log.d(TAG, "editName true");
+                            SendBroadcast("editName", "true");
+                        } else {
+                            Log.d(TAG, "editName false");
+                            SendBroadcast("editName", "false");
+                        }
+                    } catch (Exception ex) {
+                        Log.d(TAG, "editName error");
+                        ex.printStackTrace();
+                        SendBroadcast("editName", "false");
+                    }
+
+                }
+
+            });
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void ChangeEmail(String email) {
+        Log.d(TAG, "edit nama");
+        //boolean feed = false;
+        try {
+            Log.d(TAG, "edit email : " +email);
+            socket.emit("put email", email, new Ack() {
+                @Override
+                public void call(Object... args) {
+                    try {
+                        JSONObject err = (JSONObject) args[0];
+                        if (err == null) {
+                            Log.d(TAG, "editEmail true");
+                            SendBroadcast("editEmail", "true");
+                        } else {
+                            Log.d(TAG, "editEmail false");
+                            SendBroadcast("editEmail", "false");
+                        }
+                    } catch (Exception ex) {
+                        Log.d(TAG, "editEmail error");
+                        ex.printStackTrace();
+                        SendBroadcast("editEmail", "false");
+                    }
+
+                }
+
+            });
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+
+    }
+
 
     private void SendBroadcast(String typeBroadcast, String type) {
         Intent intent = new Intent(typeBroadcast);
