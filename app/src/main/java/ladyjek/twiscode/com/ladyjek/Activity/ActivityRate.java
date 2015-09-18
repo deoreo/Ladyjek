@@ -125,7 +125,7 @@ public class ActivityRate extends ActionBarActivity {
 
                 int rate = 0;
 
-                if(txtRate.getRating() > 0 && txtFeedback.getText().length()==0){
+                if(txtRate.getRating() > 0 && txtFeedback.getText().length()> 0){
                     rate = Math.round(txtRate.getRating());
                     if(NetworkManager.getInstance(ActivityRate.this).isConnectedInternet()){
                         socketManager.Feedback(rate,txtFeedback.getText().toString());
@@ -176,7 +176,7 @@ public class ActivityRate extends ActionBarActivity {
             public void onClick(View v) {
                 int rate = 0;
 
-                if(txtRate.getRating() > 0 && txtFeedback.getText().length()==0){
+                if(txtRate.getRating() > 0 && txtFeedback.getText().length()>0){
                     rate = Math.round(txtRate.getRating());
                     if(NetworkManager.getInstance(ActivityRate.this).isConnectedInternet()){
                         socketManager.Feedback(rate,txtFeedback.getText().toString());

@@ -164,6 +164,7 @@ public class SocketManager {
                 obj.put("token", appManager.getUserToken());
                 Log.d(TAG, "onConnected token:" + obj.toString());
                 socket.emit("authentication", obj);
+                Log.d(TAG, "emit authentication");
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -187,6 +188,9 @@ public class SocketManager {
             } else if (doLogout == 2) {
                 SendBroadcast("unverify", "true");
                 Log.d(TAG, "send unverify");
+            }
+            if(onAuth && doLogout==0){
+                socket.connect();
             }
         }
     };
@@ -408,7 +412,7 @@ public class SocketManager {
             @Override
             public void call(Object... args) {
                 try {
-                    Log.d(TAG, "PostLocation" + args[0].toString());
+                    //Log.d(TAG, "PostLocation" + args[0].toString());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -453,12 +457,17 @@ public class SocketManager {
             dt.put(1, destination.latitude);
             objs.put("fromGeo", fr);
             objs.put("toGeo", dt);
+            Log.d("create order", objs.toString());
             socket.emit("post create order", objs, new Ack() {
                 @Override
                 public void call(Object... args) {
                     try {
                         Log.d(TAG, "order args:" + args[1]);
                         JSONObject obj = (JSONObject) args[1];
+                        JSONObject err = (JSONObject) args[0];
+                        if(err != null){
+                            Log.d("error create order", err.toString());
+                        }
                         if (obj == null) {
                             String id = obj.getString("_id");
                             String userID = obj.getString("user");
@@ -520,35 +529,41 @@ public class SocketManager {
             loc.put(0, pos.longitude);
             loc.put(1, pos.latitude);
             Log.d(TAG, "GetNearestDrivers : " + loc.toString());
+            socket.emit("get nearest drivers", loc, new Ack() {
+                @Override
+                public void call(Object... args) {
+                    Log.d(TAG, "getNearestDrivers");
+                    try {
+                        JSONObject err = (JSONObject) args[0];
+                        if (err != null) {
+                            Log.d(TAG, "error getNearestDrivers : " + err.toString());
+                        }
+                        //Log.d(TAG, "getNearestDrivers args 1 : " + args[0]);
+                        //Log.d(TAG, "getNearestDrivers args 1 : " + args[1]);
+                        JSONArray drivers = (JSONArray) args[1];
+                        int lengthDrivers = drivers.length();
+                        Log.d(TAG, "getNearestDrivers lengthDrivers : " + lengthDrivers);
+                        ApplicationData.posDrivers = new LatLng[lengthDrivers];
+
+                        for (int i = 0; i < lengthDrivers; i++) {
+                            Double lon = drivers.getJSONArray(i).getDouble(1);
+                            Double lat = drivers.getJSONArray(i).getDouble(0);
+                            ApplicationData.posDrivers[i] = new LatLng(lon, lat);
+                        }
+
+                        SendBroadcast("nearestDrivers ", "true");
+                    } catch (Exception ex) {
+                        Log.d(TAG, "catch getnearestDrivers : ");
+                        SendBroadcast("nearestDrivers ", "false");
+                        ex.printStackTrace();
+                    }
+                }
+
+            });
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        socket.emit("get nearest drivers", loc, new Ack() {
-            @Override
-            public void call(Object... args) {
-                Log.d(TAG, "getNearestDrivers");
-                try {
-                    Log.d(TAG, "getNearestDrivers args 1 : " + args[1]);
-                    JSONArray drivers = (JSONArray) args[1];
-                    int lengthDrivers = drivers.length();
-                    Log.d(TAG, "getNearestDrivers lengthDrivers : " + lengthDrivers);
-                    ApplicationData.posDrivers = new LatLng[lengthDrivers];
 
-                    for (int i = 0; i < lengthDrivers; i++) {
-                        Double lon = drivers.getJSONArray(i).getDouble(1);
-                        Double lat = drivers.getJSONArray(i).getDouble(0);
-                        ApplicationData.posDrivers[i] = new LatLng(lon, lat);
-                    }
-
-                    SendBroadcast("nearestDrivers ", "true");
-                } catch (Exception ex) {
-                    Log.d(TAG, "catch getnearestDrivers : ");
-                    SendBroadcast("nearestDrivers ", "false");
-                    ex.printStackTrace();
-                }
-            }
-
-        });
         //return ApplicationData.driver;
     }
 
@@ -728,6 +743,10 @@ public class SocketManager {
         Intent intent = new Intent(typeBroadcast);
         intent.putExtra("message", type);
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+    }
+
+    public boolean isConnected(){
+        return socket.connected();
     }
 
 

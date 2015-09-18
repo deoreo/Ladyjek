@@ -241,14 +241,18 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                             googleMap.clear();
                             serviceLocation.GetMap(mActivity, googleMap);
                             posFrom = serviceLocation.updateLocation(mActivity);
-                            socketManager.PostLocation(posFrom);
+                            if(socketManager.isConnected()){
+                                socketManager.PostLocation(posFrom);
+                            }
+
                             txtFrom.setText(getAddress(posFrom));
                             appManager.setUserFrom(new ModelPlace(posFrom.latitude, posFrom.longitude));
-                            socketManager.GetNearestDrivers(posFrom);
+                           /* socketManager.GetNearestDrivers(posFrom);
                             for (int i = 0; i < ApplicationData.posDrivers.length; i++) {
                                 drawMarkerNearestDriver(posFrom, ApplicationData.posDrivers[i]);
 
                             }
+                            */
                             Log.v(TAG, "Running GetMap");
                         } catch (Exception e) {
                             Log.v(TAG, "Not Running GetMap");
