@@ -18,50 +18,64 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"/>
-        <RelativeLayout
-            android:id="@+id/wrapperRegister"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="20dp"
-            android:background="@drawable/plain_gradient_bg_btn"
-            android:layout_alignParentBottom="true">
-            <TextView
-                android:id="@+id/txtDriverTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white_color"
-                android:textStyle="bold"
-                android:text="@string/lbl_review"
-                android:textSize="18dp"
-                android:layout_centerHorizontal="true"
-                />
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical"
+            >
             <RelativeLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/txtDriverTime"
-                android:layout_centerHorizontal="true">
+                android:background="@color/white_color">
                 <TextView
-                    android:id="@+id/btnRequestRide"
-                    android:layout_marginTop="5dp"
+                    android:id="@+id/txtDriverTime"
+                    android:layout_centerInParent="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/white_color"
-                    android:text="@string/pesan"
-                    android:textSize="18dp"
-                    android:layout_centerHorizontal="true"
-
+                    android:padding="10dp"
+                    android:text="@string/lbl_review"
+                    android:textColor="@color/bg_grad_2"
                     />
-                <ImageView
-                    android:layout_width="34dp"
-                    android:layout_height="38dp"
-                    android:src="@drawable/right_arrow_white"
-                    android:layout_toRightOf="@id/btnRequestRide"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="-8dp"/>
             </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/wrapperRegister"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="20dp"
+                android:background="@drawable/plain_gradient_bg_btn"
+                >
 
-        </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true">
+                    <TextView
+                        android:id="@+id/btnRequestRide"
+                        android:layout_marginTop="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white_color"
+                        android:text="@string/pesan"
+                        android:textSize="18dp"
+                        android:textAllCaps="true"
+                        android:textStyle="bold"
+                        android:layout_centerHorizontal="true"
+
+                        />
+                    <ImageView
+                        android:layout_width="42dp"
+                        android:layout_height="42dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="-8dp"
+                        android:layout_alignParentRight="true"
+                        android:src="@drawable/next_white" />
+                </RelativeLayout>
+
+            </RelativeLayout>
+        </LinearLayout>
+
 
         <LinearLayout
             android:id="@+id/layoutMarkerFrom"
@@ -218,14 +232,14 @@
                             android:src="@drawable/ic_erase" />
                     </RelativeLayout>
                     <RelativeLayout
-                        android:layout_width="17dp"
-                        android:layout_height="40dp">
+                        android:layout_width="32dp"
+                        android:layout_height="32dp">
                         <ImageView
-                            android:layout_width="17dp"
-                            android:layout_height="19dp"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
                             android:layout_centerVertical="true"
                             android:layout_alignParentRight="true"
-                            android:src="@drawable/right_arrow" />
+                            android:src="@drawable/search" />
                     </RelativeLayout>
                 </LinearLayout>
 
@@ -278,14 +292,14 @@
                             android:src="@drawable/ic_erase" />
                     </RelativeLayout>
                     <RelativeLayout
-                        android:layout_width="17dp"
-                        android:layout_height="40dp">
+                        android:layout_width="32dp"
+                        android:layout_height="32dp">
                         <ImageView
-                            android:layout_width="17dp"
-                            android:layout_height="19dp"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
                             android:layout_centerVertical="true"
                             android:layout_alignParentRight="true"
-                            android:src="@drawable/right_arrow" />
+                            android:src="@drawable/search" />
                     </RelativeLayout>
 
                 </LinearLayout>

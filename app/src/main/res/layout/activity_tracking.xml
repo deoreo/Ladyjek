@@ -45,16 +45,6 @@
                 android:background="@drawable/plain_gradient_bg_btn"
                 android:padding="20dp">
 
-                <TextView
-                    android:id="@+id/txtLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:text="@string/lbl_tracking"
-                    android:textColor="@color/white_color"
-                    android:textSize="18dp"
-                    android:textStyle="bold" />
-
                 <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -67,20 +57,20 @@
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="5dp"
-                        android:text="@string/tracking"
+                        android:text="@string/lbl_tracking"
                         android:textColor="@color/white_color"
                         android:textSize="18dp"
-
+                        android:textAllCaps="true"
+                        android:textStyle="bold"
                         />
 
                     <ImageView
-                        android:layout_width="34dp"
-                        android:layout_height="38dp"
+                        android:layout_width="33dp"
+                        android:layout_height="33dp"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="10dp"
-                        android:layout_marginTop="-8dp"
-                        android:layout_toRightOf="@id/btnEmergency"
-                        android:src="@drawable/right_arrow_white" />
+                        android:layout_alignParentRight="true"
+                        android:src="@drawable/call_icon" />
                 </RelativeLayout>
 
             </RelativeLayout>
