@@ -317,6 +317,7 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
                 String token = response.getString("token");
                 appManager.setUserToken(token);
 
+                Log.d("json response", response.toString());
                 Log.d("json response",token );
                 try {
                     String _verified = responseUser.getString("verified");

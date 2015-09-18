@@ -1,6 +1,7 @@
 package ladyjek.twiscode.com.ladyjek.Activity;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -17,17 +18,28 @@ import com.google.android.gms.maps.model.LatLng;
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.Model.ModelUserOrder;
 import ladyjek.twiscode.com.ladyjek.R;
+import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
+import ladyjek.twiscode.com.ladyjek.Utilities.SocketManager;
 
 public class ActivityInformasiPribadi extends Activity {
 
     private EditText nama,email,password,hp;
     private ImageView editNama, editEmail,editPass,editHp,editKantor,editRumah,btnBack;
     private TextView txtRumah,txtKantor,btnSimpan;
+    SocketManager socketManager;
+    private BroadcastReceiver doEditNama,doEditEmail;
+    ApplicationManager applicationManager;
+    Activity act;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_informasi_pribadi);
+
+        act = this;
+        applicationManager = new ApplicationManager(act);
+        socketManager = ApplicationData.socketManager;
+
 
         btnSimpan = (TextView) findViewById(R.id.btnSimpan);
         txtRumah = (TextView) findViewById(R.id.txtRumah);

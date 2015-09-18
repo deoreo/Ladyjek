@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 
 import ladyjek.twiscode.com.ladyjek.Model.ModelOrder;
 import ladyjek.twiscode.com.ladyjek.Model.ModelPlace;
+import ladyjek.twiscode.com.ladyjek.Model.ModelUserOrder;
 
 /**
  * Created by User on 8/11/2015.
@@ -32,6 +33,7 @@ public class ApplicationManager {
     private static final String TAG = "ApplicationManager";
     private static final String KEY_ORDER = "order";
     private static final String KEY_TRIP = "trip";
+    private static final String KEY_USER = "user";
     private Context mContext;
 
 
@@ -191,6 +193,21 @@ public class ApplicationManager {
             throw new NullPointerException();
         }
         mEditor.commit();
+    }
+
+    public void setUser(ModelUserOrder modelOrder){
+        Gson gson = new Gson();
+        String dataJson = gson.toJson(modelOrder);
+        mEditor.putString(KEY_USER, dataJson);
+        mEditor.commit();
+
+    }
+
+    public ModelUserOrder getUser(){
+        Gson gson = new Gson();
+        String json = mPref.getString(KEY_USER, "");
+        ModelUserOrder obj = gson.fromJson(json, ModelUserOrder.class);
+        return obj;
     }
 
 
