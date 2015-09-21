@@ -89,7 +89,7 @@
                                         android:layout_height="50dp"
                                         android:background="@null"
                                         android:hint="nomor ponsel"
-                                        android:inputType="phone"
+                                        android:inputType="number"
                                         android:padding="10dp"
                                         android:textColor="@color/white_color"
                                         android:textColorHint="@drawable/hint_selector_white"
@@ -162,7 +162,18 @@
                                     android:layout_height="2dp"
                                     android:background="@color/white_color" />
                             </LinearLayout>
-
+                            <TextView
+                                android:layout_marginTop="20dp"
+                                android:id="@+id/forgetPassword"
+                                android:layout_width="wrap_content"
+                                android:layout_height="50dp"
+                                android:textColor="@color/white_color"
+                                android:textStyle="bold"
+                                android:textSize="16dp"
+                                android:padding="10dp"
+                                android:gravity="center_vertical"
+                                android:text="lupa password kamu?"
+                                />
                         </LinearLayout>
                     </RelativeLayout>
                 </RelativeLayout>

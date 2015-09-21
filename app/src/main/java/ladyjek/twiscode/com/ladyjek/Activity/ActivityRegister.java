@@ -60,11 +60,14 @@ public class ActivityRegister extends ActionBarActivity {
         wrapperRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String num="";
+
                 String phoneNumber = txtPhone.getText().toString();
-                int numLength = num.length();
-                if(num.substring(0) == "0"){
-                    phoneNumber = num.substring(1);
+                String num=phoneNumber.substring(0,1);
+                Log.d("phone num",num);
+                Log.d("phone",phoneNumber);
+                if(num.contains("0")){
+                    phoneNumber = phoneNumber.substring(1);
+                    Log.d("phone 1",phoneNumber);
                 }
                 String password = txtPassword.getText().toString();
                 String confirm = txtConfirm.getText().toString();

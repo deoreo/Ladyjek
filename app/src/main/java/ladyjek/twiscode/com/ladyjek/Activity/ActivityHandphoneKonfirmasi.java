@@ -27,6 +27,7 @@ import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
+import ladyjek.twiscode.com.ladyjek.Utilities.NetworkManager;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -34,7 +35,7 @@ import static android.view.View.VISIBLE;
 public class ActivityHandphoneKonfirmasi extends Activity {
 
     private Activity act;
-    private TextView txtConfirmSmsCode;
+    private TextView txtConfirmSmsCode,resendCode;
     private EditText txtSmsCode;
     private RelativeLayout wrapperRegister, btnClearCode;
 
@@ -45,6 +46,7 @@ public class ActivityHandphoneKonfirmasi extends Activity {
 
         act = this;
         txtConfirmSmsCode = (TextView)findViewById(R.id.txtConfirmSmsCode);
+        resendCode = (TextView)findViewById(R.id.resendCode);
         txtSmsCode = (EditText) findViewById(R.id.txtSmsCode);
         wrapperRegister = (RelativeLayout) findViewById(R.id.wrapperRegister);
         btnClearCode = (RelativeLayout) findViewById(R.id.btnClearCode);
@@ -65,6 +67,19 @@ public class ActivityHandphoneKonfirmasi extends Activity {
                     new DoVerifyCode(act).execute(
                             txtSmsCode.getText().toString()
                     );
+                }
+
+            }
+        });
+
+        resendCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(NetworkManager.getInstance(ActivityHandphoneKonfirmasi.this).isConnectedInternet()){
+                    new DoResendVerifyCode(act).execute();
+                }
+                else {
+                    DialogManager.showDialog(ActivityHandphoneKonfirmasi.this, "Peringatan", "Tidak ada koneksi internet!");
                 }
 
             }
@@ -192,6 +207,81 @@ public class ActivityHandphoneKonfirmasi extends Activity {
                                     Intent i = new Intent(ActivityHandphoneKonfirmasi.this, ActivityLogin.class);
                                     startActivity(i);
                                     finish();
+                                    dialog.dismiss();
+                                }
+                            })
+                            .setIcon(R.drawable.ladyjek_icon)
+                            .show();
+                    break;
+            }
+
+
+        }
+
+
+    }
+
+    private class DoResendVerifyCode extends AsyncTask<String, Void, String> {
+        private Activity activity;
+        private Context context;
+        private Resources resources;
+        private ProgressDialog progressDialog;
+
+        public DoResendVerifyCode(Activity activity) {
+            super();
+            this.activity = activity;
+            this.context = activity.getApplicationContext();
+            this.resources = activity.getResources();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = new ProgressDialog(activity);
+            progressDialog.setMessage("Loading. . .");
+            progressDialog.setIndeterminate(false);
+            progressDialog.setCancelable(false);
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressDialog.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+
+
+                JSONControl jsonControl = new JSONControl();
+                JSONObject objRefreshToken = jsonControl.postRefreshToken(ApplicationManager.getInstance(context).getUserToken());
+                Log.d("refresh token", objRefreshToken.toString());
+                String token = objRefreshToken.getString("token");
+                ApplicationManager.getInstance(context).setUserToken(token);
+                String response = jsonControl.postResendVerifyCode(token);
+                Log.d("json response verify", response);
+                if(response.contains("true") && !response.contains("jwt") && !response.contains("error")){
+                    return "OK";
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return "FAIL";
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            progressDialog.dismiss();
+            switch (result) {
+                case "FAIL":
+                    DialogManager.showDialog(activity, "Warning", "Resend verify code gagal!");
+                    break;
+                case "OK":
+                    new AlertDialogWrapper.Builder(ActivityHandphoneKonfirmasi.this)
+                            .setTitle("Sukses Resend verify code!")
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
                                 }
                             })
