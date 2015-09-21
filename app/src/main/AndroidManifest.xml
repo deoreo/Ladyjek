@@ -139,6 +139,18 @@
             android:label="@string/title_activity_personal_info" >
         </activity>
         <activity
+            android:name=".Activity.ActivityForgetPassword_1"
+            android:label="@string/title_activity_personal_info" >
+        </activity>
+        <activity
+            android:name=".Activity.ActivityForgetPassword_2"
+            android:label="@string/title_activity_personal_info" >
+        </activity>
+        <activity
+            android:name=".Activity.ActivityForgetPassword_3"
+            android:label="@string/title_activity_personal_info" >
+        </activity>
+        <activity
             android:name=".Parse.ActivityNotif"
             android:label="@string/title_activity_personal_info" >
         </activity>

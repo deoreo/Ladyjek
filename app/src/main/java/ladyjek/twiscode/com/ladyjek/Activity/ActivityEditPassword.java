@@ -263,7 +263,9 @@ public class ActivityEditPassword extends Activity {
                 // Extract data included in the Intent
                 Log.d("broadcast", "editPassword");
                 String message = intent.getStringExtra("message");
-                progressDialog.dismiss();
+                if(isClick){
+                    progressDialog.dismiss();
+                }
                 if (message.equals("true")) {
                     new AlertDialogWrapper.Builder(ActivityEditPassword.this)
                             .setTitle("Edit Password Sukses!")

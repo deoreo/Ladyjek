@@ -8,11 +8,11 @@ import java.io.Serializable;
  * Created by Unity on 08/08/2015.
  */
 public class ModelUserOrder implements Serializable {
-    public String id, name, email, password, phone, payment, homeLat, homeLon, officeLat, officeLon;
+    public String id, name, email, password, phone,phone2nd, payment, homeLat, homeLon, officeLat, officeLon;
     public LatLng rumah, kantor;
     public ModelUserOrder(){}
 
-    public ModelUserOrder(String id, String name, String email, String password, String hp, LatLng kantor, LatLng rumah){
+    public ModelUserOrder(String id, String name, String email, String password, String hp, String hp2nd, LatLng kantor, LatLng rumah){
         this.id = id;
         this.name = name;
         this.email = email;
@@ -20,10 +20,11 @@ public class ModelUserOrder implements Serializable {
         this.phone = hp;
         this.rumah = rumah;
         this.kantor = kantor;
+        this.phone2nd = hp2nd;
     }
 
     public ModelUserOrder(String id, String name, String email, String password,
-                          String phone, String payment, String homeLat, String homeLon,
+                          String phone, String hp2nd,String payment, String homeLat, String homeLon,
                           String officeLat, String officeLon
     ){
         this.id = id;
@@ -36,6 +37,7 @@ public class ModelUserOrder implements Serializable {
         this.homeLon = homeLon;
         this.officeLat = officeLat;
         this.officeLon = officeLon;
+        this.phone2nd = hp2nd;
     }
 
     public String getId() {
@@ -68,6 +70,14 @@ public class ModelUserOrder implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getPhone2nd() {
+        return phone2nd;
+    }
+
+    public void setPhone2nd(String phone) {
+        this.phone2nd = phone;
     }
 
     public String getPhone() {

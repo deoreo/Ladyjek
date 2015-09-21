@@ -1155,7 +1155,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                 new IntentFilter("lastFeedback"));
         LocalBroadcastManager.getInstance(mActivity).registerReceiver(nearestDrivers,
                 new IntentFilter("nearestDrivers"));
-        LocalBroadcastManager.getInstance(mActivity).registerReceiver(lastFeedback,
+        LocalBroadcastManager.getInstance(mActivity).registerReceiver(logout,
                 new IntentFilter("logout"));
 
     }
