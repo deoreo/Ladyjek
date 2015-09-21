@@ -1,6 +1,7 @@
 package ladyjek.twiscode.com.ladyjek.Activity;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -42,6 +43,7 @@ public class ActivityEditPassword extends Activity {
     SocketManager socketManager;
     private BroadcastReceiver editPassword;
     boolean isClick = false;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +97,12 @@ public class ActivityEditPassword extends Activity {
                     if(!isClick){
                         if(ApplicationData.PARSE_DEVICE_TOKEN != null){
                             if(NetworkManager.getInstance(ActivityEditPassword.this).isConnectedInternet()){
+                                progressDialog = new ProgressDialog(act);
+                                progressDialog.setMessage("Loading. . .");
+                                progressDialog.setIndeterminate(false);
+                                progressDialog.setCancelable(false);
+                                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                                progressDialog.show();
                                 socketManager.EditPassword(opass, npass, ApplicationData.PARSE_DEVICE_TOKEN);
                                 isClick = true;
                             }
@@ -255,7 +263,7 @@ public class ActivityEditPassword extends Activity {
                 // Extract data included in the Intent
                 Log.d("broadcast", "editPassword");
                 String message = intent.getStringExtra("message");
-
+                progressDialog.dismiss();
                 if (message.equals("true")) {
                     new AlertDialogWrapper.Builder(ActivityEditPassword.this)
                             .setTitle("Edit Password Sukses!")
