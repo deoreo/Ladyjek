@@ -2,6 +2,7 @@ package ladyjek.twiscode.com.ladyjek.Activity;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.AsyncTask;
@@ -18,6 +19,8 @@ import android.widget.EditText;
 import android.app.ProgressDialog;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -101,6 +104,7 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ApplicationData.nomorLogin = txtEmail.getText().toString();
                 Intent i = new Intent(getBaseContext(), ActivityRegister.class);
                 startActivity(i);
             }
@@ -109,6 +113,7 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
         wrapperRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ApplicationData.nomorLogin = txtEmail.getText().toString();
                 Intent i = new Intent(getBaseContext(), ActivityRegister.class);
                 startActivity(i);
             }
@@ -401,7 +406,20 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
             progressDialog.dismiss();
             switch (result) {
                 case "FAIL":
-                    DialogManager.showDialog(activity, "Warning", "Anda belum terdaftar!");
+                    new AlertDialogWrapper.Builder(activity)
+                            .setTitle("Anda belum terdaftar, silakan mendaftar")
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    ApplicationData.nomorLogin = txtEmail.getText().toString();
+                                    Intent i = new Intent(getBaseContext(), ActivityRegister.class);
+                                    startActivity(i);
+                                }
+                            })
+                            .setIcon(R.drawable.ladyjek_icon)
+                            .show();
+
                     break;
                 case "VERIFY":
                     Intent verify = new Intent(getBaseContext(), ActivityHandphoneKonfirmasi.class);

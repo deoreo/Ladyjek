@@ -68,7 +68,7 @@
                                     android:layout_centerHorizontal="true"
                                     android:text="Sign-in ke Ladyjek"
                                     android:textColor="@color/white_color"
-                                    android:textSize="18dp"
+                                    android:textSize="20dp"
                                     android:textStyle="bold" />
                             </RelativeLayout>
 
@@ -89,11 +89,12 @@
                                         android:layout_height="50dp"
                                         android:background="@null"
                                         android:hint="nomor ponsel"
-                                        android:inputType="number"
+                                        android:inputType="phone"
                                         android:padding="10dp"
                                         android:textColor="@color/white_color"
                                         android:textColorHint="@drawable/hint_selector_white"
                                         android:textStyle="bold"
+
                                         android:textCursorDrawable="@drawable/cursor_white"/>
                                     <RelativeLayout
                                         android:id="@+id/btnClearEmail"
@@ -160,17 +161,6 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="2dp"
                                     android:background="@color/white_color" />
-
-                                <TextView
-                                    android:id="@+id/forgotPassword"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="50dp"
-                                    android:textColor="@color/white_color"
-                                    android:textStyle="bold"
-                                    android:padding="10dp"
-                                    android:gravity="center_vertical"
-                                    android:text="Lupa Password"
-                                    />
                             </LinearLayout>
 
                         </LinearLayout>
@@ -223,7 +213,7 @@
                     android:layout_height="wrap_content"
                     android:background="@color/white_color"
                     android:padding="20dp"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
 
 
@@ -244,6 +234,7 @@
                             android:textAllCaps="true"
                             android:textStyle="bold"
                             />
+
 
                         <ImageView
                             android:layout_width="42dp"
