@@ -71,5 +71,6 @@ public class ApplicationData {
     public static Marker markerDriver = null;
 
     public static LatLng[] posDrivers;
-
+    public static LatLng Home = null;
+    public static LatLng Office = null;
 }
