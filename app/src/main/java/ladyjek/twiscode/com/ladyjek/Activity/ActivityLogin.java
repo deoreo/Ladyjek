@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -40,7 +41,7 @@ import static android.view.View.VISIBLE;
 public class ActivityLogin extends Activity  implements KeyboardManager.Listener {
 
     private Activity mActivity;
-    private TextView btnRegister, btnLogin;
+    private TextView btnRegister, btnLogin, btnRegisteronLogin;
     private EditText txtEmail, txtPassword;
     private RelativeLayout wrapperLogin, wrapperRegister;
     private ModelUserOrder userLogin;
@@ -64,9 +65,10 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
         wrapperRegister = (RelativeLayout) findViewById(R.id.wrapperRegister);
         btnClearEmail = (RelativeLayout) findViewById(R.id.btnClearEmail);
         btnClearPassword = (RelativeLayout) findViewById(R.id.btnClearPassword);
-
+        btnRegisteronLogin = (TextView) findViewById(R.id.btnRegisteronLogin);
         KeyboardManager mainLayout = (KeyboardManager) findViewById(R.id.layoutLogin);
         mainLayout.setListener(this);
+
 
         txtEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 
@@ -98,6 +100,15 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
                 else {
                     btnClearPassword.setVisibility(VISIBLE);
                 }
+            }
+        });
+
+        btnRegisteronLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ApplicationData.nomorLogin = txtEmail.getText().toString();
+                Intent i = new Intent(getBaseContext(), ActivityRegister.class);
+                startActivity(i);
             }
         });
 
