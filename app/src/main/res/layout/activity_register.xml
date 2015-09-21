@@ -85,7 +85,6 @@
                                     android:layout_weight="1"
                                     android:layout_height="50dp"
                                     android:hint="nomor ponsel"
-                                    android:inputType="phone"
                                     android:textColorHint="@drawable/hint_selector_white"
                                     android:padding="10dp"
                                     android:background="@null"

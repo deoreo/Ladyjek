@@ -125,6 +125,13 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
 
                 String email = txtEmail.getText().toString();
                 String password = txtPassword.getText().toString();
+                String num=email.substring(0,1);
+                Log.d("phone num",num);
+                Log.d("phone",email);
+                if(num.contains("0")){
+                    email = email.substring(1);
+                    Log.d("phone 1",email);
+                }
                 if (email == null || password == null || email.trim().isEmpty() || password.trim().isEmpty()) {
                     DialogManager.showDialog(mActivity, "Warning", "Isi Email dan Password!");
                 } else {

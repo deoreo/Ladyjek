@@ -152,7 +152,7 @@
                                 android:textSize="16dp"
                                 android:padding="10dp"
                                 android:layout_gravity="center"
-                                android:text="kirim ulang verifikasi kode"
+                                android:text="kirim ulang kode?"
                                 />
 
 
