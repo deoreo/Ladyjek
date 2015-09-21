@@ -89,7 +89,7 @@
                                         android:layout_height="50dp"
                                         android:background="@null"
                                         android:hint="nomor ponsel"
-                                        android:inputType="textEmailAddress"
+                                        android:inputType="number"
                                         android:padding="10dp"
                                         android:textColor="@color/white_color"
                                         android:textColorHint="@drawable/hint_selector_white"
@@ -160,6 +160,17 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="2dp"
                                     android:background="@color/white_color" />
+
+                                <TextView
+                                    android:id="@+id/forgotPassword"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="50dp"
+                                    android:textColor="@color/white_color"
+                                    android:textStyle="bold"
+                                    android:padding="10dp"
+                                    android:gravity="center_vertical"
+                                    android:text="Lupa Password"
+                                    />
                             </LinearLayout>
 
                         </LinearLayout>
