@@ -42,7 +42,8 @@ public class ActivityInformasiPribadi extends Activity {
     Activity act;
     ModelUserOrder user = new ModelUserOrder();
     ProgressDialog progressDialog;
-    private BroadcastReceiver changeName, changeMail;
+    private BroadcastReceiver changeName, changeMail, changeHP;
+    String noHP;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,10 +124,11 @@ public class ActivityInformasiPribadi extends Activity {
                 hp.requestFocus();
             }
         });
-
+/*
         hp.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+
                 boolean handled = false;
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     hp.setEnabled(false);
@@ -138,6 +140,7 @@ public class ActivityInformasiPribadi extends Activity {
                 return handled;
             }
         });
+        */
 
         editPass.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -192,6 +195,49 @@ public class ActivityInformasiPribadi extends Activity {
                                 }
                             }
                         }
+                        else{
+                            noHP = hp.getText().toString();
+                            Log.d("phone",noHP);
+                            if(noHP.length() > 0){
+                                String num=noHP.substring(0,1);
+                                Log.d("phone num",num);
+                                Log.d("phone 0",noHP);
+                                if(num.contains("0")){
+                                    noHP = noHP.substring(1);
+                                    Log.d("phone 1",noHP);
+                                }
+                                if(!noHP.equals(user.getPhone2nd())){
+                                    if(NetworkManager.getInstance(act).isConnectedInternet()){
+                                        if(socketManager.isConnected()){
+                                            OpenLoading();
+                                            socketManager.ChangeSecondHP(noHP);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else{
+                            noHP = hp.getText().toString();
+                            Log.d("phone",noHP);
+                            if(noHP.length() > 0){
+                                String num=noHP.substring(0,1);
+                                Log.d("phone num",num);
+                                Log.d("phone 0",noHP);
+                                if(num.contains("0")){
+                                    noHP = noHP.substring(1);
+                                    Log.d("phone 1",noHP);
+                                }
+                                if(!noHP.equals(user.getPhone2nd())){
+                                    if(NetworkManager.getInstance(act).isConnectedInternet()){
+                                        if(socketManager.isConnected()){
+                                            OpenLoading();
+                                            socketManager.ChangeSecondHP(noHP);
+                                        }
+                                    }
+                                }
+                            }
+
                     }
                 }
             }
@@ -243,6 +289,9 @@ public class ActivityInformasiPribadi extends Activity {
                                 if(socketManager.isConnected()){
                                     socketManager.ChangeEmail(mail);
                                 }
+                                else {
+                                    progressDialog.dismiss();
+                                }
                             }
                             else {
                                 progressDialog.dismiss();
@@ -253,7 +302,35 @@ public class ActivityInformasiPribadi extends Activity {
                         }
                     }
                     else {
-                        progressDialog.dismiss();
+                        noHP = hp.getText().toString();
+                        if(noHP.length() > 0){
+                            String num=noHP.substring(0,1);
+                            Log.d("phone num",num);
+                            Log.d("phone",noHP);
+                            if(num.contains("0")){
+                                noHP = noHP.substring(1);
+                                Log.d("phone 1",noHP);
+                            }
+                            if(!noHP.equals(user.getPhone2nd())){
+                                if(NetworkManager.getInstance(act).isConnectedInternet()){
+                                    if(socketManager.isConnected()){
+                                        socketManager.ChangeSecondHP(noHP);
+                                    }
+                                    else {
+                                        progressDialog.dismiss();
+                                    }
+                                }
+                                else {
+                                    progressDialog.dismiss();
+                                }
+                            }
+                            else {
+                                progressDialog.dismiss();
+                            }
+                        }
+                        else {
+                            progressDialog.dismiss();
+                        }
                     }
                 }
 
@@ -269,6 +346,84 @@ public class ActivityInformasiPribadi extends Activity {
                 String message = intent.getStringExtra("message");
                 if (message.equals("true")) {
                     user.setEmail(email.getText().toString());
+                    applicationManager.setUser(user);
+                    noHP = hp.getText().toString();
+                    if(noHP.length() > 0){
+                        String num=noHP.substring(0,1);
+                        Log.d("phone num",num);
+                        Log.d("phone",noHP);
+                        if(num.contains("0")){
+                            noHP = noHP.substring(1);
+                            Log.d("phone 1",noHP);
+                        }
+                        if(!noHP.equals(user.getPhone2nd())){
+                            if(NetworkManager.getInstance(act).isConnectedInternet()){
+                                if(socketManager.isConnected()){
+                                    socketManager.ChangeSecondHP(noHP);
+                                }
+                                else {
+                                    progressDialog.dismiss();
+                                }
+                            }
+                            else {
+                                progressDialog.dismiss();
+                            }
+                        }
+                        else {
+                            progressDialog.dismiss();
+                        }
+                    }
+                    else {
+                        progressDialog.dismiss();
+                    }
+                }
+                else {
+                    noHP = hp.getText().toString();
+                    if(noHP.length() > 0){
+                        String num=noHP.substring(0,1);
+                        Log.d("phone num",num);
+                        Log.d("phone",noHP);
+                        if(num.contains("0")){
+                            noHP = noHP.substring(1);
+                            Log.d("phone 1",noHP);
+                        }
+                        if(!noHP.equals(user.getPhone2nd())){
+                            if(NetworkManager.getInstance(act).isConnectedInternet()){
+                                if(socketManager.isConnected()){
+                                    OpenLoading();
+                                    socketManager.ChangeSecondHP(noHP);
+                                }
+                                else {
+                                    progressDialog.dismiss();
+                                }
+                            }
+                            else {
+                                progressDialog.dismiss();
+                            }
+                        }
+                        else {
+                            progressDialog.dismiss();
+                        }
+                    }
+                    else {
+                        progressDialog.dismiss();
+                    }
+                }
+
+
+
+
+            }
+        };
+
+        changeHP = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                // Extract data included in the Intent
+                Log.d("broadcast", "changeHP");
+                String message = intent.getStringExtra("message");
+                if (message.equals("true")) {
+                    user.setPhone2nd(noHP);
                     applicationManager.setUser(user);
 
                 }
@@ -311,14 +466,34 @@ public class ActivityInformasiPribadi extends Activity {
     private void SetData(){
         try {
             nama.setText(user.getName());
-            email.setText(user.getEmail());
-            password.setText(ApplicationData.modelUserOrder.password);
-            hp.setText(user.getPhone());
+
         }
         catch (Exception ex){
             nama.setText("");
+        }
+
+        try {
+
+            email.setText(user.getEmail());
+
+        }
+        catch (Exception ex){
+
             email.setText("");
+
+        }
+
+        try {
             password.setText(ApplicationData.modelUserOrder.password);
+        }
+        catch (Exception ex){
+            password.setText(ApplicationData.modelUserOrder.password);
+        }
+
+        try {
+            hp.setText(user.getPhone2nd());
+        }
+        catch (Exception ex){
             hp.setText("");
         }
 
@@ -350,6 +525,8 @@ public class ActivityInformasiPribadi extends Activity {
                 new IntentFilter("editName"));
         LocalBroadcastManager.getInstance(this).registerReceiver(changeMail,
                 new IntentFilter("editEmail"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(changeHP,
+                new IntentFilter("editHP"));
 
     }
 

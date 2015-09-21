@@ -185,7 +185,7 @@
                     android:gravity="center_vertical"
                     android:singleLine="true"
                     android:lines="1"
-                    android:hint="852222222"
+                    android:hint=""
                     android:selectAllOnFocus="true"
                     android:background="@null"
                     android:textColorHint="#111111"

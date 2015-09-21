@@ -342,7 +342,6 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
                 appManager.setUserToken(token);
 
                 Log.d("json response", response.toString());
-                Log.d("json response",token );
                 try {
                     String _verified = responseUser.getString("verified");
                     String _id = responseUser.getString("_id");
@@ -364,7 +363,11 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
                         JSONArray latlgKantor = rumah.getJSONArray("coordinates");
                         String latKantor = latlgKantor.getString(1);
                         String lonKantor = latlgKantor.getString(0);
-
+                        JSONArray phNumbers = responseUser.getJSONArray("phoneNumbers");
+                        String hp2nd="";
+                        if(phNumbers.length()==2){
+                            hp2nd = phNumbers.getString(1).substring(3);
+                        }
                         userLogin = new ModelUserOrder();
                         userLogin.setPhone(phoneNumber);
                         userLogin.setPassword(password);
@@ -375,6 +378,7 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
                         userLogin.setHomeLon(lonRumah);
                         userLogin.setOfficeLat(latKantor);
                         userLogin.setOfficeLat(lonKantor);
+                        userLogin.setPhone2nd(hp2nd);
                         db.insertUser(userLogin);
                         appManager.setUser(userLogin);
                         ApplicationData.login_id = _id.toString();

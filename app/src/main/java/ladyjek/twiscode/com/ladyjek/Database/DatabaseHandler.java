@@ -33,6 +33,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_USER_EMAIL = "email";
     private static final String KEY_USER_PASSWORD = "password";
     private static final String KEY_USER_PHONE = "phone";
+    private static final String KEY_USER_PHONE_2nd = "phone2nd";
     private static final String KEY_USER_PAYMENT = "payment";
     private static final String KEY_USER_HOMELAT = "home_lat";
     private static final String KEY_USER_HOMELON = "home_lon";
@@ -70,6 +71,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_USER_EMAIL + " TEXT,"
                 + KEY_USER_PASSWORD + " TEXT,"
                 + KEY_USER_PHONE + " TEXT,"
+                + KEY_USER_PHONE_2nd + " TEXT,"
                 + KEY_USER_PAYMENT + " TEXT,"
                 + KEY_USER_HOMELAT + " TEXT,"
                 + KEY_USER_HOMELON + " TEXT,"
@@ -130,6 +132,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_USER_EMAIL, modelUserOrder.getEmail());
         values.put(KEY_USER_PASSWORD, modelUserOrder.getPassword());
         values.put(KEY_USER_PHONE, modelUserOrder.getPhone());
+        values.put(KEY_USER_PHONE_2nd, modelUserOrder.getPhone2nd());
         values.put(KEY_USER_PAYMENT, modelUserOrder.getPayment());
         values.put(KEY_USER_HOMELAT, modelUserOrder.getHomeLat());
         values.put(KEY_USER_HOMELON, modelUserOrder.getHomeLon());
@@ -187,7 +190,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         ModelUserOrder modelUserOrder = new ModelUserOrder(cursor.getString(0),
                 cursor.getString(1), cursor.getString(2), cursor.getString(3),
                 cursor.getString(4), cursor.getString(5), cursor.getString(6),
-                cursor.getString(7), cursor.getString(8), cursor.getString(9)
+                cursor.getString(7), cursor.getString(8), cursor.getString(9),cursor.getString(10)
         );
         return modelUserOrder;
     }
@@ -206,7 +209,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         ModelUserOrder modelUserOrder = new ModelUserOrder(cursor.getString(0),
                 cursor.getString(1), cursor.getString(2), cursor.getString(3),
                 cursor.getString(4), cursor.getString(5), cursor.getString(6),
-                cursor.getString(7), cursor.getString(8), cursor.getString(9)
+                cursor.getString(7), cursor.getString(8), cursor.getString(9),cursor.getString(10)
 
         );
         return modelUserOrder;

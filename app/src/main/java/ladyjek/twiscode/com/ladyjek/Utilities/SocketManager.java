@@ -815,6 +815,39 @@ public class SocketManager {
 
     }
 
+    public void ChangeSecondHP(String hp) {
+        Log.d(TAG, "edit nama");
+        //boolean feed = false;
+        try {
+            Log.d(TAG, "edit hp : " +hp);
+            socket.emit("put secondary phone number", hp, new Ack() {
+                @Override
+                public void call(Object... args) {
+                    try {
+                        JSONObject err = (JSONObject) args[0];
+                        if (err == null) {
+                            Log.d(TAG, "editHP true");
+                            SendBroadcast("editHP", "true");
+                        } else {
+                            Log.d(TAG, "editHP false");
+                            SendBroadcast("editHP", "false");
+                        }
+                    } catch (Exception ex) {
+                        Log.d(TAG, "editHP error");
+                        ex.printStackTrace();
+                        SendBroadcast("editHPl", "false");
+                    }
+
+                }
+
+            });
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+
+    }
+
 
     private void SendBroadcast(String typeBroadcast, String type) {
         Intent intent = new Intent(typeBroadcast);
