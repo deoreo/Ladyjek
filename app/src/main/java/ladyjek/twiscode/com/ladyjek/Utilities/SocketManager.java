@@ -434,6 +434,9 @@ public class SocketManager {
     }
 
 
+
+
+
     public void CancelOrder() {
         Log.d(TAG, "cancel");
         socket.emit("post cancel order", new Ack() {
@@ -786,7 +789,7 @@ public class SocketManager {
         Log.d(TAG, "edit nama");
         //boolean feed = false;
         try {
-            Log.d(TAG, "edit email : " +email);
+            Log.d(TAG, "edit email : " + email);
             socket.emit("put email", email, new Ack() {
                 @Override
                 public void call(Object... args) {
@@ -835,7 +838,7 @@ public class SocketManager {
                     } catch (Exception ex) {
                         Log.d(TAG, "editHP error");
                         ex.printStackTrace();
-                        SendBroadcast("editHPl", "false");
+                        SendBroadcast("editHP", "false");
                     }
 
                 }
@@ -848,6 +851,76 @@ public class SocketManager {
 
     }
 
+    public void ChangeHouseLocation(LatLng pos, String address) {
+        Log.d(TAG, "PutHouseLocation");
+        JSONArray loc = new JSONArray();
+        try {
+            loc.put(0, pos.longitude);
+            loc.put(1, pos.latitude);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        socket.emit("put house location", loc, address, new Ack() {
+            @Override
+            public void call(Object... args) {
+                try {
+                    try {
+                        JSONObject err = (JSONObject) args[0];
+                        if (err == null) {
+                            Log.d(TAG, "change location true");
+                            SendBroadcast("changeHouseLocation", "true");
+                        } else {
+                            Log.d(TAG, "change location false");
+                            SendBroadcast("changeHouseLocation", "false");
+                        }
+                    } catch (Exception ex) {
+                        Log.d(TAG, "change location error");
+                        ex.printStackTrace();
+                        SendBroadcast("changeHouseLocation", "false");
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+
+    public void ChangeOfficeLocation(LatLng pos, String address) {
+        Log.d(TAG, "PutOfficeLocation");
+        JSONArray loc = new JSONArray();
+        try {
+            loc.put(0, pos.longitude);
+            loc.put(1, pos.latitude);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        socket.emit("put office location", loc, address, new Ack() {
+            @Override
+            public void call(Object... args) {
+                try {
+                    try {
+                        JSONObject err = (JSONObject) args[0];
+                        if (err == null) {
+                            Log.d(TAG, "change location true");
+                            SendBroadcast("changeOfficeLocation", "true");
+                        } else {
+                            Log.d(TAG, "change location false");
+                            SendBroadcast("changeOfficeLocation", "false");
+                        }
+                    } catch (Exception ex) {
+                        Log.d(TAG, "change location error");
+                        ex.printStackTrace();
+                        SendBroadcast("changeOfficeLocation", "false");
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
 
     private void SendBroadcast(String typeBroadcast, String type) {
         Intent intent = new Intent(typeBroadcast);

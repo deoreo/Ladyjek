@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -23,6 +25,10 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.Model.ModelUserOrder;
 import ladyjek.twiscode.com.ladyjek.R;
@@ -34,7 +40,7 @@ public class ActivityInformasiPribadi extends Activity {
 
     private EditText nama,email,password,hp;
     private ImageView editNama, editEmail,editPass,editHp,editKantor,editRumah,btnBack;
-    private TextView txtRumah,txtKantor;
+    private TextView txtHomeAddress,txtHomeAddressDetail, txtOfficeAddress, txtOfficeAddressDetail;
     private RelativeLayout btnSimpan,btnVerify;
     SocketManager socketManager;
     private BroadcastReceiver doEditNama,doEditEmail;
@@ -42,8 +48,8 @@ public class ActivityInformasiPribadi extends Activity {
     Activity act;
     ModelUserOrder user = new ModelUserOrder();
     ProgressDialog progressDialog;
-    private BroadcastReceiver changeName, changeMail, changeHP;
-    String noHP;
+    private BroadcastReceiver changeName, changeMail, changeHP, changeHouseLocation, changeOfficeLocation;
+    String noHP, strDetail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,8 +65,10 @@ public class ActivityInformasiPribadi extends Activity {
         btnSimpan = (RelativeLayout) findViewById(R.id.wrapperSimpan);
         btnVerify = (RelativeLayout) findViewById(R.id.wrapperVerify);
 
-        txtRumah = (TextView) findViewById(R.id.txtRumah);
-        txtKantor = (TextView) findViewById(R.id.txtKantor);
+        txtHomeAddress = (TextView) findViewById(R.id.txtHomeAddress);
+        txtHomeAddressDetail = (TextView) findViewById(R.id.txtHomeAddressDetail);
+        txtOfficeAddress = (TextView) findViewById(R.id.txtOfficeAddress);
+        txtOfficeAddressDetail = (TextView) findViewById(R.id.txtOfficeAddressDetail);
 
         nama = (EditText) findViewById(R.id.txtNama);
         email = (EditText) findViewById(R.id.txtEmail);
@@ -102,6 +110,7 @@ public class ActivityInformasiPribadi extends Activity {
             public void onClick(View v) {
                 email.setEnabled(true);
                 email.requestFocus();
+                email.setText("");
             }
         });
 
@@ -157,6 +166,7 @@ public class ActivityInformasiPribadi extends Activity {
                 ApplicationData.editHome = false;
                 Intent i = new Intent(getBaseContext(), ActivityChangeLocation.class);
                 startActivity(i);
+                finish();
 
             }
         });
@@ -168,6 +178,7 @@ public class ActivityInformasiPribadi extends Activity {
                 ApplicationData.editHome = true;
                 Intent i = new Intent(getBaseContext(), ActivityChangeLocation.class);
                 startActivity(i);
+                finish();
 
             }
         });
@@ -439,6 +450,8 @@ public class ActivityInformasiPribadi extends Activity {
 
 
 
+
+
     }
 
     @Override
@@ -473,14 +486,10 @@ public class ActivityInformasiPribadi extends Activity {
         }
 
         try {
-
             email.setText(user.getEmail());
-
         }
         catch (Exception ex){
-
             email.setText("");
-
         }
 
         try {
@@ -495,6 +504,24 @@ public class ActivityInformasiPribadi extends Activity {
         }
         catch (Exception ex){
             hp.setText("");
+        }
+
+        try {
+            txtHomeAddress.setText(getAddress(act, user.getRumah()));
+            txtHomeAddressDetail.setText(strDetail);
+        }
+        catch (Exception ex){
+            txtHomeAddress.setText("Lokasi Rumah");
+            txtHomeAddressDetail.setText("-");
+        }
+
+        try {
+            txtOfficeAddress.setText(getAddress(act, user.getKantor()));
+            txtOfficeAddressDetail.setText(strDetail);
+        }
+        catch (Exception ex){
+            txtOfficeAddress.setText("Lokasi Kantor");
+            txtOfficeAddressDetail.setText("-");
         }
 
     }
@@ -529,6 +556,25 @@ public class ActivityInformasiPribadi extends Activity {
                 new IntentFilter("editHP"));
 
     }
+
+    public String getAddress(Activity activity, LatLng latlng) {
+        Geocoder geocoder = new Geocoder(activity, Locale.getDefault());
+        double lat = latlng.latitude;
+        double lng = latlng.longitude;
+        String addressLine = "";
+        try {
+            List<Address> addresses = geocoder.getFromLocation(lat, lng, 1);
+            Address obj = addresses.get(0);
+            addressLine = obj.getAddressLine(0);
+            strDetail = obj.getAddressLine(1) + " , " + obj.getAddressLine(2);
+
+
+        } catch (IOException e) {
+        } catch (Exception e) {
+        }
+        return addressLine;
+    }
+
 
 
 

@@ -17,7 +17,8 @@
             class="ladyjek.twiscode.com.ladyjek.Utilities.MySupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

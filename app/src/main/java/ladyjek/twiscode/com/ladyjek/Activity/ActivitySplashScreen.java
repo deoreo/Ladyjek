@@ -92,36 +92,6 @@ public class ActivitySplashScreen extends Activity {
         splashThread.start();
     }
 
-    private void Dummy(){
-        Thread background = new Thread() {
-            public void run() {
-
-                try {
-                    sleep(5 * 1000);
-                    int countUser = db.getUserCount();
-                    if(countUser > 0) {
-                        Intent i = new Intent(getBaseContext(), Main.class);
-                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(i);
-                        ApplicationData.userLogin = db.getUser();
-                    }
-                    else{
-                        // After 5 seconds redirect to another intent
-                        Intent i = new Intent(getBaseContext(), ActivityLogin.class);
-                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(i);
-                    }
-                    finish();
-
-                } catch (Exception e) {
-
-                }
-            }
-        };
-
-
-        background.start();
-    }
 
     @Override
     public void onBackPressed() {

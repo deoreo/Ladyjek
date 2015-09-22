@@ -16,6 +16,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
@@ -30,18 +31,12 @@ import ladyjek.twiscode.com.ladyjek.Utilities.NavDrawerItem;
 import ladyjek.twiscode.com.ladyjek.R;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link FragmentDrawer.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link FragmentDrawer#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class FragmentDrawer extends android.support.v4.app.Fragment {
     private static String TAG = FragmentDrawer.class.getSimpleName();
 
-    TextView btnLogout;
+    private TextView btnLogout;
+    private RelativeLayout wrapperLogout;
     private RecyclerView recyclerView;
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
@@ -90,7 +85,7 @@ public class FragmentDrawer extends android.support.v4.app.Fragment {
         recyclerView = (RecyclerView) layout.findViewById(R.id.drawerList);
         toggle = (ImageView) layout.findViewById(R.id.drawer_toggle_inside);
         btnLogout = (TextView) layout.findViewById(R.id.btnLogout);
-
+        wrapperLogout = (RelativeLayout) layout.findViewById(R.id.wrapperLogout);
         adapter = new NavigationDrawerAdapter(getActivity(), getData());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -115,6 +110,16 @@ public class FragmentDrawer extends android.support.v4.app.Fragment {
         });
 
         btnLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                db.logout();
+                Intent i = new Intent(getActivity(), ActivityLogin.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i);
+                getActivity().finish();
+            }
+        });
+        wrapperLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 db.logout();
