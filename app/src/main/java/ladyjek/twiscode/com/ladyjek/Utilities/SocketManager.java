@@ -868,7 +868,7 @@ public class SocketManager {
                         JSONObject err = (JSONObject) args[0];
                         if (err == null) {
                             Log.d(TAG, "change location true");
-                            SendBroadcast("change location", "true");
+                            SendBroadcast("changeHouseLocation", "true");
                         } else {
                             Log.d(TAG, "change location false");
                             SendBroadcast("changeHouseLocation", "false");
@@ -904,7 +904,7 @@ public class SocketManager {
                         JSONObject err = (JSONObject) args[0];
                         if (err == null) {
                             Log.d(TAG, "change location true");
-                            SendBroadcast("change location", "true");
+                            SendBroadcast("changeOfficeLocation", "true");
                         } else {
                             Log.d(TAG, "change location false");
                             SendBroadcast("changeOfficeLocation", "false");

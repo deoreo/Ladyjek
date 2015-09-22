@@ -85,7 +85,7 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
                 if (message.equals("true")) {
                     OpenLoading();
                     user.setRumah(ApplicationData.Home);
-                    applicationManager.setUser(user);
+                    ApplicationManager.getInstance(mActivity).setUser(user);
                 }
                 else {
 
@@ -106,7 +106,7 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
                 if (message.equals("true")) {
                     OpenLoading();
                     user.setKantor(ApplicationData.Office);
-                    applicationManager.setUser(user);
+                    ApplicationManager.getInstance(mActivity).setUser(user);
                 }
                 else {
 
