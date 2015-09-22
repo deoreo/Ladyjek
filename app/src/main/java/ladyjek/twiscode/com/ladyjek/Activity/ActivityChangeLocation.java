@@ -18,10 +18,20 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.Editable;
 import android.text.Html;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -35,25 +45,39 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import ladyjek.twiscode.com.ladyjek.Adapter.AdapterSuggestion;
+import ladyjek.twiscode.com.ladyjek.Control.JSONControl;
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
+import ladyjek.twiscode.com.ladyjek.Model.ModelGeocode;
+import ladyjek.twiscode.com.ladyjek.Model.ModelPlace;
 import ladyjek.twiscode.com.ladyjek.Model.ModelUserOrder;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Service.ServiceLocation;
 import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
+import ladyjek.twiscode.com.ladyjek.Utilities.GoogleAPIManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.NetworkManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.SocketManager;
+
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
 public class ActivityChangeLocation extends FragmentActivity implements GoogleMap.OnMapClickListener {
 
     private TextView lblChange,btnSimpan, txtAddress;
     private ImageView btnBack;
+    private RelativeLayout wrapperSimpan;
     private ServiceLocation serviceLocation;
-    private Activity mActivity;
+    private static Activity mActivity;
     private GoogleMap googleMap;
     private String strDetail;
     private LatLng posTemp;
@@ -63,18 +87,39 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
     private SocketManager socketManager;
     ProgressDialog progressDialog;
     private BroadcastReceiver changeHouseLocation, changeOfficeLocation;
-
+    public static boolean mTouchMap = true;
+    private static RelativeLayout layoutSuggestion;
+    private ProgressBar pSuggestion;
+    private FrameLayout itemCurrent;
+    private ListView mListView;
+    private List<ModelPlace> LIST_PLACE = null;
+    private String description = "";
+    private static final String KEY_ID = "place_id";
+    private static final String KEY_DESCRIPTION = "description";
+    private ModelPlace mPlace;
+    private AdapterSuggestion mAdapter;
+    private LinearLayout layoutfillForm;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_location);
         mActivity =this;
         btnSimpan = (TextView) findViewById(R.id.btnSimpan);
+        wrapperSimpan = (RelativeLayout)findViewById(R.id.wrapperSimpan);
         lblChange = (TextView) findViewById(R.id.txtLocation);
         txtAddress = (TextView) findViewById(R.id.txtAddress);
         btnBack = (ImageView) findViewById(R.id.btnBack);
+        pSuggestion = (ProgressBar) findViewById(R.id.progressSuggestion);
+        layoutSuggestion = (RelativeLayout) findViewById(R.id.layoutSuggestion);
+        itemCurrent = (FrameLayout) findViewById(R.id.itemCurrent);
+        mListView = (ListView) findViewById(R.id.lvSuggestion);
+        layoutfillForm = (LinearLayout) findViewById(R.id.layoutfillForm);
+
+
         user = ApplicationManager.getInstance(mActivity).getUser();
         socketManager = ApplicationData.socketManager;
+
+
 
         changeHouseLocation = new BroadcastReceiver() {
             @Override
@@ -83,15 +128,18 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
                 Log.d("broadcast", "changeHouseLocation");
                 String message = intent.getStringExtra("message");
                 if (message.equals("true")) {
-                    //OpenLoading();
                     user.setRumah(ApplicationData.Home);
+                    user.setAddressHome(ApplicationData.homeAddress);
                     ApplicationManager.getInstance(mActivity).setUser(user);
+                    Intent i = new Intent(getBaseContext(), ActivityInformasiPribadi.class);
+                    startActivity(i);
+                    finish();
                 }
                 else {
 
                 }
 
-                //progressDialog.dismiss();
+                progressDialog.dismiss();
 
 
             }
@@ -104,15 +152,18 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
                 Log.d("broadcast", "changeOfficeLocation");
                 String message = intent.getStringExtra("message");
                 if (message.equals("true")) {
-                    //OpenLoading();
                     user.setKantor(ApplicationData.Office);
+                    user.setAddressOffice(ApplicationData.officeAddress);
                     ApplicationManager.getInstance(mActivity).setUser(user);
+                    Intent i = new Intent(getBaseContext(), ActivityInformasiPribadi.class);
+                    startActivity(i);
+                    finish();
                 }
                 else {
 
                 }
 
-                //progressDialog.dismiss();
+                progressDialog.dismiss();
 
 
             }
@@ -171,14 +222,77 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
         btnSimpan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                OpenLoading();
                 if(ApplicationData.editHome) {
                     socketManager.ChangeHouseLocation(ApplicationData.Home, ApplicationData.homeAddress);
                 } else{
                     socketManager.ChangeOfficeLocation(ApplicationData.Office, ApplicationData.officeAddress);
                 }
-                Intent i = new Intent(getBaseContext(), ActivityInformasiPribadi.class);
-                startActivity(i);
-                finish();
+
+            }
+        });
+
+        wrapperSimpan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                OpenLoading();
+                if(ApplicationData.editHome) {
+                    socketManager.ChangeHouseLocation(ApplicationData.Home, ApplicationData.homeAddress);
+                } else{
+                    socketManager.ChangeOfficeLocation(ApplicationData.Office, ApplicationData.officeAddress);
+                }
+            }
+        });
+
+        layoutfillForm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        txtAddress.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                // TODO Auto-generated method stub
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    //do stuff here
+                    mTouchMap = false;
+
+                }
+                return false;
+            }
+        });
+
+        txtAddress.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (txtAddress.getText().toString().equals("")) {
+                    if (markerTemp != null) {
+                        markerTemp.remove();
+                        posTemp = null;
+                    }
+                }
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+                if (!mTouchMap) {
+                    if (s.length() >= 3) {
+                        new GetSuggestion(mActivity, s.toString()).execute();
+                    } else if (s.length() == 0) {
+                        layoutSuggestion.setVisibility(GONE);
+                    }
+                }
+
+
             }
         });
 
@@ -214,12 +328,15 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
     public void onMapClick(LatLng latLng) {
         googleMap.clear();
         posTemp = latLng;
-
+        float zoom = googleMap.getCameraPosition().zoom;
+        if(zoom<=15){
+            zoom=15;
+        }
         markerTemp = googleMap.addMarker(
                 new MarkerOptions()
                         .position(latLng)
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15), new GoogleMap.CancelableCallback() {
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom), new GoogleMap.CancelableCallback() {
             @Override
             public void onFinish() {
 
@@ -455,6 +572,138 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
         progressDialog.show();
     }
 
+    public class GetSuggestion extends AsyncTask<String, Void, JSONArray> {
+        String address, tag;
+        Activity activity;
+LatLng latLng;
+        public GetSuggestion(Activity activity, String address) {
+            this.address = address;
+            this.tag = tag;
+            this.activity = activity;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            layoutSuggestion.setVisibility(VISIBLE);
+            pSuggestion.setVisibility(VISIBLE);
+            itemCurrent.setVisibility(GONE);
+            mListView.setVisibility(VISIBLE);
+            mListView.setAdapter(null);
+        }
+
+        @Override
+        protected JSONArray doInBackground(String... arg) {
+            JSONArray json = null;
+            LIST_PLACE = new ArrayList<ModelPlace>();
+            JSONControl JSONControl = new JSONControl();
+            try {
+                json = JSONControl.listPlace(address);
+            } catch (Exception e) {
+            }
+            if (json != null) {
+                for (int i = 0; i < json.length(); i++) {
+                    String id = "";
+                    description = "";
+                    address = "";
+                    String detail = "";
+                    boolean status = true;
+                    try {
+                        JSONObject jsonObject = json.getJSONObject(i);
+                        id = jsonObject.getString(KEY_ID);
+                        description = jsonObject.getString(KEY_DESCRIPTION);
+                        String[] descSplit = description.split(",");
+                        address = descSplit[0];
+                        detail = descSplit[1] + "," + descSplit[2];
+                        status = true;
+
+                    } catch (JSONException e) {
+                    } catch (Exception e) {
+
+                    }
+
+                    if (status) {
+                        mPlace = new ModelPlace(id, address, detail);
+                        LIST_PLACE.add(mPlace);
+                    }
+                }
+                try {
+                    mAdapter = new AdapterSuggestion(activity, LIST_PLACE);
+                } catch (NullPointerException e) {
+                }
+            } else {
+                LIST_PLACE = null;
+            }
+
+            return json;
+        }
+
+        @Override
+        protected void onPostExecute(final JSONArray json) {
+            // TODO Auto-generated method stub
+            super.onPostExecute(json);
+            pSuggestion.setVisibility(GONE);
+            mListView.setAdapter(mAdapter);
+            mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    try {
+                        mTouchMap = true;
+                        ModelPlace selectedPlace = LIST_PLACE.get(position);
+                            txtAddress.setText(selectedPlace.getAddress());
+                            if (markerTemp != null) {
+                                markerTemp.remove();
+                            }
+                        layoutSuggestion.setVisibility(GONE);
+                        hideKeyboard();
+                        ModelGeocode geocode = GoogleAPIManager.geocode(selectedPlace.getAddress());
+                        latLng = new LatLng(geocode.getLat(), geocode.getLon());
+                        markerTemp = googleMap.addMarker(
+                                new MarkerOptions()
+                                        .position(latLng)
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
+                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15), new GoogleMap.CancelableCallback() {
+                            @Override
+                            public void onFinish() {
+
+                                String address = getAddress(mActivity, latLng);
+                                String detail = strDetail;
+                                txtAddress.setText(address);
+                                if (ApplicationData.editHome) {
+                                    ApplicationData.Home = latLng;
+                                    ApplicationData.homeAddress = address;
+                                    ApplicationData.homeAddressDetail = detail;
+                                } else {
+                                    ApplicationData.Office = latLng;
+                                    ApplicationData.officeAddress = address;
+                                    ApplicationData.officeAddressDetail = detail;
+                                }
+                            }
+
+                            @Override
+                            public void onCancel() {
+                            }
+                        });
+
+
+                    } catch (Exception e) {
+                    }
+                }
+            });
+
+        }
+    }
+
+
+    public static void hideKeyboard() {
+        View view = mActivity.getCurrentFocus();
+
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            layoutSuggestion.setVisibility(GONE);
+        }
+
+    }
 
 
 

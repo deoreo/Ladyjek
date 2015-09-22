@@ -110,9 +110,10 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
     ModelPlace mPlace, selectedPlaceFrom, selectedPlaceDestination;
     private List<ModelPlace> LIST_PLACE = null;
     private static final String KEY_ID = "place_id";
+    private static final String KEY_DESCRIPTION = "description";
     private static final String KEY_ADDRESS = "address";
     private static final String KEY_DETAIL = "detail";
-    private static final String KEY_DESCRIPTION = "description";
+
     private GoogleMap googleMap;
     private TextView btnRequestRide, txtAddressCurrent;
     private final String TAG_FROM = "FROM";

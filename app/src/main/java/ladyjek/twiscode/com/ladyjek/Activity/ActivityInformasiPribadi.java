@@ -4,17 +4,16 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Resources;
 import android.location.Address;
 import android.location.Geocoder;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
@@ -22,7 +21,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
@@ -38,7 +36,7 @@ import ladyjek.twiscode.com.ladyjek.Utilities.SocketManager;
 
 public class ActivityInformasiPribadi extends Activity {
 
-    private EditText nama,email,password,hp;
+    private EditText txtNama, txtEmail, txtPassword, txtHp;
     private ImageView editNama, editEmail,editPass,editHp,editKantor,editRumah,btnBack;
     private TextView txtHomeAddress,txtHomeAddressDetail, txtOfficeAddress, txtOfficeAddressDetail;
     private RelativeLayout btnSimpan,btnVerify;
@@ -70,10 +68,10 @@ public class ActivityInformasiPribadi extends Activity {
         txtOfficeAddress = (TextView) findViewById(R.id.txtOfficeAddress);
         txtOfficeAddressDetail = (TextView) findViewById(R.id.txtOfficeAddressDetail);
 
-        nama = (EditText) findViewById(R.id.txtNama);
-        email = (EditText) findViewById(R.id.txtEmail);
-        password = (EditText) findViewById(R.id.txtPassword);
-        hp = (EditText) findViewById(R.id.txtPhone);
+        txtNama = (EditText) findViewById(R.id.txtNama);
+        txtEmail = (EditText) findViewById(R.id.txtEmail);
+        txtPassword = (EditText) findViewById(R.id.txtPassword);
+        txtHp = (EditText) findViewById(R.id.txtPhone);
 
         editNama = (ImageView) findViewById(R.id.editNama);
         btnBack = (ImageView) findViewById(R.id.btnBack);
@@ -83,22 +81,22 @@ public class ActivityInformasiPribadi extends Activity {
         editRumah = (ImageView) findViewById(R.id.editRumah);
         editKantor = (ImageView) findViewById(R.id.editKantor);
 
-        SetData();
+
 
         editNama.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                nama.setEnabled(true);
-                nama.requestFocus();
+                txtNama.setEnabled(true);
+                txtNama.requestFocus();
             }
         });
 
-        nama.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        txtNama.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 boolean handled = false;
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    nama.setEnabled(false);
+                    txtNama.setEnabled(false);
                     handled = true;
                 }
                 return handled;
@@ -108,18 +106,18 @@ public class ActivityInformasiPribadi extends Activity {
         editEmail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                email.setEnabled(true);
-                email.requestFocus();
-                email.setText("");
+                txtEmail.setEnabled(true);
+                txtEmail.requestFocus();
+                txtEmail.setText("");
             }
         });
 
-        email.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        txtEmail.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 boolean handled = false;
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    email.setEnabled(false);
+                    txtEmail.setEnabled(false);
                     handled = true;
                 }
                 return handled;
@@ -129,27 +127,11 @@ public class ActivityInformasiPribadi extends Activity {
         editHp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                hp.setEnabled(true);
-                hp.requestFocus();
+                txtHp.setEnabled(true);
+                txtHp.requestFocus();
             }
         });
-/*
-        hp.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 
-                boolean handled = false;
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    hp.setEnabled(false);
-                    ApplicationData.editPhone = true;
-                    Intent i = new Intent(getBaseContext(), ActivityHandphoneKonfirmasi.class);
-                    startActivity(i);
-                    handled = true;
-                }
-                return handled;
-            }
-        });
-        */
 
         editPass.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -186,7 +168,7 @@ public class ActivityInformasiPribadi extends Activity {
         btnSimpan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String name = nama.getText().toString();
+                String name = txtNama.getText().toString();
                 if(!name.equals(user.getName())){
                     if(NetworkManager.getInstance(act).isConnectedInternet()){
                         if(socketManager.isConnected()){
@@ -196,7 +178,7 @@ public class ActivityInformasiPribadi extends Activity {
                     }
                 }
                 else {
-                    String mail = email.getText().toString();
+                    String mail = txtEmail.getText().toString();
                     if(mail.length() > 0){
                         if(!mail.equals(user.getEmail())){
                             if(NetworkManager.getInstance(act).isConnectedInternet()){
@@ -207,7 +189,7 @@ public class ActivityInformasiPribadi extends Activity {
                             }
                         }
                         else{
-                            noHP = hp.getText().toString();
+                            noHP = txtHp.getText().toString();
                             Log.d("phone",noHP);
                             if(noHP.length() > 0){
                                 String num=noHP.substring(0,1);
@@ -229,7 +211,7 @@ public class ActivityInformasiPribadi extends Activity {
                         }
                     }
                     else{
-                            noHP = hp.getText().toString();
+                            noHP = txtHp.getText().toString();
                             Log.d("phone",noHP);
                             if(noHP.length() > 0){
                                 String num=noHP.substring(0,1);
@@ -269,9 +251,9 @@ public class ActivityInformasiPribadi extends Activity {
                 Log.d("broadcast", "changeName");
                 String message = intent.getStringExtra("message");
                 if (message.equals("true")) {
-                    user.setName(nama.getText().toString());
+                    user.setName(txtNama.getText().toString());
                     applicationManager.setUser(user);
-                    String mail = email.getText().toString();
+                    String mail = txtEmail.getText().toString();
                     if(mail.length() > 0){
                         if(!mail.equals(user.getEmail())){
                             if(NetworkManager.getInstance(act).isConnectedInternet()){
@@ -293,7 +275,7 @@ public class ActivityInformasiPribadi extends Activity {
 
                 }
                 else {
-                    String mail = email.getText().toString();
+                    String mail = txtEmail.getText().toString();
                     if(mail.length() > 0){
                         if(!mail.equals(user.getEmail())){
                             if(NetworkManager.getInstance(act).isConnectedInternet()){
@@ -313,7 +295,7 @@ public class ActivityInformasiPribadi extends Activity {
                         }
                     }
                     else {
-                        noHP = hp.getText().toString();
+                        noHP = txtHp.getText().toString();
                         if(noHP.length() > 0){
                             String num=noHP.substring(0,1);
                             Log.d("phone num",num);
@@ -356,9 +338,9 @@ public class ActivityInformasiPribadi extends Activity {
                 Log.d("broadcast", "changeMail");
                 String message = intent.getStringExtra("message");
                 if (message.equals("true")) {
-                    user.setEmail(email.getText().toString());
+                    user.setEmail(txtEmail.getText().toString());
                     applicationManager.setUser(user);
-                    noHP = hp.getText().toString();
+                    noHP = txtHp.getText().toString();
                     if(noHP.length() > 0){
                         String num=noHP.substring(0,1);
                         Log.d("phone num",num);
@@ -389,7 +371,7 @@ public class ActivityInformasiPribadi extends Activity {
                     }
                 }
                 else {
-                    noHP = hp.getText().toString();
+                    noHP = txtHp.getText().toString();
                     if(noHP.length() > 0){
                         String num=noHP.substring(0,1);
                         Log.d("phone num",num);
@@ -455,76 +437,12 @@ public class ActivityInformasiPribadi extends Activity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_activity_splash_screen, menu);
-        return true;
+    public void onStart(){
+        super.onStart();
+        new GetInfoPribadi(ActivityInformasiPribadi.this).execute();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void SetData(){
-        try {
-            nama.setText(user.getName());
-
-        }
-        catch (Exception ex){
-            nama.setText("");
-        }
-
-        try {
-            email.setText(user.getEmail());
-        }
-        catch (Exception ex){
-            email.setText("");
-        }
-
-        try {
-            password.setText(ApplicationData.modelUserOrder.password);
-        }
-        catch (Exception ex){
-            password.setText(ApplicationData.modelUserOrder.password);
-        }
-
-        try {
-            hp.setText(user.getPhone2nd());
-        }
-        catch (Exception ex){
-            hp.setText("");
-        }
-
-        try {
-            txtHomeAddress.setText(getAddress(act, user.getRumah()));
-            txtHomeAddressDetail.setText(strDetail);
-        }
-        catch (Exception ex){
-            txtHomeAddress.setText("Lokasi Rumah");
-            txtHomeAddressDetail.setText("-");
-        }
-
-        try {
-            txtOfficeAddress.setText(getAddress(act, user.getKantor()));
-            txtOfficeAddressDetail.setText(strDetail);
-        }
-        catch (Exception ex){
-            txtOfficeAddress.setText("Lokasi Kantor");
-            txtOfficeAddressDetail.setText("-");
-        }
-
-    }
 
     @Override
     public void onBackPressed()
@@ -557,6 +475,7 @@ public class ActivityInformasiPribadi extends Activity {
 
     }
 
+
     public String getAddress(Activity activity, LatLng latlng) {
         Geocoder geocoder = new Geocoder(activity, Locale.getDefault());
         double lat = latlng.latitude;
@@ -575,7 +494,92 @@ public class ActivityInformasiPribadi extends Activity {
         return addressLine;
     }
 
+    private class GetInfoPribadi extends AsyncTask<String, Void, String> {
+        private Activity activity;
+        private Context context;
+        private Resources resources;
+        private ProgressDialog progressDialog;
+        private String nama ="";
+        private String email="";
+        private String password ="";
+        private String hp = "";
+        private String strHomeAddress="";
+        private String strHomeAddressDetail="";
+        private String strOfficeAddress="";
+        private String strOfficeAddressDetail="";
 
+        public GetInfoPribadi(Activity activity) {
+            super();
+            this.activity = activity;
+            this.context = activity.getApplicationContext();
+            this.resources = activity.getResources();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = new ProgressDialog(activity);
+            progressDialog.setMessage("Loading. . .");
+            progressDialog.setIndeterminate(false);
+            progressDialog.setCancelable(false);
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressDialog.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+                ModelUserOrder user = ApplicationManager.getInstance(activity).getUser();
+                nama = user.getName();
+                email = user.getEmail();
+                password = user.getPassword();
+                hp = user.getPhone();
+                strHomeAddress = user.getAddressHome();
+                strOfficeAddress = user.getAddressOffice();
+                LatLng rumah = user.getRumah();
+                LatLng kantor = user.getKantor();
+                try {
+                    getAddress(activity,rumah);
+                    strHomeAddressDetail = strDetail;
+                    getAddress(activity,kantor );
+                    strOfficeAddressDetail = strDetail;
+                }catch (Exception e){
+
+                }
+                return "OK";
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return "FAIL";
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+
+            switch (result) {
+                case "FAIL":
+
+                    break;
+                case "OK":
+                    txtNama.setText(nama);
+                    txtEmail.setText(email);
+                    txtPassword.setText(password);
+                    txtHp.setText(hp);
+                    txtHomeAddress.setText(strHomeAddress);
+                    txtHomeAddressDetail.setText(strHomeAddressDetail);
+                    txtOfficeAddress.setText(strOfficeAddress);
+                    txtOfficeAddressDetail.setText(strOfficeAddressDetail);
+                    break;
+            }
+            progressDialog.dismiss();
+
+        }
+
+
+    }
 
 
 

@@ -22,6 +22,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
+import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -372,11 +373,14 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
                             email="";
                         }
                         JSONObject rumah = responseUser.getJSONObject("houseGeo");
+                        String addressRumah = rumah.getString("address");
                         JSONArray latlgRumah = rumah.getJSONArray("coordinates");
                         String latRumah = latlgRumah.getString(1);
                         String lonRumah = latlgRumah.getString(0);
+
                         JSONObject kantor = responseUser.getJSONObject("officeGeo");
-                        JSONArray latlgKantor = rumah.getJSONArray("coordinates");
+                        String addressKantor = kantor.getString("address");
+                        JSONArray latlgKantor = kantor.getJSONArray("coordinates");
                         String latKantor = latlgKantor.getString(1);
                         String lonKantor = latlgKantor.getString(0);
                         JSONArray phNumbers = responseUser.getJSONArray("phoneNumbers");
@@ -390,10 +394,14 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
                         userLogin.setId(_id);
                         userLogin.setEmail(email);
                         userLogin.setName(name);
+                        userLogin.setAddressHome(addressRumah);
                         userLogin.setHomeLat(latRumah);
                         userLogin.setHomeLon(lonRumah);
+                        userLogin.setRumah(new LatLng(Double.parseDouble(latRumah), Double.parseDouble(lonRumah)));
+                        userLogin.setAddressOffice(addressKantor);
                         userLogin.setOfficeLat(latKantor);
                         userLogin.setOfficeLat(lonKantor);
+                        userLogin.setKantor(new LatLng(Double.parseDouble(latKantor), Double.parseDouble(lonKantor)));
                         userLogin.setPhone2nd(hp2nd);
                         db.insertUser(userLogin);
                         appManager.setUser(userLogin);

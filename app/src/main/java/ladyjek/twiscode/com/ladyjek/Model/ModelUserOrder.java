@@ -8,8 +8,8 @@ import java.io.Serializable;
  * Created by Unity on 08/08/2015.
  */
 public class ModelUserOrder implements Serializable {
-    public String id, name, email, password, phone,phone2nd, payment, homeLat, homeLon, officeLat, officeLon;
-    public LatLng rumah, kantor;
+    private String id, name, email, password, phone,phone2nd, payment, addressHome, homeLat, homeLon, addressOffice, officeLat, officeLon;
+    private LatLng rumah, kantor;
     public ModelUserOrder(){}
 
     public ModelUserOrder(String id, String name, String email, String password, String hp, String hp2nd, LatLng kantor, LatLng rumah){
@@ -25,7 +25,7 @@ public class ModelUserOrder implements Serializable {
 
     public ModelUserOrder(String id, String name, String email, String password,
                           String phone, String hp2nd,String payment, String homeLat, String homeLon,
-                          String officeLat, String officeLon
+                          String officeLat, String officeLon, String addressHome, String addressOffice
     ){
         this.id = id;
         this.name = name;
@@ -38,6 +38,8 @@ public class ModelUserOrder implements Serializable {
         this.officeLat = officeLat;
         this.officeLon = officeLon;
         this.phone2nd = hp2nd;
+        this.addressHome = addressHome;
+        this.addressOffice = addressOffice;
     }
 
     public String getId() {
@@ -142,5 +144,21 @@ public class ModelUserOrder implements Serializable {
 
     public void setKantor(LatLng kantor) {
         this.kantor = kantor;
+    }
+
+    public String getAddressHome() {
+        return addressHome;
+    }
+
+    public void setAddressHome(String addressHome) {
+        this.addressHome = addressHome;
+    }
+
+    public String getAddressOffice() {
+        return addressOffice;
+    }
+
+    public void setAddressOffice(String addressOffice) {
+        this.addressOffice = addressOffice;
     }
 }

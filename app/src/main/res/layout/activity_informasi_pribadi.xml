@@ -271,6 +271,9 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:textSize="14dp"
+                                android:layout_marginRight="50dp"
+                                android:maxLines="2"
+                                android:ellipsize="end"
                                 android:text="-"
                                 />
                         </LinearLayout>
@@ -325,6 +328,9 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:textSize="14dp"
+                                android:layout_marginRight="50dp"
+                                android:maxLines="2"
+                                android:ellipsize="end"
                                 android:text="-"
                                 />
                         </LinearLayout>

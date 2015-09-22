@@ -190,7 +190,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         ModelUserOrder modelUserOrder = new ModelUserOrder(cursor.getString(0),
                 cursor.getString(1), cursor.getString(2), cursor.getString(3),
                 cursor.getString(4), cursor.getString(5), cursor.getString(6),
-                cursor.getString(7), cursor.getString(8), cursor.getString(9),cursor.getString(10)
+                cursor.getString(7), cursor.getString(8), cursor.getString(9),
+                cursor.getString(10), cursor.getString(11), cursor.getString(12)
         );
         return modelUserOrder;
     }
@@ -209,7 +210,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         ModelUserOrder modelUserOrder = new ModelUserOrder(cursor.getString(0),
                 cursor.getString(1), cursor.getString(2), cursor.getString(3),
                 cursor.getString(4), cursor.getString(5), cursor.getString(6),
-                cursor.getString(7), cursor.getString(8), cursor.getString(9),cursor.getString(10)
+                cursor.getString(7), cursor.getString(8), cursor.getString(9),
+                cursor.getString(10), cursor.getString(11), cursor.getString(12)
 
         );
         return modelUserOrder;

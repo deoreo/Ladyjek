@@ -56,8 +56,8 @@ public class ApplicationData {
     public static JSONArray getOrder = new JSONArray();
 
     public static final String PARSE_CHANNEL = "ladyjek";
-    public static final String PARSE_APPLICATION_ID = "OqKceLUMcPo769myUmHlAlNLNGa0PxWgu6xNEYRD";
-    public static final String PARSE_CLIENT_KEY = "WVJeHzaOwLUH5pQHTwnk9laqfQOrWIdRSPzcbGpC";
+    public static final String PARSE_APPLICATION_ID = "GsNq1NSkQeZtdB4XqxCkAkrXjolCUdVUKgTwm75n";
+    public static final String PARSE_CLIENT_KEY = "3UM74g1fwlTt8Y2erutL2HdTr0NMpalbue2D8nIJ";
 
     //public static final String PARSE_APPLICATION_ID = "6v8hpUwe9Ba2BgUlgeuN8eQPulFFuGvVkiHPfEZ6";
     //public static final String PARSE_CLIENT_KEY = "iqG01ZjXfCODRvzejdb0qLX8ULoaP853jTEFi1xJ";

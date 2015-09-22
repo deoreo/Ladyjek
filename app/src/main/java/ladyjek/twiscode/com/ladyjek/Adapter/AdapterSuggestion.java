@@ -17,21 +17,33 @@ import ladyjek.twiscode.com.ladyjek.R;
 
 
 public class AdapterSuggestion extends BaseAdapter {
-    private FragmentActivity mAct;
     private List<ModelPlace> mSourceData, mFilterData;
     private LayoutInflater mInflater = null;
     private boolean mKeyIsEmpty = false;
 
     public AdapterSuggestion(FragmentActivity activity, List<ModelPlace> d) {
         try {
-            mAct = activity;
             mSourceData = d;
-            mInflater = (LayoutInflater) mAct.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            mInflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             if (d == null || d.isEmpty()) {
                 mKeyIsEmpty = true;
             }
         } catch (Exception e) {
-            mInflater = (LayoutInflater) mAct.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            mInflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            mKeyIsEmpty = true;
+        }
+
+    }
+
+    public AdapterSuggestion(Activity activity, List<ModelPlace> d) {
+        try {
+            mSourceData = d;
+            mInflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            if (d == null || d.isEmpty()) {
+                mKeyIsEmpty = true;
+            }
+        } catch (Exception e) {
+            mInflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             mKeyIsEmpty = true;
         }
 
