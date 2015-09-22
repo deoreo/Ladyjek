@@ -33,4 +33,5 @@ dependencies {
     compile 'com.parse.bolts:bolts-android:1.2.1'
     compile 'com.parse:parse-android:1.10.1'
     compile 'me.relex:circleindicator:1.1.5@aar'
+    compile 'com.github.tosslife:pullloadview:1.1.0'
 }
