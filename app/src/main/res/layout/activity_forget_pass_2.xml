@@ -95,7 +95,7 @@
                                     android:inputType="text"
                                     android:textCursorDrawable="@drawable/cursor_white"/>
                                 <RelativeLayout
-                                    android:id="@+id/btnClearEmail"
+                                    android:id="@+id/btnClear"
                                     android:layout_width="20dp"
                                     android:layout_height="50dp"
                                     android:visibility="gone">
