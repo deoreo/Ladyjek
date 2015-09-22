@@ -97,7 +97,7 @@ public class ActivityHistory extends FragmentActivity {
 
             @Override
             public void onRefresh() {
-                mPullToLoadView.setComplete();
+                //mPullToLoadView.setComplete();
             }
 
             @Override

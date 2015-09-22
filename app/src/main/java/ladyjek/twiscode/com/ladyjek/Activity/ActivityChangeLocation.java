@@ -83,7 +83,7 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
                 Log.d("broadcast", "changeHouseLocation");
                 String message = intent.getStringExtra("message");
                 if (message.equals("true")) {
-                    OpenLoading();
+                    //OpenLoading();
                     user.setRumah(ApplicationData.Home);
                     ApplicationManager.getInstance(mActivity).setUser(user);
                 }
@@ -104,7 +104,7 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
                 Log.d("broadcast", "changeOfficeLocation");
                 String message = intent.getStringExtra("message");
                 if (message.equals("true")) {
-                    OpenLoading();
+                    //OpenLoading();
                     user.setKantor(ApplicationData.Office);
                     ApplicationManager.getInstance(mActivity).setUser(user);
                 }
