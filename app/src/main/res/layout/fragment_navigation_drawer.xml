@@ -30,7 +30,7 @@
         android:background="@color/grey_color_dark"
         android:layout_below="@id/title"/>
     <RelativeLayout
-        android:id="@+id/wrapperSimpan"
+        android:id="@+id/wrapperLogout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="20dp"

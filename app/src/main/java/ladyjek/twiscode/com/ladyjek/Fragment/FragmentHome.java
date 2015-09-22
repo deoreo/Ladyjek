@@ -224,10 +224,12 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
 
         SupportMapFragment fm = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapView);
         googleMap = fm.getMap();
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(-6.1995921,106.872451), 10f));
         mHandler = new Handler();
         serviceLocation = new ServiceLocation(mActivity);
         //new GetLocation(mActivity, googleMap).execute();
         //new GetMyLocation(mActivity, googleMap).execute();
+
 
         mRunnable = new Runnable() {
             @Override
@@ -257,13 +259,13 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                         } catch (Exception e) {
                             Log.v(TAG, "Not Running GetMap");
                         }
-                        AUTOUPDATE_INTERVAL_TIME = 1 * 15 * 1000;
+                        AUTOUPDATE_INTERVAL_TIME = 60 * 60 * 1000;
                     }
 
                 }
             }
         };
-        mRunnable.run();
+        //mRunnable.run();
 
 
 

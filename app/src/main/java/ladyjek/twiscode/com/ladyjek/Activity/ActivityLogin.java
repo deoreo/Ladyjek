@@ -160,6 +160,13 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
             public void onClick(View v) {
                 String email = txtEmail.getText().toString();
                 String password = txtPassword.getText().toString();
+                String num=email.substring(0,1);
+                Log.d("phone num",num);
+                Log.d("phone",email);
+                if(num.contains("0")){
+                    email = email.substring(1);
+                    Log.d("phone 1",email);
+                }
                 if (email == null || password == null || email.trim().isEmpty() || password.trim().isEmpty()) {
                     DialogManager.showDialog(mActivity, "Warning", "Isi Nomor Ponsel dan Password Anda!");
                 } else {
@@ -187,7 +194,6 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
             public void onTextChanged(CharSequence s, int start,
                                       int before, int count) {
                 if (s.length() >= 1) {
-                    txtEmail.setText("0");
                     btnClearEmail.setVisibility(VISIBLE);
                 } else if (s.length() == 0) {
                     btnClearEmail.setVisibility(GONE);

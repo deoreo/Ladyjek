@@ -48,7 +48,7 @@ public class ApplicationData {
     public static String detailDestination="";
     public static String distance="";
     public static String duration="";
-    public static  String price = "";
+    public static String price = "";
     public static SocketManager socketManager = null;
     public static boolean isLogin = false;
     public static boolean isFindLocation = false;
@@ -72,5 +72,9 @@ public class ApplicationData {
 
     public static LatLng[] posDrivers;
     public static LatLng Home = null;
+    public static String homeAddress = "Lokasi Rumah";
+    public static String homeAddressDetail = "-";
     public static LatLng Office = null;
+    public static String officeAddress = "Lokasi Kantor";
+    public static String officeAddressDetail = "-";
 }

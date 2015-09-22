@@ -2,9 +2,10 @@ package ladyjek.twiscode.com.ladyjek.Activity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.location.Address;
 import android.location.Criteria;
@@ -15,17 +16,14 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
-import android.os.Message;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.Html;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdate;
@@ -33,21 +31,15 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-import ladyjek.twiscode.com.ladyjek.Control.JSONControl;
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
-import ladyjek.twiscode.com.ladyjek.Model.ModelPlace;
 import ladyjek.twiscode.com.ladyjek.Model.ModelUserOrder;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Service.ServiceLocation;
@@ -56,9 +48,6 @@ import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.NetworkManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.SocketManager;
 
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
-
 public class ActivityChangeLocation extends FragmentActivity implements GoogleMap.OnMapClickListener {
 
     private TextView lblChange,btnSimpan, txtAddress;
@@ -66,12 +55,14 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
     private ServiceLocation serviceLocation;
     private Activity mActivity;
     private GoogleMap googleMap;
-    private String strDetailHome, strDetailOffice;
+    private String strDetail;
     private LatLng posTemp;
     public static Marker markerTemp;
-    private ModelUserOrder modelUser;
+    ApplicationManager applicationManager;
+    private ModelUserOrder user = new ModelUserOrder();;
     private SocketManager socketManager;
-
+    ProgressDialog progressDialog;
+    private BroadcastReceiver changeHouseLocation, changeOfficeLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,47 +73,112 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
         lblChange = (TextView) findViewById(R.id.txtLocation);
         txtAddress = (TextView) findViewById(R.id.txtAddress);
         btnBack = (ImageView) findViewById(R.id.btnBack);
-        modelUser = ApplicationManager.getInstance(mActivity).getUser();
+        user = ApplicationManager.getInstance(mActivity).getUser();
+        socketManager = ApplicationData.socketManager;
+
+        changeHouseLocation = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                // Extract data included in the Intent
+                Log.d("broadcast", "changeHouseLocation");
+                String message = intent.getStringExtra("message");
+                if (message.equals("true")) {
+                    OpenLoading();
+                    user.setRumah(ApplicationData.Home);
+                    applicationManager.setUser(user);
+                }
+                else {
+
+                }
+
+                progressDialog.dismiss();
+
+
+            }
+        };
+
+        changeOfficeLocation = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                // Extract data included in the Intent
+                Log.d("broadcast", "changeOfficeLocation");
+                String message = intent.getStringExtra("message");
+                if (message.equals("true")) {
+                    OpenLoading();
+                    user.setKantor(ApplicationData.Office);
+                    applicationManager.setUser(user);
+                }
+                else {
+
+                }
+
+                progressDialog.dismiss();
+
+
+            }
+        };
+
+
         SupportMapFragment fm = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapView);
         googleMap = fm.getMap();
-
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(-6.2211361, 106.8665963), 10f));
         btnSimpan.setText(Html.fromHtml(getResources().getString(R.string.simpan)));
         serviceLocation = new ServiceLocation();
-        String HomeLat = modelUser.getHomeLat();
-        String HomeLon = modelUser.getHomeLon();
+        LatLng rumah = user.getRumah();
+        LatLng kantor = user.getKantor();
 
         if(ApplicationData.editHome) {
             lblChange.setText(R.string.title_activity_change_location_rumah);
+            if (NetworkManager.getInstance(mActivity).isConnectedInternet()) {
+                if(rumah == null) {
+                    new GetMyLocation(mActivity, googleMap, serviceLocation).execute();
+                }else{
+                    LatLng cPos = user.getRumah();
+                    GetUserLocation(cPos);
+                }
+            } else {
+                DialogManager.showDialog(mActivity, "Peringatan", "Tidak dapat menemukan lokasi anda!");
+            }
         }
         else{
             lblChange.setText(R.string.title_activity_change_location_kantor);
-        }
-
-
-        if (NetworkManager.getInstance(mActivity).isConnectedInternet()) {
-            if(HomeLat.equals("0") && HomeLon.equals("0")) {
-                new GetMyLocation(mActivity, googleMap, serviceLocation).execute();
-            }else{
-                LatLng cPos = new LatLng(Double.parseDouble(modelUser.getHomeLat()), Double.parseDouble(modelUser.getHomeLat()) );
-                GetUserLocation(cPos);
+            if (NetworkManager.getInstance(mActivity).isConnectedInternet()) {
+                if(kantor == null) {
+                    new GetMyLocation(mActivity, googleMap, serviceLocation).execute();
+                }else{
+                    LatLng cPos = user.getKantor();
+                    GetUserLocation(cPos);
+                }
+            } else {
+                DialogManager.showDialog(mActivity, "Peringatan", "Tidak dapat menemukan lokasi anda!");
             }
-        } else {
-            DialogManager.showDialog(mActivity, "Peringatan", "Tidak dapat menemukan lokasi anda!");
         }
+
+
+
 
         googleMap.setOnMapClickListener(this);
 
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBackPressed();
+                Intent i = new Intent(getBaseContext(), ActivityInformasiPribadi.class);
+                startActivity(i);
+                finish();
             }
         });
 
         btnSimpan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if(ApplicationData.editHome) {
+                    socketManager.ChangeHouseLocation(ApplicationData.Home, ApplicationData.homeAddress);
+                } else{
+                    socketManager.ChangeOfficeLocation(ApplicationData.Office, ApplicationData.officeAddress);
+                }
+                Intent i = new Intent(getBaseContext(), ActivityInformasiPribadi.class);
+                startActivity(i);
+                finish();
             }
         });
 
@@ -136,8 +192,8 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
     }
 
 
-    public String getAddress(LatLng latlng) {
-        Geocoder geocoder = new Geocoder(mActivity, Locale.getDefault());
+    public String getAddress(Activity activity, LatLng latlng) {
+        Geocoder geocoder = new Geocoder(activity, Locale.getDefault());
         double lat = latlng.latitude;
         double lng = latlng.longitude;
         String addressLine = "";
@@ -145,11 +201,8 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
             List<Address> addresses = geocoder.getFromLocation(lat, lng, 1);
             Address obj = addresses.get(0);
             addressLine = obj.getAddressLine(0);
-            if (ApplicationData.editHome) {
-                strDetailHome = obj.getAddressLine(1) + " , " + obj.getAddressLine(2);
-            } else {
-                strDetailOffice = obj.getAddressLine(1) + " , " + obj.getAddressLine(2);
-            }
+            strDetail = obj.getAddressLine(1) + " , " + obj.getAddressLine(2);
+
 
         } catch (IOException e) {
         } catch (Exception e) {
@@ -159,10 +212,9 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
 
     @Override
     public void onMapClick(LatLng latLng) {
-        //drawNewMarker
-        //posFrom=latLng;
         googleMap.clear();
         posTemp = latLng;
+
         markerTemp = googleMap.addMarker(
                 new MarkerOptions()
                         .position(latLng)
@@ -170,7 +222,20 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15), new GoogleMap.CancelableCallback() {
             @Override
             public void onFinish() {
-                txtAddress.setText(getAddress(posTemp));
+
+                String address = getAddress(mActivity, posTemp);
+                String detail= strDetail;
+                txtAddress.setText(address);
+                if(ApplicationData.editHome) {
+                    ApplicationData.Home = posTemp;
+                    ApplicationData.homeAddress = address;
+                    ApplicationData.homeAddressDetail = detail;
+                }
+                else{
+                    ApplicationData.Office = posTemp;
+                    ApplicationData.officeAddress = address;
+                    ApplicationData.officeAddressDetail = detail;
+                }
             }
 
             @Override
@@ -189,7 +254,7 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15), new GoogleMap.CancelableCallback() {
             @Override
             public void onFinish() {
-                txtAddress.setText(getAddress(posTemp));
+                txtAddress.setText(getAddress(mActivity, posTemp));
             }
 
             @Override
@@ -207,6 +272,7 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
         private GoogleMap googleMap;
         private LocationManager locationManager;
         private ServiceLocation serviceLocation;
+        private String address, detail;
 
         public GetMyLocation(Activity activity, GoogleMap googleMap, ServiceLocation serviceLocation) {
             super();
@@ -233,12 +299,12 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
         protected String doInBackground(String... params) {
             try {
                 try {
-                    //Looper.prepare();
-                    //mUserLocationHandler = new Handler();
+
                     int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(mActivity);
                     if (status != ConnectionResult.SUCCESS) {
                         int requestCode = 10;
                     } else {
+
                         locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
                         boolean isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
                         boolean isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
@@ -257,6 +323,18 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
                                     if (location != null) {
                                         latitude = location.getLatitude();
                                         longitude = location.getLongitude();
+                                        address = getAddress(activity, new LatLng(latitude, longitude));
+                                        detail = strDetail;
+                                        if(ApplicationData.editHome) {
+                                            ApplicationData.Home = new LatLng(latitude, longitude);
+                                            ApplicationData.homeAddress = address;
+                                            ApplicationData.homeAddressDetail = detail;
+                                        }
+                                        else{
+                                            ApplicationData.Office = new LatLng(latitude, longitude);
+                                            ApplicationData.officeAddress = address;
+                                            ApplicationData.officeAddressDetail = detail;
+                                        }
                                     }
                                 }
                             }
@@ -269,7 +347,18 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
                                     if (location != null) {
                                         latitude = location.getLatitude();
                                         longitude = location.getLongitude();
-
+                                        address = getAddress(activity, new LatLng(latitude, longitude));
+                                        detail = strDetail;
+                                        if(ApplicationData.editHome) {
+                                            ApplicationData.Home = new LatLng(latitude, longitude);
+                                            ApplicationData.homeAddress = address;
+                                            ApplicationData.homeAddressDetail = detail;
+                                        }
+                                        else{
+                                            ApplicationData.Office = new LatLng(latitude, longitude);
+                                            ApplicationData.officeAddress = address;
+                                            ApplicationData.officeAddressDetail = detail;
+                                        }
                                     }
                                 }
                             }
@@ -278,6 +367,7 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
 
                     //Looper.loop();
                 } catch (Exception e) {
+                    e.printStackTrace();
                 }
                 return "OK";
             } catch (Exception e) {
@@ -294,12 +384,11 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
             progressDialog.dismiss();
             switch (result) {
                 case "FAIL":
-                    DialogManager.showDialog(activity, "Peringatan", "Can not find your location!");
+                    DialogManager.showDialog(activity, "Peringatan", "Tidak dapat menemukan lokasi anda!");
                     break;
                 case "OK":
                     try {
                         LatLng currentLocation = serviceLocation.updateLocation(activity);
-
                         googleMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
                         googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
                         Marker markerFrom = googleMap.addMarker(
@@ -307,8 +396,11 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
                                         .position(currentLocation)
                                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
                         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(currentLocation, 15);
-                        txtAddress.setText(getAddress(currentLocation));
+
+
                         googleMap.animateCamera(cameraUpdate);
+                        txtAddress.setText(address);
+
                         Log.v("posisi gps", currentLocation.toString());
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -339,6 +431,28 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
         public void onProviderDisabled(String provider) {
 
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Register mMessageReceiver to receive messages.
+        Log.i("adding receiver", "fragment ontainer for profile");
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(changeHouseLocation,
+                new IntentFilter("changeHouseLocation"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(changeOfficeLocation,
+                new IntentFilter("changeOfficeLocation"));
+
+    }
+
+    void OpenLoading(){
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Loading. . .");
+        progressDialog.setIndeterminate(false);
+        progressDialog.setCancelable(false);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.show();
     }
 
 
