@@ -144,13 +144,15 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 1000 * 60 * 1;
     private static final long MIN_TIME_BW_UPDATES = 1;
     public static boolean mTouchMap = true;
+    private boolean isGetNearestDrivers = false;
     private ApplicationManager appManager;
     private SocketManager socketManager;
     private BroadcastReceiver createOrder, lastOrder, lastFeedback, logout, nearestDrivers;
-    private ServiceLocation serviceLocation;
+    //private ServiceLocation serviceLocation;
     private Runnable mRunnable;
     private Handler mHandler;
-    private int AUTOUPDATE_INTERVAL_TIME = 1 * 1000; // 15 menit
+    private int AUTOUPDATE_INTERVAL_TIME = 1 * 1000;
+    private int duration = 9999;
     private DatabaseHandler db;
     private final String TAG = "FragmentHome";
     private LatLng[] driverArray = null;
@@ -167,7 +169,6 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         db = new DatabaseHandler(mActivity);
         posFrom = ApplicationData.posFrom;
         tagLocation = TAG_FROM;
-        Log.v(TAG, "OnCreate AUTOUPDATE :" + AUTOUPDATE_INTERVAL_TIME);
     }
 
     @Override
@@ -226,46 +227,17 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         googleMap = fm.getMap();
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(-6.1995921,106.872451), 10f));
         mHandler = new Handler();
-        serviceLocation = new ServiceLocation(mActivity);
-        //new GetLocation(mActivity, googleMap).execute();
-        //new GetMyLocation(mActivity, googleMap).execute();
+        //serviceLocation = new ServiceLocation(mActivity);
+
+        if(NetworkManager.getInstance(mActivity).isConnectedInternet()) {
+            new GetMyLocation(mActivity, googleMap, socketManager).execute();
+        }
+        else{
+            DialogManager.showDialog(mActivity, "Peringatan", "Anda tidak terhubung internet!");
+        }
 
 
-        mRunnable = new Runnable() {
-            @Override
-            public void run() {
-                mHandler.postDelayed(this, AUTOUPDATE_INTERVAL_TIME);
-                if (NetworkManager.getInstance(mActivity).isConnectedInternet()) {
-                    Log.v(TAG, "Running");
 
-                    if (markerDestination == null) {
-                        try {
-                            googleMap.clear();
-                            serviceLocation.GetMap(mActivity, googleMap);
-                            posFrom = serviceLocation.updateLocation(mActivity);
-                            if(socketManager.isConnected()){
-                                socketManager.PostLocation(posFrom);
-                            }
-
-                            txtFrom.setText(getAddress(posFrom));
-                            appManager.setUserFrom(new ModelPlace(posFrom.latitude, posFrom.longitude));
-                           /* socketManager.GetNearestDrivers(posFrom);
-                            for (int i = 0; i < ApplicationData.posDrivers.length; i++) {
-                                drawMarkerNearestDriver(posFrom, ApplicationData.posDrivers[i]);
-
-                            }
-                            */
-                            Log.v(TAG, "Running GetMap");
-                        } catch (Exception e) {
-                            Log.v(TAG, "Not Running GetMap");
-                        }
-                        AUTOUPDATE_INTERVAL_TIME = 60 * 60 * 1000;
-                    }
-
-                }
-            }
-        };
-        //mRunnable.run();
 
 
 
@@ -600,6 +572,8 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
 
         );
 
+
+
         lastOrder = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -668,10 +642,9 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                 String message = intent.getStringExtra("message");
                 if (message.equalsIgnoreCase("true")) {
                     Log.d(TAG, "nearest drivers" + message);
-                        for (int i = 0; i < ApplicationData.posDrivers.length; i++) {
-                            drawMarkerNearestDriver(posFrom, ApplicationData.posDrivers[i]);
-
-                        }
+                    for (int i = 0; i < ApplicationData.posDrivers.length; i++) {
+                        drawMarkerNearestDriver(posFrom, ApplicationData.posDrivers[i]);
+                    }
                 }
             }
         };
@@ -702,7 +675,6 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                 }
             }
         };
-
 
         // Inflate the layout for this fragment
         return rootView;
@@ -768,6 +740,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
 
     public void drawMarkerNearestDriver(LatLng pFrom, LatLng locationMarker) {
         Log.v(TAG, "drawMarkerNearestDriver " + locationMarker.toString());
+
         try {
             googleMap.addMarker(
                     new MarkerOptions()
@@ -777,8 +750,16 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
             Document doc = GoogleAPIManager.getRoute(pFrom, locationMarker, "driving");
 
             String strDurationDriver = "" + GoogleAPIManager.getDurationText(doc);
-            txtDriverTime.setText("Estimasi waktu menunggu : "+strDurationDriver);
+            String[] strDist = strDurationDriver.split(" ");
+            int tempDuration = Integer.parseInt(strDist[0]);
+            if(tempDuration<duration){
+                duration = tempDuration;
+            }
 
+
+
+            txtDriverTime.setText("Estimasi waktu menunggu : "+duration+" menit");
+            isGetNearestDrivers = true;
         } catch (Exception e) {
             Log.v(TAG, "catch drawMarkerNearestDriver ");
         }
@@ -971,23 +952,76 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
     }
 
 
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //mHandler.postDelayed(mRunnable, AUTOUPDATE_INTERVAL_TIME);
+        // Register mMessageReceiver to receive messages.
+        Log.i(TAG, "onResume");
+        LocalBroadcastManager.getInstance(mActivity).registerReceiver(createOrder,
+                new IntentFilter("createOrder"));
+        LocalBroadcastManager.getInstance(mActivity).registerReceiver(lastOrder,
+                new IntentFilter("lastOrder"));
+        LocalBroadcastManager.getInstance(mActivity).registerReceiver(lastFeedback,
+                new IntentFilter("lastFeedback"));
+        LocalBroadcastManager.getInstance(mActivity).registerReceiver(nearestDrivers,
+                new IntentFilter("nearestDrivers"));
+        LocalBroadcastManager.getInstance(mActivity).registerReceiver(logout,
+                new IntentFilter("logout"));
+
+    }
+
+    @Override
+    public void onPause() {
+        // Unregister since the activity is not visible
+        Log.i(TAG, "onPause");
+        LocalBroadcastManager.getInstance(mActivity).unregisterReceiver(createOrder);
+        LocalBroadcastManager.getInstance(mActivity).unregisterReceiver(lastFeedback);
+        LocalBroadcastManager.getInstance(mActivity).unregisterReceiver(nearestDrivers);
+
+        //mHandler.removeCallbacks(mRunnable);
+        //PowerManager powerManager = (PowerManager) mActivity.getSystemService(mActivity.POWER_SERVICE);
+       // boolean isScreenOn = powerManager.isScreenOn();
+        //if (!isScreenOn) {
+       //     mRunnable.run();
+        //}
+        super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.i(TAG, "onStop");
+        //getActivity().finish();
+        //ExecutorService threadPoolExecutor = Executors.newSingleThreadExecutor();
+        //Future longRunningTaskFuture = threadPoolExecutor.submit(mRunnable);
+        //longRunningTaskFuture.cancel(true);
+    }
     private class GetMyLocation extends AsyncTask<String, Void, String> implements LocationListener {
         private Activity activity;
         private Context context;
         private Resources resources;
         private ProgressDialog progressDialog;
-        //private Handler mUserLocationHandler = null;
-        //private Handler handler = null;
         private double latitude, longitude;
         private GoogleMap googleMap;
         private LocationManager locationManager;
+        private SocketManager socketManager;
 
-        public GetMyLocation(Activity activity, GoogleMap googleMap) {
+        public GetMyLocation(Activity activity, GoogleMap googleMap, SocketManager socketManager) {
             super();
             this.activity = activity;
             this.context = activity.getApplicationContext();
             this.resources = activity.getResources();
             this.googleMap = googleMap;
+            this.socketManager = socketManager;
         }
 
         @Override
@@ -1008,8 +1042,6 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
             Log.v(TAG, "GetMyLocation doInBackground");
             try {
                 try {
-                    //Looper.prepare();
-                    //mUserLocationHandler = new Handler();
                     int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(mActivity);
                     if (status != ConnectionResult.SUCCESS) {
                         int requestCode = 10;
@@ -1055,8 +1087,34 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                             }
                         }
                     }
+                    mRunnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            mHandler.postDelayed(this, AUTOUPDATE_INTERVAL_TIME);
+                            if (NetworkManager.getInstance(mActivity).isConnectedInternet()) {
+                                Log.v(TAG, "Running");
 
-                    //Looper.loop();
+                                if (!isGetNearestDrivers) {
+                                    try {
+                                        socketManager.GetNearestDrivers(posFrom);
+                                        if(ApplicationData.posDrivers!=null) {
+                                            for (int i = 0; i < ApplicationData.posDrivers.length; i++) {
+                                                drawMarkerNearestDriver(posFrom, ApplicationData.posDrivers[i]);
+                                                Log.v(TAG, "Running GetNearestDrivers("+i+") : "+ApplicationData.posDrivers[i]);
+                                            }
+                                        }
+                                        Log.v(TAG, "Running GetNearestDrivers");
+                                    } catch (Exception e) {
+                                        Log.v(TAG, "Not Running GetNearestDrivers");
+                                    }
+                                }else{
+                                    AUTOUPDATE_INTERVAL_TIME = 24 * 60 * 60 * 1000;
+                                }
+
+                            }
+                        }
+                    };
+                    mRunnable.run();
                 } catch (Exception e) {
                 }
                 return "OK";
@@ -1090,11 +1148,6 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                         txtFrom.setText(getAddress(pFrom));
                         googleMap.animateCamera(cameraUpdate);
                         Log.v("posisi gps", pFrom.toString());
-                        Message msg = new Message();
-                        //handler.sendMessage(msg);
-                        //if (mUserLocationHandler != null) {
-                        //    mUserLocationHandler.getLooper().quit();
-                        //}
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -1113,11 +1166,6 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
             } catch (Exception e) {
                 Log.v("FragmentHome", "OnLocationChange");
             }
-            //Message msg = new Message();
-            //handler.sendMessage(msg);
-            //if (mUserLocationHandler != null) {
-            //    mUserLocationHandler.getLooper().quit();
-            //}
         }
 
         @Override
@@ -1136,58 +1184,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         }
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
 
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        mHandler.postDelayed(mRunnable, AUTOUPDATE_INTERVAL_TIME);
-        // Register mMessageReceiver to receive messages.
-        Log.i(TAG, "onResume");
-
-        LocalBroadcastManager.getInstance(mActivity).registerReceiver(createOrder,
-                new IntentFilter("createOrder"));
-        LocalBroadcastManager.getInstance(mActivity).registerReceiver(lastOrder,
-                new IntentFilter("lastOrder"));
-        LocalBroadcastManager.getInstance(mActivity).registerReceiver(lastFeedback,
-                new IntentFilter("lastFeedback"));
-        LocalBroadcastManager.getInstance(mActivity).registerReceiver(nearestDrivers,
-                new IntentFilter("nearestDrivers"));
-        LocalBroadcastManager.getInstance(mActivity).registerReceiver(logout,
-                new IntentFilter("logout"));
-
-    }
-
-    @Override
-    public void onPause() {
-        // Unregister since the activity is not visible
-        Log.i(TAG, "onPause");
-        LocalBroadcastManager.getInstance(mActivity).unregisterReceiver(createOrder);
-        LocalBroadcastManager.getInstance(mActivity).unregisterReceiver(lastFeedback);
-        LocalBroadcastManager.getInstance(mActivity).unregisterReceiver(nearestDrivers);
-
-        mHandler.removeCallbacks(mRunnable);
-        PowerManager powerManager = (PowerManager) mActivity.getSystemService(mActivity.POWER_SERVICE);
-        boolean isScreenOn = powerManager.isScreenOn();
-        if (!isScreenOn) {
-            mRunnable.run();
-        }
-        super.onPause();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        Log.i(TAG, "onStop");
-        //getActivity().finish();
-        //ExecutorService threadPoolExecutor = Executors.newSingleThreadExecutor();
-        //Future longRunningTaskFuture = threadPoolExecutor.submit(mRunnable);
-        //longRunningTaskFuture.cancel(true);
-    }
 
 
 }

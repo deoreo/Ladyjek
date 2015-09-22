@@ -454,6 +454,7 @@ public class SocketManager {
                     }
                 } catch (Exception ex) {
                     ex.printStackTrace();
+                    SendBroadcast("doCancel", "true");
                 }
 
             }
@@ -565,6 +566,7 @@ public class SocketManager {
                             Double lon = drivers.getJSONArray(i).getDouble(1);
                             Double lat = drivers.getJSONArray(i).getDouble(0);
                             ApplicationData.posDrivers[i] = new LatLng(lon, lat);
+                            Log.d(TAG, "getNearestDrivers ApplicationData.posDrivers["+i+"] : " + ApplicationData.posDrivers[i]);
                         }
 
                         SendBroadcast("nearestDrivers ", "true");
