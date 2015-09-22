@@ -15,6 +15,10 @@ public class ConfigManager {
     public static final String PHONE_NUMBER = SERVER+"/phone-number";
     public static final String VERIFY_PHONE_NUMBER = SERVER+"/verify";
     public static final String RESEND_VERIFY_CODE = SERVER+"/resend-code";
+    public static final String FORGOT_PASSWORD = SERVER+"/forgot";
+    public static final String RESEND_RESET_PASSWORD = SERVER+"/forgot/resend-token";
+    public static final String CHECK_RESET_PASSWORD = SERVER+"/forgot/check";
+    public static final String RESET_PASSWORD = SERVER+"/forgot/reset";
     public static final String DEVICE_TOKEN = SERVER+"/device-token/create";
     public static final String SERVER_SOCKET = "https://playpal.id:5051/";
 }

@@ -41,7 +41,7 @@ import static android.view.View.VISIBLE;
 public class ActivityLogin extends Activity  implements KeyboardManager.Listener {
 
     private Activity mActivity;
-    private TextView btnRegister, btnLogin, btnRegisteronLogin;
+    private TextView btnRegister, btnLogin, btnRegisteronLogin, forgetPassword;
     private EditText txtEmail, txtPassword;
     private RelativeLayout wrapperLogin, wrapperRegister;
     private ModelUserOrder userLogin;
@@ -59,6 +59,7 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
         db = new DatabaseHandler(mActivity);
         btnRegister = (TextView) findViewById(R.id.btnRegister);
         btnLogin = (TextView) findViewById(R.id.btnLogin);
+        forgetPassword = (TextView) findViewById(R.id.forgetPassword);
         txtEmail = (EditText) findViewById(R.id.txtEmail);
         txtPassword = (EditText) findViewById(R.id.txtPassword);
         wrapperLogin = (RelativeLayout) findViewById(R.id.wrapperLogin);
@@ -130,6 +131,14 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
             }
         });
 
+        forgetPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getBaseContext(), ActivityForgetPassword_1.class);
+                startActivity(i);
+            }
+        });
+
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -187,7 +196,6 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
             public void onTextChanged(CharSequence s, int start,
                                       int before, int count) {
                 if (s.length() >= 1) {
-                    txtEmail.setText("0");
                     btnClearEmail.setVisibility(VISIBLE);
                 } else if (s.length() == 0) {
                     btnClearEmail.setVisibility(GONE);
