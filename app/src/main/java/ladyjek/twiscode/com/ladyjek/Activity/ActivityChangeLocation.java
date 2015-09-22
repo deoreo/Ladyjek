@@ -91,7 +91,7 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
 
                 }
 
-                progressDialog.dismiss();
+                //progressDialog.dismiss();
 
 
             }
@@ -112,7 +112,7 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
 
                 }
 
-                progressDialog.dismiss();
+                //progressDialog.dismiss();
 
 
             }
