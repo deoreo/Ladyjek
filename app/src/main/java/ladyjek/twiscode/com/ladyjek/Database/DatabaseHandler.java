@@ -49,6 +49,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static String KEY_HISTORY_DISTANCE = "distance";
     private static String KEY_HISTORY_DURATION_ = "duration";
     private static String KEY_HISTORY_PRICE = "price";
+    private static String KEY_HISTORY_STATUS = "status";
+    private static String KEY_HISTORY_PAYMENT = "payment";
 
     private static final String KEY_DRIVER_ID = "id_driver";
     private static final String KEY_DRIVER_NAME = "name_driver";
@@ -158,6 +160,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_HISTORY_DISTANCE, modelHistory.getDistance());
         values.put(KEY_HISTORY_DURATION_, modelHistory.getDuration());
         values.put(KEY_HISTORY_PRICE, modelHistory.getPrice());
+        values.put(KEY_HISTORY_STATUS, modelHistory.getStatus());
+        values.put(KEY_HISTORY_PAYMENT, modelHistory.getPayment());
 
         // Inserting Row
         db.insert(T_HISTORY, null, values);
@@ -223,7 +227,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         Cursor cursor = db.query(T_HISTORY, new String[]{KEY_HISTORY_ID,
                         KEY_HISTORY_DATE, KEY_HISTORY_TIME, KEY_HISTORY_DRIVER, KEY_HISTORY_FROM,
                         KEY_HISTORY_DESTINATION, KEY_HISTORY_DISTANCE, KEY_HISTORY_DURATION_,
-                        KEY_HISTORY_PRICE}, KEY_HISTORY_ID + "=?",
+                        KEY_HISTORY_PRICE,KEY_HISTORY_STATUS,KEY_HISTORY_PAYMENT}, KEY_HISTORY_ID + "=?",
                 new String[]{String.valueOf(id)}, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
@@ -231,7 +235,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         ModelHistory modelHistory = new ModelHistory(cursor.getString(0),
                 cursor.getString(1), cursor.getString(2), cursor.getString(3),
                 cursor.getString(4), cursor.getString(5), cursor.getString(6),
-                cursor.getString(7), cursor.getString(8)
+                cursor.getString(7), cursor.getString(8),cursor.getString(9),cursor.getString(10)
 
         );
         return modelHistory;

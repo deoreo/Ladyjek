@@ -6,11 +6,13 @@ import java.io.Serializable;
  * Created by ModelUser on 8/11/2015.
  */
 public class ModelHistory implements Serializable {
-    private String id, date, time, driver, from, destination, distance, duration, price;
+    private String id, date, time, driver, from, destination, distance, duration, price, status,payment;
+
+    public ModelHistory(){}
 
     public ModelHistory(String id, String date, String time, String driver,
                      String from, String destination, String distance, String duration,
-                     String price
+                     String price, String status, String payment
     ){
         this.id = id;
         this.date = date;
@@ -21,6 +23,8 @@ public class ModelHistory implements Serializable {
         this.distance = distance;
         this.duration = duration;
         this.price = price;
+        this.status = status;
+        this.payment = payment;
     }
 
     public String getId() {
@@ -93,5 +97,21 @@ public class ModelHistory implements Serializable {
 
     public void setPrice(String price) {
         this.price = price;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getPayment() {
+        return payment;
+    }
+
+    public void setPayment(String payment) {
+        this.payment = payment;
     }
 }
