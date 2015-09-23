@@ -76,7 +76,7 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
     private String driverDuration;
     private Boolean isArrive = false;
     private SocketManager socketManager;
-    private BroadcastReceiver goTrip,doCancel,driverChange,getDriver;
+    private BroadcastReceiver goTrip,doCancel,driverChange,getDriver,start;
     private Boolean isCancel = false, isPhone = false, isSMS = false;
     private Double latFrom, lonFrom;
     private ServiceLocation serviceLocation;
@@ -209,6 +209,27 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
         });
 
 
+        start  = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                // Extract data included in the Intent
+                String message = intent.getStringExtra("message");
+                Log.d("start", message);
+                if(message=="true"){
+                    appManager.setTrip("end");
+                    Intent i = new Intent(getBaseContext(), ActivityTracking.class);
+                    ApplicationManager um = new ApplicationManager(ActivityPickUp.this);
+                    um.setActivity("ActivityTracking");
+                    startActivity(i);
+                    finish();
+                }
+                else {
+                    Log.d("cant start","");
+                }
+
+
+            }
+        };
 
 
         goTrip  = new BroadcastReceiver() {
@@ -219,13 +240,15 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
                 Log.d("goTrip", message);
                 if(message=="true"){
                     appManager.setArrive(true);
-
+                    /*
                     Toast.makeText(ActivityPickUp.this, "Driver telah sampai di tempat Anda", Toast.LENGTH_LONG).show();
                     Intent i = new Intent(getBaseContext(), ActivityTracking.class);
                     ApplicationManager um = new ApplicationManager(ActivityPickUp.this);
                     um.setActivity("ActivityTracking");
                     startActivity(i);
                     finish();
+                    */
+                    txtEstimate.setText("Driver telah sampai di tempat Anda");
                     /*
                     new AlertDialogWrapper.Builder(ActivityPickUp.this)
                             .setTitle("Driver telah sampai di tempat Anda")
@@ -530,6 +553,8 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
         // Register mMessageReceiver to receive messages.
         LocalBroadcastManager.getInstance(this).registerReceiver(goTrip,
                 new IntentFilter("goTrip"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(start,
+                new IntentFilter("goStart"));
         LocalBroadcastManager.getInstance(this).registerReceiver(doCancel,
                 new IntentFilter("doCancel"));
         LocalBroadcastManager.getInstance(this).registerReceiver(driverChange,
