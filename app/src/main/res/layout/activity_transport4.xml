@@ -318,7 +318,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/layoutfillForm"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop = "240dp"
         android:layout_marginRight="20dp"
         android:gravity="right"
         android:weightSum="2"
@@ -326,8 +326,8 @@
         >
         <ImageView
             android:id="@+id/btnCurrent"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:background="@drawable/currentlocation"
             />
 
