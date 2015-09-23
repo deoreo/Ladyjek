@@ -36,7 +36,7 @@ import ladyjek.twiscode.com.ladyjek.Utilities.SocketManager;
 
 public class ActivityInformasiPribadi extends Activity {
 
-    private EditText txtNama, txtEmail, txtPassword, txtHp;
+    private EditText txtNama, txtEmail, txtPassword, txtHp, txtHpPrimary;
     private ImageView editNama, editEmail,editPass,editHp,editKantor,editRumah,btnBack;
     private TextView txtHomeAddress,txtHomeAddressDetail, txtOfficeAddress, txtOfficeAddressDetail;
     private RelativeLayout btnSimpan,btnVerify;
@@ -71,6 +71,7 @@ public class ActivityInformasiPribadi extends Activity {
         txtNama = (EditText) findViewById(R.id.txtNama);
         txtEmail = (EditText) findViewById(R.id.txtEmail);
         txtPassword = (EditText) findViewById(R.id.txtPassword);
+        txtHpPrimary = (EditText) findViewById(R.id.txtPhone1);
         txtHp = (EditText) findViewById(R.id.txtPhone);
 
         editNama = (ImageView) findViewById(R.id.editNama);
@@ -108,7 +109,6 @@ public class ActivityInformasiPribadi extends Activity {
             public void onClick(View v) {
                 txtEmail.setEnabled(true);
                 txtEmail.requestFocus();
-                txtEmail.setText("");
             }
         });
 
@@ -503,6 +503,7 @@ public class ActivityInformasiPribadi extends Activity {
         private String email="";
         private String password ="";
         private String hp = "";
+        private String hp1 = "";
         private String strHomeAddress="";
         private String strHomeAddressDetail="";
         private String strOfficeAddress="";
@@ -533,7 +534,8 @@ public class ActivityInformasiPribadi extends Activity {
                 nama = user.getName();
                 email = user.getEmail();
                 password = user.getPassword();
-                hp = user.getPhone();
+                hp1 = user.getPhone();
+                hp = user.getPhone2nd();
                 strHomeAddress = user.getAddressHome();
                 strOfficeAddress = user.getAddressOffice();
                 LatLng rumah = user.getRumah();
@@ -568,10 +570,11 @@ public class ActivityInformasiPribadi extends Activity {
                     txtEmail.setText(email);
                     txtPassword.setText(password);
                     txtHp.setText(hp);
-                    txtHomeAddress.setText(strHomeAddress);
-                    txtHomeAddressDetail.setText(strHomeAddressDetail);
-                    txtOfficeAddress.setText(strOfficeAddress);
-                    txtOfficeAddressDetail.setText(strOfficeAddressDetail);
+                    txtHpPrimary.setText(hp1);
+                    txtHomeAddress.setText("Lokasi Rumah");
+                    txtHomeAddressDetail.setText(strHomeAddress);
+                    txtOfficeAddress.setText("Lokasi Kantor");
+                    txtOfficeAddressDetail.setText(strOfficeAddress);
                     break;
             }
             progressDialog.dismiss();

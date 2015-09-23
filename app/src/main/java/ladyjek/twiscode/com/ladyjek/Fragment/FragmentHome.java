@@ -39,6 +39,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -134,6 +135,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
     private AdapterSuggestion mAdapter;
     private static RelativeLayout layoutSuggestion, wrapperRegister, mapWrapper;
     private LinearLayout layoutfillForm;
+    private ImageView btnCurrent;
     public static LinearLayout layoutMarkerFrom, layoutMarkerDestination;
     private FrameLayout itemCurrent;
     private ListView mListView;
@@ -157,6 +159,9 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
     private DatabaseHandler db;
     private final String TAG = "FragmentHome";
     private LatLng[] driverArray = null;
+    private boolean isSearchCurrent = false;
+    private ProgressDialog progressDialog;
+
     public FragmentHome() {
         // Required empty public constructor
     }
@@ -195,6 +200,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         layoutMarkerFrom = (LinearLayout) rootView.findViewById(R.id.layoutMarkerFrom);
         layoutMarkerDestination = (LinearLayout) rootView.findViewById(R.id.layoutMarkerDestination);
         mapWrapper = (RelativeLayout) rootView.findViewById(R.id.mapWrapper);
+        btnCurrent = (ImageView) rootView.findViewById(R.id.btnCurrent);
         progressMapFrom = (ProgressBar) rootView.findViewById(R.id.progressMapFrom);
         progressMapDestination = (ProgressBar) rootView.findViewById(R.id.progressMapDestination);
         txtLocationDestination = (TextView) rootView.findViewById(R.id.txtLocationDestination);
@@ -342,6 +348,20 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                 layoutMarkerFrom.setVisibility(GONE);
                 layoutMarkerDestination.setVisibility(GONE);
                 return false;
+            }
+        });
+
+        btnCurrent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "btnCurrent click");
+                isSearchCurrent = true;
+                if(NetworkManager.getInstance(mActivity).isConnectedInternet()) {
+                    new GetMyLocation(mActivity, googleMap, socketManager).execute();
+                }
+                else{
+                    DialogManager.showDialog(mActivity, "Peringatan", "Anda tidak terhubung internet!");
+                }
             }
         });
 
@@ -646,6 +666,8 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                     for (int i = 0; i < ApplicationData.posDrivers.length; i++) {
                         drawMarkerNearestDriver(posFrom, ApplicationData.posDrivers[i]);
                     }
+                    //mHandler.removeCallbacksAndMessages(mRunnable);
+                    //progressDialog.dismiss();
                 }
             }
         };
@@ -804,6 +826,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
     @Override
     public void onMapClick(LatLng latLng) {
         //drawNewMarker
+        isSearchCurrent = false;
         if (tagLocation.equals(TAG_FROM)) {
             //posFrom=latLng;
             posTemp = latLng;
@@ -1006,6 +1029,17 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         //Future longRunningTaskFuture = threadPoolExecutor.submit(mRunnable);
         //longRunningTaskFuture.cancel(true);
     }
+
+    void OpenLoading(){
+        progressDialog = new ProgressDialog(mActivity);
+        progressDialog.setMessage("Loading. . .");
+        progressDialog.setIndeterminate(false);
+        progressDialog.setCancelable(false);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.show();
+    }
+
+
     private class GetMyLocation extends AsyncTask<String, Void, String> implements LocationListener {
         private Activity activity;
         private Context context;
@@ -1097,6 +1131,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
 
                                 if (!isGetNearestDrivers) {
                                     try {
+                                        //OpenLoading();
                                         socketManager.GetNearestDrivers(posFrom);
                                         if(ApplicationData.posDrivers!=null) {
                                             for (int i = 0; i < ApplicationData.posDrivers.length; i++) {
@@ -1138,15 +1173,18 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                 case "OK":
                     try {
                         LatLng pFrom = ApplicationData.posFrom;
-
-                        googleMap.moveCamera(CameraUpdateFactory.newLatLng(pFrom));
-                        googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
-                        markerFrom = googleMap.addMarker(
-                                new MarkerOptions()
-                                        .position(pFrom)
-                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
-                        cameraUpdate = CameraUpdateFactory.newLatLngZoom(pFrom, 15);
-                        txtFrom.setText(getAddress(pFrom));
+                        float zoom = googleMap.getCameraPosition().zoom;
+                        if(zoom<=15){
+                            zoom=15;
+                        }
+                        if(!isSearchCurrent) {
+                            markerFrom = googleMap.addMarker(
+                                    new MarkerOptions()
+                                            .position(pFrom)
+                                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
+                            txtFrom.setText(getAddress(pFrom));
+                        }
+                        cameraUpdate = CameraUpdateFactory.newLatLngZoom(pFrom, zoom);
                         googleMap.animateCamera(cameraUpdate);
                         Log.v("posisi gps", pFrom.toString());
                     } catch (Exception e) {
