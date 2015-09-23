@@ -41,7 +41,7 @@ public class ActivityAbout extends FragmentActivity {
             @Override
             public void onClick(View v) {
                 Intent internetIntent = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("http://www.google.com"));
+                        Uri.parse("http://www.ladyjek.com"));
                 //internetIntent.setComponent(new ComponentName("com.android.browser","com.android.browser.BrowserActivity"));
                 internetIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(internetIntent);

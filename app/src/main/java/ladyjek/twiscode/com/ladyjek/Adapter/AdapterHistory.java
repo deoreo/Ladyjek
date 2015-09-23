@@ -26,6 +26,7 @@ import java.util.Locale;
 
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityDetail;
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityVerifyPayment;
+import ladyjek.twiscode.com.ladyjek.Fragment.FragmentHome;
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.Model.ModelHistory;
 import ladyjek.twiscode.com.ladyjek.Model.ModelOrder;
@@ -150,4 +151,6 @@ public class AdapterHistory extends RecyclerView.Adapter<AdapterHistory.MyViewHo
         intent.putExtra("message", type);
         LocalBroadcastManager.getInstance(act).sendBroadcast(intent);
     }
+
+
 }
