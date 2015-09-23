@@ -777,6 +777,9 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
             int tempDuration = Integer.parseInt(strDist[0]);
             if(tempDuration<duration){
                 duration = tempDuration;
+                if(duration<0){
+                    duration=1;
+                }
             }
 
 
