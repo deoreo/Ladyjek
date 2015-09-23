@@ -1,12 +1,17 @@
 package ladyjek.twiscode.com.ladyjek.Activity;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,9 +26,12 @@ import java.util.List;
 
 import ladyjek.twiscode.com.ladyjek.Adapter.AdapterHistory;
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
+import ladyjek.twiscode.com.ladyjek.Model.ModelHistory;
 import ladyjek.twiscode.com.ladyjek.Model.ModelOrder;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
+import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
+import ladyjek.twiscode.com.ladyjek.Utilities.NetworkManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.SocketManager;
 
 public class ActivityHistory extends FragmentActivity {
@@ -38,10 +46,12 @@ public class ActivityHistory extends FragmentActivity {
     SocketManager socketManager;
 
     AdapterHistory adapter;
-    List<ModelOrder> data = new ArrayList<>();
+    List<ModelHistory> data = new ArrayList<>();
 
     boolean allLoaded = false, isLoading = false;
     int cnt = 1, max = 3;
+
+    private BroadcastReceiver history;
 
 
 
@@ -65,6 +75,8 @@ public class ActivityHistory extends FragmentActivity {
         mRecyclerView.setAdapter(adapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(act));
 
+        allLoaded = false;
+
 
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,23 +93,13 @@ public class ActivityHistory extends FragmentActivity {
         mPullToLoadView.setPullCallback(new PullCallback() {
             @Override
             public void onLoadMore() {
-                if(cnt >= max){
-                    allLoaded = true;
-                    mPullToLoadView.setComplete();
-                    mPullToLoadView.isLoadMoreEnabled(false);
-                }
-                else {
-                    allLoaded = false;
-                    SetData();
-                    cnt++;
-                    mPullToLoadView.setComplete();
-                }
+                mPullToLoadView.setComplete();
 
             }
 
             @Override
             public void onRefresh() {
-                //mPullToLoadView.setComplete();
+                SetData();
             }
 
             @Override
@@ -112,20 +114,48 @@ public class ActivityHistory extends FragmentActivity {
         });
 
         //初始加载
-        //mPullToLoadView.initLoad();
-
-        SetData();
+        mPullToLoadView.initLoad();
 
 
+        //SetData();
 
-        if(data.size() > 0){
-            noItems.setVisibility(View.GONE);
-            mPullToLoadView.setVisibility(View.VISIBLE);
-        }
-        else{
-            noItems.setVisibility(View.VISIBLE);
-            mPullToLoadView.setVisibility(View.GONE);
-        }
+
+
+
+
+
+        history = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                // Extract data included in the Intent
+                Log.d("", "broadcast history");
+                String message = intent.getStringExtra("message");
+                if (message.equals("true")) {
+                    data = ApplicationData.history;
+                    adapter = new AdapterHistory(act,data);
+                    mRecyclerView.setAdapter(adapter);
+                    cnt++;
+                    if(data.size() > 0){
+                        noItems.setVisibility(View.GONE);
+                        mPullToLoadView.setVisibility(View.VISIBLE);
+                    }
+                    else{
+                        noItems.setVisibility(View.VISIBLE);
+                        mPullToLoadView.setVisibility(View.GONE);
+                    }
+                    allLoaded = false;
+                    mPullToLoadView.setComplete();
+
+                }
+                else if(message.equals("null")){
+                    allLoaded = false;
+                    mPullToLoadView.setComplete();
+                }
+
+            }
+        };
+
+
 
 
 
@@ -137,6 +167,7 @@ public class ActivityHistory extends FragmentActivity {
     }
 
     void SetData(){
+        /*
         for(int i=0; i<15;i++){
             ModelOrder o = new ModelOrder();
             o.setName("joko "+i);
@@ -146,6 +177,23 @@ public class ActivityHistory extends FragmentActivity {
             data.add(o);
         }
         adapter.notifyDataSetChanged();
+        */
+        Log.d("has Completed",""+allLoaded);
+        if(NetworkManager.getInstance(act).isConnectedInternet()){
+            if(socketManager.isConnected()){
+                socketManager.GetHistory(cnt);
+            }
+            else {
+                mPullToLoadView.setComplete();
+            }
+
+        }
+        else {
+            DialogManager.showDialog(act, "Peringatan", "Tidak ada koneksi internet!");
+            mPullToLoadView.setComplete();
+
+        }
+
     }
 
     @Override
@@ -175,6 +223,17 @@ public class ActivityHistory extends FragmentActivity {
     {
         finish();
         super.onBackPressed();  // optional depending on your needs
+    }
+
+    public void onResume() {
+        super.onResume();
+        // Register mMessageReceiver to receive messages.
+        Log.i("adding receiver", "fragment ontainer for profile");
+
+        LocalBroadcastManager.getInstance(act).registerReceiver(history,
+                new IntentFilter("getHistory"));
+
+
     }
 
 

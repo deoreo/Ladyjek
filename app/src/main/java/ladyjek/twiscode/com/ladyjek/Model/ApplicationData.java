@@ -7,6 +7,9 @@ import com.google.android.gms.maps.model.Marker;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import ladyjek.twiscode.com.ladyjek.Utilities.SocketManager;
 
 /**
@@ -78,4 +81,6 @@ public class ApplicationData {
     public static LatLng Office = null;
     public static String officeAddress = "Lokasi Kantor";
     public static String officeAddressDetail = "-";
+
+    public static List<ModelHistory> history = new ArrayList<>();
 }

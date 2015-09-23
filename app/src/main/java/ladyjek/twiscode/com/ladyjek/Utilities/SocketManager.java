@@ -25,7 +25,12 @@ import java.security.SecureRandom;
 import java.security.Security;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 
 import javax.net.ssl.HostnameVerifier;
@@ -39,6 +44,7 @@ import ladyjek.twiscode.com.ladyjek.Control.JSONControl;
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.Model.ModelDriver;
 import ladyjek.twiscode.com.ladyjek.Model.ModelGeocode;
+import ladyjek.twiscode.com.ladyjek.Model.ModelHistory;
 import ladyjek.twiscode.com.ladyjek.Model.ModelOrder;
 
 
@@ -824,7 +830,7 @@ public class SocketManager {
         Log.d(TAG, "edit nama");
         //boolean feed = false;
         try {
-            Log.d(TAG, "edit hp : " +hp);
+            Log.d(TAG, "edit hp : " + hp);
             socket.emit("put secondary phone number", hp, new Ack() {
                 @Override
                 public void call(Object... args) {
@@ -924,6 +930,100 @@ public class SocketManager {
         });
     }
 
+    public void GetHistory(int page) {
+        if(page==1){
+            ApplicationData.history = new ArrayList<>();
+        }
+        Log.d(TAG, "getHistory");
+        socket.emit("get orders", page,new Ack() {
+            @Override
+            public void call(Object... args) {
+                try {
+                    try {
+                        JSONObject err = (JSONObject) args[0];
+                        if (err == null) {
+                            JSONArray data = (JSONArray) args[1];
+                            if(data.length() > 0){
+                                Log.d(TAG, "getHistory : " + data.toString());
+                                for (int i=0;i<data.length();i++){
+                                    ModelHistory history = new ModelHistory();
+                                    JSONObject arr = data.getJSONObject(i);
+                                    String distance = arr.getJSONObject("distance").getString("text");
+                                    int price = Math.round(Float.parseFloat(distance.split(" ")[0]) * 4000);
+                                    String date = "23-09-2015";
+                                    String payment = "TUNAI";
+                                    try {
+                                        if(arr.getString("createdAt") != null){
+                                            String d = arr.getString("createdAt");
+                                            String dt = d.split("T")[0];
+                                            String[] dd = dt.split("-");
+/*
+                                            SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy");
+
+
+                                            Log.d("date",""+Integer.parseInt(dd[2])+"-"+Integer.parseInt(dd[1])+"-"+Integer.parseInt(dd[0]));
+                                            Calendar calendar = new GregorianCalendar(Integer.parseInt(dd[2]),Integer.parseInt(dd[1]),Integer.parseInt(dd[0]));
+                                            Calendar newCalendar = Calendar.getInstance();
+                                            newCalendar.set(Integer.parseInt(dd[2]),Integer.parseInt(dd[1]),Integer.parseInt(dd[0]));
+                                            date = sdf.format(newCalendar.getTime());
+                                            Log.d("dates",""+sdf.format(newCalendar.getTime()));
+                                            */
+                                            date = dd[2]+"-"+dd[1]+"-"+dd[0];
+
+                                        }
+                                    }
+                                    catch (Exception ex){
+
+                                    }
+
+                                    try {
+                                        if(arr.getString("payment") != null){
+                                            payment = arr.getString("payment");
+                                        }
+                                    }
+                                    catch (Exception ex){
+
+                                    }
+
+
+
+                                    history.setId(arr.getString("_id"));
+                                    history.setFrom(arr.getString("from"));
+                                    history.setDestination(arr.getString("to"));
+                                    history.setDistance(distance);
+                                    history.setDuration(arr.getJSONObject("duration").getString("text"));
+                                    history.setPrice(Integer.toString(price));
+                                    history.setStatus(arr.getString("status"));
+                                    history.setDate(date);
+                                    history.setPayment(payment);
+                                    ApplicationData.history.add(history);
+
+                                }
+
+                                SendBroadcast("getHistory", "true");
+                            }
+                            else {
+                                Log.d(TAG, "getHistory null");
+                                SendBroadcast("getHistory", "null");
+                            }
+
+                        } else {
+                            Log.d(TAG, "getHistory error");
+                            SendBroadcast("getHistory", "error");
+                        }
+                    } catch (Exception ex) {
+                        Log.d(TAG, "getHistory error");
+                        ex.printStackTrace();
+                        SendBroadcast("getHistory", "error");
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
     private void SendBroadcast(String typeBroadcast, String type) {
         Intent intent = new Intent(typeBroadcast);
         intent.putExtra("message", type);
@@ -936,6 +1036,23 @@ public class SocketManager {
         }
         return false;
 
+    }
+
+    public Date convertFormatDate(final String iso8601string) {
+        String s = iso8601string.replace("Z", "+00:00");
+        try {
+            s = s.substring(0, 22) + s.substring(23);
+        } catch (IndexOutOfBoundsException e) {
+            e.printStackTrace();
+        }
+        Date dateFromServer = null;
+        try {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMMM yyyy'T'HH:mm:ss.sssZ");
+            dateFromServer = simpleDateFormat.parse(s);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return dateFromServer;
     }
 
 
