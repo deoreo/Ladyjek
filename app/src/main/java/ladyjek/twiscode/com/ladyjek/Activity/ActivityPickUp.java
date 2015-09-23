@@ -286,6 +286,8 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
                     finish();
                 }
                 else {
+                    Toast.makeText(ActivityPickUp.this, "Anda tidak dapat cancel karena driver sudah dekat", Toast.LENGTH_SHORT).show();
+                    /*
                     new AlertDialogWrapper.Builder(ActivityPickUp.this)
                             .setTitle("Driver sudah dekat !!")
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -296,6 +298,7 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
                             })
                             .setIcon(R.drawable.ladyjek_icon)
                             .show();
+                            */
                 }
                 isCancel = false;
 

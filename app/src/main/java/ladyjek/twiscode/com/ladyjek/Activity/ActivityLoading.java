@@ -92,7 +92,7 @@ public class ActivityLoading extends Activity {
                 Log.d("orderTaken", message);
                 if(message=="true"){
                     Log.d("taken","true");
-                    Toast.makeText(ActivityLoading.this, "Driver ladyjek sedang menjemput. . .", Toast.LENGTH_LONG).show();
+                    Toast.makeText(ActivityLoading.this, "Driver ladyjek sedang menjemput. . .", Toast.LENGTH_SHORT).show();
                     Intent i = new Intent(getBaseContext(), ActivityPickUp.class);
                     ApplicationManager um = new ApplicationManager(ActivityLoading.this);
                     startActivity(i);
@@ -118,6 +118,8 @@ public class ActivityLoading extends Activity {
                     finish();
                 }
                 else {
+                    Toast.makeText(ActivityLoading.this, "Anda tidak dapat cancel karena driver sudah dekat", Toast.LENGTH_SHORT).show();
+                    /*
                     new AlertDialogWrapper.Builder(ActivityLoading.this)
                             .setTitle("Driver sudah dekat !")
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -128,6 +130,7 @@ public class ActivityLoading extends Activity {
                             })
                             .setIcon(R.drawable.ladyjek_icon)
                             .show();
+                            */
                 }
 
             }
