@@ -5,7 +5,7 @@
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:orientation="vertical"
-    android:background="@color/white_color"
+
     >
 
     <LinearLayout
@@ -16,7 +16,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:background="@color/white_color">
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -44,12 +45,13 @@
         </LinearLayout>
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp">
             <com.srx.widget.PullToLoadView
                 android:id="@+id/pullToLoadView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="gone"
+
                 />
             <TextView
                 android:id="@+id/noItems"
@@ -60,6 +62,7 @@
                 android:textSize="18dp"
                 android:layout_centerInParent="true"
                 android:textColor="@color/bg_grad_2"
+                android:visibility="gone"
                 />
         </RelativeLayout>
 
