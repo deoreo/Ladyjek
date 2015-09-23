@@ -17,12 +17,21 @@ import android.widget.TextView;
 
 import org.droidparts.contract.HTTP;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
+import ladyjek.twiscode.com.ladyjek.Activity.ActivityDetail;
+import ladyjek.twiscode.com.ladyjek.Activity.ActivityVerifyPayment;
+import ladyjek.twiscode.com.ladyjek.Fragment.FragmentHome;
+import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.Model.ModelHistory;
 import ladyjek.twiscode.com.ladyjek.Model.ModelOrder;
 import ladyjek.twiscode.com.ladyjek.R;
+import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
 
 /**
  * Created by Unity on 30/07/2015.
@@ -32,6 +41,9 @@ public class AdapterHistory extends RecyclerView.Adapter<AdapterHistory.MyViewHo
     private LayoutInflater inflater;
     private Context context;
     private Activity act;
+
+    private NumberFormat numberFormat;
+    private DecimalFormat decimalFormat;
 
     public AdapterHistory(Context context, List<ModelHistory> data) {
         this.context = context;
@@ -56,6 +68,12 @@ public class AdapterHistory extends RecyclerView.Adapter<AdapterHistory.MyViewHo
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
+
+        DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.US);
+        otherSymbols.setDecimalSeparator(',');
+        otherSymbols.setGroupingSeparator('.');
+        decimalFormat = new DecimalFormat();
+        decimalFormat.setDecimalFormatSymbols(otherSymbols);
 
         final int pos = position;
         String asal = "",tgl="",biaya="",tujuan="";
@@ -92,13 +110,16 @@ public class AdapterHistory extends RecyclerView.Adapter<AdapterHistory.MyViewHo
         String[] dest = tujuan.split(", ");
         holder.asal.setText(Html.fromHtml("<b>"+from[0]+"</b><br/>"+from[1]+", "+from[2]+", "+from[3]+", "+from[4]));
         holder.tujuan.setText(Html.fromHtml("<b>"+dest[0]+"</b><br/>"+dest[1]+", "+dest[2]+", "+dest[3]+", "+dest[4]));
-        holder.biaya.setText("Rp. "+biaya);
+        holder.biaya.setText("Rp. "+decimalFormat.format(Integer.parseInt(biaya)));
         holder.tgl.setText(tgl);
 
         holder.row.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("pos row",""+position);
+                ApplicationData.detail = data.get(position);
+                Intent i = new Intent(act, ActivityDetail.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                act.startActivity(i);
             }
         });
 
@@ -130,4 +151,6 @@ public class AdapterHistory extends RecyclerView.Adapter<AdapterHistory.MyViewHo
         intent.putExtra("message", type);
         LocalBroadcastManager.getInstance(act).sendBroadcast(intent);
     }
+
+
 }
