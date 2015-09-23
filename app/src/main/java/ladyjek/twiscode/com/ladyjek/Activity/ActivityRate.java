@@ -145,8 +145,9 @@ public class ActivityRate extends ActionBarActivity {
                 // Extract data included in the Intent
                 Log.d("broadcast", "feedback");
                 String message = intent.getStringExtra("message");
-
+                DialogManager.DismissLoading(ActivityRate.this);
                 if (message.equals("true")) {
+
                     new AlertDialogWrapper.Builder(ActivityRate.this)
                             .setTitle("Terima kasih!")
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -179,6 +180,7 @@ public class ActivityRate extends ActionBarActivity {
                 if(txtRate.getRating() > 0 && txtFeedback.getText().length()>0){
                     rate = Math.round(txtRate.getRating());
                     if(NetworkManager.getInstance(ActivityRate.this).isConnectedInternet()){
+                        DialogManager.ShowLoading(ActivityRate.this);
                         socketManager.Feedback(rate,txtFeedback.getText().toString());
                     }
                     else {

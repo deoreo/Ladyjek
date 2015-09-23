@@ -40,20 +40,20 @@ import ladyjek.twiscode.com.ladyjek.Utilities.SocketManager;
 public class ActivityLoading extends Activity {
 
     private ProgressBar mProgressBar;
-    private Activity act;
+    private Activity mActivity;
     private ApplicationManager appManager;
     private SocketManager socketManager;
     private BroadcastReceiver orderTaken,orderTimeout, doCancel;
     private ImageView btnCancel;
-    private ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading);
         mProgressBar = (ProgressBar)findViewById(R.id.progressBarPickUp);
         btnCancel = (ImageView) findViewById(R.id.btnCancel);
-        act = this;
-        appManager = new ApplicationManager(act);
+        mActivity = this;
+        appManager = new ApplicationManager(mActivity);
         socketManager = ApplicationData.socketManager;
 
         btnCancel.setOnClickListener(new View.OnClickListener() {
@@ -71,11 +71,27 @@ public class ActivityLoading extends Activity {
                 Log.d("orderTimeout", message);
                 if(message=="true"){
                     Log.d("timeout", "true");
-                    Toast.makeText(ActivityLoading.this,"Tidak menemukan driver ladyjek. . .", Toast.LENGTH_SHORT).show();
-                    Intent i = new Intent(getBaseContext(), ActivityConfirm.class);
-                    ApplicationManager um = new ApplicationManager(ActivityLoading.this);
-                    startActivity(i);
-                    finish();
+
+                    try {
+                        Context ctx = ActivityLoading.this;
+                        new AlertDialogWrapper.Builder(ctx)
+                                .setTitle("Tidak menemukan driver ladyjek")
+                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Intent i = new Intent(getBaseContext(), ActivityConfirm.class);
+                                        ApplicationManager um = new ApplicationManager(ActivityLoading.this);
+                                        startActivity(i);
+                                        finish();
+                                        dialog.dismiss();
+                                    }
+                                })
+                                .setIcon(R.drawable.ladyjek_icon)
+                                .show();
+                    } catch (Exception e) {
+
+                    }
+
                 }
                 else {
                     Log.d("getTimeout","false");
@@ -91,12 +107,26 @@ public class ActivityLoading extends Activity {
                 String message = intent.getStringExtra("message");
                 Log.d("orderTaken", message);
                 if(message=="true"){
-                    Log.d("taken","true");
-                    Toast.makeText(ActivityLoading.this, "Driver ladyjek sedang menjemput. . .", Toast.LENGTH_SHORT).show();
-                    Intent i = new Intent(getBaseContext(), ActivityPickUp.class);
-                    ApplicationManager um = new ApplicationManager(ActivityLoading.this);
-                    startActivity(i);
-                    finish();
+                    Log.d("taken", "true");
+                    try {
+                        Context ctx = ActivityLoading.this;
+                        new AlertDialogWrapper.Builder(ctx)
+                                .setTitle("Driver ladyjek sedang menjemput Anda")
+                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Intent i = new Intent(getBaseContext(), ActivityPickUp.class);
+                                        ApplicationManager um = new ApplicationManager(ActivityLoading.this);
+                                        startActivity(i);
+                                        finish();
+                                        dialog.dismiss();
+                                    }
+                                })
+                                .setIcon(R.drawable.ladyjek_icon)
+                                .show();
+                    } catch (Exception e) {
+
+                    }
 
                 } else {
                     Log.d("getTimeout", "false");
@@ -112,25 +142,13 @@ public class ActivityLoading extends Activity {
                 String message = intent.getStringExtra("message");
                 Log.d("doCancel", message);
                 if(message=="true"){
-                    progressDialog.dismiss();
-                    Intent i = new Intent(getBaseContext(), Main.class);
+                    DialogManager.DismissLoading(context);
+                    Intent i = new Intent(context, Main.class);
                     startActivity(i);
                     finish();
                 }
                 else {
                     Toast.makeText(ActivityLoading.this, "Anda tidak dapat cancel karena driver sudah dekat", Toast.LENGTH_SHORT).show();
-                    /*
-                    new AlertDialogWrapper.Builder(ActivityLoading.this)
-                            .setTitle("Driver sudah dekat !")
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            })
-                            .setIcon(R.drawable.ladyjek_icon)
-                            .show();
-                            */
                 }
 
             }
@@ -189,7 +207,7 @@ public class ActivityLoading extends Activity {
         btnConfirm.setOnClickListener(new RelativeLayout.OnClickListener() {
             @Override
             public void onClick(View v) {
-                OpenLoading();
+                DialogManager.ShowLoading(mActivity);
                 socketManager.CancelOrder();
 
 
@@ -208,14 +226,7 @@ public class ActivityLoading extends Activity {
         popupWindow.showAtLocation(findViewById(R.id.wrapperPopup), Gravity.CENTER, 0, 0);
     }
 
-    void OpenLoading(){
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Loading. . .");
-        progressDialog.setIndeterminate(false);
-        progressDialog.setCancelable(false);
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        progressDialog.show();
-    }
+
 
 
 

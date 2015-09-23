@@ -69,22 +69,20 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
     private LatLng posFrom, posDriver, updatedPosition;
     private Marker markerFrom, markerDriver;
     private Button btnCall, btnSMS;
-    private TextView txtEstimate,txtName,txtRate,txtNopol,btnCancel;
+    private TextView txtEstimate, txtName, txtRate, txtNopol, btnCancel;
     private ApplicationManager appManager;
     private final String TAG_FROM = "FROM";
     private final String TAG_DRIVER = "DRIVER";
     private String driverDuration;
     private Boolean isArrive = false;
     private SocketManager socketManager;
-    private BroadcastReceiver goTrip,doCancel,driverChange,getDriver,start;
+    private BroadcastReceiver goTrip, doCancel, driverChange, getDriver, start;
     private Boolean isCancel = false, isPhone = false, isSMS = false;
     private Double latFrom, lonFrom;
     private ServiceLocation serviceLocation;
     //private Runnable mRunnable;
     //private Handler mHandler;
     //private final int AUTOUPDATE_INTERVAL_TIME =  5 * 1000; // 15 detik
-
-
 
 
     @Override
@@ -103,12 +101,11 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
         appManager = new ApplicationManager(ActivityPickUp.this);
         socketManager = ApplicationData.socketManager;
         serviceLocation = new ServiceLocation();
-        if(appManager.getUserFrom()!=null) {
+        if (appManager.getUserFrom() != null) {
             latFrom = appManager.getUserFrom().getLatitude();
             lonFrom = appManager.getUserFrom().getLongitude();
             posFrom = new LatLng(latFrom, lonFrom);
-        }
-        else{
+        } else {
             posFrom = serviceLocation.updateLocation(mActivity);
             latFrom = posFrom.latitude;
             lonFrom = posFrom.longitude;
@@ -119,7 +116,7 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
         ApplicationManager.getInstance(ActivityPickUp.this).getPosDriver();
         Double lat = ApplicationManager.getInstance(ActivityPickUp.this).getPosDriver().getLatitude();
         Double lon = ApplicationManager.getInstance(ActivityPickUp.this).getPosDriver().getLongitude();
-        posDriver = new LatLng(lat,lon);
+        posDriver = new LatLng(lat, lon);
 
         int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());
 
@@ -142,19 +139,6 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
             drawDriverMarker(googleMap, posFrom, posDriver);
         }
 
-      /*  mRunnable = new Runnable() {
-            @Override
-            public void run() {
-                mHandler.postDelayed(this, AUTOUPDATE_INTERVAL_TIME);
-                if (NetworkManager.getInstance(mActivity).isConnectedInternet()) {
-                    Log.d("ServiceLocation", "Running");
-                    serviceLocation.GetDriverMarker(googleMap);
-
-                }
-            }
-        };
-        mRunnable.run();
-*/
         PhoneCallListener phoneListener = new PhoneCallListener();
         TelephonyManager telephonyManager = (TelephonyManager) this
                 .getSystemService(Context.TELEPHONY_SERVICE);
@@ -175,7 +159,7 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
         btnSMS.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isSMS){
+                if (isSMS) {
                     try {
 
                         Intent sendIntent = new Intent(Intent.ACTION_VIEW);
@@ -195,36 +179,35 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(NetworkManager.getInstance(ActivityPickUp.this).isConnectedInternet()){
-                    if(!isCancel){
+                if (NetworkManager.getInstance(ActivityPickUp.this).isConnectedInternet()) {
+                    if (!isCancel) {
+                        DialogManager.ShowLoading(ActivityPickUp.this);
                         socketManager.CancelOrder();
                         isCancel = true;
                     }
 
-                }
-                else {
+                } else {
                     DialogManager.showDialog(ActivityPickUp.this, "Peringatan", "Tidak ada koneksi internet!");
                 }
             }
         });
 
 
-        start  = new BroadcastReceiver() {
+        start = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 // Extract data included in the Intent
                 String message = intent.getStringExtra("message");
                 Log.d("start", message);
-                if(message=="true"){
+                if (message == "true") {
                     appManager.setTrip("end");
                     Intent i = new Intent(getBaseContext(), ActivityTracking.class);
                     ApplicationManager um = new ApplicationManager(ActivityPickUp.this);
                     um.setActivity("ActivityTracking");
                     startActivity(i);
                     finish();
-                }
-                else {
-                    Log.d("cant start","");
+                } else {
+                    Log.d("cant start", "");
                 }
 
 
@@ -232,13 +215,13 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
         };
 
 
-        goTrip  = new BroadcastReceiver() {
+        goTrip = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 // Extract data included in the Intent
                 String message = intent.getStringExtra("message");
                 Log.d("goTrip", message);
-                if(message=="true"){
+                if (message == "true") {
                     appManager.setArrive(true);
                     /*
                     Toast.makeText(ActivityPickUp.this, "Driver telah sampai di tempat Anda", Toast.LENGTH_LONG).show();
@@ -249,132 +232,131 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
                     finish();
                     */
                     txtEstimate.setText("Driver telah sampai di tempat Anda");
-                    /*
-                    new AlertDialogWrapper.Builder(ActivityPickUp.this)
-                            .setTitle("Driver telah sampai di tempat Anda")
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    Intent i = new Intent(getBaseContext(), ActivityTracking.class);
-                                    ApplicationManager um = new ApplicationManager(ActivityPickUp.this);
-                                    um.setActivity("ActivityTracking");
-                                    startActivity(i);
-                                    finish();
-                                    dialog.dismiss();
-                                }
-                            })
-                            .setIcon(R.drawable.ladyjek_icon)
-                            .show();
-                            */
-                }
-                else {
-                    Log.d("cant goTrip","");
+                    try {
+                        Context ctx = ActivityPickUp.this;
+                        new AlertDialogWrapper.Builder(ctx)
+                                .setTitle("Driver telah sampai di tempat Anda")
+                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Intent i = new Intent(getBaseContext(), ActivityTracking.class);
+                                        ApplicationManager um = new ApplicationManager(ActivityPickUp.this);
+                                        um.setActivity("ActivityTracking");
+                                        startActivity(i);
+                                        finish();
+                                        dialog.dismiss();
+                                    }
+                                })
+                                .setIcon(R.drawable.ladyjek_icon)
+                                .show();
+                    } catch (Exception e) {
+
+                    }
+                } else {
+                    Log.d("cant goTrip", "");
                 }
 
             }
         };
-        doCancel  = new BroadcastReceiver() {
+        doCancel = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 // Extract data included in the Intent
+                DialogManager.DismissLoading(context);
                 String message = intent.getStringExtra("message");
                 Log.d("doCancel", message);
-                if(message=="true"){
+                if (message == "true") {
                     Intent i = new Intent(getBaseContext(), Main.class);
                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(i);
                     finish();
-                }
-                else {
-                    Toast.makeText(ActivityPickUp.this, "Anda tidak dapat cancel karena driver sudah dekat", Toast.LENGTH_SHORT).show();
-                    /*
-                    new AlertDialogWrapper.Builder(ActivityPickUp.this)
-                            .setTitle("Driver sudah dekat !!")
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            })
-                            .setIcon(R.drawable.ladyjek_icon)
-                            .show();
-                            */
+                } else {
+                    //Toast.makeText(ActivityPickUp.this, "Anda tidak dapat cancel karena driver sudah dekat", Toast.LENGTH_SHORT).show();
+                    try {
+                        Context ctx = ActivityPickUp.this;
+                        new AlertDialogWrapper.Builder(ctx)
+                                .setTitle("Informasi")
+                                .setMessage("Driver sudah dekat, silakan menghubungi driver!")
+                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                })
+                                .setIcon(R.drawable.ladyjek_icon)
+                                .show();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
                 }
                 isCancel = false;
 
             }
         };
 
-        driverChange  = new BroadcastReceiver() {
+        driverChange = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 // Extract data included in the Intent
                 String message = intent.getStringExtra("message");
                 Log.d("driverChange", message);
-                if(message=="true"){
+                if (message == "true") {
                     Log.d("driver change", "true");
                     ApplicationManager.getInstance(ActivityPickUp.this).getPosDriver();
                     Double lat = ApplicationManager.getInstance(ActivityPickUp.this).getPosDriver().getLatitude();
                     Double lon = ApplicationManager.getInstance(ActivityPickUp.this).getPosDriver().getLongitude();
-                    posDriver = new LatLng(lat,lon);
+                    posDriver = new LatLng(lat, lon);
                     serviceLocation.GetDriverMarker(googleMap, posDriver);
-                }
-                else {
-                    Log.d("driver change","false");
+                } else {
+                    Log.d("driver change", "false");
                 }
 
             }
         };
 
-        getDriver  = new BroadcastReceiver() {
+        getDriver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 // Extract data included in the Intent
                 String message = intent.getStringExtra("message");
                 Log.d("getDriver", message);
-                if(message=="true"){
-                    Log.d("getdriver","true");
-                    Log.d("socket","driver : "+ApplicationData.driver.toString());
+                if (message == "true") {
+                    Log.d("getdriver", "true");
+                    Log.d("socket", "driver : " + ApplicationData.driver.toString());
                     isSMS = true;
                     isPhone = true;
                     txtName.setText(ApplicationData.driver.getName());
                     txtNopol.setText(ApplicationData.driver.getNopol());
                     txtRate.setText(ApplicationData.driver.getRate());
-                }
-                else {
-                    Log.d("getdriver","false");
+                } else {
+                    Log.d("getdriver", "false");
                 }
 
             }
         };
 
-        if(ApplicationData.driver != null){
-            Log.d("driver","not null");
+        if (ApplicationData.driver != null) {
+            Log.d("driver", "not null");
             isSMS = true;
             isPhone = true;
             txtName.setText(ApplicationData.driver.getName());
             txtNopol.setText(ApplicationData.driver.getNopol());
             txtRate.setText(ApplicationData.driver.getRate());
-        }
-        else {
-            Log.d("driver","null");
-            if(NetworkManager.getInstance(ActivityPickUp.this).isConnectedInternet()){
+        } else {
+            Log.d("driver", "null");
+            if (NetworkManager.getInstance(ActivityPickUp.this).isConnectedInternet()) {
                 socketManager.GetDriver(ApplicationData.order.getDriverID());
-            }
-            else {
+            } else {
                 DialogManager.showDialog(ActivityPickUp.this, "Peringatan", "Tidak ada koneksi internet!");
             }
         }
 
 
-
-
     }
 
 
-
     private void MovetoTracking() {
-
 
 
     }
@@ -567,8 +549,6 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
     }
 
 
-
-
     @Override
     public void onPause() {
         // Unregister since the activity is not visible
@@ -581,12 +561,10 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
         boolean isScreenOn = powerManager.isScreenOn();
         //mHandler.removeCallbacks(mRunnable);
         //if (!isScreenOn) {
-         //   mRunnable.run();
+        //   mRunnable.run();
         //}
         super.onPause();
     }
-
-
 
 
 }
