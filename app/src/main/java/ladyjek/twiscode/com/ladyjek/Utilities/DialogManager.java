@@ -29,9 +29,9 @@ public class DialogManager {
                 .progressIndeterminateStyle(true)
                 .show();
     }
-    public static void ShowLoading(Context ctx){
+    public static void ShowLoading(Context ctx, String message){
         progressDialog = new ProgressDialog(ctx);
-        progressDialog.setMessage("Loading. . .");
+        progressDialog.setMessage(message);
         progressDialog.setIndeterminate(false);
         progressDialog.setCancelable(false);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);

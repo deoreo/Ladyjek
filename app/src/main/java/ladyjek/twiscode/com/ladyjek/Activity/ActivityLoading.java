@@ -208,7 +208,7 @@ public class ActivityLoading extends Activity {
         btnConfirm.setOnClickListener(new RelativeLayout.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogManager.ShowLoading(mActivity);
+                DialogManager.ShowLoading(mActivity, "Membatalkan pemesanan. . .");
                 socketManager.CancelOrder();
 
 

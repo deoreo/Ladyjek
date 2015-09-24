@@ -561,24 +561,14 @@ public class SocketManager {
                         if (err != null) {
                             Log.d(TAG, "error getNearestDrivers : " + err.toString());
                         }
-                        //Log.d(TAG, "getNearestDrivers args 1 : " + args[0]);
-                        //Log.d(TAG, "getNearestDrivers args 1 : " + args[1]);
-                        JSONArray drivers = (JSONArray) args[1];
-                        int lengthDrivers = drivers.length();
+                        ApplicationData.nearestDrivers = (JSONArray) args[1];
+                        int lengthDrivers = ApplicationData.nearestDrivers.length();
                         Log.d(TAG, "getNearestDrivers lengthDrivers : " + lengthDrivers);
-                        ApplicationData.posDrivers = new LatLng[lengthDrivers];
 
-                        for (int i = 0; i < lengthDrivers; i++) {
-                            Double lon = drivers.getJSONArray(i).getDouble(1);
-                            Double lat = drivers.getJSONArray(i).getDouble(0);
-                            ApplicationData.posDrivers[i] = new LatLng(lon, lat);
-                            Log.d(TAG, "getNearestDrivers ApplicationData.posDrivers["+i+"] : " + ApplicationData.posDrivers[i]);
-                        }
-
-                        SendBroadcast("nearestDrivers ", "true");
+                        SendBroadcast("nearestDrivers", "true");
                     } catch (Exception ex) {
                         Log.d(TAG, "catch getnearestDrivers : ");
-                        SendBroadcast("nearestDrivers ", "false");
+                        SendBroadcast("nearestDrivers", "false");
                         ex.printStackTrace();
                     }
                 }

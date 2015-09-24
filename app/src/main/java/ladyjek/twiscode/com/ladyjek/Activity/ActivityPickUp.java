@@ -181,7 +181,7 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
             public void onClick(View v) {
                 if (NetworkManager.getInstance(ActivityPickUp.this).isConnectedInternet()) {
                     if (!isCancel) {
-                        DialogManager.ShowLoading(ActivityPickUp.this);
+                        DialogManager.ShowLoading(ActivityPickUp.this, "Membatalkan pemesanan. . .");
                         socketManager.CancelOrder();
                         isCancel = true;
                     }

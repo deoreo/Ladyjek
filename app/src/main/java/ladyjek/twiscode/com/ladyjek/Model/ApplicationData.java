@@ -74,6 +74,8 @@ public class ApplicationData {
     public static Marker markerFrom = null;
     public static Marker markerDriver = null;
 
+
+    public static JSONArray nearestDrivers;
     public static LatLng[] posDrivers;
     public static LatLng Home = null;
     public static String homeAddress = "Lokasi Rumah";

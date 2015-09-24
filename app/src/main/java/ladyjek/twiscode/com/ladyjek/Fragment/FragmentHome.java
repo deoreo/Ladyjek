@@ -50,6 +50,7 @@ import ladyjek.twiscode.com.ladyjek.Activity.ActivityLogin;
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityPickUp;
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityRate;
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityTracking;
+import ladyjek.twiscode.com.ladyjek.Activity.Main;
 import ladyjek.twiscode.com.ladyjek.Adapter.AdapterAddress;
 import ladyjek.twiscode.com.ladyjek.Adapter.AdapterSuggestion;
 import ladyjek.twiscode.com.ladyjek.Control.JSONControl;
@@ -84,6 +85,7 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Toast;
 
 import org.droidparts.widget.ClearableEditText;
 import org.json.JSONArray;
@@ -661,12 +663,27 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                 Log.v(TAG, "broadcast nearestDrivers");
                 String message = intent.getStringExtra("message");
                 if (message.equalsIgnoreCase("true")) {
-                    Log.d(TAG, "nearest drivers" + message);
-                    for (int i = 0; i < ApplicationData.posDrivers.length; i++) {
-                        drawMarkerNearestDriver(posFrom, ApplicationData.posDrivers[i]);
+                    try {
+                        Log.d(TAG, "nearest drivers" + message);
+                        JSONArray drivers = ApplicationData.nearestDrivers;
+                        ApplicationData.posDrivers = new LatLng[ApplicationData.nearestDrivers.length()];
+
+                        if (ApplicationData.posDrivers != null) {
+                            for (int i = 0; i < ApplicationData.posDrivers.length; i++) {
+                                Double lon = drivers.getJSONArray(i).getDouble(1);
+                                Double lat = drivers.getJSONArray(i).getDouble(0);
+                                ApplicationData.posDrivers[i] = new LatLng(lon, lat);
+                                //Log.d(TAG, "getNearestDrivers ApplicationData.posDrivers["+i+"] : " + ApplicationData.posDrivers[i]);
+                            }
+
+                            for (int i = 0; i < ApplicationData.posDrivers.length; i++) {
+                                drawMarkerNearestDriver(posFrom, ApplicationData.posDrivers[i]);
+                            }
+                        }
+                        DialogManager.DismissLoading(mActivity);
+                    }catch (Exception e){
+
                     }
-                    //mHandler.removeCallbacksAndMessages(mRunnable);
-                    //progressDialog.dismiss();
                 }
             }
         };
@@ -987,6 +1004,12 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
 
 
 
+    @Override
+    public void onStart() {
+        super.onStart();
+
+    }
+
 
     @Override
     public void onDestroy() {
@@ -1054,7 +1077,6 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         private Activity activity;
         private Context context;
         private Resources resources;
-        private ProgressDialog progressDialog;
         private double latitude, longitude;
         private GoogleMap googleMap;
         private LocationManager locationManager;
@@ -1074,12 +1096,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressDialog = new ProgressDialog(activity);
-            progressDialog.setMessage("Memuat lokasi anda. . .");
-            progressDialog.setIndeterminate(false);
-            progressDialog.setCancelable(false);
-            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            progressDialog.show();
+            DialogManager.ShowLoading(activity, "Memuat lokasi anda. . .");
 
         }
 
@@ -1134,35 +1151,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                             }
                         }
                     }
-                    mRunnable = new Runnable() {
-                        @Override
-                        public void run() {
-                            mHandler.postDelayed(this, AUTOUPDATE_INTERVAL_TIME);
-                            if (NetworkManager.getInstance(mActivity).isConnectedInternet()) {
-                                Log.v(TAG, "Running");
 
-                                if (!isGetNearestDrivers) {
-                                    try {
-                                        //OpenLoading();
-                                        socketManager.GetNearestDrivers(posFrom);
-                                        if(ApplicationData.posDrivers!=null) {
-                                            for (int i = 0; i < ApplicationData.posDrivers.length; i++) {
-                                                drawMarkerNearestDriver(posFrom, ApplicationData.posDrivers[i]);
-                                                Log.v(TAG, "Running GetNearestDrivers("+i+") : "+ApplicationData.posDrivers[i]);
-                                            }
-                                        }
-                                        Log.v(TAG, "Running GetNearestDrivers");
-                                    } catch (Exception e) {
-                                        Log.v(TAG, "Not Running GetNearestDrivers");
-                                    }
-                                }else{
-                                    AUTOUPDATE_INTERVAL_TIME = 24 * 60 * 60 * 1000;
-                                }
-
-                            }
-                        }
-                    };
-                    mRunnable.run();
                 } catch (Exception e) {
                 }
                 return "OK";
@@ -1177,10 +1166,10 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             Log.v("posisi gps", "onPost");
-            progressDialog.dismiss();
+
             switch (result) {
                 case "FAIL":
-                    DialogManager.showDialog(activity, "Peringatan", "Can not find your location!");
+                    DialogManager.showDialog(activity, "Peringatan", "Tidak dapat menemukan lokasi Anda!");
                     break;
                 case "OK":
                     try {
@@ -1223,9 +1212,9 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                         e.printStackTrace();
                     }
                     break;
+
             }
-
-
+            GetNearestDriver(activity);
         }
 
 
@@ -1255,6 +1244,22 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         }
     }
 
+    public void GetNearestDriver(Activity activity){
+
+        if (NetworkManager.getInstance(activity).isConnectedInternet()) {
+            Log.v(TAG, "Running");
+
+            try {
+                socketManager.GetNearestDrivers(posFrom);
+
+                Log.v(TAG, "Running GetNearestDrivers");
+            } catch (Exception e) {
+                Log.v(TAG, "Not Running GetNearestDrivers");
+            }
+
+
+        }
+    }
 
 
 

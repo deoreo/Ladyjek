@@ -180,7 +180,7 @@ public class ActivityRate extends ActionBarActivity {
                 if(txtRate.getRating() > 0 && txtFeedback.getText().length()>0){
                     rate = Math.round(txtRate.getRating());
                     if(NetworkManager.getInstance(ActivityRate.this).isConnectedInternet()){
-                        DialogManager.ShowLoading(ActivityRate.this);
+                        DialogManager.ShowLoading(ActivityRate.this , "Loading. . .");
                         socketManager.Feedback(rate,txtFeedback.getText().toString());
                     }
                     else {
