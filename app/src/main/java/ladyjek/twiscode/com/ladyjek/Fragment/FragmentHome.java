@@ -63,6 +63,7 @@ import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.GoogleAPIManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
+import ladyjek.twiscode.com.ladyjek.Utilities.MySupportMapFragment;
 import ladyjek.twiscode.com.ladyjek.Utilities.NetworkManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.SocketManager;
 
@@ -235,7 +236,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         };
 
 
-        SupportMapFragment fm = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapView);
+        MySupportMapFragment fm = (MySupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapView);
         googleMap = fm.getMap();
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(-6.1995921,106.872451), 10f));
         mHandler = new Handler();
@@ -361,6 +362,10 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
             public void onClick(View v) {
                 Log.d(TAG, "btnCurrent click");
                 isSearchCurrent = true;
+                if(!socketManager.isConnected()){
+                    socketManager.Connect();
+                }
+
                 if(NetworkManager.getInstance(mActivity).isConnectedInternet()) {
                     new GetMyLocation(mActivity, googleMap, socketManager).execute();
                 }
@@ -407,7 +412,9 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                                       int before, int count) {
                 if (!mTouchMap) {
                     if (s.length() >= 3) {
-                        new GetSuggestion(s.toString(), tagLocation).execute();
+                        if(NetworkManager.getInstance(mActivity).isConnectedInternet()) {
+                            new GetSuggestion(s.toString(), tagLocation).execute();
+                        }
                     } else if (s.length() == 0) {
                         layoutSuggestion.setVisibility(GONE);
                     }
@@ -441,7 +448,9 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                                                                             int before, int count) {
                                                       if (!mTouchMap) {
                                                           if (s.length() >= 3) {
-                                                              new GetSuggestion(s.toString(), tagLocation).execute();
+                                                              if(NetworkManager.getInstance(mActivity).isConnectedInternet()) {
+                                                                  new GetSuggestion(s.toString(), tagLocation).execute();
+                                                              }
                                                           } else if (s.length() == 0) {
                                                               layoutSuggestion.setVisibility(GONE);
                                                               if (markerDestination != null) {
