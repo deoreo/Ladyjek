@@ -15,30 +15,34 @@ import ladyjek.twiscode.com.ladyjek.Fragment.FragmentHome;
 public class TouchableWrapper extends FrameLayout {
 
     private final String TAG = "TouchableWrapper";
+    private Context context;
 
     public TouchableWrapper(Context context) {
         super(context);
+        this.context = context;
         Log.d(TAG, "TouchableWrapper");
     }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
-        Log.d(TAG, "dispatchTouchEvent");
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                Log.d(TAG, "dispatchTouchEvent ACTION_DOWN");
-                FragmentHome.hideKeyboard();
-                FragmentHome.layoutMarkerFrom.setVisibility(GONE);
-                FragmentHome.layoutMarkerDestination.setVisibility(GONE);
-                FragmentHome.mTouchMap = true;
-                if(FragmentHome.markerTemp!=null){
-                    FragmentHome.markerTemp.remove();
-                }
-                break;
-            case MotionEvent.ACTION_UP:
-                Log.d(TAG, "dispatchTouchEvent ACTION_UP");
-                break;
+        if(NetworkManager.getInstance(context).isConnectedInternet()) {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    Log.d(TAG, "dispatchTouchEvent ACTION_DOWN");
+                    FragmentHome.hideKeyboard();
+                    FragmentHome.layoutMarkerFrom.setVisibility(GONE);
+                    FragmentHome.layoutMarkerDestination.setVisibility(GONE);
+                    FragmentHome.mTouchMap = true;
+                    if (FragmentHome.markerTemp != null) {
+                        FragmentHome.markerTemp.remove();
+                    }
+                    break;
+                case MotionEvent.ACTION_UP:
+                    Log.d(TAG, "dispatchTouchEvent ACTION_UP");
+                    break;
+            }
         }
+
         return super.dispatchTouchEvent(event);
     }
 }

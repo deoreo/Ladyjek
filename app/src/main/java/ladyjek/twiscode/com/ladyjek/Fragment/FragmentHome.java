@@ -153,7 +153,8 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
     private BroadcastReceiver createOrder, lastOrder, lastFeedback, logout, nearestDrivers;
     //private ServiceLocation serviceLocation;
     private Runnable mRunnable;
-    private Handler mHandler;
+    Handler mHandler = new Handler();
+    boolean isRunning = true;
     private int AUTOUPDATE_INTERVAL_TIME = 1 * 1000;
     private int duration = 9999;
     private DatabaseHandler db;
@@ -162,6 +163,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
     private boolean isSearchCurrent = false;
     private ProgressDialog progressDialog;
     private Circle mCircle;
+    private Marker markerCurrent;
 
     public FragmentHome() {
         // Required empty public constructor
@@ -176,6 +178,8 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         db = new DatabaseHandler(mActivity);
         posFrom = ApplicationData.posFrom;
         tagLocation = TAG_FROM;
+
+
     }
 
     @Override
@@ -495,9 +499,6 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                                                    if (markerTemp != null) {
                                                        markerTemp.remove();
                                                    }
-                                                   if (markerDestination == null) {
-                                                       googleMap.clear();
-                                                   }
                                                    layoutMarkerDestination.setVisibility(GONE);
                                                    layoutMarkerFrom.setVisibility(GONE);
                                                    String address = getAddress(posFrom);
@@ -801,10 +802,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                     duration=1;
                 }
             }
-
-
-
-            txtDriverTime.setText("Estimasi waktu menunggu : "+duration+" menit");
+            txtDriverTime.setText("Estimasi waktu menunggu : "+ Html.fromHtml("<b>"+duration+" menit</b>"));
             isGetNearestDrivers = true;
         } catch (Exception e) {
             Log.v(TAG, "catch drawMarkerNearestDriver ");
@@ -995,6 +993,8 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                         hideKeyboard();
                         drawNewMarker(selectedPlace.getAddress());
                     } catch (Exception e) {
+                        layoutSuggestion.setVisibility(GONE);
+                        hideKeyboard();
                     }
                 }
             });
@@ -1007,7 +1007,27 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
     @Override
     public void onStart() {
         super.onStart();
+/*
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (isRunning && NetworkManager.getInstance(mActivity).isConnectedInternet()) {
+                    try {
+                        Thread.sleep(10000);
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                new GetMyLocation(mActivity, googleMap, socketManager).execute();
+                                isRunning = false;
 
+                            }
+                        });
+                    } catch (Exception e) {
+                    }
+                }
+            }
+        }).start();
+    */
     }
 
 
@@ -1186,6 +1206,10 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                             mCircle.remove();
                         }
 
+                        if(markerCurrent !=null){
+                            markerCurrent.remove();
+                        }
+
                         circleOptions = new CircleOptions()
                                 .center(pFrom)
                                 .radius(radiusInMeters)
@@ -1202,7 +1226,10 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                             txtFrom.setText(getAddress(pFrom));
                             googleMap.animateCamera(cameraUpdate);
                         }else{
-
+                            markerCurrent = googleMap.addMarker(
+                                    new MarkerOptions()
+                                            .position(pFrom)
+                                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
                             googleMap.moveCamera(cameraUpdate);
                         }
 
@@ -1214,6 +1241,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                     break;
 
             }
+
             GetNearestDriver(activity);
         }
 
