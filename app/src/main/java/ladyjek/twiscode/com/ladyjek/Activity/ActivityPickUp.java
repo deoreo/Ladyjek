@@ -148,7 +148,7 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
             @Override
             public void onClick(View v) {
                 if (isPhone) {
-                    Intent callIntent = new Intent(Intent.ACTION_CALL);
+                    Intent callIntent = new Intent(Intent.ACTION_DIAL);
                     callIntent.setData(Uri.parse("tel:" + ApplicationData.driver.getPhone()));
                     startActivity(callIntent);
                 }

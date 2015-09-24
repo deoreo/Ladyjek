@@ -35,28 +35,19 @@ public class IncomingSms extends BroadcastReceiver {
 
                     SmsMessage currentMessage = SmsMessage.createFromPdu((byte[]) pdusObj[i]);
                     String phoneNumber = currentMessage.getDisplayOriginatingAddress();
-
                     String senderNum = phoneNumber;
                     String message = currentMessage.getDisplayMessageBody();
-                    ApplicationData.smsCode = message.replaceAll("[^\\d]", "");
-
-
-                    Log.i("SmsReceiver", "senderNum: " + senderNum + "; message: " + ApplicationData.smsCode);
-
-
-                    // Show Alert
-                    int duration = Toast.LENGTH_LONG;
-                    Toast toast = Toast.makeText(context,
-                            "senderNum: " + senderNum + ", message: " + message, duration);
-                    toast.show();
-
-
+                    if(message.contains("Selamat datang di ladyjek.")) {
+                        ApplicationData.smsCode = message.replaceAll("[^\\d]", "");
+                        Log.i("SmsReceiver", "senderNum: " + senderNum + "; message: " + ApplicationData.smsCode);
+                        Intent broadcastIntent = new Intent("smsCode");
+                        broadcastIntent.putExtra("messageCode", ApplicationData.smsCode);
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(broadcastIntent);
+                    }
 
                 } // end for loop
             } // bundle is null
-            Intent broadcastIntent = new Intent("smsCode");
-            broadcastIntent.putExtra("messageCode", ApplicationData.smsCode);
-            LocalBroadcastManager.getInstance(context).sendBroadcast(broadcastIntent);
+
 
         } catch (Exception e) {
             Log.e("SmsReceiver", "Exception smsReceiver" +e);

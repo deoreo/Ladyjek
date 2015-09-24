@@ -6,6 +6,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Typeface;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -26,6 +28,10 @@ import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 import ladyjek.twiscode.com.ladyjek.Control.JSONControl;
 import ladyjek.twiscode.com.ladyjek.Database.DatabaseHandler;
@@ -373,16 +379,23 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
                             email="";
                         }
                         JSONObject rumah = responseUser.getJSONObject("houseGeo");
-                        String addressRumah = rumah.getString("address");
+
                         JSONArray latlgRumah = rumah.getJSONArray("coordinates");
                         String latRumah = latlgRumah.getString(1);
                         String lonRumah = latlgRumah.getString(0);
-
+                        String addressRumah = "";
+                        if(!latRumah.equals("0") && !lonRumah.equals("0")) {
+                            addressRumah = getAddress(new LatLng(Double.parseDouble(latRumah), Double.parseDouble(lonRumah)));
+                        }
                         JSONObject kantor = responseUser.getJSONObject("officeGeo");
-                        String addressKantor = kantor.getString("address");
+
                         JSONArray latlgKantor = kantor.getJSONArray("coordinates");
                         String latKantor = latlgKantor.getString(1);
                         String lonKantor = latlgKantor.getString(0);
+                        String addressKantor = "";
+                        if(!latKantor.equals("0") && !lonKantor.equals("0")) {
+                            addressKantor = getAddress(new LatLng(Double.parseDouble(latKantor), Double.parseDouble(lonKantor)));
+                        }
                         JSONArray phNumbers = responseUser.getJSONArray("phoneNumbers");
                         String hp2nd="";
                         if(phNumbers.length()==2){
@@ -483,6 +496,22 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
         }
 
 
+    }
+
+    public String getAddress(LatLng latlng) {
+        Geocoder geocoder = new Geocoder(mActivity, Locale.getDefault());
+        double lat = latlng.latitude;
+        double lng = latlng.longitude;
+        String addressLine = "";
+        try {
+            List<Address> addresses = geocoder.getFromLocation(lat, lng, 1);
+            Address obj = addresses.get(0);
+            addressLine = obj.getAddressLine(0);
+
+        } catch (IOException e) {
+        } catch (Exception e) {
+        }
+        return addressLine;
     }
 
 }
