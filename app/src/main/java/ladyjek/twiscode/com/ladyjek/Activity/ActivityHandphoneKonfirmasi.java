@@ -2,12 +2,17 @@ package ladyjek.twiscode.com.ladyjek.Activity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
+import android.telephony.SmsManager;
+import android.telephony.gsm.SmsMessage;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -17,6 +22,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 
@@ -36,20 +42,47 @@ public class ActivityHandphoneKonfirmasi extends Activity {
 
     private Activity act;
     private TextView txtConfirmSmsCode,resendCode;
-    private EditText txtSmsCode;
-    private RelativeLayout wrapperRegister, btnClearCode;
+    private EditText txtSmsCode1;
+    private EditText txtSmsCode2;
+    private EditText txtSmsCode3;
+    private EditText txtSmsCode4;
+    private EditText txtSmsCode5;
+    private EditText txtSmsCode6;
+    String txtSmsCode;
+    private RelativeLayout wrapperRegister;
+    private BroadcastReceiver smsCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_handphone_konfirmasi);
+        setContentView(R.layout.activity_handphone_konfirmasi2);
+
+        smsCode = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String messageCode = intent.getStringExtra("messageCode");
+                txtSmsCode1.setText(messageCode.substring(0));
+                txtSmsCode2.setText(messageCode.substring(1));
+                txtSmsCode3.setText(messageCode.substring(2));
+                txtSmsCode4.setText(messageCode.substring(3));
+                txtSmsCode5.setText(messageCode.substring(4));
+                txtSmsCode6.setText(messageCode.substring(5));
+                txtSmsCode = messageCode;
+            }
+        };
+
+
 
         act = this;
         txtConfirmSmsCode = (TextView)findViewById(R.id.txtConfirmSmsCode);
         resendCode = (TextView)findViewById(R.id.resendCode);
-        txtSmsCode = (EditText) findViewById(R.id.txtSmsCode);
+        txtSmsCode1 = (EditText) findViewById(R.id.txtSmsCode1);
+        txtSmsCode2 = (EditText) findViewById(R.id.txtSmsCode2);
+        txtSmsCode3 = (EditText) findViewById(R.id.txtSmsCode3);
+        txtSmsCode4 = (EditText) findViewById(R.id.txtSmsCode4);
+        txtSmsCode5 = (EditText) findViewById(R.id.txtSmsCode5);
+        txtSmsCode6 = (EditText) findViewById(R.id.txtSmsCode6);
         wrapperRegister = (RelativeLayout) findViewById(R.id.wrapperRegister);
-        btnClearCode = (RelativeLayout) findViewById(R.id.btnClearCode);
 
         if(ApplicationData.editPhone){
             txtConfirmSmsCode.setText(R.string.lanjut);
@@ -65,7 +98,7 @@ public class ActivityHandphoneKonfirmasi extends Activity {
                     finish();
                 } else {
                     new DoVerifyCode(act).execute(
-                            txtSmsCode.getText().toString()
+                            txtSmsCode
                     );
                 }
 
@@ -85,34 +118,6 @@ public class ActivityHandphoneKonfirmasi extends Activity {
             }
         });
 
-        txtSmsCode.addTextChangedListener(new TextWatcher() {
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start,
-                                          int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start,
-                                      int before, int count) {
-                if (s.length() >= 1) {
-                    btnClearCode.setVisibility(VISIBLE);
-                } else if (s.length() == 0) {
-                    btnClearCode.setVisibility(GONE);
-                }
-            }
-        });
-        btnClearCode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                txtSmsCode.setText("");
-                btnClearCode.setVisibility(GONE);
-            }
-        });
 
         wrapperRegister.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,7 +127,7 @@ public class ActivityHandphoneKonfirmasi extends Activity {
                 }
                 else{
                     new DoVerifyCode(act).execute(
-                            txtSmsCode.getText().toString()
+                            txtSmsCode
                     );
                 }
 
@@ -221,6 +226,14 @@ public class ActivityHandphoneKonfirmasi extends Activity {
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(smsCode,
+                new IntentFilter("smsCode"));
+    }
+
+
     private class DoResendVerifyCode extends AsyncTask<String, Void, String> {
         private Activity activity;
         private Context context;
@@ -296,5 +309,41 @@ public class ActivityHandphoneKonfirmasi extends Activity {
 
     }
 
+    private void readSMSCode(Intent intent) {
+        final SmsManager sms = SmsManager.getDefault();
+        // Retrieves a map of extended data from the intent.
+        final Bundle bundle = intent.getExtras();
+
+        try {
+
+            if (bundle != null) {
+
+                final Object[] pdusObj = (Object[]) bundle.get("pdus");
+
+                for (int i = 0; i < pdusObj.length; i++) {
+
+                    SmsMessage currentMessage = SmsMessage.createFromPdu((byte[]) pdusObj[i]);
+                    String phoneNumber = currentMessage.getDisplayOriginatingAddress();
+
+                    String senderNum = phoneNumber;
+                    String message = currentMessage.getDisplayMessageBody();
+
+                    Log.i("SmsReceiver", "senderNum: " + senderNum + "; message: " + message);
+
+
+                    // Show Alert
+                    int duration = Toast.LENGTH_LONG;
+                    Toast toast = Toast.makeText(act,
+                            "senderNum: " + senderNum + ", message: " + message, duration);
+                    toast.show();
+
+                } // end for loop
+            } // bundle is null
+
+        } catch (Exception e) {
+            Log.e("SmsReceiver", "Exception smsReceiver" + e);
+
+        }
+    }
 }
 

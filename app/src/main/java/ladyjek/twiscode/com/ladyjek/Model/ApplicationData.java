@@ -86,4 +86,5 @@ public class ApplicationData {
 
     public static List<ModelHistory> history = new ArrayList<>();
     public static  ModelHistory detail = new ModelHistory();
+    public static String smsCode;
 }

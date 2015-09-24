@@ -74,7 +74,7 @@
                                 android:layout_height="wrap_content"
                                 android:textColor="@color/white_color"
                                 android:textStyle="bold"
-                                android:text="di bawah ini"
+                                android:text="di bawah ini:"
                                 android:textSize="22dp"
                                 />
                             <LinearLayout

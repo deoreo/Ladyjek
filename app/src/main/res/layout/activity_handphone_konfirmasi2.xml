@@ -1,0 +1,396 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layoutLogin"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/plain_gradient_bg"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
+    tools:context="ladyjek.twiscode.com.ladyjek.Activity.ActivityHandphone">
+
+
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:padding="10dp"
+            android:text="LADYJEK"
+            android:textColor="@color/white_color"
+            android:textSize="24dp"
+            android:textStyle="bold" />
+        <!--
+        <include
+            android:id="@+id/tool_bar"
+            layout="@layout/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    -->
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginLeft="20dp"
+
+                    android:layout_marginRight="20dp"
+                    android:layout_weight="1">
+
+                    <RelativeLayout
+                        android:layout_marginTop="50dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/white_color"
+                                android:textStyle="bold"
+                                android:text="Masukkan kode 6-digit"
+                                android:textSize="22dp"
+
+                                />
+                            <TextView
+                                android:layout_marginTop="2dp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/white_color"
+                                android:textStyle="bold"
+                                android:text="di bawah ini:"
+                                android:textSize="22dp"
+                                />
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="20dp"
+                                android:orientation="horizontal">
+
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="70dp"
+                                    android:orientation="horizontal"
+                                    android:weightSum="6">
+
+                                    <LinearLayout
+                                        android:layout_width="0dp"
+                                        android:layout_height="50dp"
+                                        android:layout_weight="1"
+                                        android:orientation="vertical">
+
+                                        <EditText
+                                            android:id="@+id/txtSmsCode1"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:layout_weight="1"
+                                            android:background="@null"
+                                            android:gravity="center"
+                                            android:inputType="number"
+                                            android:padding="10dp"
+                                            android:text=""
+                                            android:singleLine="true"
+                                            android:maxLines="1"
+                                            android:maxLength="1"
+                                            android:textColor="@color/white_color"
+                                            android:textColorHint="@color/white_color"
+                                            android:textSize="25sp"
+                                            android:textStyle="bold" />
+
+                                        <View
+                                            android:layout_width="match_parent"
+                                            android:layout_height="2dp"
+                                            android:layout_marginLeft="5dp"
+                                            android:layout_marginRight="5dp"
+                                            android:background="@color/white_color" />
+                                    </LinearLayout>
+                                    <LinearLayout
+                                        android:layout_width="0dp"
+                                        android:layout_height="50dp"
+                                        android:layout_weight="1"
+                                        android:orientation="vertical">
+
+                                        <EditText
+                                            android:id="@+id/txtSmsCode2"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:layout_weight="1"
+                                            android:background="@null"
+                                            android:gravity="center"
+                                            android:inputType="number"
+                                            android:padding="10dp"
+                                            android:text=""
+                                            android:singleLine="true"
+                                            android:maxLines="1"
+                                            android:maxLength="1"
+                                            android:textColor="@color/white_color"
+                                            android:textColorHint="@color/white_color"
+                                            android:textSize="25sp"
+                                            android:textStyle="bold" />
+
+                                        <View
+                                            android:layout_width="match_parent"
+                                            android:layout_height="2dp"
+                                            android:layout_marginLeft="5dp"
+                                            android:layout_marginRight="5dp"
+                                            android:background="@color/white_color" />
+                                    </LinearLayout>
+                                    <LinearLayout
+                                        android:layout_width="0dp"
+                                        android:layout_height="50dp"
+                                        android:layout_weight="1"
+                                        android:orientation="vertical">
+
+                                        <EditText
+                                            android:id="@+id/txtSmsCode3"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:layout_weight="1"
+                                            android:background="@null"
+                                            android:gravity="center"
+                                            android:inputType="number"
+                                            android:padding="10dp"
+                                            android:text=""
+                                            android:singleLine="true"
+                                            android:maxLines="1"
+                                            android:maxLength="1"
+                                            android:textColor="@color/white_color"
+                                            android:textColorHint="@color/white_color"
+                                            android:textSize="25sp"
+                                            android:textStyle="bold" />
+
+                                        <View
+                                            android:layout_width="match_parent"
+                                            android:layout_height="2dp"
+                                            android:layout_marginLeft="5dp"
+                                            android:layout_marginRight="5dp"
+                                            android:background="@color/white_color" />
+                                    </LinearLayout>
+                                    <LinearLayout
+                                        android:layout_width="0dp"
+                                        android:layout_height="50dp"
+                                        android:layout_weight="1"
+                                        android:orientation="vertical">
+
+                                        <EditText
+                                            android:id="@+id/txtSmsCode4"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:layout_weight="1"
+                                            android:background="@null"
+                                            android:gravity="center"
+                                            android:inputType="number"
+                                            android:padding="10dp"
+                                            android:text=""
+                                            android:singleLine="true"
+                                            android:maxLines="1"
+                                            android:maxLength="1"
+                                            android:textColor="@color/white_color"
+                                            android:textColorHint="@color/white_color"
+                                            android:textSize="25sp"
+                                            android:textStyle="bold" />
+
+                                        <View
+                                            android:layout_width="match_parent"
+                                            android:layout_height="2dp"
+                                            android:layout_marginLeft="5dp"
+                                            android:layout_marginRight="5dp"
+                                            android:background="@color/white_color" />
+                                    </LinearLayout>
+                                    <LinearLayout
+                                        android:layout_width="0dp"
+                                        android:layout_height="50dp"
+                                        android:layout_weight="1"
+                                        android:orientation="vertical">
+
+                                        <EditText
+                                            android:id="@+id/txtSmsCode5"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:layout_weight="1"
+                                            android:background="@null"
+                                            android:gravity="center"
+                                            android:inputType="number"
+                                            android:padding="10dp"
+                                            android:text=""
+                                            android:singleLine="true"
+                                            android:maxLines="1"
+                                            android:maxLength="1"
+                                            android:textColor="@color/white_color"
+                                            android:textColorHint="@color/white_color"
+                                            android:textSize="25sp"
+                                            android:textStyle="bold" />
+
+                                        <View
+                                            android:layout_width="match_parent"
+                                            android:layout_height="2dp"
+                                            android:layout_marginLeft="5dp"
+                                            android:layout_marginRight="5dp"
+                                            android:background="@color/white_color" />
+                                    </LinearLayout>
+                                    <LinearLayout
+                                        android:layout_width="0dp"
+                                        android:layout_height="50dp"
+                                        android:layout_weight="1"
+                                        android:orientation="vertical">
+
+                                        <EditText
+                                            android:id="@+id/txtSmsCode6"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:layout_weight="1"
+                                            android:background="@null"
+                                            android:gravity="center"
+                                            android:inputType="number"
+                                            android:padding="10dp"
+                                            android:text=""
+                                            android:singleLine="true"
+                                            android:maxLines="1"
+                                            android:maxLength="1"
+                                            android:textColor="@color/white_color"
+                                            android:textColorHint="@color/white_color"
+                                            android:textSize="25sp"
+                                            android:textStyle="bold" />
+
+                                        <View
+                                            android:layout_width="match_parent"
+                                            android:layout_height="2dp"
+                                            android:layout_marginLeft="5dp"
+                                            android:layout_marginRight="5dp"
+                                            android:background="@color/white_color" />
+                                    </LinearLayout>
+
+                                </LinearLayout>
+
+
+
+                            </LinearLayout>
+
+                            <TextView
+                                android:layout_marginTop="20dp"
+                                android:id="@+id/resendCode"
+                                android:layout_width="wrap_content"
+                                android:layout_height="50dp"
+                                android:textColor="@color/white_color"
+                                android:textStyle="bold"
+                                android:textSize="16dp"
+                                android:padding="10dp"
+                                android:layout_gravity="center"
+                                android:text="kirim ulang kode?"
+                                />
+
+
+
+                        </LinearLayout>
+                    </RelativeLayout>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/wrapperRegister"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white_color"
+                    android:padding="20dp">
+
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/txtLabel"
+                        android:layout_centerHorizontal="true">
+
+                        <TextView
+                            android:id="@+id/txtConfirmSmsCode"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="5dp"
+                            android:text="@string/konfirmasi"
+                            android:textColor="@color/bg_grad_2"
+                            android:textAllCaps="true"
+                            android:textStyle="bold"
+                            android:textSize="18dp"
+
+                            />
+
+                        <ImageView
+                            android:layout_width="42dp"
+                            android:layout_height="42dp"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="-8dp"
+                            android:layout_alignParentRight="true"
+                            android:src="@drawable/next_pink" />
+                    </RelativeLayout>
+
+                </RelativeLayout>
+                <RelativeLayout
+                    android:id="@+id/wrapperLanjut"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white_color"
+                    android:padding="20dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/txtLabel2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:text="@string/lbl_konfirmasi"
+                        android:textColor="@color/bg_grad_2"
+                        android:textSize="18dp"
+                        android:textStyle="bold" />
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/txtLabel2"
+                        android:layout_centerHorizontal="true">
+
+                        <TextView
+                            android:id="@+id/txtConfirmSmsCode2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="5dp"
+                            android:text="@string/lanjut"
+                            android:textColor="@color/bg_grad_2"
+                            android:textSize="18dp"
+
+                            />
+
+                        <ImageView
+                            android:layout_width="34dp"
+                            android:layout_height="38dp"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="-8dp"
+                            android:layout_toRightOf="@id/txtConfirmSmsCode2"
+                            android:src="@drawable/right_arrow" />
+                    </RelativeLayout>
+
+                </RelativeLayout>
+            </LinearLayout>
+
+        </ScrollView>
+
+
+</LinearLayout>
