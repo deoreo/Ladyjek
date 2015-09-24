@@ -144,6 +144,7 @@ public class ActivityLoading extends Activity {
                 if(message=="true"){
                     DialogManager.DismissLoading(context);
                     Intent i = new Intent(context, Main.class);
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(i);
                     finish();
                 }

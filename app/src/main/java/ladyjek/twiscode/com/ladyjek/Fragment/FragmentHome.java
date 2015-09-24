@@ -12,8 +12,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Message;
-import android.os.PowerManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
@@ -61,7 +59,6 @@ import ladyjek.twiscode.com.ladyjek.Model.ModelDriver;
 import ladyjek.twiscode.com.ladyjek.Model.ModelGeocode;
 import ladyjek.twiscode.com.ladyjek.Model.ModelPlace;
 import ladyjek.twiscode.com.ladyjek.R;
-import ladyjek.twiscode.com.ladyjek.Service.ServiceLocation;
 import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.GoogleAPIManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
@@ -79,6 +76,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -161,6 +159,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
     private LatLng[] driverArray = null;
     private boolean isSearchCurrent = false;
     private ProgressDialog progressDialog;
+    private Circle mCircle;
 
     public FragmentHome() {
         // Required empty public constructor
@@ -718,6 +717,10 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
 
     public void drawNewMarker(String address) {
         Log.v(TAG, "drawNewMarker " + address);
+        float zoom = googleMap.getCameraPosition().zoom;
+        if(zoom<=15){
+            zoom=15;
+        }
         try {
             ModelGeocode geocode = GoogleAPIManager.geocode(address);
             LatLng locationMarker = new LatLng(geocode.getLat(), geocode.getLon());
@@ -731,7 +734,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                                 .position(posFrom)
                                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
 
-                cameraUpdate = CameraUpdateFactory.newLatLngZoom(locationMarker, 15);
+                cameraUpdate = CameraUpdateFactory.newLatLngZoom(locationMarker, zoom);
                 googleMap.animateCamera(cameraUpdate);
             } else if (tagLocation.equals(TAG_DESTINATION)) {
                 posDest = locationMarker;
@@ -739,7 +742,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                         new MarkerOptions()
                                 .position(posDest)
                                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_destination)));
-                cameraUpdate = CameraUpdateFactory.newLatLngZoom(locationMarker, 13);
+                cameraUpdate = CameraUpdateFactory.newLatLngZoom(locationMarker, zoom);
                 googleMap.animateCamera(cameraUpdate);
             }
             Document doc = GoogleAPIManager.getRoute(posFrom, posDest, "driving");
@@ -830,6 +833,10 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
     public void onMapClick(LatLng latLng) {
         //drawNewMarker
         isSearchCurrent = false;
+        float zoom = googleMap.getCameraPosition().zoom;
+        if(zoom<=15){
+            zoom=15;
+        }
         if (tagLocation.equals(TAG_FROM)) {
             //posFrom=latLng;
             posTemp = latLng;
@@ -837,7 +844,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                     new MarkerOptions()
                             .position(latLng)
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15), new GoogleMap.CancelableCallback() {
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom), new GoogleMap.CancelableCallback() {
                 @Override
                 public void onFinish() {
                     layoutMarkerFrom.setVisibility(VISIBLE);
@@ -856,7 +863,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                     new MarkerOptions()
                             .position(latLng)
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_destination)));
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15), new GoogleMap.CancelableCallback() {
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom), new GoogleMap.CancelableCallback() {
                 @Override
                 public void onFinish() {
                     layoutMarkerFrom.setVisibility(GONE);
@@ -1052,6 +1059,8 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         private GoogleMap googleMap;
         private LocationManager locationManager;
         private SocketManager socketManager;
+        private CircleOptions circleOptions;
+
 
         public GetMyLocation(Activity activity, GoogleMap googleMap, SocketManager socketManager) {
             super();
@@ -1180,15 +1189,35 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                         if(zoom<=15){
                             zoom=15;
                         }
+                        double radiusInMeters = 5 * 100.0;
+                        int strokeColor = 0xffffffff;
+                        int shadeColor = 0x3366ffff;
+
+                        if(mCircle !=null){
+                            mCircle.remove();
+                        }
+
+                        circleOptions = new CircleOptions()
+                                .center(pFrom)
+                                .radius(radiusInMeters)
+                                .fillColor(shadeColor)
+                                .strokeColor(strokeColor)
+                                .strokeWidth(10);
+                        mCircle = googleMap.addCircle(circleOptions);
+                        cameraUpdate = CameraUpdateFactory.newLatLngZoom(pFrom, zoom);
                         if(!isSearchCurrent) {
                             markerFrom = googleMap.addMarker(
                                     new MarkerOptions()
                                             .position(pFrom)
                                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
                             txtFrom.setText(getAddress(pFrom));
+                            googleMap.animateCamera(cameraUpdate);
+                        }else{
+
+                            googleMap.moveCamera(cameraUpdate);
                         }
-                        cameraUpdate = CameraUpdateFactory.newLatLngZoom(pFrom, zoom);
-                        googleMap.animateCamera(cameraUpdate);
+
+
                         Log.v("posisi gps", pFrom.toString());
                     } catch (Exception e) {
                         e.printStackTrace();
