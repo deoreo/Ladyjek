@@ -20,7 +20,6 @@ public class TouchableWrapper extends FrameLayout {
     public TouchableWrapper(Context context) {
         super(context);
         this.context = context;
-        Log.d(TAG, "TouchableWrapper");
     }
 
     @Override
@@ -28,7 +27,6 @@ public class TouchableWrapper extends FrameLayout {
         if(NetworkManager.getInstance(context).isConnectedInternet()) {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    Log.d(TAG, "dispatchTouchEvent ACTION_DOWN");
                     FragmentHome.hideKeyboard();
                     FragmentHome.layoutMarkerFrom.setVisibility(GONE);
                     FragmentHome.layoutMarkerDestination.setVisibility(GONE);
@@ -38,7 +36,6 @@ public class TouchableWrapper extends FrameLayout {
                     }
                     break;
                 case MotionEvent.ACTION_UP:
-                    Log.d(TAG, "dispatchTouchEvent ACTION_UP");
                     break;
             }
         }

@@ -153,6 +153,7 @@ public class ActivityTracking extends ActionBarActivity implements LocationListe
 
             SupportMapFragment fm = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapView);
             googleMap = fm.getMap();
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(-6.1995921,106.872451), 10f));
             drawNewMarker(posFrom, TAG_FROM);
             drawNewMarker(posDest, TAG_DESTINATION);
             CircleOptions circleOptions = new CircleOptions()

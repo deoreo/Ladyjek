@@ -983,7 +983,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                             if (markerFrom != null) {
                                 markerFrom.remove();
                             }
-                            ModelGeocode geocode = GoogleAPIManager.geocode(selectedPlace.getAddress());
+                            ModelGeocode geocode = GoogleAPIManager.geocode(description);
                             ApplicationData.posFrom = new LatLng(geocode.getLat(), geocode.getLon());
                             appManager.setUserFrom(new ModelPlace(geocode.getLat(), geocode.getLon()));
 
@@ -993,13 +993,13 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                             if (markerDestination != null) {
                                 markerDestination.remove();
                             }
-                            ModelGeocode geocode = GoogleAPIManager.geocode(selectedPlace.getAddress());
+                            ModelGeocode geocode = GoogleAPIManager.geocode(description);
                             ApplicationData.posDestination = new LatLng(geocode.getLat(), geocode.getLon());
                             appManager.setUserDestination(new ModelPlace(geocode.getLat(), geocode.getLon()));
                         }
                         layoutSuggestion.setVisibility(GONE);
                         hideKeyboard();
-                        drawNewMarker(selectedPlace.getAddress());
+                        drawNewMarker(description);
                     } catch (Exception e) {
                         layoutSuggestion.setVisibility(GONE);
                         hideKeyboard();
@@ -1162,21 +1162,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                                     }
                                 }
                             }
-                            if (isGPSEnabled) {
-                                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this, Looper.getMainLooper());
-                                Log.v("locationManager", "GPS");
-                                if (locationManager != null) {
-                                    location = locationManager
-                                            .getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                                    if (location != null) {
-                                        latitude = location.getLatitude();
-                                        longitude = location.getLongitude();
-                                        posFrom = new LatLng(latitude, longitude);
-                                        ApplicationData.posFrom = posFrom;
 
-                                    }
-                                }
-                            }
                         }
                     }
 
@@ -1249,7 +1235,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                     break;
 
             }
-
+            DialogManager.DismissLoading(mActivity);
             GetNearestDriver(activity);
         }
 
