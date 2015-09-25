@@ -202,8 +202,8 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
                 if (message == "true") {
                     appManager.setTrip("end");
                     Intent i = new Intent(getBaseContext(), ActivityTracking.class);
-                    ApplicationManager um = new ApplicationManager(ActivityPickUp.this);
-                    um.setActivity("ActivityTracking");
+                    //ApplicationManager um = new ApplicationManager(ActivityPickUp.this);
+                    //um.setActivity("ActivityTracking");
                     startActivity(i);
                     finish();
                 } else {
@@ -239,11 +239,13 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
                                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
+                                        /*
                                         Intent i = new Intent(getBaseContext(), ActivityTracking.class);
                                         ApplicationManager um = new ApplicationManager(ActivityPickUp.this);
                                         um.setActivity("ActivityTracking");
                                         startActivity(i);
                                         finish();
+                                        */
                                         dialog.dismiss();
                                     }
                                 })
@@ -350,6 +352,10 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
             } else {
                 DialogManager.showDialog(ActivityPickUp.this, "Peringatan", "Tidak ada koneksi internet!");
             }
+        }
+
+        if(appManager.getTrip().equalsIgnoreCase("started")){
+            txtEstimate.setText("Driver telah sampai di tempat Anda");
         }
 
 
