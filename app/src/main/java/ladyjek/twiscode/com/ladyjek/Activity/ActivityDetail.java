@@ -1,5 +1,6 @@
 package ladyjek.twiscode.com.ladyjek.Activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import java.util.Locale;
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.Model.ModelHistory;
 import ladyjek.twiscode.com.ladyjek.R;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class ActivityDetail extends FragmentActivity {
 
@@ -123,5 +125,8 @@ public class ActivityDetail extends FragmentActivity {
         super.onBackPressed();  // optional depending on your needs
     }
 
-
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
 }

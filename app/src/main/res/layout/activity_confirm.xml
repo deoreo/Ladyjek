@@ -32,6 +32,7 @@
                 android:textColor="@color/bg_grad_2"
                 android:layout_centerVertical="true"
                 android:textAllCaps="true"
+                fontPath="@string/GothamRndBold"
                 />
         </RelativeLayout>
 
@@ -84,6 +85,7 @@
                             android:maxLines="1"
                             android:ellipsize="end"
                             android:text="Current Location"
+                            fontPath="@string/GothamRndMedium"
                             />
                         <TextView
                             android:id="@+id/txtDetailFrom"
@@ -132,6 +134,7 @@
                             android:maxLines="1"
                             android:ellipsize="end"
                             android:text="Destination Location"
+                            fontPath="@string/GothamRndMedium"
                             />
                         <TextView
                             android:id="@+id/txtDetailDestination"
@@ -244,6 +247,7 @@
                             android:textStyle="bold"
                             android:textSize="16dp"
                             android:layout_alignParentRight="true"
+                            fontPath="@string/GothamRndMedium"
                             />
                     </RelativeLayout>
                 </LinearLayout>
@@ -334,6 +338,7 @@
                             android:layout_centerHorizontal="true"
                             android:textAllCaps="true"
                             android:textStyle="bold"
+                            fontPath="@string/GothamRndBold"
                             />
                         <ImageView
                             android:layout_width="42dp"

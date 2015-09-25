@@ -66,6 +66,7 @@ import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.MySupportMapFragment;
 import ladyjek.twiscode.com.ladyjek.Utilities.NetworkManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.SocketManager;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
@@ -1282,7 +1283,6 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
 
         }
     }
-
 
 
 }

@@ -22,7 +22,9 @@
             android:text="LADYJEK"
             android:textColor="@color/white_color"
             android:textSize="24dp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            fontPath="@string/GothamRndBold"
+            />
         <!--
         <include
             android:id="@+id/tool_bar"
@@ -66,10 +68,11 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_centerHorizontal="true"
-                                    android:text="Sign-in ke Ladyjek"
+                                    android:text="Sign in ke Ladyjek"
                                     android:textColor="@color/white_color"
                                     android:textSize="20dp"
-                                    android:textStyle="bold" />
+                                    android:textStyle="bold"
+                                    fontPath="@string/GothamRndMedium"/>
                             </RelativeLayout>
 
                             <LinearLayout
@@ -204,6 +207,7 @@
                             android:textSize="18dp"
                             android:textAllCaps="true"
                             android:textStyle="bold"
+                            fontPath="@string/GothamRndBold"
                             />
 
                         <ImageView
@@ -244,6 +248,7 @@
                             android:textSize="18dp"
                             android:textAllCaps="true"
                             android:textStyle="bold"
+                            fontPath="@string/GothamRndBold"
                             />
 
 

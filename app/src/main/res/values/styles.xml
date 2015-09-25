@@ -12,18 +12,22 @@
         <item name="colorAccent">@color/bg_grad_1</item>
         <item name="android:textColorSecondary">@color/bg_grad_2</item>
         <item name="actionMenuTextColor">@color/bg_grad_2</item>
+        <item name="fontPath">@string/GothamBook</item>
 
     </style>
     <style name="CustomRatingBar" parent="@android:style/Widget.RatingBar">
         <item name="android:progressDrawable">@drawable/custom_ratingbar</item>
                 <item name="android:height">24dp</item>
                 <item name="android:width">24dp</item>
+                <item name="fontPath">@string/GothamBook</item>
     </style>
     <style name="CustomSpinner" parent="Widget.AppCompat.Light.Spinner.DropDown.ActionBar">
         <item name="android:background">?android:selectableItemBackground</item>
         <item name="android:dropDownSelector">?android:selectableItemBackground</item>
         <item name="android:divider">@null</item>
+        <item name="fontPath">@string/GothamBook</item>
     </style>
+
 
 
 </resources>

@@ -6,4 +6,6 @@
     android:layout_height="50dp"
     android:background="@drawable/bg_white_transparent"
     local:theme="@style/MyMaterialTheme"
-    local:popupTheme="@style/MyMaterialTheme" />
+    local:popupTheme="@style/MyMaterialTheme"
+
+    />

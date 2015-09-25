@@ -41,6 +41,7 @@ import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.KeyboardManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -152,17 +153,18 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
 
                 String email = txtEmail.getText().toString();
                 String password = txtPassword.getText().toString();
-                String num=email.substring(0,1);
-                Log.d("phone num",num);
-                Log.d("phone",email);
-                if(num.contains("0")){
-                    email = email.substring(1);
-                    Log.d("phone 1",email);
-                }
+
                 if (email == null || password == null || email.trim().isEmpty() || password.trim().isEmpty()) {
                     DialogManager.showDialog(mActivity, "Warning", "Isi Nomor Ponsel dan Password Anda!");
                 } else {
                     hideKeyboard();
+                    String num=email.substring(0,1);
+                    Log.d("phone num",num);
+                    Log.d("phone", email);
+                    if(num.contains("0")){
+                        email = email.substring(1);
+                        Log.d("phone 1",email);
+                    }
                     new DoLogin(mActivity).execute(
                             email,
                             password
@@ -176,17 +178,18 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
             public void onClick(View v) {
                 String email = txtEmail.getText().toString();
                 String password = txtPassword.getText().toString();
-                String num=email.substring(0,1);
-                Log.d("phone num",num);
-                Log.d("phone",email);
-                if(num.contains("0")){
-                    email = email.substring(1);
-                    Log.d("phone 1",email);
-                }
+
                 if (email == null || password == null || email.trim().isEmpty() || password.trim().isEmpty()) {
                     DialogManager.showDialog(mActivity, "Warning", "Isi Nomor Ponsel dan Password Anda!");
                 } else {
                     hideKeyboard();
+                    String num=email.substring(0,1);
+                    Log.d("phone num",num);
+                    Log.d("phone", email);
+                    if(num.contains("0")){
+                        email = email.substring(1);
+                        Log.d("phone 1",email);
+                    }
                     new DoLogin(mActivity).execute(
                             email,
                             password
@@ -512,6 +515,11 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
         } catch (Exception e) {
         }
         return addressLine;
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
 }

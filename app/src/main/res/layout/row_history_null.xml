@@ -16,6 +16,7 @@
         android:textStyle="bold"
         android:textSize="18dp"
         android:textColor="@color/bg_grad_2"
+        fontPath="@string/GothamRndMedium"
         android:layout_centerInParent="true"
         />
 

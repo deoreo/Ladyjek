@@ -38,6 +38,7 @@
                     android:textColor="@color/bg_grad_2"
                     android:layout_centerVertical="true"
                     android:textAllCaps="true"
+                    fontPath="@string/GothamRndBold"
                     />
             </RelativeLayout>
 
@@ -92,6 +93,7 @@
                                     android:textColor="@color/black_color"
                                     android:text="Mandiri e-Cash"
                                     android:gravity="center_vertical"
+                                    fontPath="@string/GothamRndMedium"
                                     />
                             </LinearLayout>
 
@@ -139,6 +141,7 @@
                                     android:textColor="@color/black_color"
                                     android:text="xL Tunai"
                                     android:gravity="center_vertical"
+                                    fontPath="@string/GothamRndMedium"
                                     />
                             </LinearLayout>
 

@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -27,6 +28,7 @@ import ladyjek.twiscode.com.ladyjek.Parse.ParseManager;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -62,13 +64,6 @@ public class ActivityRegister extends ActionBarActivity {
             public void onClick(View v) {
 
                 String phoneNumber = txtPhone.getText().toString();
-                String num=phoneNumber.substring(0,1);
-                Log.d("phone num",num);
-                Log.d("phone",phoneNumber);
-                if(num.contains("0")){
-                    phoneNumber = phoneNumber.substring(1);
-                    Log.d("phone 1",phoneNumber);
-                }
                 String password = txtPassword.getText().toString();
                 String confirm = txtConfirm.getText().toString();
                 if (phoneNumber == null || password == null || phoneNumber.trim().isEmpty() || password.trim().isEmpty() || confirm == null || confirm.trim().isEmpty()) {
@@ -76,6 +71,13 @@ public class ActivityRegister extends ActionBarActivity {
                 } else if (!confirm.equals(password)) {
                     DialogManager.showDialog(act, "Warning", "Password tidak sesuai!");
                 } else {
+                    String num=phoneNumber.substring(0,1);
+                    Log.d("phone num",num);
+                    Log.d("phone",phoneNumber);
+                    if(num.contains("0")){
+                        phoneNumber = phoneNumber.substring(1);
+                        Log.d("phone 1",phoneNumber);
+                    }
                     new DoRegister(act).execute(
                             phoneNumber,
                             password
@@ -383,6 +385,9 @@ public class ActivityRegister extends ActionBarActivity {
 
     }
 
-
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
 
 }

@@ -62,6 +62,7 @@
                         android:textSize="18dp"
                         android:textAllCaps="true"
                         android:textStyle="bold"
+                        fontPath="@string/GothamRndBold"
                         />
 
                     <ImageView

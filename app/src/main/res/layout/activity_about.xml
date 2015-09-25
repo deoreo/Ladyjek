@@ -38,6 +38,7 @@
                     android:textColor="@color/bg_grad_2"
                     android:layout_centerVertical="true"
                     android:textAllCaps="true"
+                    fontPath="@string/GothamRndBold"
                     />
             </RelativeLayout>
 
@@ -58,37 +59,180 @@
                     android:layout_marginTop="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/app_name"
+                    android:text="Ladyjek Indonesia"
                     android:textColor="@color/black_color"
-                    android:textSize="20dp"
+                    android:textSize="15sp"
+                    fontPath="@string/GothamRndBold"
                     android:textStyle="bold"/>
 
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:layout_marginTop="30dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Customer Service:   "
+                            android:textColor="@color/black_color"
+                            fontPath="@string/GothamRndMedium"
+                            android:textSize="15sp"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="+62 21 1234 1234"
+                            android:textStyle="bold"
+                            android:textColor="@color/black_color"
+                            fontPath="@string/GothamRndMedium"
+                            android:textSize="15sp"/>
+                    </LinearLayout>
+                </RelativeLayout>
                 <TextView
-                    android:layout_marginTop="30dp"
+                    android:layout_marginTop="20dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="HQ"
+                    android:text="http://www.ladyjek.com"
                     android:textColor="@color/black_color"
-                    android:textSize="16dp"/>
-                <TextView
-                    android:layout_marginTop="10dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="88@Casablanca Office Tower A"
-                    android:textColor="@color/black_color"
-                    android:textSize="16dp"/>
-                <TextView
-                    android:layout_marginTop="10dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Jakarta"
-                    android:textColor="@color/black_color"
-                    android:textSize="16dp"/>
+                    android:textSize="15sp"/>
                 <View
                     android:layout_marginTop="30dp"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
                     android:background="@color/grey_color_dark" />
+                <TextView
+                    android:layout_marginTop="30dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Kantor Pusat"
+                    android:textColor="@color/black_color"
+                    android:textSize="15sp"
+                    fontPath="@string/GothamRndBold"
+                    android:textStyle="bold"/>
+                <TextView
+                android:layout_marginTop="15dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="88@Casablanca Office Tower A Suite 5-C"
+                android:textColor="@color/black_color"
+                android:textSize="15sp"/>
+                <TextView
+                    android:layout_marginTop="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Jl. Casablanca kav. 88"
+                    android:textColor="@color/black_color"
+                    android:textSize="15sp"/>
+                <TextView
+                    android:layout_marginTop="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Jakarta 12780"
+                    android:textColor="@color/black_color"
+                    android:textSize="15sp"/>
+                <TextView
+                    android:layout_marginTop="30dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Kantor Pendaftaran"
+                    android:textColor="@color/black_color"
+                    android:textSize="15sp"
+                    fontPath="@string/GothamRndBold"
+                    android:textStyle="bold"/>
+                <TextView
+                    android:layout_marginTop="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Ladyjek Cengkareng"
+                    android:textColor="@color/black_color"
+                    fontPath="@string/GothamRndBold"
+                    android:textStyle="bold"
+                    android:textSize="15sp"/>
+                <TextView
+                    android:layout_marginTop="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Kawasan Ruko Sedayu Square Blok G-35"
+                    android:textColor="@color/black_color"
+                    android:textSize="15sp"/>
+                <TextView
+                    android:layout_marginTop="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Jl. Outer Ring Road Cengkareng"
+                    android:textColor="@color/black_color"
+                    android:textSize="15sp"/>
+                <TextView
+                    android:layout_marginTop="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Jakarta Barat 11730"
+                    android:textColor="@color/black_color"
+                    android:textSize="15sp"/>
+
+                <TextView
+                android:layout_marginTop="15dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Ladyjek Bekasi"
+                android:textColor="@color/black_color"
+                fontPath="@string/GothamRndBold"
+                android:textStyle="bold"
+                android:textSize="15sp"/>
+                <TextView
+                    android:layout_marginTop="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Jl. Raya Burangrang no. 208B"
+                    android:textColor="@color/black_color"
+                    android:textSize="15sp"/>
+                <TextView
+                    android:layout_marginTop="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Kayuringinjaya"
+                    android:textColor="@color/black_color"
+                    android:textSize="15sp"/>
+                <TextView
+                    android:layout_marginTop="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Bekasi 17144"
+                    android:textColor="@color/black_color"
+                    android:textSize="15sp"/>
+
+                <TextView
+                    android:layout_marginTop="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Ladyjek Tangerang"
+                    android:textColor="@color/black_color"
+                    fontPath="@string/GothamRndBold"
+                    android:textStyle="bold"
+                    android:textSize="15sp"/>
+                <TextView
+                    android:layout_marginTop="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Kawasan Ruko Fluorite no. 72"
+                    android:textColor="@color/black_color"
+                    android:textSize="15sp"/>
+                <TextView
+                    android:layout_marginTop="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Jl. Raya Kelapa Gading Utara, Gading Serpong"
+                    android:textColor="@color/black_color"
+                    android:textSize="15sp"/>
+                <TextView
+                    android:layout_marginTop="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Tangerang 15810"
+                    android:textColor="@color/black_color"
+                    android:textSize="15sp"/>
 
                 <TextView
                     android:id="@+id/btnOpenWebsite"
@@ -102,6 +246,7 @@
                     android:textColor="@color/white_color"
                     android:textSize="22dp"
                     android:gravity="center"
+                    fontPath="@string/GothamRndBold"
                     android:textStyle="bold"/>
 
             </LinearLayout>

@@ -1,5 +1,6 @@
 package ladyjek.twiscode.com.ladyjek.Activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import ladyjek.twiscode.com.ladyjek.Adapter.ColorPagerAdapter;
 import ladyjek.twiscode.com.ladyjek.R;
 import me.relex.circleindicator.CircleIndicator;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class ActivityPromo extends FragmentActivity {
 
@@ -79,6 +81,9 @@ public class ActivityPromo extends FragmentActivity {
         finish();
         super.onBackPressed();  // optional depending on your needs
     }
-
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
 
 }

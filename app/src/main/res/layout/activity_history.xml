@@ -39,6 +39,7 @@
                     android:textColor="@color/bg_grad_2"
                     android:layout_centerVertical="true"
                     android:textAllCaps="true"
+                    fontPath="@string/GothamRndBold"
                     />
             </RelativeLayout>
 

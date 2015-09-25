@@ -28,6 +28,10 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
+import ladyjek.twiscode.com.ladyjek.R;
+import ladyjek.twiscode.com.ladyjek.Utilities.TextFields;
+import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
+
 public class MyApplication extends Application {
 
     private static MyApplication mInstance;
@@ -36,6 +40,10 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         mInstance = this;
+        CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
+                .setDefaultFontPath("fonts/Gotham.ttf")
+                .setFontAttrId(R.attr.fontPath)
+                .build());
         ParseManager.registerParse(this);
         ParseManager.getDeviceToken(this);
         try {

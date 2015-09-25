@@ -64,7 +64,7 @@
                         android:textAllCaps="true"
                         android:textStyle="bold"
                         android:layout_centerHorizontal="true"
-
+                        fontPath="@string/GothamRndBold"
                         />
                     <ImageView
                         android:layout_width="42dp"
@@ -240,6 +240,7 @@
                         android:textColorHint="@drawable/hint_selector_black"
                         android:textSize="15sp"
                         android:drawableRight="@drawable/ic_erase1"
+                        fontPath="@string/GothamRndMedium"
                         />
                     <RelativeLayout
                         android:id="@+id/btnClearFrom"
@@ -300,6 +301,7 @@
                         android:textColorHint="@drawable/hint_selector_black"
                         android:textSize="15sp"
                         android:drawableRight="@drawable/ic_erase1"
+                        fontPath="@string/GothamRndMedium"
                         />
                     <RelativeLayout
                         android:id="@+id/btnClearDestination"
