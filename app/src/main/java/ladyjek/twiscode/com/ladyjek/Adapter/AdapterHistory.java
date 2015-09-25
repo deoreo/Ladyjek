@@ -10,12 +10,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-
-import org.droidparts.contract.HTTP;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -25,13 +22,9 @@ import java.util.List;
 import java.util.Locale;
 
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityDetail;
-import ladyjek.twiscode.com.ladyjek.Activity.ActivityVerifyPayment;
-import ladyjek.twiscode.com.ladyjek.Fragment.FragmentHome;
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.Model.ModelHistory;
-import ladyjek.twiscode.com.ladyjek.Model.ModelOrder;
 import ladyjek.twiscode.com.ladyjek.R;
-import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
 
 /**
  * Created by Unity on 30/07/2015.
@@ -64,7 +57,7 @@ public class AdapterHistory extends RecyclerView.Adapter<AdapterHistory.MyViewHo
         View view;
         Log.d("count history",""+getItemCount());
         if(!isNull){
-            view = inflater.inflate(R.layout.row_passenger_item, parent, false);
+            view = inflater.inflate(R.layout.row_history_item, parent, false);
         }
         else {
             view = inflater.inflate(R.layout.row_history_null, parent, false);
