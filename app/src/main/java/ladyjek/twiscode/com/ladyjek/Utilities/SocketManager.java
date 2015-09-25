@@ -933,6 +933,7 @@ public class SocketManager {
                         JSONObject err = (JSONObject) args[0];
                         if (err == null) {
                             JSONArray data = (JSONArray) args[1];
+                            Log.d(TAG, "getHistory ; "+data.length());
                             if(data.length() > 0){
                                 Log.d(TAG, "getHistory : " + data.toString());
                                 for (int i=0;i<data.length();i++){

@@ -53,6 +53,8 @@ public class ActivityHistory extends FragmentActivity {
 
     private BroadcastReceiver history;
 
+    private boolean isNull = true;
+
 
 
 
@@ -71,8 +73,11 @@ public class ActivityHistory extends FragmentActivity {
         noItems = (TextView) findViewById(R.id.noItems);
         mRecyclerView = mPullToLoadView.getRecyclerView();
 
-        adapter = new AdapterHistory(act,data);
+        data = new ArrayList<>();
+        data.add(new ModelHistory("1","","","","","","","","","",""));
+        adapter = new AdapterHistory(act,data,isNull);
         mRecyclerView.setAdapter(adapter);
+        data = new ArrayList<>();
         mRecyclerView.setLayoutManager(new LinearLayoutManager(act));
 
         allLoaded = false;
@@ -132,24 +137,41 @@ public class ActivityHistory extends FragmentActivity {
                 String message = intent.getStringExtra("message");
                 if (message.equals("true")) {
                     data = ApplicationData.history;
-                    adapter = new AdapterHistory(act,data);
+                    isNull = false;
+                    adapter = new AdapterHistory(act,data,isNull);
                     mRecyclerView.setAdapter(adapter);
                     cnt++;
-                    if(data.size() > 0){
-                        noItems.setVisibility(View.GONE);
-                        mPullToLoadView.setVisibility(View.VISIBLE);
-                    }
-                    else{
-                        noItems.setVisibility(View.VISIBLE);
-                        mPullToLoadView.setVisibility(View.GONE);
-                    }
+
                     allLoaded = false;
                     mPullToLoadView.setComplete();
 
                 }
                 else if(message.equals("null")){
+
                     allLoaded = false;
                     mPullToLoadView.setComplete();
+
+
+                    if(data.size() > 0){
+                        isNull = true;
+                        data = new ArrayList<>();
+                        data.add(new ModelHistory("1","","","","","","","","","",""));
+                        adapter = new AdapterHistory(act,data,isNull);
+                        mRecyclerView.setAdapter(adapter);
+                        data = new ArrayList<>();
+                        /*
+                        noItems.setVisibility(View.GONE);
+                        mPullToLoadView.setVisibility(View.VISIBLE);
+                        */
+                    }
+                    else{
+                        isNull = false;
+                        /*
+                        noItems.setVisibility(View.VISIBLE);
+                        mPullToLoadView.setVisibility(View.GONE);
+                        */
+                    }
+
                 }
 
             }
