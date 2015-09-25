@@ -89,7 +89,7 @@ public class ActivityLoading extends Activity {
                                         dialog.dismiss();
                                     }
                                 })
-                                .icon(getResources().getDrawable(R.drawable.ladyjek_icon, null))
+                                .icon(getResources().getDrawable(R.drawable.ladyjek_icon))
                                 .cancelable(false)
                                 .typeface("GothamRnd-Medium.otf", "Gotham.ttf")
                                 .show();
@@ -115,11 +115,12 @@ public class ActivityLoading extends Activity {
                     Log.d("taken", "true");
                     try {
                         Context ctx = ActivityLoading.this;
-                        new AlertDialogWrapper.Builder(ctx)
-                                .setTitle("Driver ladyjek sedang menjemput Anda")
-                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        new MaterialDialog.Builder(ctx)
+                                .title("Driver ladyjek sedang menjemput Anda")
+                                .positiveText("OK")
+                                .callback(new MaterialDialog.ButtonCallback() {
                                     @Override
-                                    public void onClick(DialogInterface dialog, int which) {
+                                    public void onPositive(MaterialDialog dialog) {
                                         Intent i = new Intent(getBaseContext(), ActivityPickUp.class);
                                         ApplicationManager um = new ApplicationManager(ActivityLoading.this);
                                         startActivity(i);
@@ -127,7 +128,9 @@ public class ActivityLoading extends Activity {
                                         dialog.dismiss();
                                     }
                                 })
-                                .setIcon(R.drawable.ladyjek_icon)
+                                .icon(getResources().getDrawable(R.drawable.ladyjek_icon))
+                                .cancelable(false)
+                                .typeface("GothamRnd-Medium.otf", "Gotham.ttf")
                                 .show();
                     } catch (Exception e) {
 
@@ -139,6 +142,7 @@ public class ActivityLoading extends Activity {
 
             }
         };
+
 
         doCancel  = new BroadcastReceiver() {
             @Override
@@ -152,9 +156,6 @@ public class ActivityLoading extends Activity {
                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(i);
                     finish();
-                }
-                else {
-                    Toast.makeText(ActivityLoading.this, "Anda tidak dapat cancel karena driver sudah dekat", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -196,6 +197,14 @@ public class ActivityLoading extends Activity {
         boolean isScreenOn = powerManager.isScreenOn();
 
         super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(doCancel);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(orderTaken);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(orderTimeout);
     }
 
 

@@ -27,9 +27,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.nkzawa.socketio.client.Socket;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -225,33 +225,21 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
                 Log.d("goTrip", message);
                 if (message == "true") {
                     appManager.setArrive(true);
-                    /*
-                    Toast.makeText(ActivityPickUp.this, "Driver telah sampai di tempat Anda", Toast.LENGTH_LONG).show();
-                    Intent i = new Intent(getBaseContext(), ActivityTracking.class);
-                    ApplicationManager um = new ApplicationManager(ActivityPickUp.this);
-                    um.setActivity("ActivityTracking");
-                    startActivity(i);
-                    finish();
-                    */
                     txtEstimate.setText("Driver telah sampai di tempat Anda");
                     try {
                         Context ctx = ActivityPickUp.this;
-                        new AlertDialogWrapper.Builder(ctx)
-                                .setTitle("Driver telah sampai di tempat Anda")
-                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        new MaterialDialog.Builder(ctx)
+                                .title("Driver telah sampai di tempat Anda")
+                                .positiveText("OK")
+                                .callback(new MaterialDialog.ButtonCallback() {
                                     @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        /*
-                                        Intent i = new Intent(getBaseContext(), ActivityTracking.class);
-                                        ApplicationManager um = new ApplicationManager(ActivityPickUp.this);
-                                        um.setActivity("ActivityTracking");
-                                        startActivity(i);
-                                        finish();
-                                        */
+                                    public void onPositive(MaterialDialog dialog) {
                                         dialog.dismiss();
                                     }
                                 })
-                                .setIcon(R.drawable.ladyjek_icon)
+                                .icon(getResources().getDrawable(R.drawable.ladyjek_icon))
+                                .cancelable(false)
+                                .typeface("GothamRnd-Medium.otf", "Gotham.ttf")
                                 .show();
                     } catch (Exception e) {
 
@@ -275,19 +263,21 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
                     startActivity(i);
                     finish();
                 } else {
-                    //Toast.makeText(ActivityPickUp.this, "Anda tidak dapat cancel karena driver sudah dekat", Toast.LENGTH_SHORT).show();
                     try {
                         Context ctx = ActivityPickUp.this;
-                        new AlertDialogWrapper.Builder(ctx)
-                                .setTitle("Informasi")
-                                .setMessage("Driver sudah dekat, silakan menghubungi driver!")
-                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        new MaterialDialog.Builder(ctx)
+                                .title("Informasi")
+                                .content("Driver sudah dekat, silakan menghubungi driver!")
+                                .positiveText("OK")
+                                .callback(new MaterialDialog.ButtonCallback() {
                                     @Override
-                                    public void onClick(DialogInterface dialog, int which) {
+                                    public void onPositive(MaterialDialog dialog) {
                                         dialog.dismiss();
                                     }
                                 })
-                                .setIcon(R.drawable.ladyjek_icon)
+                                .icon(getResources().getDrawable(R.drawable.ladyjek_icon))
+                                .cancelable(false)
+                                .typeface("GothamRnd-Medium.otf", "Gotham.ttf")
                                 .show();
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -573,6 +563,17 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
         //}
         super.onPause();
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(goTrip);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(doCancel);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(driverChange);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(getDriver);
+    }
+
+
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));

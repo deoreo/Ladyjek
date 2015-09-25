@@ -24,6 +24,7 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
+import com.afollestad.materialdialogs.MaterialDialog;
 
 import ladyjek.twiscode.com.ladyjek.Fragment.FragmentHome;
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
@@ -149,11 +150,12 @@ public class ActivityRate extends ActionBarActivity {
                 DialogManager.DismissLoading(ActivityRate.this);
                 if (message.equals("true")) {
 
-                    new AlertDialogWrapper.Builder(ActivityRate.this)
-                            .setTitle("Terima kasih!")
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    new MaterialDialog.Builder(ActivityRate.this)
+                            .title("Terima kasih!")
+                            .positiveText("OK")
+                            .callback(new MaterialDialog.ButtonCallback() {
                                 @Override
-                                public void onClick(DialogInterface dialog, int which) {
+                                public void onPositive(MaterialDialog dialog) {
                                     appManager.setActivity("");
                                     Intent i = new Intent(getBaseContext(), Main.class);
                                     ApplicationManager um = new ApplicationManager(ActivityRate.this);
@@ -164,7 +166,9 @@ public class ActivityRate extends ActionBarActivity {
                                     dialog.dismiss();
                                 }
                             })
-                            .setIcon(R.drawable.ladyjek_icon)
+                            .icon(getResources().getDrawable(R.drawable.ladyjek_icon))
+                            .cancelable(false)
+                            .typeface("GothamRnd-Medium.otf", "Gotham.ttf")
                             .show();
                 }
 
@@ -230,7 +234,7 @@ public class ActivityRate extends ActionBarActivity {
         txtName.setText(ApplicationData.driver.getName());
         txtJarak.setText(order.getDistance());
         txtWaktu.setText(order.getDuration());
-        txtPrice.setText(order.getPrice());
+        txtPrice.setText("Rp. "+Math.round(Float.parseFloat(order.getDistance().split(" ")[0]) * 4000));
         txtPembayaran.setText(order.getPayment());
     }
 
@@ -263,6 +267,12 @@ public class ActivityRate extends ActionBarActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(feedback,
                 new IntentFilter("doFeedback"));
 
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(feedback);
     }
 
     @Override

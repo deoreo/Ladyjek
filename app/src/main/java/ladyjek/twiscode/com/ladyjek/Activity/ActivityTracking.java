@@ -220,37 +220,8 @@ public class ActivityTracking extends ActionBarActivity implements LocationListe
 
 
 
-    private void Dummy(){
-        new CountDownTimer(5000, 1000) {
 
-            public void onTick(long millisUntilFinished) {
-                //mTextField.setText("seconds remaining: " + millisUntilFinished / 1000);
-            }
 
-            public void onFinish() {
-                MovetoTracking();
-            }
-        }.start();
-    }
-
-    private void MovetoTracking(){
-        new AlertDialogWrapper.Builder(ActivityTracking.this)
-                .setTitle("Anda telah selamat sampai tujuan!")
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent i=new Intent(getBaseContext(),ActivityRate.class);
-                        ApplicationManager um = new ApplicationManager(ActivityTracking.this);
-                        um.setActivity("ActivityRate");
-                        startActivity(i);
-                        finish();
-                        dialog.dismiss();
-                    }
-                })
-                .setIcon(R.drawable.ladyjek_icon)
-                .show();
-
-    }
 
     @Override
     public void onLocationChanged(Location location) {
@@ -332,6 +303,13 @@ public class ActivityTracking extends ActionBarActivity implements LocationListe
                 new IntentFilter("goStart"));
         LocalBroadcastManager.getInstance(this).registerReceiver(end,
                 new IntentFilter("goEnd"));
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(start);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(end);
     }
 
     @Override
