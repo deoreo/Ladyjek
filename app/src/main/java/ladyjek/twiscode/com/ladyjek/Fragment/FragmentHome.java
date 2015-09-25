@@ -624,8 +624,8 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                         startActivity(i);
                         getActivity().finish();
                     } else if (ApplicationData.order.getStatus().contains("pickedup")) {
-                        i = new Intent(getActivity(), ActivityTracking.class);
-                        appManager.setTrip("");
+                        i = new Intent(getActivity(), ActivityPickUp.class);
+                        appManager.setTrip("started");
                         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(i);
                         getActivity().finish();
@@ -637,7 +637,6 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                         getActivity().finish();
                     } else if (ApplicationData.order.getStatus().contains("queued")) {
                         i = new Intent(getActivity(), ActivityLoading.class);
-                        appManager.setTrip("end");
                         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(i);
                         getActivity().finish();
