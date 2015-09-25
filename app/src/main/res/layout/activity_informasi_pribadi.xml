@@ -75,6 +75,7 @@
                     android:textSize="16sp"
                     android:enabled="false"
                     android:textColor="@drawable/edittext_color"
+                    fontPath="@string/GothamRndMedium"
                     android:imeOptions="actionDone"/>
                     <ImageView
                         android:id="@+id/editNama"
@@ -300,6 +301,7 @@
                                     android:textStyle="bold"
                                     android:textColor="@color/black_color"
                                     android:text="Lokasi Rumah"
+                                    fontPath="@string/GothamRndMedium"
                                     android:gravity="center_vertical"
                                     />
                                 <ImageView
@@ -357,6 +359,7 @@
                                     android:textStyle="bold"
                                     android:textColor="@color/black_color"
                                     android:text="Lokasi Kantor"
+                                    fontPath="@string/GothamRndMedium"
                                     android:gravity="center_vertical"
                                     />
                                 <ImageView

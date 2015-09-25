@@ -27,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
+import com.afollestad.materialdialogs.MaterialDialog;
 
 import org.json.JSONObject;
 
@@ -75,11 +76,12 @@ public class ActivityLoading extends Activity {
 
                     try {
                         Context ctx = ActivityLoading.this;
-                        new AlertDialogWrapper.Builder(ctx)
-                                .setTitle("Tidak menemukan driver ladyjek")
-                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        new MaterialDialog.Builder(ctx)
+                                .title("Tidak menemukan driver ladyjek")
+                                .positiveText("OK")
+                                .callback(new MaterialDialog.ButtonCallback() {
                                     @Override
-                                    public void onClick(DialogInterface dialog, int which) {
+                                    public void onPositive(MaterialDialog dialog) {
                                         Intent i = new Intent(getBaseContext(), ActivityConfirm.class);
                                         ApplicationManager um = new ApplicationManager(ActivityLoading.this);
                                         startActivity(i);
@@ -87,7 +89,9 @@ public class ActivityLoading extends Activity {
                                         dialog.dismiss();
                                     }
                                 })
-                                .setIcon(R.drawable.ladyjek_icon)
+                                .icon(getResources().getDrawable(R.drawable.ladyjek_icon, null))
+                                .cancelable(false)
+                                .typeface("GothamRnd-Medium.otf", "Gotham.ttf")
                                 .show();
                     } catch (Exception e) {
 

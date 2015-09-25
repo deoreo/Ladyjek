@@ -17,6 +17,7 @@ public class DialogManager {
                 .title(title)
                 .content(content)
                 .positiveText("OK")
+                .cancelable(false)
                 .typeface("GothamRnd-Medium.otf", "Gotham.ttf")
                 .show();
     }
