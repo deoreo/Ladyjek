@@ -132,6 +132,7 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
 
             // Getting GoogleMap object from the fragment
             googleMap = fm.getMap();
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(-6.1995921,106.872451), 10f));
             appManager = new ApplicationManager(ActivityPickUp.this);
             drawNewMarker(posFrom, TAG_FROM);
             drawNewMarker(posDriver, TAG_DRIVER);
@@ -354,7 +355,7 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
             }
         }
 
-        if(appManager.getTrip().equalsIgnoreCase("started")){
+        if (appManager.getTrip().equalsIgnoreCase("started")){
             txtEstimate.setText("Driver telah sampai di tempat Anda");
         }
 

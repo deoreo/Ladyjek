@@ -113,11 +113,13 @@ public class GoogleAPIManager {
             StringBuilder sb = new StringBuilder(GEOCODE_API_BASE + OUT_JSON);
             sb.append("?key=" + API_KEY);
             sb.append("&address=" + URLEncoder.encode(address, "utf8"));
+            sb.append("&region=id");
 
             URL url = new URL(sb.toString());
             conn = (HttpURLConnection) url.openConnection();
             InputStreamReader in = new InputStreamReader(conn.getInputStream());
-
+            Log.d("GEOCODE", address);
+            Log.d("GEOCODE", url.toString());
             // Load the results into a StringBuilder
             int read;
             char[] buff = new char[1024];
@@ -160,7 +162,8 @@ public class GoogleAPIManager {
         String url = "http://maps.googleapis.com/maps/api/directions/xml?"
                 + "origin=" + start.latitude + "," + start.longitude
                 + "&destination=" + end.latitude + "," + end.longitude
-                + "&sensor=false&units=metric&mode=driving";
+                + "&sensor=false&units=metric&mode=driving"
+                + "&provideRouteAlternatives=true&avoidHighways=true&avoidTolls=true&region=id";
         Log.d("url", url);
         try {
             HttpClient httpClient = new DefaultHttpClient();
