@@ -425,9 +425,6 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
                         ApplicationData.userLogin = userLogin;
 
 
-
-
-
                         String deviceToken = ApplicationData.PARSE_DEVICE_TOKEN;
                         ApplicationManager.getInstance(context).setUserToken(token);
                         ApplicationData.registered_id = _id.toString();

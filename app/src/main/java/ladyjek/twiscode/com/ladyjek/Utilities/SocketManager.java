@@ -509,9 +509,13 @@ public class SocketManager {
                             String member = "12 Feb 2015";
                             String phone = "089682587567";
                             String rate = "4.5";
-                            String price = "";
+                            String[] strDist = distance.split(" ");
+                            float intDist = Float.parseFloat(strDist[0]);
+                            int totalPrice = 4000 * Math.round(intDist);
+                            String price = "Rp."+totalPrice;
                             ModelOrder order = new ModelOrder(id, userID, driverID, name, to, from, distance, duration, status, toLongitude, toLatitude, fromLatitude, fromLongitude, rate, phone, member, payment, price);
                             ApplicationData.order = order;
+                            appManager.setOrder(order);
                             //Log.d(TAG, "cancel true");
                             SendBroadcast("createOrder", "true");
                         } else {

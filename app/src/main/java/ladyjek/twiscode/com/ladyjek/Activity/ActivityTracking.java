@@ -34,8 +34,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.Circle;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -157,13 +155,6 @@ public class ActivityTracking extends ActionBarActivity implements LocationListe
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(-6.1995921,106.872451), 10f));
             drawNewMarker(posFrom, TAG_FROM);
             drawNewMarker(posDest, TAG_DESTINATION);
-            CircleOptions circleOptions = new CircleOptions()
-                    .center(posFrom)
-                    .radius(500)
-                    .strokeWidth(1)
-                    .strokeColor(Color.BLUE)
-                    .fillColor(Color.parseColor("#500084d3"));
-            Circle mapCircle = googleMap.addCircle(circleOptions);
             drawDriveLine(googleMap , posFrom , posDest);
         }
         mRunnable = new Runnable() {

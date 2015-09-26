@@ -58,6 +58,7 @@ import ladyjek.twiscode.com.ladyjek.Database.DatabaseHandler;
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.Model.ModelDriver;
 import ladyjek.twiscode.com.ladyjek.Model.ModelGeocode;
+import ladyjek.twiscode.com.ladyjek.Model.ModelOrder;
 import ladyjek.twiscode.com.ladyjek.Model.ModelPlace;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
@@ -259,7 +260,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
             @Override
             public void onClick(View v) {
                 if (strDistance.isEmpty() && strDuration.isEmpty()) {
-                    DialogManager.showDialog(mActivity, "Warning", "Tentukan lokasi awal dan akhir!");
+                    DialogManager.showDialog(mActivity, "Peringatan", "Tentukan lokasi awal dan akhir!");
                 } else {
                     ApplicationData.addressFrom = txtFrom.getText().toString();
                     ApplicationData.addressDestination = txtDestination.getText().toString();

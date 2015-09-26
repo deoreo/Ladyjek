@@ -1,7 +1,10 @@
 package ladyjek.twiscode.com.ladyjek.Utilities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
+import android.location.Address;
+import android.location.Geocoder;
 import android.text.Html;
 import android.util.Log;
 
@@ -37,6 +40,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import java.io.InputStream;
+import java.util.List;
+import java.util.Locale;
+
 /**
  * Created by ModelUser on 8/5/2015.
  */
@@ -291,6 +297,23 @@ public class GoogleAPIManager {
         }
 
 
+    }
+
+    public static String getAddress(Activity mActivity, LatLng latlng, String detail) {
+        Geocoder geocoder = new Geocoder(mActivity, Locale.getDefault());
+        double lat = latlng.latitude;
+        double lng = latlng.longitude;
+        String addressLine = "";
+        try {
+            List<Address> addresses = geocoder.getFromLocation(lat, lng, 1);
+            Address obj = addresses.get(0);
+            addressLine = obj.getAddressLine(0);
+            detail = obj.getAddressLine(1) + " , " + obj.getAddressLine(2);
+
+        } catch (IOException e) {
+        } catch (Exception e) {
+        }
+        return addressLine;
     }
 
 

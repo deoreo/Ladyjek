@@ -234,7 +234,10 @@ public class ActivityRate extends ActionBarActivity {
         txtName.setText(ApplicationData.driver.getName());
         txtJarak.setText(order.getDistance());
         txtWaktu.setText(order.getDuration());
-        txtPrice.setText("Rp. "+Math.round(Float.parseFloat(order.getDistance().split(" ")[0]) * 4000));
+
+
+
+        txtPrice.setText(order.getPrice());
         txtPembayaran.setText(order.getPayment());
     }
 

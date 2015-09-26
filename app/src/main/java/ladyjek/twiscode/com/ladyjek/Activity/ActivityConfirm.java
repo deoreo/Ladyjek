@@ -1,7 +1,11 @@
 package ladyjek.twiscode.com.ladyjek.Activity;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -16,7 +20,7 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import org.droidparts.activity.legacy.Activity;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -24,8 +28,11 @@ import java.text.NumberFormat;
 import java.util.Locale;
 
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
+import ladyjek.twiscode.com.ladyjek.Model.ModelOrder;
+import ladyjek.twiscode.com.ladyjek.Model.ModelUserOrder;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
+import ladyjek.twiscode.com.ladyjek.Utilities.GoogleAPIManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.SocketManager;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
@@ -33,6 +40,7 @@ public class ActivityConfirm extends ActionBarActivity {
 
 
     private Toolbar mToolbar;
+    private Activity mActivity;
     private Spinner pay;
     private ArrayAdapter<CharSequence> adapterPay;
     private ImageView btnBack;
@@ -44,11 +52,14 @@ public class ActivityConfirm extends ActionBarActivity {
     private NumberFormat numberFormat;
     private DecimalFormat decimalFormat;
     private SocketManager socketManager;
+
     int pembayaran = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm);
+        mActivity = this;
+
         socketManager = ApplicationData.socketManager;
         DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.US);
         otherSymbols.setDecimalSeparator(',');
@@ -57,21 +68,8 @@ public class ActivityConfirm extends ActionBarActivity {
         decimalFormat.setDecimalFormatSymbols(otherSymbols);
         //SetActionBar();
         SetPaySpinner();
-        try {
-            strFrom = ApplicationData.addressFrom;
-            strDest = ApplicationData.addressDestination;
-            strDetailFrom = ApplicationData.detailFrom;
-            strDetailDest = ApplicationData.detailDestination;
-            strDistance = ApplicationData.distance;
-            strDuration = ApplicationData.duration;
+        new GetInfoOrder(mActivity).execute();
 
-            String[] strDist = strDistance.split(" ");
-            float intDist = Float.parseFloat(strDist[0]);
-            totalPrice = 4000 * Math.round(intDist);
-
-        } catch (Exception e) {
-
-        }
 
         txtConfirm = (TextView) findViewById(R.id.btnConfirm);
         txtFrom = (TextView) findViewById(R.id.txtFrom);
@@ -87,19 +85,19 @@ public class ActivityConfirm extends ActionBarActivity {
         txtConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(pembayaran==0){
+                if (pembayaran == 0) {
                     socketManager.CreateOrder(ApplicationData.posFrom, ApplicationData.posDestination);
                     Intent i = new Intent(getBaseContext(), ActivityLoading.class);
                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     ApplicationManager um = new ApplicationManager(ActivityConfirm.this);
                     startActivity(i);
                     finish();
-                }
-                else {
+                } else {
                     Intent i = new Intent(getBaseContext(), ActivityVerifyPayment.class);
                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     ApplicationManager um = new ApplicationManager(ActivityConfirm.this);
                     startActivity(i);
+                    finish();
                 }
 
             }
@@ -114,17 +112,11 @@ public class ActivityConfirm extends ActionBarActivity {
                 ApplicationManager um = new ApplicationManager(ActivityConfirm.this);
                 um.setActivity("ActivityLoading");
                 startActivity(i);
+                finish();
             }
         });
 
-        txtFrom.setText(strFrom);
-        txtDestination.setText(strDest);
-        txtDetailFrom.setText(strDetailFrom);
-        txtDetailDestination.setText(strDetailDest);
-        txtDistance.setText(strDistance);
-        txtDuration.setText(strDuration);
-        txtTotal.setText("Rp " + decimalFormat.format(totalPrice));
-        ApplicationData.price = txtTotal.getText().toString();
+
 
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -198,6 +190,100 @@ public class ActivityConfirm extends ActionBarActivity {
         startActivity(i);
         finish();
     }
+
+    private class GetInfoOrder extends AsyncTask<String, Void, String> {
+        private Activity activity;
+        private Context context;
+        private Resources resources;
+        private ProgressDialog progressDialog;
+        private ModelOrder order;
+
+        public GetInfoOrder(Activity activity) {
+            super();
+            this.activity = activity;
+            this.context = activity.getApplicationContext();
+            this.resources = activity.getResources();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = new ProgressDialog(activity);
+            progressDialog.setMessage("Loading. . .");
+            progressDialog.setIndeterminate(false);
+            progressDialog.setCancelable(false);
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressDialog.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+                order = ApplicationManager.getInstance(activity).getOrder();
+                if(order == null) {
+                    strFrom = ApplicationData.addressFrom;
+                    strDest = ApplicationData.addressDestination;
+                    strDetailFrom = ApplicationData.detailFrom;
+                    strDetailDest = ApplicationData.detailDestination;
+                    strDistance = ApplicationData.distance;
+                    strDuration = ApplicationData.duration;
+
+                    String[] strDist = strDistance.split(" ");
+                    float intDist = Float.parseFloat(strDist[0]);
+                    totalPrice = 4000 * Math.round(intDist);
+                }else{
+
+                    strFrom = order.getFrom();
+                    strDest = order.getTo();
+                    Double LatFrom = Double.parseDouble(order.getFromLatitude());
+                    Double LonFrom = Double.parseDouble(order.getFromLongitude());
+                    GoogleAPIManager.getAddress(activity, new LatLng(LatFrom, LonFrom), strDetailFrom);
+
+                    Double LatDestination = Double.parseDouble(order.getToLatitude());
+                    Double LonDestination = Double.parseDouble(order.getToLongitude());
+                    GoogleAPIManager.getAddress(activity, new LatLng(LatDestination, LonDestination), strDetailDest);
+
+                    strDistance = order.getDistance();
+                    strDuration = order.getDuration();
+                    totalPrice = Integer.parseInt(order.getPrice().replaceAll("[^\\d]", ""));
+
+                }
+                return "OK";
+            } catch (Exception e) {
+
+            }
+
+            return "FAIL";
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+
+            switch (result) {
+                case "FAIL":
+
+                    break;
+                case "OK":
+                    txtFrom.setText(strFrom);
+                    txtDestination.setText(strDest);
+                    txtDetailFrom.setText(strDetailFrom);
+                    txtDetailDestination.setText(strDetailDest);
+                    txtDistance.setText(strDistance);
+                    txtDuration.setText(strDuration);
+                    txtTotal.setText("Rp " + decimalFormat.format(totalPrice));
+                    ApplicationData.price = txtTotal.getText().toString();
+                    break;
+            }
+            progressDialog.dismiss();
+
+        }
+
+
+    }
+
 
     @Override
     protected void attachBaseContext(Context newBase) {
