@@ -5,7 +5,7 @@ android {
         apksigkey {
             keyAlias 'apksigkey_ladyjek_user'
             keyPassword 'kiasu123'
-            storeFile file('C:/edo/apksigkey_ladyjek_user.jks')
+            //storeFile file('C:/edo/apksigkey_ladyjek_user.jks')
             storePassword 'kiasu123'
         }
     }
