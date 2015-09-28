@@ -1,5 +1,6 @@
 package ladyjek.twiscode.com.ladyjek.Activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.R;
+import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class ActivityCashless extends FragmentActivity {
@@ -21,12 +23,17 @@ public class ActivityCashless extends FragmentActivity {
     private ImageView btnBack;
     private TextView lblMandiri,lblXL;
     private LinearLayout btnMandiri,btnXL;
+    ApplicationManager applicationManager;
+    Activity mAct;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cashless);
+
+        mAct = this;
+        applicationManager = new ApplicationManager(mAct);
 
         btnMandiri = (LinearLayout) findViewById(R.id.btnMandiri);
         btnXL = (LinearLayout) findViewById(R.id.btnXL);
@@ -49,6 +56,8 @@ public class ActivityCashless extends FragmentActivity {
                 startActivity(i);
             }
         });
+
+        lblMandiri.setText("0"+applicationManager.getUser().getPhone());
 
 
 

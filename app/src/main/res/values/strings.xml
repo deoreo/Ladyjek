@@ -64,4 +64,18 @@
     <string name="GothamBook">fonts/Gotham.ttf</string>
     <string name="GothamRndBold">fonts/GothamRnd-Bold.otf</string>
     <string name="GothamRndMedium">fonts/GothamRnd-Medium.otf</string>
+
+    <string name="topup">
+        <![CDATA[
+            <p><b>Cara Top-up saldo</b></p>
+            <br/>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam non pharetra diam, et dapibus nulla. Vestibulum dictum quis turpis non eleifend. Morbi sit amet tincidunt nulla.</p>
+            <br/>
+              <p>1. sapien neque, blandit et orci eu, elementum blandit risus. In scelerisque condimentum ipsum</p>
+              <p>2. bibendum feugiat lectus. Sed sagittis, turpis in placerat elementum</p>
+              <p>2. ex metus fermentum mauris, sed gravida odio odio quis mauris</p>
+
+        ]]>
+    </string>
+
     </resources>
