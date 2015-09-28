@@ -16,7 +16,6 @@
     <string-array name="payList">
         <item>Tunai</item>
         <item>Mandiri e-Cash</item>
-        <item>xL Tunai</item>
     </string-array>
     <string name="title_activity_activity_transport">Masukan lokasi awal dan akhir</string>
     <string name="title_activity_change_location_rumah">Lokasi rumah</string>
@@ -74,6 +73,44 @@
               <p>1. sapien neque, blandit et orci eu, elementum blandit risus. In scelerisque condimentum ipsum</p>
               <p>2. bibendum feugiat lectus. Sed sagittis, turpis in placerat elementum</p>
               <p>2. ex metus fermentum mauris, sed gravida odio odio quis mauris</p>
+
+        ]]>
+    </string>
+
+    <string name="about_1">
+        <![CDATA[
+            <p><b>Ladyjek Indonesia</b></p>
+            <br/>
+            <p>Customer service : <b>+62 21 1234 1234</b></p>
+            <br/>
+            <p>www.ladyjek.com</p>
+        ]]>
+    </string>
+
+    <string name="about_2">
+        <![CDATA[
+            <p><b>Kantor Pusat</b></p>
+            <br/>
+            <p>88@Casablanca Office Tower A Suite 5-C<p>
+            <p>Jl. Casablanca kav. 88</p>
+            <p>Jakarta 12780</p>
+            <br/>
+            <p><b>Kantor Pendaftaran</b></p>
+            <br/>
+            <p><b>Ladyjek Cengkareng</b></p>
+            <p>Kawasan Ruko Sedayu Square Blok G-35</p>
+            <p>Jl. Outer Ring Road Cengkareng</p>
+            <p>Jakarta Barat 11730</p>
+            <br/>
+            <p><b>Ladyjek Bekasi</b></p>
+            <p>Jl. Raya Burangrang no. 208B</p>
+            <p>Kayuringinjaya</p>
+            <p>Bekasi 17144</p>
+            <br/>
+            <p><b>Ladyjek Tangerang</b></p>
+            <p>Kawasan Ruko Fluorite no. 72</p>
+            <p>Jl. Raya Kelapa Gading Utara, Gading Serpong</p>
+            <p>Tangerang 15810</p>
 
         ]]>
     </string>

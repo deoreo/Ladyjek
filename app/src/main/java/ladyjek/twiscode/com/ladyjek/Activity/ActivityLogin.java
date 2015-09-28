@@ -49,7 +49,7 @@ import static android.view.View.VISIBLE;
 public class ActivityLogin extends Activity  implements KeyboardManager.Listener {
 
     private Activity mActivity;
-    private TextView btnRegister, btnLogin, btnRegisteronLogin, forgetPassword;
+    private TextView btnRegister, btnLogin, btnRegisteronLogin, forgetPassword,txtTitle,lblLogin;
     private EditText txtEmail, txtPassword;
     private RelativeLayout wrapperLogin, wrapperRegister;
     private ModelUserOrder userLogin;
@@ -67,6 +67,8 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
         db = new DatabaseHandler(mActivity);
         btnRegister = (TextView) findViewById(R.id.btnRegister);
         btnLogin = (TextView) findViewById(R.id.btnLogin);
+        txtTitle = (TextView) findViewById(R.id.txtTitle);
+        lblLogin = (TextView) findViewById(R.id.lblLogin);
         forgetPassword = (TextView) findViewById(R.id.forgetPassword);
         txtEmail = (EditText) findViewById(R.id.txtEmail);
         txtPassword = (EditText) findViewById(R.id.txtPassword);
@@ -77,6 +79,16 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
         btnRegisteronLogin = (TextView) findViewById(R.id.btnRegisteronLogin);
         KeyboardManager mainLayout = (KeyboardManager) findViewById(R.id.layoutLogin);
         mainLayout.setListener(this);
+
+        Typeface bold= Typeface.createFromAsset(getAssets(), "fonts/GothamRnd-Bold.otf");
+        Typeface medium= Typeface.createFromAsset(getAssets(), "fonts/GothamRnd-Medium.otf");
+        txtTitle.setTypeface(bold);
+        lblLogin.setTypeface(bold);
+        btnLogin.setTypeface(bold);
+        btnRegister.setTypeface(bold);
+        txtEmail.setTypeface(medium);
+        txtPassword.setTypeface(medium);
+        forgetPassword.setTypeface(medium);
 
 
         txtEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
