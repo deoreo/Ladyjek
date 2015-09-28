@@ -111,8 +111,16 @@ public class AdapterHistory extends RecyclerView.Adapter<AdapterHistory.MyViewHo
 
             String[] from = asal.split(", ");
             String[] dest = tujuan.split(", ");
-            holder.asal.setText(Html.fromHtml("<b>"+from[0]+"</b><br/>"+from[1]+", "+from[2]+", "+from[3]+", "+from[4]));
-            holder.tujuan.setText(Html.fromHtml("<b>"+dest[0]+"</b><br/>"+dest[1]+", "+dest[2]+", "+dest[3]+", "+dest[4]));
+            try {
+                holder.asal.setText(Html.fromHtml("<b>" + from[0] + "</b><br/>" + from[1] + ", " + from[2] + ", " + from[3] + ", " + from[4]));
+            }catch(Exception e){
+                holder.asal.setText(Html.fromHtml("<b>" + from[0] + "</b><br/>" + from[1] + ", " + from[2] + ", " + from[3]));
+            }
+            try {
+                holder.tujuan.setText(Html.fromHtml("<b>" + dest[0] + "</b><br/>" + dest[1] + ", " + dest[2] + ", " + dest[3] + ", " + dest[4]));
+            }catch (Exception e){
+                holder.tujuan.setText(Html.fromHtml("<b>" + dest[0] + "</b><br/>" + dest[1] + ", " + dest[2] + ", " + dest[3]));
+            }
             holder.biaya.setText("Rp. "+decimalFormat.format(Integer.parseInt(biaya)));
             holder.tgl.setText(tgl);
 
