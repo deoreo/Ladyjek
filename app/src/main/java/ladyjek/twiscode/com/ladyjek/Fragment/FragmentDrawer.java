@@ -1,6 +1,7 @@
 package ladyjek.twiscode.com.ladyjek.Fragment;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
@@ -16,10 +17,13 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +51,7 @@ public class FragmentDrawer extends android.support.v4.app.Fragment {
     private FragmentDrawerListener drawerListener;
     private ImageView toggle;
     private DatabaseHandler db;
+    private Dialog dialog;
 
     public FragmentDrawer() {
 
@@ -83,6 +88,7 @@ public class FragmentDrawer extends android.support.v4.app.Fragment {
                              Bundle savedInstanceState) {
         // Inflating view layout
         View layout = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
+        InitDialog();
         recyclerView = (RecyclerView) layout.findViewById(R.id.drawerList);
         toggle = (ImageView) layout.findViewById(R.id.drawer_toggle_inside);
         btnLogout = (TextView) layout.findViewById(R.id.btnLogout);
@@ -113,21 +119,13 @@ public class FragmentDrawer extends android.support.v4.app.Fragment {
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                db.logout();
-                Intent i = new Intent(getActivity(), ActivityLogin.class);
-                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(i);
-                getActivity().finish();
+                dialog.show();
             }
         });
         wrapperLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                db.logout();
-                Intent i = new Intent(getActivity(), ActivityLogin.class);
-                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(i);
-                getActivity().finish();
+                dialog.show();
             }
         });
 
@@ -219,6 +217,44 @@ public class FragmentDrawer extends android.support.v4.app.Fragment {
 
     public interface FragmentDrawerListener {
         public void onDrawerItemSelected(View view, int position);
+    }
+
+    void InitDialog(){
+        dialog = new Dialog(getActivity());
+        dialog.setContentView(R.layout.popup_logout);
+        dialog.setTitle("Logout");
+
+        // set the custom dialog components - text, image and button
+
+        TextView logout = (TextView) dialog.findViewById(R.id.btnLogoutPop);
+        TextView device = (TextView) dialog.findViewById(R.id.btnLogoutAllPop);
+        TextView cancel = (TextView) dialog.findViewById(R.id.btnCancelPop);
+        // if button is clicked, close the custom dialog
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                db.logout();
+                Intent i = new Intent(getActivity(), ActivityLogin.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i);
+                getActivity().finish();
+            }
+        });
+
+        device.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //dialog.dismiss();
+            }
+        });
+
     }
 
 
