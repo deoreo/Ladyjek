@@ -2,11 +2,14 @@ package ladyjek.twiscode.com.ladyjek.Activity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -34,6 +37,7 @@ import ladyjek.twiscode.com.ladyjek.Model.ModelOrder;
 import ladyjek.twiscode.com.ladyjek.Model.ModelUserOrder;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
+import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.GoogleAPIManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.SocketManager;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
@@ -54,6 +58,7 @@ public class ActivityConfirm extends ActionBarActivity {
     private NumberFormat numberFormat;
     private DecimalFormat decimalFormat;
     private SocketManager socketManager;
+    private BroadcastReceiver doCreateOrder;
 
     int pembayaran = 0;
     @Override
@@ -84,16 +89,30 @@ public class ActivityConfirm extends ActionBarActivity {
         btnBack = (ImageView) findViewById(R.id.btnBack);
         wrapperRegister = (RelativeLayout) findViewById(R.id.wrapperRegister);
 
-        txtConfirm.setOnClickListener(new View.OnClickListener() {
+
+        doCreateOrder  = new BroadcastReceiver() {
             @Override
-            public void onClick(View v) {
-                if (pembayaran == 0) {
-                    socketManager.CreateOrder(ApplicationData.posFrom, ApplicationData.posDestination);
+            public void onReceive(Context context, Intent intent) {
+                // Extract data included in the Intent
+                String message = intent.getStringExtra("message");
+                Log.d("doCreateOrder", message);
+                if(message=="true"){
                     Intent i = new Intent(getBaseContext(), ActivityLoading.class);
                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     ApplicationManager um = new ApplicationManager(ActivityConfirm.this);
                     startActivity(i);
                     finish();
+                }
+
+            }
+        };
+
+        txtConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (pembayaran == 0) {
+                    DialogManager.ShowLoading(ActivityConfirm.this, "Loading...");
+                    socketManager.CreateOrder(ApplicationData.posFrom, ApplicationData.posDestination);
                 } else {
                     Intent i = new Intent(getBaseContext(), ActivityVerifyPayment.class);
                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -108,13 +127,17 @@ public class ActivityConfirm extends ActionBarActivity {
         wrapperRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                socketManager.CreateOrder(ApplicationData.posFrom, ApplicationData.posDestination);
-                Intent i = new Intent(getBaseContext(), ActivityLoading.class);
-                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                ApplicationManager um = new ApplicationManager(ActivityConfirm.this);
-                um.setActivity("ActivityLoading");
-                startActivity(i);
-                finish();
+                if (pembayaran == 0) {
+                    DialogManager.ShowLoading(ActivityConfirm.this, "Loading...");
+                    socketManager.CreateOrder(ApplicationData.posFrom, ApplicationData.posDestination);
+
+                } else {
+                    Intent i = new Intent(getBaseContext(), ActivityVerifyPayment.class);
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    ApplicationManager um = new ApplicationManager(ActivityConfirm.this);
+                    startActivity(i);
+                    finish();
+                }
             }
         });
 
@@ -229,6 +252,7 @@ public class ActivityConfirm extends ActionBarActivity {
                     strDetailDest = ApplicationData.detailDestination;
                     strDistance = ApplicationData.distance;
                     strDuration = ApplicationData.duration;
+
                     String[] strDist = strDistance.split(" ");
                     float distance = Float.parseFloat(strDist[0]);
                     if(distance<=6.0) {
@@ -296,7 +320,12 @@ public class ActivityConfirm extends ActionBarActivity {
 
 
     }
+    public void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(doCreateOrder,
+                new IntentFilter("createOrder"));
 
+    }
 
     @Override
     protected void attachBaseContext(Context newBase) {
