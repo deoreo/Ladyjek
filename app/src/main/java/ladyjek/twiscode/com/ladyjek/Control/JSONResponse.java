@@ -313,6 +313,47 @@ public class JSONResponse {
         return _json;
 
     }
+
+    public String POSTLogoutAll(String url, String token, List<NameValuePair> params) {
+        try {
+
+            DefaultHttpClient  httpClient = (DefaultHttpClient)createDevelopmentHttpClientInstance();
+            HttpPost httpPost = new HttpPost(url);
+            httpPost.setHeader("x-access-token", token);
+            httpPost.setEntity(new UrlEncodedFormEntity(params));
+            HttpResponse httpResponse = httpClient.execute(httpPost);
+            HttpEntity httpEntity = httpResponse.getEntity();
+            _inputStream = httpEntity.getContent();
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    _inputStream, "iso-8859-1"), 8);
+            StringBuilder sb = new StringBuilder();
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line + "\n");
+            }
+            _inputStream.close();
+            _json = sb.toString();
+
+        } catch (Exception e) {
+            Log.e("Buffer Error", "Error converting result " + e.toString());
+        }
+
+        // return JSON String
+        return _json;
+
+    }
+
+
     
 
 }

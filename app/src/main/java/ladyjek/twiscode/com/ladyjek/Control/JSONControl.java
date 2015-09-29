@@ -218,6 +218,20 @@ public class JSONControl {
         return jsonObj;
     }
 
+    public String postLogoutAll(String token) {
+
+        String jsonObj = null;
+
+        try {
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            jsonObj = _JSONResponse.POSTLogoutAll(ConfigManager.LOGOUT_ALL, token, params);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return jsonObj;
+    }
+
 
 
 
