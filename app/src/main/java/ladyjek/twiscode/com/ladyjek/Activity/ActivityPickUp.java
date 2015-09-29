@@ -153,7 +153,7 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
             public void onClick(View v) {
                 if (isPhone) {
                     Intent callIntent = new Intent(Intent.ACTION_DIAL);
-                    callIntent.setData(Uri.parse("tel:" + ApplicationData.driver.getPhone()));
+                    callIntent.setData(Uri.parse("tel:" + "0"+ApplicationData.driver.getPhone()));
                     startActivity(callIntent);
                 }
 
@@ -167,7 +167,7 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
                     try {
 
                         Intent sendIntent = new Intent(Intent.ACTION_VIEW);
-                        sendIntent.putExtra("address", ApplicationData.driver.getPhone());
+                        sendIntent.putExtra("address", "0"+ApplicationData.driver.getPhone());
                         sendIntent.putExtra("sms_body", "Halo cantik, jemput aku dong !");
                         sendIntent.setType("vnd.android-dir/mms-sms");
                         startActivity(sendIntent);
