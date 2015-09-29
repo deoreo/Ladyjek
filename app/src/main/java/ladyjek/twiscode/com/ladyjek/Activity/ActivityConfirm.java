@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -235,9 +236,11 @@ public class ActivityConfirm extends ActionBarActivity {
                         //totalPrice = 4000 * Math.round(distance);
                     }
                     else{
-                        int floatprice = (int)((distance*100)%100);
-                        int price = 4000*floatprice/100;
-                        totalPrice = 25000 + price;
+                        float selisih = distance-6;
+                        float harga = selisih*4000;
+                        int roundHarga = Math.round(harga/1000)*1000;
+                        totalPrice = 25000+roundHarga;
+                        Log.d("total price : ",""+distance+"-"+selisih+"-"+harga+"-"+roundHarga+"-"+totalPrice);
                     }
                 //}
                 /*
