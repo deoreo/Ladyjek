@@ -46,15 +46,12 @@ public class ActivityRate extends ActionBarActivity {
     private TextView txtPrice, txtName, txtJarak, txtWaktu, txtPembayaran, btnSaran;
     private EditText txtFeedback;
     private RelativeLayout btnClearFeedback, wrapperRegister;
-    private ApplicationManager appManager;
-    private Activity mActivity;
-    private ModelOrder order = new ModelOrder();
-    private SocketManager socketManager;
+    ApplicationManager appManager;
+    Activity mActivity;
+    ModelOrder order;
+    SocketManager socketManager;
     private BroadcastReceiver lastOrder, feedback;
     private RatingBar txtRate;
-    private String strFrom = "", strDest = "", strDistance = "",
-            strDuration = "", strDetailFrom = "",strDetailDest="" ;
-    private int totalPrice = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +71,6 @@ public class ActivityRate extends ActionBarActivity {
         btnSaran = (TextView) findViewById(R.id.btnSaran);
         txtRate = (RatingBar) findViewById(R.id.rateDriver);
         wrapperRegister = (RelativeLayout) findViewById(R.id.wrapperRegister);
-
 
 
         txtFeedback.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -234,30 +230,10 @@ public class ActivityRate extends ActionBarActivity {
     }
 
     private void SetUI(){
-        strFrom = ApplicationData.addressFrom;
-        strDest = ApplicationData.addressDestination;
-        strDetailFrom = ApplicationData.detailFrom;
-        strDetailDest = ApplicationData.detailDestination;
-        strDistance = ApplicationData.distance;
-        strDuration = ApplicationData.duration;
-        String[] strDist = strDistance.split(" ");
-        float distance = Float.parseFloat(strDist[0]);
-        if(distance<=6.0) {
-            totalPrice = 25000;
-            //totalPrice = 4000 * Math.round(distance);
-        }
-        else{
-            int floatprice = (int)((distance*100)%100);
-            int price = 4000*floatprice/100;
-            totalPrice = 25000 + price;
-        }
-
-
-
         txtName.setText(ApplicationData.driver.getName());
-        txtJarak.setText(strDistance);
-        txtWaktu.setText(strDuration);
-        txtPrice.setText("Rp. "+totalPrice);
+        txtJarak.setText(order.getDistance());
+        txtWaktu.setText(order.getDuration());
+        txtPrice.setText("Rp."+ order.getPrice());
         txtPembayaran.setText(order.getPayment());
     }
 

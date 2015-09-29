@@ -304,8 +304,24 @@ public class SocketManager {
                     String member = "12 Feb 2015";
                     String phone = "089682587567";
                     String rate = "4.5";
-                    String price = "";
-                    ModelOrder order = new ModelOrder(id, userID, driverID, name, to, from, distance, duration, status, toLongitude, toLatitude, fromLatitude, fromLongitude, rate, phone, member, payment, price);
+
+                    int totalPrice = 0;
+                    String[] strDist = distance.split(" ");
+                    float intDist = Float.parseFloat(strDist[0]);
+                    if(intDist<=6.0) {
+                        totalPrice = 25000;
+                        //totalPrice = 4000 * Math.round(distance);
+                    }
+                    else{
+                        float selisih = intDist-6;
+                        float harga = selisih*4000;
+                        int roundHarga = Math.round(harga/1000)*1000;
+                        totalPrice = 25000+roundHarga;
+
+                        Log.d("total price : ",""+distance+"-"+selisih+"-"+harga+"-"+roundHarga+"-"+totalPrice);
+                    }
+
+                    ModelOrder order = new ModelOrder(id, userID, driverID, name, to, from, distance, duration, status, toLongitude, toLatitude, fromLatitude, fromLongitude, rate, phone, member, payment, ""+totalPrice);
                     ApplicationData.order = order;
                     ApplicationData.driver = new ModelDriver();
                     SendBroadcast("lastOrder", "true");
@@ -491,10 +507,10 @@ public class SocketManager {
                         if(err != null){
                             Log.d("error create order", err.toString());
                         }
-                        if (obj == null) {
+                        if (err == null) {
                             String id = obj.getString("_id");
                             String userID = obj.getString("user");
-                            String driverID = obj.getString("driver");
+                            String driverID = "";
                             String to = obj.getString("to");
                             String from = obj.getString("from");
                             String distance = obj.getJSONObject("distance").getString("text");
@@ -509,17 +525,31 @@ public class SocketManager {
                             String member = "12 Feb 2015";
                             String phone = "089682587567";
                             String rate = "4.5";
+
+                            int totalPrice = 0;
                             String[] strDist = distance.split(" ");
                             float intDist = Float.parseFloat(strDist[0]);
-                            int totalPrice = 4000 * Math.round(intDist);
-                            String price = "Rp."+totalPrice;
-                            ModelOrder order = new ModelOrder(id, userID, driverID, name, to, from, distance, duration, status, toLongitude, toLatitude, fromLatitude, fromLongitude, rate, phone, member, payment, price);
+                            if(intDist<=6.0) {
+                                totalPrice = 25000;
+                                //totalPrice = 4000 * Math.round(distance);
+                            }
+                            else{
+                                float selisih = intDist-6;
+                                float harga = selisih*4000;
+                                int roundHarga = Math.round(harga/1000)*1000;
+                                totalPrice = 25000+roundHarga;
+
+                                Log.d("total price : ",""+distance+"-"+selisih+"-"+harga+"-"+roundHarga+"-"+totalPrice);
+                            }
+
+
+                            ModelOrder order = new ModelOrder(id, userID, driverID, name, to, from, distance, duration, status, toLongitude, toLatitude, fromLatitude, fromLongitude, rate, phone, member, payment, ""+totalPrice);
                             ApplicationData.order = order;
                             appManager.setOrder(order);
-                            //Log.d(TAG, "cancel true");
+                            Log.d(TAG, "cancel true");
                             SendBroadcast("createOrder", "true");
                         } else {
-                            //Log.d(TAG, "cancel false");
+                            Log.d(TAG, "cancel false");
                             SendBroadcast("createOrder", "false");
                         }
                     } catch (Exception ex) {
@@ -661,8 +691,24 @@ public class SocketManager {
                             String member = "12 Feb 2015";
                             String phone = "089682587567";
                             String rate = "4.5";
-                            String price = "";
-                            ModelOrder order = new ModelOrder(id, userID, driverID, name, to, from, distance, duration, status, toLongitude, toLatitude, fromLatitude, fromLongitude, rate, phone, member, payment, price);
+
+                            int totalPrice = 0;
+                            String[] strDist = distance.split(" ");
+                            float intDist = Float.parseFloat(strDist[0]);
+                            if(intDist<=6.0) {
+                                totalPrice = 25000;
+                                //totalPrice = 4000 * Math.round(distance);
+                            }
+                            else{
+                                float selisih = intDist-6;
+                                float harga = selisih*4000;
+                                int roundHarga = Math.round(harga/1000)*1000;
+                                totalPrice = 25000+roundHarga;
+
+                                Log.d("total price : ",""+distance+"-"+selisih+"-"+harga+"-"+roundHarga+"-"+totalPrice);
+                            }
+
+                            ModelOrder order = new ModelOrder(id, userID, driverID, name, to, from, distance, duration, status, toLongitude, toLatitude, fromLatitude, fromLongitude, rate, phone, member, payment, ""+totalPrice);
                             ApplicationData.order = order;
                             ApplicationData.driver = null;
                             SendBroadcast("lastOrder", "true");
