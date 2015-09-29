@@ -658,7 +658,10 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                 // Extract data included in the Intent
                 Log.v(TAG, "broadcast lastFeedback");
                 String message = intent.getStringExtra("message");
+
                 if (message.equalsIgnoreCase("true")) {
+                    ApplicationData.driver = null;
+                    appManager.setOrder(null);
                     Intent i = new Intent(getActivity(), ActivityRate.class);
                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(i);

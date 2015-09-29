@@ -631,7 +631,7 @@ public class SocketManager {
                         Log.d(TAG, "no error getDriver : ");
                         JSONObject user = (JSONObject) args[1];
                         if (user != null) {
-                            Log.d(TAG, "get driver true");
+                            Log.d(TAG, user.toString());
                             String id = user.getString("_id");
                             String name = user.getString("name");
                             String rate = user.getString("rating");

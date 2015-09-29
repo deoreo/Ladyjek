@@ -50,7 +50,7 @@ public class ActivityRate extends ActionBarActivity {
     Activity mActivity;
     ModelOrder order;
     SocketManager socketManager;
-    private BroadcastReceiver lastOrder, feedback;
+    private BroadcastReceiver lastOrder, feedback, getDriver;
     private RatingBar txtRate;
 
     @Override
@@ -223,6 +223,27 @@ public class ActivityRate extends ActionBarActivity {
             }
         };
 
+        getDriver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                // Extract data included in the Intent
+                String message = intent.getStringExtra("message");
+                Log.d("getDriver", message);
+                if (message == "true") {
+                    Log.d("getdriver", "true");
+                    Log.d("socket", "driver : " + ApplicationData.driver.toString());
+                    txtName.setText(ApplicationData.driver.getName());
+                    txtJarak.setText(order.getDistance());
+                    txtWaktu.setText(order.getDuration());
+                    txtPrice.setText("Rp." + order.getPrice());
+                    txtPembayaran.setText(order.getPayment());
+                } else {
+                    Log.d("getdriver", "false");
+                }
+
+            }
+        };
+
 
 
 
@@ -230,11 +251,22 @@ public class ActivityRate extends ActionBarActivity {
     }
 
     private void SetUI(){
-        txtName.setText(ApplicationData.driver.getName());
-        txtJarak.setText(order.getDistance());
-        txtWaktu.setText(order.getDuration());
-        txtPrice.setText("Rp."+ order.getPrice());
-        txtPembayaran.setText(order.getPayment());
+        if (ApplicationData.driver != null) {
+            Log.d("driver", "not null");
+            txtName.setText(ApplicationData.driver.getName());
+            txtJarak.setText(order.getDistance());
+            txtWaktu.setText(order.getDuration());
+            txtPrice.setText("Rp."+ order.getPrice());
+            txtPembayaran.setText(order.getPayment());
+        } else {
+            Log.d("driver", "null");
+            if (NetworkManager.getInstance(ActivityRate.this).isConnectedInternet()) {
+                socketManager.GetDriver(ApplicationData.order.getDriverID());
+            } else {
+                DialogManager.showDialog(ActivityRate.this, "Peringatan", "Tidak ada koneksi internet!");
+            }
+        }
+
     }
 
     private void SetActionBar() {
@@ -265,6 +297,8 @@ public class ActivityRate extends ActionBarActivity {
                 new IntentFilter("lastOrder"));
         LocalBroadcastManager.getInstance(this).registerReceiver(feedback,
                 new IntentFilter("doFeedback"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(getDriver,
+                new IntentFilter("getDriver"));
 
     }
 
