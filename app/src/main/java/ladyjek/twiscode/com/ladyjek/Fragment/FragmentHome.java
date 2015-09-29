@@ -619,7 +619,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                 if (message.equals("true")) {
                     ApplicationData.socketManager = socketManager;
                     appManager.setOrder(ApplicationData.order);
-
+                    ApplicationData.driver = null;
                     if (ApplicationData.order.getStatus().contains("taken")) {
                         i = new Intent(getActivity(), ActivityPickUp.class);
                         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);

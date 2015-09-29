@@ -664,7 +664,7 @@ public class SocketManager {
                             String price = "";
                             ModelOrder order = new ModelOrder(id, userID, driverID, name, to, from, distance, duration, status, toLongitude, toLatitude, fromLatitude, fromLongitude, rate, phone, member, payment, price);
                             ApplicationData.order = order;
-                            ApplicationData.driver = new ModelDriver();
+                            ApplicationData.driver = null;
                             SendBroadcast("lastOrder", "true");
                         } else {
                             Log.d(TAG, "onLastOrder null order");
