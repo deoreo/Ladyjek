@@ -221,7 +221,7 @@ public class ApplicationManager {
 
     public ModelGeocode getPosDriver(){
         Gson gson = new Gson();
-        String json = mPref.getString(KEY_POS_DRIVER, "");
+        String json = mPref.getString(KEY_POS_DRIVER, " ");
         ModelGeocode obj = gson.fromJson(json,ModelGeocode.class);
         return obj;
     }

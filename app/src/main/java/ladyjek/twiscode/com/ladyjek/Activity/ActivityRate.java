@@ -126,16 +126,14 @@ public class ActivityRate extends ActionBarActivity {
 
                 int rate = 0;
 
-                if(txtRate.getRating() > 0 && txtFeedback.getText().length()> 0){
+                if (txtRate.getRating() > 0 && txtFeedback.getText().length() > 0) {
                     rate = Math.round(txtRate.getRating());
-                    if(NetworkManager.getInstance(ActivityRate.this).isConnectedInternet()){
-                        socketManager.Feedback(rate,txtFeedback.getText().toString());
-                    }
-                    else {
+                    if (NetworkManager.getInstance(ActivityRate.this).isConnectedInternet()) {
+                        socketManager.Feedback(rate, txtFeedback.getText().toString());
+                    } else {
                         DialogManager.showDialog(ActivityRate.this, "Peringatan", "Tidak ada koneksi internet!");
                     }
-                }
-                else {
+                } else {
                     DialogManager.showDialog(ActivityRate.this, "Peringatan", "Beri feedback untuk driver!");
                 }
             }
@@ -146,29 +144,34 @@ public class ActivityRate extends ActionBarActivity {
                 // Extract data included in the Intent
                 Log.d("broadcast", "feedback");
                 String message = intent.getStringExtra("message");
-                DialogManager.DismissLoading(ActivityRate.this);
-                if (message.equals("true")) {
 
-                    new MaterialDialog.Builder(ActivityRate.this)
-                            .title("Terima kasih!")
-                            .positiveText("OK")
-                            .callback(new MaterialDialog.ButtonCallback() {
-                                @Override
-                                public void onPositive(MaterialDialog dialog) {
-                                    appManager.setActivity("");
-                                    Intent i = new Intent(getBaseContext(), Main.class);
-                                    ApplicationManager um = new ApplicationManager(ActivityRate.this);
-                                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    //um.setActivity("ActivityTracking");
-                                    startActivity(i);
-                                    finish();
-                                    dialog.dismiss();
-                                }
-                            })
-                            .icon(getResources().getDrawable(R.drawable.ladyjek_icon))
-                            .cancelable(false)
-                            .typeface("GothamRnd-Medium.otf", "Gotham.ttf")
-                            .show();
+                if (message.equals("true")) {
+                    try {
+                        Context ctx = ActivityRate.this;
+                        DialogManager.DismissLoading(ctx);
+                        new MaterialDialog.Builder(ActivityRate.this)
+                                .title("Terima kasih!")
+                                .positiveText("OK")
+                                .callback(new MaterialDialog.ButtonCallback() {
+                                    @Override
+                                    public void onPositive(MaterialDialog dialog) {
+                                        appManager.setActivity("");
+                                        Intent i = new Intent(getBaseContext(), Main.class);
+                                        ApplicationManager um = new ApplicationManager(ActivityRate.this);
+                                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        //um.setActivity("ActivityTracking");
+                                        startActivity(i);
+                                        finish();
+                                        dialog.dismiss();
+                                    }
+                                })
+                                .icon(getResources().getDrawable(R.drawable.ladyjek_icon))
+                                .cancelable(false)
+                                .typeface("GothamRnd-Medium.otf", "Gotham.ttf")
+                                .show();
+                    }catch(Exception e){
+
+                    }
                 }
 
 
