@@ -20,5 +20,6 @@ public class ConfigManager {
     public static final String CHECK_RESET_PASSWORD = SERVER+"/forgot/check";
     public static final String RESET_PASSWORD = SERVER+"/forgot/reset";
     public static final String DEVICE_TOKEN = SERVER+"/device-token/create";
+    public static final String LOGOUT_ALL = SERVER+"/logout-all";
     public static final String SERVER_SOCKET = "https://playpal.id:5051/";
 }

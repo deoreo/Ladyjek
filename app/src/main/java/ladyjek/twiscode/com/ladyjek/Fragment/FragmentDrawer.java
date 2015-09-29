@@ -3,14 +3,19 @@ package ladyjek.twiscode.com.ladyjek.Fragment;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -23,18 +28,30 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
+import com.afollestad.materialdialogs.AlertDialogWrapper;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.gms.maps.model.LatLng;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import ladyjek.twiscode.com.ladyjek.Activity.ActivityHandphoneKonfirmasi;
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityLogin;
+import ladyjek.twiscode.com.ladyjek.Activity.ActivityRegister;
+import ladyjek.twiscode.com.ladyjek.Activity.Main;
 import ladyjek.twiscode.com.ladyjek.Adapter.NavigationDrawerAdapter;
+import ladyjek.twiscode.com.ladyjek.Control.JSONControl;
 import ladyjek.twiscode.com.ladyjek.Database.DatabaseHandler;
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
+import ladyjek.twiscode.com.ladyjek.Model.ModelUserOrder;
+import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.NavDrawerItem;
 import ladyjek.twiscode.com.ladyjek.R;
-
+import ladyjek.twiscode.com.ladyjek.Utilities.NetworkManager;
 
 
 public class FragmentDrawer extends android.support.v4.app.Fragment {
@@ -52,6 +69,16 @@ public class FragmentDrawer extends android.support.v4.app.Fragment {
     private ImageView toggle;
     private DatabaseHandler db;
     private Dialog dialog;
+    private ProgressDialog progressDialog;
+
+    void InitProgress(){
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage("Loading...");
+        progressDialog.setIndeterminate(false);
+        progressDialog.setCancelable(false);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.show();
+    }
 
     public FragmentDrawer() {
 
@@ -251,9 +278,94 @@ public class FragmentDrawer extends android.support.v4.app.Fragment {
         device.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //dialog.dismiss();
+               if(NetworkManager.getInstance(getActivity()).isConnectedInternet()){
+                   InitProgress();
+                   new DoLogoutAll(getActivity()).execute();
+               }
             }
         });
+
+    }
+
+    private class DoLogoutAll extends AsyncTask<String, Void, String> {
+        private Activity activity;
+        private Context context;
+        private Resources resources;
+
+        public DoLogoutAll(Activity activity) {
+            super();
+            this.activity = activity;
+            this.context = activity.getApplicationContext();
+            this.resources = activity.getResources();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            try {
+                ApplicationManager applicationManager = new ApplicationManager(getActivity());
+                JSONControl jsControl = new JSONControl();
+                String response = jsControl.postLogoutAll(applicationManager.getUserToken());
+
+                Log.d("json response", response.toString());
+
+                if(response.contains("error")){
+                    return "FAIL";
+                }
+                else {
+                    if(response.contains("true")){
+                        return "OK";
+                    }
+                }
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return "FAIL";
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            progressDialog.dismiss();
+            switch (result) {
+                case "FAIL":
+                    new MaterialDialog.Builder(getActivity())
+                            .title("Warning!")
+                            .positiveText("Logout all device gagal")
+                            .callback(new MaterialDialog.ButtonCallback() {
+                                @Override
+                                public void onPositive(MaterialDialog dialog) {
+                                    dialog.dismiss();
+                                }
+                            })
+                            .icon(getResources().getDrawable(R.drawable.ladyjek_icon))
+                            .cancelable(false)
+                            .typeface("GothamRnd-Medium.otf", "Gotham.ttf")
+                            .show();
+                    break;
+
+                case "OK":
+                    db.logout();
+                    Intent i = new Intent(getActivity(), ActivityLogin.class);
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(i);
+                    getActivity().finish();
+                    break;
+            }
+
+
+        }
+
 
     }
 
