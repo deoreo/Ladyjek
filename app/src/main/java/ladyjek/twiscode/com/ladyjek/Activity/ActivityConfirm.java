@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -219,19 +220,28 @@ public class ActivityConfirm extends ActionBarActivity {
         @Override
         protected String doInBackground(String... params) {
             try {
-                order = ApplicationManager.getInstance(activity).getOrder();
-                if(order == null) {
+                //order = ApplicationManager.getInstance(activity).getOrder();
+                //if(order == null) {
                     strFrom = ApplicationData.addressFrom;
                     strDest = ApplicationData.addressDestination;
                     strDetailFrom = ApplicationData.detailFrom;
                     strDetailDest = ApplicationData.detailDestination;
                     strDistance = ApplicationData.distance;
                     strDuration = ApplicationData.duration;
-
                     String[] strDist = strDistance.split(" ");
-                    float intDist = Float.parseFloat(strDist[0]);
-                    totalPrice = 4000 * Math.round(intDist);
-                }else{
+                    float distance = Float.parseFloat(strDist[0]);
+                    if(distance<=6.0) {
+                        totalPrice = 25000;
+                        //totalPrice = 4000 * Math.round(distance);
+                    }
+                    else{
+                        int floatprice = (int)((distance*100)%100);
+                        int price = 4000*floatprice/100;
+                        totalPrice = 25000 + price;
+                    }
+                //}
+                /*
+                else{
 
                     strFrom = order.getFrom();
                     strDest = order.getTo();
@@ -247,7 +257,7 @@ public class ActivityConfirm extends ActionBarActivity {
                     strDuration = order.getDuration();
                     totalPrice = Integer.parseInt(order.getPrice().replaceAll("[^\\d]", ""));
 
-                }
+                }*/
                 return "OK";
             } catch (Exception e) {
 
