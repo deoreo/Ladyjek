@@ -1026,7 +1026,7 @@ public class SocketManager {
                         JSONObject err = (JSONObject) args[0];
                         if (err == null) {
                             JSONArray data = (JSONArray) args[1];
-                            Log.d(TAG, "getHistory ; "+data.length());
+                            Log.d(TAG, "getHistory ; " + data.length());
                             if(data.length() > 0){
                                 Log.d(TAG, "getHistory : " + data.toString());
                                 for (int i=0;i<data.length();i++){
@@ -1099,6 +1099,42 @@ public class SocketManager {
                         Log.d(TAG, "getHistory error");
                         ex.printStackTrace();
                         SendBroadcast("getHistory", "error");
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public void VerifyEcash(String token) {
+        Log.d(TAG, "VerifyEcash : "+token);
+        socket.emit("validating mandiriecash payment", token, new Ack() {
+            @Override
+            public void call(Object... args) {
+                try {
+                    try {
+                        JSONObject err = (JSONObject) args[0];
+                        if (err == null) {
+                            Log.d(TAG, "verify true");
+                            JSONObject obj = (JSONObject) args[1];
+                            String status = obj.getString("status");
+                            if(status.equalsIgnoreCase("queued")){
+                                SendBroadcast("ecash", "true");   
+                            }
+                            else {
+                                SendBroadcast("ecash", "false");
+                            }
+
+                        } else {
+                            Log.d(TAG, "verify false");
+                            SendBroadcast("ecash", "false");
+                        }
+                    } catch (Exception ex) {
+                        Log.d(TAG, "verify");
+                        ex.printStackTrace();
+                        SendBroadcast("ecash", "false");
                     }
 
                 } catch (Exception e) {
