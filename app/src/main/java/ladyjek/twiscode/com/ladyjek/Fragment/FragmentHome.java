@@ -50,6 +50,7 @@ import ladyjek.twiscode.com.ladyjek.Activity.ActivityLogin;
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityPickUp;
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityRate;
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityTracking;
+import ladyjek.twiscode.com.ladyjek.Activity.ActivityVerifyPayment;
 import ladyjek.twiscode.com.ladyjek.Activity.Main;
 import ladyjek.twiscode.com.ladyjek.Adapter.AdapterAddress;
 import ladyjek.twiscode.com.ladyjek.Adapter.AdapterSuggestion;
@@ -639,6 +640,12 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                         getActivity().finish();
                     } else if (ApplicationData.order.getStatus().contains("queued")) {
                         i = new Intent(getActivity(), ActivityLoading.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(i);
+                        getActivity().finish();
+                    }
+                    else if (ApplicationData.order.getStatus().contains("pending")) {
+                        i = new Intent(getActivity(), ActivityVerifyPayment.class);
                         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(i);
                         getActivity().finish();

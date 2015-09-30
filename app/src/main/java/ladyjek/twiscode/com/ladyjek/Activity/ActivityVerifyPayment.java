@@ -3,24 +3,37 @@ package ladyjek.twiscode.com.ladyjek.Activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.net.http.SslError;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
+import android.webkit.HttpAuthHandler;
+import android.webkit.SslErrorHandler;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
+import org.apache.http.cookie.Cookie;
+
+import java.util.List;
+
 import ladyjek.twiscode.com.ladyjek.Model.ModelOrder;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
-import ladyjek.twiscode.com.ladyjek.Utilities.SocketManager;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class ActivityVerifyPayment extends Activity {
@@ -28,17 +41,20 @@ public class ActivityVerifyPayment extends Activity {
     RelativeLayout wrapperPopup;
     private ProgressBar mProgressBar;
     private Activity act;
-    private SocketManager socketManager;
-    private ApplicationManager applicationManager;
+    private String mUsername;
+    private String mPassword;
+    private int mComeFrom;
+    private boolean mAlreadyEverGiveCredential = false;
+    private final String TAG = "ActivityVerifyPayment";
+    private final String TAG_ACCESS_CODE = "code";
+    ApplicationManager applicationManager;
     ModelOrder order;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verify_payment);
         wrapperPopup = (RelativeLayout)findViewById(R.id.wrapperPopup);
         act = this;
-        socketManager = ApplicationData.socketManager;
         applicationManager = new ApplicationManager(act);
         order = applicationManager.getOrder();
         Dummy();
@@ -72,11 +88,43 @@ public class ActivityVerifyPayment extends Activity {
                 popupView,
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
-
+        CookieSyncManager.createInstance(this);
         ImageView btnClose = (ImageView)popupView.findViewById(R.id.btnClose);
         WebView webview = (WebView) popupView.findViewById(R.id.webview);
+        mProgressBar = (ProgressBar)popupView.findViewById(R.id.webviewProgress);
+        webview.setWebViewClient(new myWebClient() {
+            public void onPageFinished(WebView view, String url) {
+            }
+        });
+        webview.getSettings().setSavePassword(false);
+        webview.getSettings().setJavaScriptEnabled(true);
+        webview.getSettings().setSaveFormData(false);
+        webview.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
 
+        webview.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public void onProgressChanged(WebView view, int newProgress) {
+                super.onProgressChanged(view, newProgress);
+                mProgressBar.setProgress(newProgress);
+                if (newProgress == 100) mProgressBar.setVisibility(View.GONE);
+            }
+        });
+        webview.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                    case MotionEvent.ACTION_UP:
+                        if (!v.hasFocus()) {
+                            v.requestFocus();
+                        }
+                        break;
+                }
+                return false;
+            }
+        });
         webview.loadUrl(order.getUrl());
+
 
         btnClose.setOnClickListener(new RelativeLayout.OnClickListener() {
             @Override
@@ -90,7 +138,9 @@ public class ActivityVerifyPayment extends Activity {
             }
         });
 
+        popupWindow.setFocusable(true);
         popupWindow.showAtLocation(findViewById(R.id.wrapperPopup), Gravity.CENTER, 0, 0);
+
     }
 
 
@@ -132,6 +182,66 @@ public class ActivityVerifyPayment extends Activity {
 
         popupWindow.showAtLocation(findViewById(R.id.wrapperPopup), Gravity.CENTER, 0, 0);
     }
+
+    public class myWebClient extends WebViewClient {
+        @Override
+        public void onPageStarted(WebView view, String url, Bitmap favicon) {
+            super.onPageStarted(view, url, favicon);
+            mProgressBar.setVisibility(View.VISIBLE);
+            detectCodeInCurrentURL(url, true);
+        }
+
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            return false;
+        }
+
+        @Override
+        public void onReceivedSslError(WebView view, SslErrorHandler handler,
+                                       SslError error) {
+            handler.proceed();
+        }
+
+
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            super.onPageFinished(view, url);
+        }
+
+        private void detectCodeInCurrentURL(String urlORcode, boolean directThrough){
+            String code = isMandiriURL(urlORcode);
+            if(code != null) {
+                oAuthProceed(code);
+            }
+        }
+
+        private String isMandiriURL(String url){
+            String code;
+            Uri uri = Uri.parse(url);
+            code = uri.getQueryParameter("code");
+            Log.v(TAG, "url:" + url);
+            if(url.contains("mandiri-ecash.com") || code!= null){
+                Log.v(TAG, "code detected :" + code);
+                return code;
+            }
+            return null;
+        }
+
+        private void oAuthProceed(String code){
+            Log.v(TAG,"oAuthProceed");
+            Bundle conData = new Bundle();
+            conData.putString(TAG_ACCESS_CODE, code);
+            Intent intent = new Intent();
+            intent.putExtras(conData);
+            setResult(RESULT_OK, intent);
+            finish();
+        }
+    }
+
+
+
+
+
 
     @Override
     protected void attachBaseContext(Context newBase) {

@@ -158,7 +158,8 @@
         <activity
             android:name=".Activity.ActivityVerifyPayment"
             android:screenOrientation="portrait"
-            android:label="@string/title_activity_personal_info" >
+            android:label="@string/title_activity_personal_info"
+            android:windowSoftInputMode="adjustResize">
         </activity>
         <activity
             android:name=".Activity.ActivityForgetPassword_1"

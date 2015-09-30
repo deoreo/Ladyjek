@@ -292,7 +292,7 @@ public class SocketManager {
                     String distance = obj.getJSONObject("distance").getString("text");
                     String duration = obj.getJSONObject("duration").getString("text");
                     String status = obj.getString("status");
-                    if (!status.contains("queued")) {
+                    if (!status.contains("queued") && !status.contains("pending")) {
                         driverID = obj.getString("driver");
                     }
                     String toLatitude = obj.getJSONObject("toGeo").getJSONArray("coordinates").getString(1);
