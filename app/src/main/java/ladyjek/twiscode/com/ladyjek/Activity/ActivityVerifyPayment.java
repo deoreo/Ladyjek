@@ -9,6 +9,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
@@ -38,7 +39,7 @@ public class ActivityVerifyPayment extends Activity {
 
             }
             public void onFinish() {
-                popupFailed();
+                popupSucces();
             }
         }.start();
     }
@@ -53,6 +54,34 @@ public class ActivityVerifyPayment extends Activity {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
+
+    private void popupSucces(){
+        LayoutInflater layoutInflater  = (LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE);
+        final View popupView = layoutInflater.inflate(R.layout.popup_webview, null);
+        final PopupWindow popupWindow = new PopupWindow(
+                popupView,
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT);
+
+        ImageView btnClose = (ImageView)popupView.findViewById(R.id.btnClose);
+        WebView webview = (WebView) popupView.findViewById(R.id.webview);
+
+
+        btnClose.setOnClickListener(new RelativeLayout.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                Intent i = new Intent(getBaseContext(), ActivityConfirm.class);
+                ApplicationManager um = new ApplicationManager(ActivityVerifyPayment.this);
+                startActivity(i);
+                finish();
+                popupWindow.dismiss();
+            }
+        });
+
+        popupWindow.showAtLocation(findViewById(R.id.wrapperPopup), Gravity.CENTER, 0, 0);
+    }
+
 
     private void popupFailed(){
         LayoutInflater layoutInflater  = (LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE);

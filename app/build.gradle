@@ -5,7 +5,7 @@ android {
         apksigkey {
             keyAlias 'apksigkey_ladyjek_user'
             keyPassword 'kiasu123'
-            //storeFile file('C:/edo/apksigkey_ladyjek_user.jks')
+            storeFile file('C:/apksigkey_ladyjek_user.jks')
             storePassword 'kiasu123'
         }
     }
@@ -15,8 +15,8 @@ android {
         applicationId "ladyjek.twiscode.com.ladyjek"
         minSdkVersion 18
         targetSdkVersion 22
-        versionCode 2
-        versionName "1.1"
+        versionCode 5
+        versionName "1.4"
         signingConfig signingConfigs.apksigkey
     }
     buildTypes {
