@@ -57,6 +57,7 @@ public class ActivityVerifyPayment extends Activity {
     ModelOrder order;
     private SocketManager socketManager;
     private BroadcastReceiver doVerify;
+    PopupWindow popupWindow;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,13 +75,19 @@ public class ActivityVerifyPayment extends Activity {
                 // Extract data included in the Intent
                 String message = intent.getStringExtra("message");
                 Log.d("doCreateOrder", message);
+                DialogManager.DismissLoading(context);
                 if(message=="true") {
-                    DialogManager.DismissLoading(context);
+                    /*
                     ApplicationData.socketManager = socketManager;
                     Intent i = new Intent(getBaseContext(), ActivityLoading.class);
                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(i);
                     finish();
+                    */
+                    popupSuccess();
+                }
+                else {
+                    popupFailed();
                 }
 
 
@@ -98,7 +105,7 @@ public class ActivityVerifyPayment extends Activity {
 
             }
             public void onFinish() {
-                popupSucces();
+                popupWebview();
             }
         }.start();
     }
@@ -114,15 +121,15 @@ public class ActivityVerifyPayment extends Activity {
         startActivity(intent);
     }
 
-    private void popupSucces(){
+    private void popupWebview(){
         LayoutInflater layoutInflater  = (LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE);
         final View popupView = layoutInflater.inflate(R.layout.popup_webview, null);
-        final PopupWindow popupWindow = new PopupWindow(
+        popupWindow = new PopupWindow(
                 popupView,
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
         CookieSyncManager.createInstance(this);
-        ImageView btnClose = (ImageView)popupView.findViewById(R.id.btnClose);
+
         WebView webview = (WebView) popupView.findViewById(R.id.webview);
         mProgressBar = (ProgressBar)popupView.findViewById(R.id.webviewProgress);
         webview.setWebViewClient(new myWebClient() {
@@ -158,19 +165,6 @@ public class ActivityVerifyPayment extends Activity {
         });
         webview.loadUrl(order.getUrl());
 
-
-        btnClose.setOnClickListener(new RelativeLayout.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-                Intent i = new Intent(getBaseContext(), ActivityConfirm.class);
-                ApplicationManager um = new ApplicationManager(ActivityVerifyPayment.this);
-                startActivity(i);
-                finish();
-                popupWindow.dismiss();
-            }
-        });
-
         popupWindow.setFocusable(true);
         popupWindow.showAtLocation(findViewById(R.id.wrapperPopup), Gravity.CENTER, 0, 0);
 
@@ -180,7 +174,7 @@ public class ActivityVerifyPayment extends Activity {
     private void popupFailed(){
         LayoutInflater layoutInflater  = (LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE);
         final View popupView = layoutInflater.inflate(R.layout.popup_failed_ecash, null);
-        final PopupWindow popupWindow = new PopupWindow(
+        popupWindow = new PopupWindow(
                 popupView,
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
@@ -192,13 +186,56 @@ public class ActivityVerifyPayment extends Activity {
         btnJemput.setOnClickListener(new RelativeLayout.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*
+
                 Intent i = new Intent(getBaseContext(), Main.class);
                 ApplicationManager um = new ApplicationManager(ActivityVerifyPayment.this);
                 startActivity(i);
-                */
                 finish();
-                //popupWindow.dismiss();
+                popupWindow.dismiss();
+
+
+            }
+        });
+        btnClose.setOnClickListener(new RelativeLayout.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                /*
+                Intent i = new Intent(getBaseContext(), ActivityConfirm.class);
+                ApplicationManager um = new ApplicationManager(ActivityVerifyPayment.this);
+                startActivity(i);
+                finish();
+                popupWindow.dismiss();
+                */
+                popupWindow.dismiss();
+            }
+        });
+
+        popupWindow.showAtLocation(findViewById(R.id.wrapperPopup), Gravity.CENTER, 0, 0);
+    }
+
+    private void popupSuccess(){
+        LayoutInflater layoutInflater  = (LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE);
+        final View popupView = layoutInflater.inflate(R.layout.popup_payment_confirmation, null);
+        popupWindow = new PopupWindow(
+                popupView,
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT);
+
+        TextView btnJemput = (TextView)popupView.findViewById(R.id.btnConfirm);
+        ImageView btnClose = (ImageView)popupView.findViewById(R.id.btnClose);
+
+
+        btnJemput.setOnClickListener(new RelativeLayout.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent i = new Intent(getBaseContext(), ActivityLoading.class);
+                ApplicationManager um = new ApplicationManager(ActivityVerifyPayment.this);
+                startActivity(i);
+
+                finish();
+                popupWindow.dismiss();
 
 
             }
@@ -226,6 +263,8 @@ public class ActivityVerifyPayment extends Activity {
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
             mProgressBar.setVisibility(View.VISIBLE);
+            verifyURL(url);
+            Log.d(TAG, url);
 
         }
 
@@ -244,7 +283,7 @@ public class ActivityVerifyPayment extends Activity {
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
-            verifyURL(url);
+
         }
 
 
@@ -253,7 +292,8 @@ public class ActivityVerifyPayment extends Activity {
             Uri uri = Uri.parse(url);
             code = uri.getQueryParameter("id");
             Log.v(TAG, "url:" + url);
-            if(url.contains("payment-callback/mandiriecash") || code!= null){
+            if(url.contains("payment-callback/mandiriecash") && code!= null){
+                popupWindow.dismiss();
                 Log.v(TAG, "code detected :" + code);
                 DialogManager.ShowLoading(act, "Verifying...");
                 socketManager.VerifyEcash(code);

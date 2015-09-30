@@ -309,13 +309,24 @@ public class SocketManager {
                     }
                     String url = "";
                     String payment = "";
-                    if(pay.contains("mandiriecash")){
-                        url = args[1].toString();
-                        payment = "Mandiri e-Cash";
+                    if(status=="pending"){
+                        if(pay.contains("mandiriecash")){
+                            url = args[1].toString();
+                            payment = "Mandiri e-Cash";
+                        }
+                        else {
+                            payment = "Tunai";
+                        }
                     }
                     else {
-                        payment = "Tunai";
+                        if(pay.contains("mandiriecash")){
+                            payment = "Mandiri e-Cash";
+                        }
+                        else {
+                            payment = "Tunai";
+                        }
                     }
+
                     String member = "12 Feb 2015";
                     String phone = "089682587567";
                     String rate = "4.5";
@@ -1117,13 +1128,15 @@ public class SocketManager {
                     try {
                         JSONObject err = (JSONObject) args[0];
                         if (err == null) {
-                            Log.d(TAG, "verify true");
+
                             JSONObject obj = (JSONObject) args[1];
                             String status = obj.getString("status");
                             if(status.equalsIgnoreCase("queued")){
+                                Log.d(TAG, "verify true");
                                 SendBroadcast("ecash", "true");
                             }
                             else {
+                                Log.d(TAG, "verify false");
                                 SendBroadcast("ecash", "false");
                             }
 
