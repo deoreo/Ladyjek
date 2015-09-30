@@ -96,6 +96,7 @@ public class ActivityConfirm extends ActionBarActivity {
                 // Extract data included in the Intent
                 String message = intent.getStringExtra("message");
                 Log.d("doCreateOrder", message);
+                DialogManager.DismissLoading(context);
                 if(message=="true"){
                     ApplicationData.socketManager = socketManager;
                     Intent i = new Intent(getBaseContext(), ActivityLoading.class);

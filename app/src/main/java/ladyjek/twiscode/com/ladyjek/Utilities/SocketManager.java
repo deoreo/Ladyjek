@@ -302,7 +302,7 @@ public class SocketManager {
                     String name = "Nabila";
                     String pay = "cash";
                     try{
-                        pay = obj.getString("paymentMethod");
+                        pay = obj.getJSONObject("payment").getString("method");
                     }
                     catch (Exception ex){
                         ex.printStackTrace();
@@ -310,7 +310,7 @@ public class SocketManager {
                     String url = "";
                     String payment = "";
                     if(pay.contains("mandiriecash")){
-                        url = obj.getString("mandiriecashTransactionId");
+                        url = args[1].toString();
                         payment = "Mandiri e-Cash";
                     }
                     else {
@@ -1121,7 +1121,7 @@ public class SocketManager {
                             JSONObject obj = (JSONObject) args[1];
                             String status = obj.getString("status");
                             if(status.equalsIgnoreCase("queued")){
-                                SendBroadcast("ecash", "true");   
+                                SendBroadcast("ecash", "true");
                             }
                             else {
                                 SendBroadcast("ecash", "false");
