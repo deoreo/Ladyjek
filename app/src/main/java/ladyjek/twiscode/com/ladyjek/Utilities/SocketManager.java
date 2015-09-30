@@ -300,7 +300,13 @@ public class SocketManager {
                     String fromLatitude = obj.getJSONObject("fromGeo").getJSONArray("coordinates").getString(1);
                     String fromLongitude = obj.getJSONObject("fromGeo").getJSONArray("coordinates").getString(0);
                     String name = "Nabila";
-                    String pay = obj.getString("paymentMethod");
+                    String pay = "cash";
+                    try{
+                        pay = obj.getString("paymentMethod");
+                    }
+                    catch (Exception ex){
+                        ex.printStackTrace();
+                    }
                     String url = "";
                     String payment = "";
                     if(pay.contains("mandiriecash")){
@@ -505,18 +511,23 @@ public class SocketManager {
             dt.put(1, destination.latitude);
             objs.put("fromGeo", fr);
             objs.put("toGeo", dt);
+            objs.put("paymentMethod", pay);
             Log.d("create order", objs.toString());
-            socket.emit("post create order", objs,pay, new Ack() {
+            socket.emit("post create order", objs, new Ack() {
                 @Override
                 public void call(Object... args) {
                     try {
                         Log.d(TAG, "order args:" + args[1]);
+
                         JSONObject obj = (JSONObject) args[1];
                         JSONObject err = (JSONObject) args[0];
                         if(err != null){
                             Log.d("error create order", err.toString());
                         }
                         if (err == null) {
+                            if(pay=="mandiriecash"){
+                                Log.d(TAG, "order url:" + args[2]);
+                            }
                             String id = obj.getString("_id");
                             String userID = obj.getString("user");
                             String driverID = "";
@@ -564,7 +575,13 @@ public class SocketManager {
                             ApplicationData.order = order;
                             appManager.setOrder(order);
                             Log.d(TAG, "cancel true");
-                            SendBroadcast("createOrder", "true");
+                            if(pay=="cash"){
+                                SendBroadcast("createOrder", "true");
+                            }
+                            else {
+                                SendBroadcast("createOrder", "mandiri");
+                            }
+
                         } else {
                             Log.d(TAG, "cancel false");
                             SendBroadcast("createOrder", "false");

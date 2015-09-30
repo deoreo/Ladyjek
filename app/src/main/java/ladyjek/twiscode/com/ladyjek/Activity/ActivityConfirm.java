@@ -97,7 +97,16 @@ public class ActivityConfirm extends ActionBarActivity {
                 String message = intent.getStringExtra("message");
                 Log.d("doCreateOrder", message);
                 if(message=="true"){
+                    ApplicationData.socketManager = socketManager;
                     Intent i = new Intent(getBaseContext(), ActivityLoading.class);
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    ApplicationManager um = new ApplicationManager(ActivityConfirm.this);
+                    startActivity(i);
+                    finish();
+                }
+                else if(message=="mandiri"){
+                    ApplicationData.socketManager = socketManager;
+                    Intent i = new Intent(getBaseContext(), ActivityVerifyPayment.class);
                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     ApplicationManager um = new ApplicationManager(ActivityConfirm.this);
                     startActivity(i);
@@ -112,13 +121,17 @@ public class ActivityConfirm extends ActionBarActivity {
             public void onClick(View v) {
                 if (pembayaran == 0) {
                     DialogManager.ShowLoading(ActivityConfirm.this, "Loading...");
-                    socketManager.CreateOrder(ApplicationData.posFrom, ApplicationData.posDestination);
-                } else {
+                    socketManager.CreateOrder(ApplicationData.posFrom, ApplicationData.posDestination,"cash");
+                } else if (pembayaran == 1) {
+                    /*
                     Intent i = new Intent(getBaseContext(), ActivityVerifyPayment.class);
                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     ApplicationManager um = new ApplicationManager(ActivityConfirm.this);
                     startActivity(i);
                     finish();
+                    */
+                    DialogManager.ShowLoading(ActivityConfirm.this, "Loading...");
+                    socketManager.CreateOrder(ApplicationData.posFrom, ApplicationData.posDestination,"mandiriecash");
                 }
 
             }
@@ -129,14 +142,18 @@ public class ActivityConfirm extends ActionBarActivity {
             public void onClick(View v) {
                 if (pembayaran == 0) {
                     DialogManager.ShowLoading(ActivityConfirm.this, "Loading...");
-                    socketManager.CreateOrder(ApplicationData.posFrom, ApplicationData.posDestination);
+                    socketManager.CreateOrder(ApplicationData.posFrom, ApplicationData.posDestination,"cash");
 
-                } else {
+                } else if (pembayaran == 1) {
+                    /*
                     Intent i = new Intent(getBaseContext(), ActivityVerifyPayment.class);
                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     ApplicationManager um = new ApplicationManager(ActivityConfirm.this);
                     startActivity(i);
                     finish();
+                    */
+                    DialogManager.ShowLoading(ActivityConfirm.this, "Loading...");
+                    socketManager.CreateOrder(ApplicationData.posFrom, ApplicationData.posDestination,"mandiriecash");
                 }
             }
         });

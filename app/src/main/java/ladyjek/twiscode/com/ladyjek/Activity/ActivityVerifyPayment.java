@@ -16,8 +16,11 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
+import ladyjek.twiscode.com.ladyjek.Model.ModelOrder;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
+import ladyjek.twiscode.com.ladyjek.Utilities.SocketManager;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class ActivityVerifyPayment extends Activity {
@@ -25,12 +28,19 @@ public class ActivityVerifyPayment extends Activity {
     RelativeLayout wrapperPopup;
     private ProgressBar mProgressBar;
     private Activity act;
+    private SocketManager socketManager;
+    private ApplicationManager applicationManager;
+    ModelOrder order;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verify_payment);
         wrapperPopup = (RelativeLayout)findViewById(R.id.wrapperPopup);
         act = this;
+        socketManager = ApplicationData.socketManager;
+        applicationManager = new ApplicationManager(act);
+        order = applicationManager.getOrder();
         Dummy();
     }
     private void Dummy(){
@@ -66,6 +76,7 @@ public class ActivityVerifyPayment extends Activity {
         ImageView btnClose = (ImageView)popupView.findViewById(R.id.btnClose);
         WebView webview = (WebView) popupView.findViewById(R.id.webview);
 
+        webview.loadUrl(order.getUrl());
 
         btnClose.setOnClickListener(new RelativeLayout.OnClickListener() {
             @Override
