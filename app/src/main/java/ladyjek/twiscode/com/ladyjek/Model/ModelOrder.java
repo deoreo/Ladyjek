@@ -4,12 +4,12 @@ package ladyjek.twiscode.com.ladyjek.Model;
  * Created by Unity on 02/09/2015.
  */
 public class ModelOrder {
-    private String id, to, distance, duration,status,from,userID,driverID,toLongitude,toLatitude,fromLongitude,fromLatitude, name, rate, phone, member, payment, price;
+    private String id, to, distance, duration,status,from,userID,driverID,toLongitude,toLatitude,fromLongitude,fromLatitude, name, rate, phone, member, payment, price, url;
 
     public ModelOrder(){
 
     }
-    public ModelOrder(String id, String userID, String driverID, String name, String to, String from, String distance, String duration, String status, String toLongitude, String toLatitude, String fromLatitude, String fromLongitude, String rate, String phone, String member, String payment, String price){
+    public ModelOrder(String id, String userID, String driverID, String name, String to, String from, String distance, String duration, String status, String toLongitude, String toLatitude, String fromLatitude, String fromLongitude, String rate, String phone, String member, String payment, String price, String url){
         this.id = id;
         this.userID = userID;
         this.driverID = driverID;
@@ -28,6 +28,15 @@ public class ModelOrder {
         this.member = member;
         this.payment = payment;
         this.price = price;
+        this.url = url;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public String getId() {
