@@ -8,7 +8,7 @@ public class ConfigManager {
     public static final String API_KEY = "AIzaSyAJ6wF29SmwinrHoyJ-KjWwlZ3IFtVz0vY";
     public static final String URL_SUGGESTION = PLACES_API_BASE +"/autocomplete/json?components=country:id&key="+API_KEY+"&input=";
     //public static final String SERVER = "https://playpal.id:3001/ladyjek/api";
-    public static final String SERVER = "https://192.168.1.106:2053/ladyjek/api";
+    public static final String SERVER = "https://ladyjek.com:2053/ladyjek/api";
     public static final String LOGIN = SERVER+"/authenticate";
 
     public static final String REGISTER = SERVER+"/register";
@@ -23,5 +23,5 @@ public class ConfigManager {
     public static final String DEVICE_TOKEN = SERVER+"/device-token/create";
     public static final String LOGOUT_ALL = SERVER+"/logout-all";
     //public static final String SERVER_SOCKET = "https://playpal.id:5051/";
-    public static final String SERVER_SOCKET = "https://192.168.1.106:2096/";
+    public static final String SERVER_SOCKET = "https://ladyjek.com:2096/";
 }
