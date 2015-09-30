@@ -517,7 +517,7 @@ public class SocketManager {
                 @Override
                 public void call(Object... args) {
                     try {
-                        Log.d(TAG, "order args:" + args[1]);
+                        //Log.d(TAG, "order args:" + args[1]);
 
                         JSONObject obj = (JSONObject) args[1];
                         JSONObject err = (JSONObject) args[0];

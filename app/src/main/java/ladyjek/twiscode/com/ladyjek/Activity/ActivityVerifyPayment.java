@@ -159,11 +159,13 @@ public class ActivityVerifyPayment extends Activity {
         btnJemput.setOnClickListener(new RelativeLayout.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getBaseContext(), ActivityConfirm.class);
+                /*
+                Intent i = new Intent(getBaseContext(), Main.class);
                 ApplicationManager um = new ApplicationManager(ActivityVerifyPayment.this);
                 startActivity(i);
+                */
                 finish();
-                popupWindow.dismiss();
+                //popupWindow.dismiss();
 
 
             }
@@ -172,11 +174,14 @@ public class ActivityVerifyPayment extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
+                /*
                 Intent i = new Intent(getBaseContext(), ActivityConfirm.class);
                 ApplicationManager um = new ApplicationManager(ActivityVerifyPayment.this);
                 startActivity(i);
                 finish();
                 popupWindow.dismiss();
+                */
+                finish();
             }
         });
 
@@ -188,7 +193,7 @@ public class ActivityVerifyPayment extends Activity {
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
             mProgressBar.setVisibility(View.VISIBLE);
-            detectCodeInCurrentURL(url, true);
+
         }
 
         @Override
@@ -206,6 +211,7 @@ public class ActivityVerifyPayment extends Activity {
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
+            detectCodeInCurrentURL(url, true);
         }
 
         private void detectCodeInCurrentURL(String urlORcode, boolean directThrough){
@@ -218,9 +224,9 @@ public class ActivityVerifyPayment extends Activity {
         private String isMandiriURL(String url){
             String code;
             Uri uri = Uri.parse(url);
-            code = uri.getQueryParameter("code");
+            code = uri.getQueryParameter("id");
             Log.v(TAG, "url:" + url);
-            if(url.contains("mandiri-ecash.com") || code!= null){
+            if(url.contains("payment-callback/mandiriecash") || code!= null){
                 Log.v(TAG, "code detected :" + code);
                 return code;
             }
