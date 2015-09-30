@@ -1,13 +1,16 @@
 package ladyjek.twiscode.com.ladyjek.Activity;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -31,9 +34,12 @@ import org.apache.http.cookie.Cookie;
 
 import java.util.List;
 
+import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.Model.ModelOrder;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
+import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
+import ladyjek.twiscode.com.ladyjek.Utilities.SocketManager;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class ActivityVerifyPayment extends Activity {
@@ -49,6 +55,8 @@ public class ActivityVerifyPayment extends Activity {
     private final String TAG_ACCESS_CODE = "code";
     ApplicationManager applicationManager;
     ModelOrder order;
+    private SocketManager socketManager;
+    private BroadcastReceiver doVerify;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,10 +65,35 @@ public class ActivityVerifyPayment extends Activity {
         act = this;
         applicationManager = new ApplicationManager(act);
         order = applicationManager.getOrder();
+        socketManager = ApplicationData.socketManager;
         Dummy();
+
+        doVerify  = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                // Extract data included in the Intent
+                String message = intent.getStringExtra("message");
+                Log.d("doCreateOrder", message);
+                if(message=="true") {
+                    DialogManager.DismissLoading(context);
+                    ApplicationData.socketManager = socketManager;
+                    Intent i = new Intent(getBaseContext(), ActivityLoading.class);
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(i);
+                    finish();
+                }
+
+
+            }
+        };
+
+
+
+
+
     }
     private void Dummy(){
-        new CountDownTimer(5000, 1000) {
+        new CountDownTimer(2000, 1000) {
             public void onTick(long millisUntilFinished) {
 
             }
@@ -211,37 +244,22 @@ public class ActivityVerifyPayment extends Activity {
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
-            detectCodeInCurrentURL(url, true);
+            verifyURL(url);
         }
 
-        private void detectCodeInCurrentURL(String urlORcode, boolean directThrough){
-            String code = isMandiriURL(urlORcode);
-            if(code != null) {
-                oAuthProceed(code);
-            }
-        }
 
-        private String isMandiriURL(String url){
+        private void verifyURL(String url){
             String code;
             Uri uri = Uri.parse(url);
             code = uri.getQueryParameter("id");
             Log.v(TAG, "url:" + url);
             if(url.contains("payment-callback/mandiriecash") || code!= null){
                 Log.v(TAG, "code detected :" + code);
-                return code;
+                DialogManager.ShowLoading(act, "Verifying...");
+                socketManager.VerifyEcash(code);
             }
-            return null;
         }
 
-        private void oAuthProceed(String code){
-            Log.v(TAG,"oAuthProceed");
-            Bundle conData = new Bundle();
-            conData.putString(TAG_ACCESS_CODE, code);
-            Intent intent = new Intent();
-            intent.putExtras(conData);
-            setResult(RESULT_OK, intent);
-            finish();
-        }
     }
 
 
@@ -254,6 +272,11 @@ public class ActivityVerifyPayment extends Activity {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
+    public void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(doVerify,
+                new IntentFilter("ecash"));
 
+    }
 
 }
