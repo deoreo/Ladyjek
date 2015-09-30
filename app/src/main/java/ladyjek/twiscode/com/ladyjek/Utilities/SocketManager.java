@@ -300,7 +300,16 @@ public class SocketManager {
                     String fromLatitude = obj.getJSONObject("fromGeo").getJSONArray("coordinates").getString(1);
                     String fromLongitude = obj.getJSONObject("fromGeo").getJSONArray("coordinates").getString(0);
                     String name = "Nabila";
-                    String payment = "TUNAI";
+                    String pay = obj.getString("paymentMethod");
+                    String url = "";
+                    String payment = "";
+                    if(pay.contains("mandiriecash")){
+                        url = obj.getString("mandiriecashTransactionId");
+                        payment = "Mandiri e-Cash";
+                    }
+                    else {
+                        payment = "Tunai";
+                    }
                     String member = "12 Feb 2015";
                     String phone = "089682587567";
                     String rate = "4.5";
@@ -321,7 +330,7 @@ public class SocketManager {
                         Log.d("total price : ",""+distance+"-"+selisih+"-"+harga+"-"+roundHarga+"-"+totalPrice);
                     }
 
-                    ModelOrder order = new ModelOrder(id, userID, driverID, name, to, from, distance, duration, status, toLongitude, toLatitude, fromLatitude, fromLongitude, rate, phone, member, payment, ""+totalPrice);
+                    ModelOrder order = new ModelOrder(id, userID, driverID, name, to, from, distance, duration, status, toLongitude, toLatitude, fromLatitude, fromLongitude, rate, phone, member, payment, ""+totalPrice,url);
                     ApplicationData.order = order;
                     ApplicationData.driver = new ModelDriver();
                     SendBroadcast("lastOrder", "true");
@@ -484,7 +493,7 @@ public class SocketManager {
         });
     }
 
-    public void CreateOrder(LatLng from, LatLng destination) {
+    public void CreateOrder(LatLng from, LatLng destination, final String pay) {
         Log.d(TAG, "create order");
         JSONObject objs = new JSONObject();
         JSONArray fr = new JSONArray();
@@ -497,7 +506,7 @@ public class SocketManager {
             objs.put("fromGeo", fr);
             objs.put("toGeo", dt);
             Log.d("create order", objs.toString());
-            socket.emit("post create order", objs, new Ack() {
+            socket.emit("post create order", objs,pay, new Ack() {
                 @Override
                 public void call(Object... args) {
                     try {
@@ -511,6 +520,7 @@ public class SocketManager {
                             String id = obj.getString("_id");
                             String userID = obj.getString("user");
                             String driverID = "";
+                            String url = "";
                             String to = obj.getString("to");
                             String from = obj.getString("from");
                             String distance = obj.getJSONObject("distance").getString("text");
@@ -520,8 +530,15 @@ public class SocketManager {
                             String toLongitude = obj.getJSONObject("toGeo").getJSONArray("coordinates").getString(0);
                             String fromLatitude = obj.getJSONObject("fromGeo").getJSONArray("coordinates").getString(1);
                             String fromLongitude = obj.getJSONObject("fromGeo").getJSONArray("coordinates").getString(0);
+                            String payment = "";
+                            if(pay=="mandiriecash"){
+                                url = args[2].toString();
+                                payment = "Mandiri e-Cash";
+                            }
+                            else {
+                                payment = "Tunai";
+                            }
                             String name = "Nabila";
-                            String payment = "TUNAI";
                             String member = "12 Feb 2015";
                             String phone = "089682587567";
                             String rate = "4.5";
@@ -543,7 +560,7 @@ public class SocketManager {
                             }
 
 
-                            ModelOrder order = new ModelOrder(id, userID, driverID, name, to, from, distance, duration, status, toLongitude, toLatitude, fromLatitude, fromLongitude, rate, phone, member, payment, ""+totalPrice);
+                            ModelOrder order = new ModelOrder(id, userID, driverID, name, to, from, distance, duration, status, toLongitude, toLatitude, fromLatitude, fromLongitude, rate, phone, member, payment, ""+totalPrice,url);
                             ApplicationData.order = order;
                             appManager.setOrder(order);
                             Log.d(TAG, "cancel true");
@@ -687,7 +704,16 @@ public class SocketManager {
                             String fromLatitude = obj.getJSONObject("fromGeo").getJSONArray("coordinates").getString(1);
                             String fromLongitude = obj.getJSONObject("fromGeo").getJSONArray("coordinates").getString(0);
                             String name = "Nabila";
-                            String payment = "TUNAI";
+                            String pay = obj.getString("paymentMethod");
+                            String url = "";
+                            String payment = "";
+                            if(pay.contains("mandiriecash")){
+                                url = obj.getString("mandiriecashTransactionId");
+                                payment = "Mandiri e-Cash";
+                            }
+                            else {
+                                payment = "Tunai";
+                            }
                             String member = "12 Feb 2015";
                             String phone = "089682587567";
                             String rate = "4.5";
@@ -708,7 +734,7 @@ public class SocketManager {
                                 Log.d("total price : ",""+distance+"-"+selisih+"-"+harga+"-"+roundHarga+"-"+totalPrice);
                             }
 
-                            ModelOrder order = new ModelOrder(id, userID, driverID, name, to, from, distance, duration, status, toLongitude, toLatitude, fromLatitude, fromLongitude, rate, phone, member, payment, ""+totalPrice);
+                            ModelOrder order = new ModelOrder(id, userID, driverID, name, to, from, distance, duration, status, toLongitude, toLatitude, fromLatitude, fromLongitude, rate, phone, member, payment, ""+totalPrice,url);
                             ApplicationData.order = order;
                             ApplicationData.driver = null;
                             SendBroadcast("lastOrder", "true");
