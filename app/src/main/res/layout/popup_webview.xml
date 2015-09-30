@@ -13,6 +13,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"
         android:src="@drawable/close"
+        android:visibility="gone"
         />
     <ScrollView
         android:id="@+id/webviewContainer"
