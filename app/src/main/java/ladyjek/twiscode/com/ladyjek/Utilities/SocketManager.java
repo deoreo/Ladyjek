@@ -1173,6 +1173,38 @@ public class SocketManager {
         });
     }
 
+    public void ConfirmPayment() {
+        Log.d(TAG, "confirm payment");
+        //boolean feed = false;
+        try {
+            socket.emit("release mandiriecash payment", new Ack() {
+                @Override
+                public void call(Object... args) {
+                    try {
+                        JSONObject err = (JSONObject) args[0];
+                        if (err == null) {
+                            Log.d(TAG, "confirm true");
+                            SendBroadcast("confirmPayment", "true");
+                        } else {
+                            Log.d(TAG, "confirm false");
+                            SendBroadcast("confirmPayment", "false");
+                        }
+                    } catch (Exception ex) {
+                        Log.d(TAG, "confirm error");
+                        ex.printStackTrace();
+                        SendBroadcast("confirmPayment", "false");
+                    }
+
+                }
+
+            });
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+
+    }
+
     private void SendBroadcast(String typeBroadcast, String type) {
         Intent intent = new Intent(typeBroadcast);
         intent.putExtra("message", type);

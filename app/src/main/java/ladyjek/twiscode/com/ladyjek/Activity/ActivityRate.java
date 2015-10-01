@@ -50,8 +50,10 @@ public class ActivityRate extends ActionBarActivity {
     Activity mActivity;
     ModelOrder order;
     SocketManager socketManager;
-    private BroadcastReceiver lastOrder, feedback, getDriver;
+    private BroadcastReceiver lastOrder, feedback, getDriver,confirmPayment;
     private RatingBar txtRate;
+    MaterialDialog dialog;
+    boolean isConfirmClick = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -210,6 +212,26 @@ public class ActivityRate extends ActionBarActivity {
             }
         }
 
+        confirmPayment = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                // Extract data included in the Intent
+                Log.d("", "broadcast confirmPayment");
+                String message = intent.getStringExtra("message");
+                Intent i = null;
+                String pref = appManager.getActivity();
+                DialogManager.DismissLoading(ActivityRate.this);
+                if (message.equals("true")) {
+                    dialog.dismiss();
+                    ApplicationData.release = false;
+                }
+                else {
+                    isConfirmClick = false;
+                }
+
+            }
+        };
+
         lastOrder = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -245,13 +267,21 @@ public class ActivityRate extends ActionBarActivity {
                         try {
                             Context ctx = ActivityRate.this;
                             DialogManager.DismissLoading(ctx);
-                            new MaterialDialog.Builder(ActivityRate.this)
+                            dialog = new MaterialDialog.Builder(ActivityRate.this)
                                     .title("Konfirmasi Pembayaran mandiri eCash anda!")
                                     .positiveText("OK")
                                     .callback(new MaterialDialog.ButtonCallback() {
                                         @Override
                                         public void onPositive(MaterialDialog dialog) {
-                                            dialog.dismiss();
+                                            //dialog.dismiss();
+                                            if(!isConfirmClick){
+                                                if(NetworkManager.getInstance(ActivityRate.this).isConnectedInternet()){
+                                                    DialogManager.ShowLoading(ActivityRate.this,"Loading");
+                                                    socketManager.ConfirmPayment();
+                                                    isConfirmClick = true;
+                                                }
+                                            }
+
                                         }
                                     })
                                     .icon(getResources().getDrawable(R.drawable.ladyjek_icon))
@@ -288,13 +318,20 @@ public class ActivityRate extends ActionBarActivity {
                 try {
                     Context ctx = ActivityRate.this;
                     DialogManager.DismissLoading(ctx);
-                    new MaterialDialog.Builder(ActivityRate.this)
+                    dialog = new MaterialDialog.Builder(ActivityRate.this)
                             .title("Konfirmasi Pembayaran mandiri eCash anda!")
                             .positiveText("OK")
                             .callback(new MaterialDialog.ButtonCallback() {
                                 @Override
                                 public void onPositive(MaterialDialog dialog) {
-                                    dialog.dismiss();
+                                    //dialog.dismiss();
+                                    if(!isConfirmClick){
+                                        if(NetworkManager.getInstance(ActivityRate.this).isConnectedInternet()){
+                                            DialogManager.ShowLoading(ActivityRate.this,"Loading");
+                                            socketManager.ConfirmPayment();
+                                            isConfirmClick = true;
+                                        }
+                                    }
                                 }
                             })
                             .icon(getResources().getDrawable(R.drawable.ladyjek_icon))
@@ -346,7 +383,8 @@ public class ActivityRate extends ActionBarActivity {
                 new IntentFilter("doFeedback"));
         LocalBroadcastManager.getInstance(this).registerReceiver(getDriver,
                 new IntentFilter("getDriver"));
-
+        LocalBroadcastManager.getInstance(this).registerReceiver(confirmPayment,
+                new IntentFilter("confirmPayment"));
     }
 
     @Override
