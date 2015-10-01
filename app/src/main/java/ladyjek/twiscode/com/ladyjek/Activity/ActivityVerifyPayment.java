@@ -17,12 +17,14 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.ConsoleMessage;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.HttpAuthHandler;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+import android.webkit.WebView.HitTestResult;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
@@ -148,11 +150,15 @@ public class ActivityVerifyPayment extends Activity {
                 mProgressBar.setProgress(newProgress);
                 if (newProgress == 100) mProgressBar.setVisibility(View.GONE);
             }
+
+            
+
         });
         webview.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
+
                     case MotionEvent.ACTION_DOWN:
                     case MotionEvent.ACTION_UP:
                         if (!v.hasFocus()) {
@@ -271,7 +277,7 @@ public class ActivityVerifyPayment extends Activity {
             super.onPageStarted(view, url, favicon);
             mProgressBar.setVisibility(View.VISIBLE);
             verifyURL(url);
-            Log.d(TAG, url);
+            Log.d(TAG, "onPageStarted :"+url);
 
         }
 
@@ -290,6 +296,7 @@ public class ActivityVerifyPayment extends Activity {
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
+            Log.d(TAG, "onPageFinished :"+url);
 
         }
 
@@ -298,7 +305,7 @@ public class ActivityVerifyPayment extends Activity {
             String code;
             Uri uri = Uri.parse(url);
             code = uri.getQueryParameter("id");
-            Log.v(TAG, "url:" + url);
+            Log.v(TAG, "verifyURL: " + url);
             if(url.contains("payment-callback/mandiriecash") && code!= null){
                 popupWindow.dismiss();
                 Log.v(TAG, "code detected :" + code);

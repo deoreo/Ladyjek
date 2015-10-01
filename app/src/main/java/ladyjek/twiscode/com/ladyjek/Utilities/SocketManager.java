@@ -309,22 +309,17 @@ public class SocketManager {
                     }
                     String url = "";
                     String payment = "";
-                    if(status=="pending"){
+                    if(status.contains("pending")){
                         if(pay.contains("mandiriecash")){
                             url = args[1].toString();
-                            payment = "Mandiri e-Cash";
                         }
-                        else {
-                            payment = "Tunai";
-                        }
+
+                    }
+                    if(pay.contains("mandiriecash")){
+                        payment = "Mandiri e-Cash";
                     }
                     else {
-                        if(pay.contains("mandiriecash")){
-                            payment = "Mandiri e-Cash";
-                        }
-                        else {
-                            payment = "Tunai";
-                        }
+                        payment = "Tunai";
                     }
 
                     String member = "12 Feb 2015";
@@ -713,7 +708,9 @@ public class SocketManager {
                     JSONObject err = (JSONObject) args[0];
                     if (err == null) {
                         JSONObject obj = (JSONObject) args[1];
-                        Log.d(TAG, obj.toString());
+                        JSONObject obj2 = (JSONObject) args[2];
+                        Log.d(TAG, "obj: "+obj.toString());
+
                         if (obj != null) {
                             Log.d(TAG, "onLastOrder : " + obj.toString());
                             String id = obj.getString("_id");
