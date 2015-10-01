@@ -649,6 +649,12 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(i);
                         getActivity().finish();
+                    }else if (ApplicationData.order.getStatus().contains("ended")) {
+                        i = new Intent(getActivity(), ActivityRate.class);
+                        appManager.setTrip("");
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(i);
+                        getActivity().finish();
                     }
 
                 } else {

@@ -240,6 +240,28 @@ public class ActivityRate extends ActionBarActivity {
                     txtWaktu.setText(order.getDuration());
                     txtPrice.setText("Rp." + order.getPrice());
                     txtPembayaran.setText(order.getPayment());
+
+                    if(order.getPayment().toLowerCase().contains("mandiri")&& !ApplicationData.release){
+                        try {
+                            Context ctx = ActivityRate.this;
+                            DialogManager.DismissLoading(ctx);
+                            new MaterialDialog.Builder(ActivityRate.this)
+                                    .title("Konfirmasi Pembayaran mandiri eCash anda!")
+                                    .positiveText("OK")
+                                    .callback(new MaterialDialog.ButtonCallback() {
+                                        @Override
+                                        public void onPositive(MaterialDialog dialog) {
+                                            dialog.dismiss();
+                                        }
+                                    })
+                                    .icon(getResources().getDrawable(R.drawable.ladyjek_icon))
+                                    .cancelable(false)
+                                    .typeface("GothamRnd-Medium.otf", "Gotham.ttf")
+                                    .show();
+                        }catch(Exception e){
+
+                        }
+                    }
                 } else {
                     Log.d("getdriver", "false");
                 }
@@ -261,6 +283,28 @@ public class ActivityRate extends ActionBarActivity {
             txtWaktu.setText(order.getDuration());
             txtPrice.setText("Rp."+ order.getPrice());
             txtPembayaran.setText(order.getPayment());
+
+            if(order.getPayment().toLowerCase().contains("mandiri")&& !ApplicationData.release){
+                try {
+                    Context ctx = ActivityRate.this;
+                    DialogManager.DismissLoading(ctx);
+                    new MaterialDialog.Builder(ActivityRate.this)
+                            .title("Konfirmasi Pembayaran mandiri eCash anda!")
+                            .positiveText("OK")
+                            .callback(new MaterialDialog.ButtonCallback() {
+                                @Override
+                                public void onPositive(MaterialDialog dialog) {
+                                    dialog.dismiss();
+                                }
+                            })
+                            .icon(getResources().getDrawable(R.drawable.ladyjek_icon))
+                            .cancelable(false)
+                            .typeface("GothamRnd-Medium.otf", "Gotham.ttf")
+                            .show();
+                }catch(Exception e){
+
+                }
+            }
         } else {
             Log.d("driver", "null");
             if (NetworkManager.getInstance(ActivityRate.this).isConnectedInternet()) {

@@ -135,7 +135,7 @@ public class SocketManager {
         socket.on("order pickedup", onOrderPickUp);
         socket.on("order started", onOrderStarted);
         socket.on("order ended", onOrderEnded);
-        socket.on("last feedback", onLastFeedback);
+        //socket.on("last feedback", onLastFeedback);
         socket.on("order timeout", onOrderTimeout);
         socket.connect();
     }
@@ -301,6 +301,7 @@ public class SocketManager {
                     String fromLongitude = obj.getJSONObject("fromGeo").getJSONArray("coordinates").getString(0);
                     String name = "Nabila";
                     String pay = "cash";
+                    boolean release = false;
                     try{
                         pay = obj.getJSONObject("payment").getString("method");
                     }
@@ -327,6 +328,23 @@ public class SocketManager {
                         }
                     }
 
+                    if(status=="ended"){
+                        try{
+                            JSONObject objRelease = new JSONObject();
+                            objRelease = obj.getJSONObject("payment").getJSONObject("data").getJSONObject("release");
+                            if(objRelease==null){
+                                release = false;
+                            }
+                            else {
+                                release = true;
+                            }
+                        }
+                        catch(Exception ex){
+                            ex.printStackTrace();
+                            release = false;
+                        }
+                    }
+
                     String member = "12 Feb 2015";
                     String phone = "089682587567";
                     String rate = "4.5";
@@ -350,6 +368,7 @@ public class SocketManager {
                     ModelOrder order = new ModelOrder(id, userID, driverID, name, to, from, distance, duration, status, toLongitude, toLatitude, fromLatitude, fromLongitude, rate, phone, member, payment, ""+totalPrice,url);
                     ApplicationData.order = order;
                     ApplicationData.driver = new ModelDriver();
+                    ApplicationData.release = release;
                     SendBroadcast("lastOrder", "true");
                 } else {
                     Log.d(TAG, "onLastOrder null order");
