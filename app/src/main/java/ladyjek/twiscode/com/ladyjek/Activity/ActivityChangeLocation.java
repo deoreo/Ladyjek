@@ -152,6 +152,7 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
                 // Extract data included in the Intent
                 Log.d("broadcast", "changeOfficeLocation");
                 String message = intent.getStringExtra("message");
+                progressDialog.dismiss();
                 if (message.equals("true")) {
                     user.setKantor(ApplicationData.Office);
                     user.setAddressOffice(ApplicationData.officeAddress);
@@ -164,7 +165,7 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
 
                 }
 
-                progressDialog.dismiss();
+
 
 
             }
