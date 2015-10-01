@@ -163,7 +163,14 @@ public class ActivityVerifyPayment extends Activity {
                 return false;
             }
         });
-        webview.loadUrl(order.getUrl());
+        String orderUrl = order.getUrl();
+        Log.d(TAG, orderUrl);
+        if(orderUrl == ""){
+            popupFailed();
+        }
+        else {
+            webview.loadUrl(order.getUrl());
+        }
 
         popupWindow.setFocusable(true);
         popupWindow.showAtLocation(findViewById(R.id.wrapperPopup), Gravity.CENTER, 0, 0);

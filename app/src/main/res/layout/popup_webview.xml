@@ -15,6 +15,17 @@
         android:src="@drawable/close"
         android:visibility="gone"
         />
+    <ProgressBar
+        android:id="@+id/webviewProgress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:progressDrawable="@drawable/progress_bar"
+        android:layout_width="fill_parent"
+        android:layout_height="5dp"
+        android:indeterminate="false"
+        android:max="100"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
     <ScrollView
         android:id="@+id/webviewContainer"
         android:layout_width="fill_parent"
@@ -33,16 +44,6 @@
         </LinearLayout>
     </ScrollView>
 
-    <ProgressBar
-        android:id="@+id/webviewProgress"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:progressDrawable="@drawable/progress_bar"
-        android:layout_width="fill_parent"
-        android:layout_height="3dp"
-        android:indeterminate="false"
-        android:max="100"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"/>
+
 
 </LinearLayout>
