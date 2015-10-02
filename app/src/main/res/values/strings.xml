@@ -114,5 +114,8 @@
 
         ]]>
     </string>
+    <string name="title_activity_activity_promo_web_view">ActivityPromoWebView</string>
+
+    <string name="hello_world">Hello world!</string>
 
     </resources>
