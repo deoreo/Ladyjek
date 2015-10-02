@@ -375,11 +375,12 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
 
                 JSONControl jsControl = new JSONControl();
                 JSONObject response = jsControl.postLogin(phoneNumber,password);
+                Log.d("json response", response.toString());
                 JSONObject responseUser = response.getJSONObject("user");
                 String token = response.getString("token");
                 appManager.setUserToken(token);
 
-                Log.d("json response", response.toString());
+
                 try {
                     String _verified = responseUser.getString("verified");
                     String _id = responseUser.getString("_id");

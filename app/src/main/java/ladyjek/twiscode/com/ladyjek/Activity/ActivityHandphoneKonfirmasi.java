@@ -71,6 +71,7 @@ public class ActivityHandphoneKonfirmasi extends Activity {
                 txtSmsCode5.setText(messageCode.substring(4));
                 txtSmsCode6.setText(messageCode.substring(5));
                 txtSmsCode = messageCode;
+                txtSmsCode6.requestFocus();
             }
         };
 
@@ -243,6 +244,7 @@ public class ActivityHandphoneKonfirmasi extends Activity {
                 if (keyCode == KeyEvent.KEYCODE_DEL) {
                     if (txtSmsCode2.getText().toString().isEmpty()) {
                         txtSmsCode1.requestFocus();
+                        txtSmsCode1.setText("");
                     }
                 }
                 return false;
@@ -254,7 +256,9 @@ public class ActivityHandphoneKonfirmasi extends Activity {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if(keyCode == KeyEvent.KEYCODE_DEL){
                     if(txtSmsCode3.getText().toString().isEmpty()){
+
                         txtSmsCode2.requestFocus();
+                        txtSmsCode2.setText("");
                     }
                 }
                 return false;
@@ -266,7 +270,9 @@ public class ActivityHandphoneKonfirmasi extends Activity {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if(keyCode == KeyEvent.KEYCODE_DEL){
                     if(txtSmsCode4.getText().toString().isEmpty()){
+
                         txtSmsCode3.requestFocus();
+                        txtSmsCode3.setText("");
                     }
                 }
                 return false;
@@ -279,6 +285,7 @@ public class ActivityHandphoneKonfirmasi extends Activity {
                 if(keyCode == KeyEvent.KEYCODE_DEL){
                     if(txtSmsCode5.getText().toString().isEmpty()){
                         txtSmsCode4.requestFocus();
+                        txtSmsCode4.setText("");
                     }
                 }
                 return false;
@@ -291,6 +298,7 @@ public class ActivityHandphoneKonfirmasi extends Activity {
                 if(keyCode == KeyEvent.KEYCODE_DEL){
                     if(txtSmsCode6.getText().toString().isEmpty()){
                         txtSmsCode5.requestFocus();
+                        txtSmsCode5.setText("");
                     }
                 }
                 return false;
