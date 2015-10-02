@@ -130,6 +130,7 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
                 ApplicationData.nomorLogin = txtEmail.getText().toString();
                 Intent i = new Intent(getBaseContext(), ActivityRegister.class);
                 startActivity(i);
+                finish();
             }
         });
 
@@ -139,6 +140,7 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
                 ApplicationData.nomorLogin = txtEmail.getText().toString();
                 Intent i = new Intent(getBaseContext(), ActivityRegister.class);
                 startActivity(i);
+                finish();
             }
         });
 
@@ -148,6 +150,7 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
                 ApplicationData.nomorLogin = txtEmail.getText().toString();
                 Intent i = new Intent(getBaseContext(), ActivityRegister.class);
                 startActivity(i);
+                finish();
             }
         });
 
@@ -487,6 +490,7 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
                                     ApplicationData.nomorLogin = txtEmail.getText().toString();
                                     Intent i = new Intent(getBaseContext(), ActivityRegister.class);
                                     startActivity(i);
+                                    finish();
                                 }
                             })
                             .setIcon(R.drawable.ladyjek_icon)

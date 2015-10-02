@@ -245,7 +245,7 @@ public class ActivityRegister extends ActionBarActivity {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     btnClearPassword.setVisibility(GONE);
                     btnClearConfirmPassword.setVisibility(GONE);
-                    btnClearName.setVisibility(GONE);
+                    btnClearEmail.setVisibility(GONE);
                     if (!txtName.getText().toString().isEmpty()) {
                         btnClearName.setVisibility(VISIBLE);
                     }
@@ -323,11 +323,13 @@ public class ActivityRegister extends ActionBarActivity {
                 }
             }
         });
+    }
 
-
-
-
-
+    @Override
+    public void onBackPressed() {
+        Intent i = new Intent(getBaseContext(), ActivityLogin.class);
+        startActivity(i);
+        finish();
 
     }
 
