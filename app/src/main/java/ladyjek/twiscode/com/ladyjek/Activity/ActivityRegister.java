@@ -64,11 +64,11 @@ public class ActivityRegister extends ActionBarActivity {
         wrapperRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                String name = txtName.getText().toString();
                 String phoneNumber = txtPhone.getText().toString();
                 String password = txtPassword.getText().toString();
                 String confirm = txtConfirm.getText().toString();
-                if (phoneNumber == null || password == null || phoneNumber.trim().isEmpty() || password.trim().isEmpty() || confirm == null || confirm.trim().isEmpty()) {
+                if (phoneNumber == null || password == null || phoneNumber.trim().isEmpty() || password.trim().isEmpty() || confirm == null || confirm.trim().isEmpty() || name == null || name.trim().isEmpty()) {
                     DialogManager.showDialog(act, "Warning", "Masukkan semua data Anda!");
                 } else if (!confirm.equals(password)) {
                     DialogManager.showDialog(act, "Warning", "Password tidak sesuai!");
@@ -81,6 +81,7 @@ public class ActivityRegister extends ActionBarActivity {
                         Log.d("phone 1", phoneNumber);
                     }
                     new DoRegister(act).execute(
+                            name,
                             phoneNumber,
                             password
                     );
@@ -383,8 +384,9 @@ public class ActivityRegister extends ActionBarActivity {
         protected String doInBackground(String... params) {
             try {
 
-                String phoneNumber = params[0];
-                String password = params[1];
+                String name = params[0];
+                String phoneNumber = params[1];
+                String password = params[2];
                 JSONControl jsControl = new JSONControl();
                 JSONObject responseRegister = jsControl.postRegister("Ladyjek",phoneNumber, password);
                 Log.d("json responseRegister", responseRegister.toString());
