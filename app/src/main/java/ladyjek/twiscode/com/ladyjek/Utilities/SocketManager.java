@@ -299,7 +299,7 @@ public class SocketManager {
                     String toLongitude = obj.getJSONObject("toGeo").getJSONArray("coordinates").getString(0);
                     String fromLatitude = obj.getJSONObject("fromGeo").getJSONArray("coordinates").getString(1);
                     String fromLongitude = obj.getJSONObject("fromGeo").getJSONArray("coordinates").getString(0);
-                    String name = "Nabila";
+                    String name = "";
                     String pay = "cash";
                     boolean release = false;
                     try{
@@ -349,7 +349,6 @@ public class SocketManager {
                     float intDist = Float.parseFloat(strDist[0]);
                     if(intDist<=6.0) {
                         totalPrice = 25000;
-                        //totalPrice = 4000 * Math.round(distance);
                     }
                     else{
                         float selisih = intDist-6;
@@ -371,7 +370,8 @@ public class SocketManager {
                 }
 
 
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 ex.printStackTrace();
             }
 
@@ -574,10 +574,10 @@ public class SocketManager {
                             else {
                                 payment = "Tunai";
                             }
-                            String name = "Nabila";
-                            String member = "12 Feb 2015";
-                            String phone = "089682587567";
-                            String rate = "4.5";
+                            String name = "";
+                            String member = "";
+                            String phone = "";
+                            String rate = "";
 
                             int totalPrice = 0;
                             String[] strDist = distance.split(" ");
@@ -747,7 +747,7 @@ public class SocketManager {
                             String toLongitude = obj.getJSONObject("toGeo").getJSONArray("coordinates").getString(0);
                             String fromLatitude = obj.getJSONObject("fromGeo").getJSONArray("coordinates").getString(1);
                             String fromLongitude = obj.getJSONObject("fromGeo").getJSONArray("coordinates").getString(0);
-                            String name = "Nabila";
+                            String name = "";
                             String pay = obj.getString("paymentMethod");
                             String url = "";
                             String payment = "";
