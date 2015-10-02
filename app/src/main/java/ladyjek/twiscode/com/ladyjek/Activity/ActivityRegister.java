@@ -35,9 +35,9 @@ import static android.view.View.VISIBLE;
 
 public class ActivityRegister extends ActionBarActivity {
 
-    private EditText txtPhone,txtPassword,txtConfirm;
+    private EditText txtPhone,txtPassword,txtConfirm, txtName;
     private TextView btnRegister;
-    private RelativeLayout btnClearEmail, btnClearPassword, btnClearConfirmPassword, wrapperRegister;
+    private RelativeLayout btnClearEmail,btnClearName, btnClearPassword, btnClearConfirmPassword, wrapperRegister;
     private Activity act;
 
     @Override
@@ -49,8 +49,10 @@ public class ActivityRegister extends ActionBarActivity {
         txtPhone = (EditText) findViewById(R.id.txtPhone);
         txtPassword = (EditText) findViewById(R.id.txtPassword);
         txtConfirm = (EditText) findViewById(R.id.txtConfirmPassword);
+        txtName = (EditText) findViewById(R.id.txtName);
         btnRegister = (TextView) findViewById(R.id.btnRegister);
         btnClearEmail = (RelativeLayout) findViewById(R.id.btnClearEmail);
+        btnClearName = (RelativeLayout) findViewById(R.id.btnClearName);
         btnClearPassword = (RelativeLayout) findViewById(R.id.btnClearPassword);
         btnClearConfirmPassword = (RelativeLayout) findViewById(R.id.btnClearConfirmPassword);
         wrapperRegister = (RelativeLayout) findViewById(R.id.wrapperRegister);
@@ -71,12 +73,12 @@ public class ActivityRegister extends ActionBarActivity {
                 } else if (!confirm.equals(password)) {
                     DialogManager.showDialog(act, "Warning", "Password tidak sesuai!");
                 } else {
-                    String num=phoneNumber.substring(0,1);
-                    Log.d("phone num",num);
-                    Log.d("phone",phoneNumber);
-                    if(num.contains("0")){
+                    String num = phoneNumber.substring(0, 1);
+                    Log.d("phone num", num);
+                    Log.d("phone", phoneNumber);
+                    if (num.contains("0")) {
                         phoneNumber = phoneNumber.substring(1);
-                        Log.d("phone 1",phoneNumber);
+                        Log.d("phone 1", phoneNumber);
                     }
                     new DoRegister(act).execute(
                             phoneNumber,
@@ -106,6 +108,32 @@ public class ActivityRegister extends ActionBarActivity {
                 } else if (s.length() == 0) {
                     btnClearEmail.setVisibility(GONE);
                     btnClearConfirmPassword.setVisibility(GONE);
+                    btnClearName.setVisibility(GONE);
+                }
+            }
+        });
+
+
+        txtName.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+                if (s.length() >= 1) {
+                    btnClearName.setVisibility(VISIBLE);
+                } else if (s.length() == 0) {
+                    btnClearEmail.setVisibility(GONE);
+                    btnClearConfirmPassword.setVisibility(GONE);
+                    btnClearName.setVisibility(GONE);
                 }
             }
         });
@@ -129,6 +157,7 @@ public class ActivityRegister extends ActionBarActivity {
                 } else if (s.length() == 0) {
                     btnClearEmail.setVisibility(GONE);
                     btnClearConfirmPassword.setVisibility(GONE);
+                    btnClearName.setVisibility(GONE);
                 }
             }
         });
@@ -150,6 +179,7 @@ public class ActivityRegister extends ActionBarActivity {
                 else if(s.length()==0){
                     btnClearEmail.setVisibility(GONE);
                     btnClearPassword.setVisibility(GONE);
+                    btnClearName.setVisibility(GONE);
                 }
             }
         });
@@ -160,14 +190,26 @@ public class ActivityRegister extends ActionBarActivity {
                 txtPhone.setText("");
                 btnClearEmail.setVisibility(GONE);
                 btnClearConfirmPassword.setVisibility(GONE);
+                btnClearName.setVisibility(GONE);
             }
         });
+        btnClearName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                txtName.setText("");
+                btnClearEmail.setVisibility(GONE);
+                btnClearConfirmPassword.setVisibility(GONE);
+                btnClearName.setVisibility(GONE);
+            }
+        });
+
         btnClearPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 txtPassword.setText("");
                 btnClearPassword.setVisibility(GONE);
                 btnClearEmail.setVisibility(GONE);
+                btnClearName.setVisibility(GONE);
             }
         });
         btnClearConfirmPassword.setOnClickListener(new View.OnClickListener() {
@@ -176,6 +218,7 @@ public class ActivityRegister extends ActionBarActivity {
                 txtConfirm.setText("");
                 btnClearConfirmPassword.setVisibility(GONE);
                 btnClearEmail.setVisibility(GONE);
+                btnClearName.setVisibility(GONE);
             }
         });
 
@@ -186,6 +229,7 @@ public class ActivityRegister extends ActionBarActivity {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     btnClearPassword.setVisibility(GONE);
                     btnClearConfirmPassword.setVisibility(GONE);
+                    btnClearName.setVisibility(GONE);
                     if (!txtPhone.getText().toString().isEmpty()) {
                         btnClearEmail.setVisibility(VISIBLE);
                     }
@@ -193,6 +237,24 @@ public class ActivityRegister extends ActionBarActivity {
                 return false;
             }
         });
+        txtName.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                // TODO Auto-generated method stub
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    btnClearPassword.setVisibility(GONE);
+                    btnClearConfirmPassword.setVisibility(GONE);
+                    btnClearName.setVisibility(GONE);
+                    if (!txtName.getText().toString().isEmpty()) {
+                        btnClearName.setVisibility(VISIBLE);
+                    }
+                }
+                return false;
+            }
+        });
+
+
+
         txtPassword.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -200,6 +262,7 @@ public class ActivityRegister extends ActionBarActivity {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     btnClearEmail.setVisibility(GONE);
                     btnClearConfirmPassword.setVisibility(GONE);
+                    btnClearName.setVisibility(GONE);
                     if (!txtPassword.getText().toString().isEmpty()) {
                         btnClearPassword.setVisibility(VISIBLE);
                     }
@@ -214,6 +277,7 @@ public class ActivityRegister extends ActionBarActivity {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     btnClearEmail.setVisibility(GONE);
                     btnClearPassword.setVisibility(GONE);
+                    btnClearName.setVisibility(GONE);
                     if (!txtPassword.getText().toString().isEmpty()) {
                         btnClearConfirmPassword.setVisibility(VISIBLE);
                     }
