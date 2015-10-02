@@ -1045,7 +1045,7 @@ public class SocketManager {
             ApplicationData.history = new ArrayList<>();
         }
         Log.d(TAG, "getHistory");
-        socket.emit("get orders", page,new Ack() {
+        socket.emit("get histories", page,new Ack() {
             @Override
             public void call(Object... args) {
                 try {

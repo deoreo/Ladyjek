@@ -152,26 +152,28 @@ public class ActivityHistory extends FragmentActivity {
                     allLoaded = false;
                     mPullToLoadView.setComplete();
 
-
+                    data = ApplicationData.history;
                     if(data.size() > 0){
-                        isNull = true;
-                        data = new ArrayList<>();
-                        data.add(new ModelHistory("1","","","","","","","","","",""));
-                        adapter = new AdapterHistory(act,data,isNull);
-                        mRecyclerView.setAdapter(adapter);
-                        data = new ArrayList<>();
+                        isNull = false;
+
                         /*
                         noItems.setVisibility(View.GONE);
                         mPullToLoadView.setVisibility(View.VISIBLE);
                         */
                     }
                     else{
-                        isNull = false;
+                        data = new ArrayList<>();
+                        data.add(new ModelHistory("1","","","","","","","","","",""));
+                        adapter = new AdapterHistory(act,data,isNull);
+                        mRecyclerView.setAdapter(adapter);
+                        data = new ArrayList<>();
+                        isNull = true;
                         /*
                         noItems.setVisibility(View.VISIBLE);
                         mPullToLoadView.setVisibility(View.GONE);
                         */
                     }
+
 
                 }
 
