@@ -63,15 +63,34 @@
             android:layout_centerInParent="true"
             android:layout_marginRight="10dp"
             android:layout_gravity="center"/>
-        <TextView
-            android:id="@+id/passengerFrom"
+        <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="14dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/passengerFrom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14dp"
+                android:singleLine="true"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textColor="@color/black_color"
+                android:textStyle="bold"
+                fontPath="@string/GothamRndBold"
+                />
+            <TextView
+                android:id="@+id/passengerFromDetail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="11dp"
+                android:singleLine="true"
+                android:maxLines="1"
+                android:ellipsize="end"
+                />
+        </LinearLayout>
 
-            android:layout_gravity="center"
-            />
     </LinearLayout>
     <LinearLayout
         android:layout_marginTop="10dp"
@@ -85,16 +104,56 @@
             android:layout_centerInParent="true"
             android:layout_marginRight="10dp"
             android:layout_gravity="center"/>
-        <TextView
-            android:id="@+id/passengerDestination"
+        <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="14dp"
-            android:layout_gravity="center"
-            />
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/passengerDestination"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14dp"
+                android:singleLine="true"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textColor="@color/black_color"
+                android:textStyle="bold"
+                fontPath="@string/GothamRndBold"
+                />
+            <TextView
+                android:id="@+id/passengerDestinationDetail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="11dp"
+                android:singleLine="true"
+                android:maxLines="1"
+                android:ellipsize="end"
+
+                />
+        </LinearLayout>
+
     </LinearLayout>
+    <View
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/black_color"
+        />
 
-
+    <TextView
+        android:layout_marginTop="10dp"
+        android:id="@+id/passengerStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="17dp"
+        android:singleLine="true"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:textColor="@color/black_color"
+        android:gravity="center"
+        android:textStyle="bold"
+        fontPath="@string/GothamRndBold"
+        />
 
 </LinearLayout>

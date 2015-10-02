@@ -79,7 +79,7 @@ public class AdapterHistory extends RecyclerView.Adapter<AdapterHistory.MyViewHo
             decimalFormat.setDecimalFormatSymbols(otherSymbols);
 
             final int pos = position;
-            String asal = "",tgl="",biaya="",tujuan="";
+            String asal = "",tgl="",biaya="",tujuan="",status="";
 
             try {
                 asal = data.get(position).getFrom();
@@ -108,20 +108,37 @@ public class AdapterHistory extends RecyclerView.Adapter<AdapterHistory.MyViewHo
             catch (Exception ex){
                 ex.printStackTrace();
             }
+            try {
+                status = data.get(position).getStatus();
+            }
+            catch (Exception ex){
+                ex.printStackTrace();
+            }
 
             String[] from = asal.split(", ");
             String[] dest = tujuan.split(", ");
             try {
-                holder.asal.setText(Html.fromHtml("<b>" + from[0] + "</b><br/>" + from[1] + ", " + from[2] + ", " + from[3] + ", " + from[4]));
+                holder.asal.setText(from[0]);
             }catch(Exception e){
-                holder.asal.setText(Html.fromHtml("<b>" + from[0] + "</b><br/>" + from[1] + ", " + from[2] + ", " + from[3]));
+                holder.asal.setText(from[0]);
             }
             try {
-                holder.tujuan.setText(Html.fromHtml("<b>" + dest[0] + "</b><br/>" + dest[1] + ", " + dest[2] + ", " + dest[3] + ", " + dest[4]));
+                holder.tujuan.setText(dest[0]);
             }catch (Exception e){
-                holder.tujuan.setText(Html.fromHtml("<b>" + dest[0] + "</b><br/>" + dest[1] + ", " + dest[2] + ", " + dest[3]));
+                holder.tujuan.setText(dest[0]);
+            }
+            try {
+                holder.detailAsal.setText(from[1] + ", " + from[2] + ", " + from[3] + ", " + from[4]);
+            }catch(Exception e){
+                holder.detailAsal.setText(from[1] + ", " + from[2] + ", " + from[3]);
+            }
+            try {
+                holder.detailTujuan.setText(dest[1] + ", " + dest[2] + ", " + dest[3] + ", " + dest[4]);
+            }catch (Exception e){
+                holder.tujuan.setText(dest[1] + ", " + dest[2] + ", " + dest[3]);
             }
             holder.biaya.setText("Rp. "+decimalFormat.format(Integer.parseInt(biaya)));
+            holder.status.setText(status);
             holder.tgl.setText(tgl);
 
             holder.row.setOnClickListener(new View.OnClickListener() {
@@ -146,15 +163,18 @@ public class AdapterHistory extends RecyclerView.Adapter<AdapterHistory.MyViewHo
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView asal,tujuan,biaya,tgl;
+        TextView asal,tujuan,biaya,tgl,detailAsal,detailTujuan,status;
         LinearLayout row;
         public MyViewHolder(View itemView) {
             super(itemView);
             if(!isNull){
                 asal = (TextView) itemView.findViewById(R.id.passengerFrom);
                 tujuan = (TextView) itemView.findViewById(R.id.passengerDestination);
+                detailAsal = (TextView) itemView.findViewById(R.id.passengerFromDetail);
+                detailTujuan = (TextView) itemView.findViewById(R.id.passengerDestinationDetail);
                 biaya = (TextView) itemView.findViewById(R.id.passengerPrice);
                 tgl = (TextView) itemView.findViewById(R.id.passengerDate);
+                status = (TextView) itemView.findViewById(R.id.passengerStatus);
                 row = (LinearLayout)itemView.findViewById(R.id.layout_row);
             }
 
