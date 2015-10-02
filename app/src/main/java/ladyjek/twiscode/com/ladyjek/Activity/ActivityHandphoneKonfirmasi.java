@@ -101,6 +101,12 @@ public class ActivityHandphoneKonfirmasi extends Activity {
                 if (ApplicationData.editPhone) {
                     finish();
                 } else {
+                    txtSmsCode = txtSmsCode1.getText().toString()+
+                            txtSmsCode2.getText().toString()+
+                            txtSmsCode3.getText().toString()+
+                            txtSmsCode4.getText().toString()+
+                            txtSmsCode5.getText().toString()+
+                            txtSmsCode6.getText().toString();
                     new DoVerifyCode(act).execute(
                             txtSmsCode
                     );
@@ -130,6 +136,13 @@ public class ActivityHandphoneKonfirmasi extends Activity {
                     finish();
                 }
                 else{
+                    txtSmsCode = txtSmsCode1.getText().toString()+
+                            txtSmsCode2.getText().toString()+
+                            txtSmsCode3.getText().toString()+
+                            txtSmsCode4.getText().toString()+
+                            txtSmsCode5.getText().toString()+
+                            txtSmsCode6.getText().toString();
+
                     new DoVerifyCode(act).execute(
                             txtSmsCode
                     );
