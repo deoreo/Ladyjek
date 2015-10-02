@@ -16,8 +16,10 @@ import android.telephony.gsm.SmsMessage;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
@@ -132,6 +134,166 @@ public class ActivityHandphoneKonfirmasi extends Activity {
                     );
                 }
 
+            }
+        });
+
+        txtSmsCode1.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+                if (s.length() > 0) {
+                    txtSmsCode2.requestFocus();
+                }
+            }
+        });
+
+        txtSmsCode2.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+                if (s.length() > 0) {
+                    txtSmsCode3.requestFocus();
+                }
+            }
+        });
+
+        txtSmsCode3.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+                if (s.length() > 0) {
+                    txtSmsCode4.requestFocus();
+                }
+            }
+        });
+
+        txtSmsCode4.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+                if (s.length() > 0) {
+                    txtSmsCode5.requestFocus();
+                }
+            }
+        });
+
+        txtSmsCode5.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+                if (s.length() > 0) {
+                    txtSmsCode6.requestFocus();
+                }
+            }
+        });
+
+        txtSmsCode2.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_DEL) {
+                    if (txtSmsCode2.getText().toString().isEmpty()) {
+                        txtSmsCode1.requestFocus();
+                    }
+                }
+                return false;
+            }
+        });
+
+        txtSmsCode3.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if(keyCode == KeyEvent.KEYCODE_DEL){
+                    if(txtSmsCode3.getText().toString().isEmpty()){
+                        txtSmsCode2.requestFocus();
+                    }
+                }
+                return false;
+            }
+        });
+
+        txtSmsCode4.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if(keyCode == KeyEvent.KEYCODE_DEL){
+                    if(txtSmsCode4.getText().toString().isEmpty()){
+                        txtSmsCode3.requestFocus();
+                    }
+                }
+                return false;
+            }
+        });
+
+        txtSmsCode5.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if(keyCode == KeyEvent.KEYCODE_DEL){
+                    if(txtSmsCode5.getText().toString().isEmpty()){
+                        txtSmsCode4.requestFocus();
+                    }
+                }
+                return false;
+            }
+        });
+
+        txtSmsCode6.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if(keyCode == KeyEvent.KEYCODE_DEL){
+                    if(txtSmsCode6.getText().toString().isEmpty()){
+                        txtSmsCode5.requestFocus();
+                    }
+                }
+                return false;
             }
         });
 
