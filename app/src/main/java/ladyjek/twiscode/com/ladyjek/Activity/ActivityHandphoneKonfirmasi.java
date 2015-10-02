@@ -251,6 +251,26 @@ public class ActivityHandphoneKonfirmasi extends Activity {
             }
         });
 
+        txtSmsCode6.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+                if (s.length() == 0) {
+                    txtSmsCode5.requestFocus();
+                }
+            }
+        });
+
         txtSmsCode2.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -308,10 +328,13 @@ public class ActivityHandphoneKonfirmasi extends Activity {
         txtSmsCode6.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
+                Log.d("backspace",""+keyCode);
                 if(keyCode == KeyEvent.KEYCODE_DEL){
+                    Log.d("backspace","del");
                     if(txtSmsCode6.getText().toString().isEmpty()){
                         txtSmsCode5.requestFocus();
                         txtSmsCode5.setText("");
+                        Log.d("backspace","true");
                     }
                 }
                 return false;
@@ -319,6 +342,8 @@ public class ActivityHandphoneKonfirmasi extends Activity {
         });
 
     }
+
+
 
 
 

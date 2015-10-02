@@ -1060,7 +1060,7 @@ public class SocketManager {
                                     ModelHistory history = new ModelHistory();
                                     JSONObject arr = data.getJSONObject(i);
                                     String distance = arr.getJSONObject("distance").getString("text");
-                                    int price = Math.round(Float.parseFloat(distance.split(" ")[0]) * 4000);
+                                    String price = arr.getString("price");
                                     String date = "23-09-2015";
                                     String payment = "TUNAI";
                                     try {
@@ -1103,7 +1103,7 @@ public class SocketManager {
                                     history.setDestination(arr.getString("to"));
                                     history.setDistance(distance);
                                     history.setDuration(arr.getJSONObject("duration").getString("text"));
-                                    history.setPrice(Integer.toString(price));
+                                    history.setPrice(price);
                                     history.setStatus(arr.getString("status"));
                                     history.setDate(date);
                                     history.setPayment(payment);
