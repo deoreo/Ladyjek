@@ -329,10 +329,12 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
                     txtName.setText(ApplicationData.driver.getName());
                     txtNopol.setText(ApplicationData.driver.getNopol());
                     txtRate.setText(ApplicationData.driver.getRate());
-                    if(ApplicationData.driver.getImage()!=null)
-                        Picasso.with(ActivityPickUp.this).load(ApplicationData.driver.getImage()).into(imgDriver);
-                    else
-                        Picasso.with(ActivityPickUp.this).load(R.drawable.ladyjek_icon).into(imgDriver);
+                    try {
+                        if (ApplicationData.driver.getImage() != null)
+                            Picasso.with(ActivityPickUp.this).load(ApplicationData.driver.getImage()).into(imgDriver);
+                    }catch (Exception e){
+                        Picasso.with(ActivityPickUp.this).load(R.drawable.img_driver_default).into(imgDriver);
+                    }
                 } else {
                     Log.d("getdriver", "false");
                 }
@@ -347,10 +349,12 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
             txtName.setText(ApplicationData.driver.getName());
             txtNopol.setText(ApplicationData.driver.getNopol());
             txtRate.setText(ApplicationData.driver.getRate());
-            if(ApplicationData.driver.getImage()!=null)
-                Picasso.with(ActivityPickUp.this).load(ApplicationData.driver.getImage()).into(imgDriver);
-            else
-                Picasso.with(ActivityPickUp.this).load(R.drawable.ladyjek_icon).into(imgDriver);
+            try {
+                if (ApplicationData.driver.getImage() != null)
+                    Picasso.with(ActivityPickUp.this).load(ApplicationData.driver.getImage()).into(imgDriver);
+            }catch (Exception e){
+                Picasso.with(ActivityPickUp.this).load(R.drawable.img_driver_default).into(imgDriver);
+            }
         } else {
             Log.d("driver", "null");
             if (NetworkManager.getInstance(ActivityPickUp.this).isConnectedInternet()) {

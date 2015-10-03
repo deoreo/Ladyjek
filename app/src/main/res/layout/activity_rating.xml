@@ -52,7 +52,7 @@
                     android:layout_height="100dp"
                     app:border_width="0dp"
                     android:layout_centerHorizontal="true"
-                    android:src="@drawable/driver_photo_circle"
+                    android:src="@drawable/img_driver_default"
                     app:border_overlay="true"
                     android:layout_below="@id/line1"
                     android:layout_marginTop="10dp"

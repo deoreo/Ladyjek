@@ -145,7 +145,7 @@ public class ServiceLocation implements LocationListener {
             googleMap.animateCamera(cameraUpdate);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            ///e.printStackTrace();
         }
     }
 
@@ -260,7 +260,7 @@ public class ServiceLocation implements LocationListener {
 
                     Looper.loop();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                 }
                 return "OK";
             } catch (Exception e) {
@@ -296,7 +296,7 @@ public class ServiceLocation implements LocationListener {
 
 
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        //e.printStackTrace();
                     }
                     break;
             }
@@ -361,7 +361,7 @@ public class ServiceLocation implements LocationListener {
                 try {
                     mPosition = posDriver;
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                 }
                 return "OK";
             } catch (Exception e) {
@@ -397,7 +397,7 @@ public class ServiceLocation implements LocationListener {
                         gMap.animateCamera(cameraUpdate);
 
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        //e.printStackTrace();
                     }
                     break;
             }

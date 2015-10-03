@@ -25,7 +25,9 @@ import android.widget.RelativeLayout;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.squareup.picasso.Picasso;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import ladyjek.twiscode.com.ladyjek.Fragment.FragmentHome;
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.Model.ModelOrder;
@@ -46,6 +48,7 @@ public class ActivityRate extends ActionBarActivity {
     private TextView txtPrice, txtName, txtJarak, txtWaktu, txtPembayaran, btnSaran;
     private EditText txtFeedback;
     private RelativeLayout btnClearFeedback, wrapperRegister;
+    private CircleImageView imgDriver;
     ApplicationManager appManager;
     Activity mActivity;
     ModelOrder order;
@@ -67,13 +70,12 @@ public class ActivityRate extends ActionBarActivity {
         txtJarak = (TextView) findViewById(R.id.txtDistance);
         txtWaktu = (TextView) findViewById(R.id.txtDuration);
         txtPembayaran = (TextView) findViewById(R.id.txtMetode);
-        //txtPrice.setText("Total : " + ApplicationData.price);
         txtFeedback = (EditText) findViewById(R.id.feedbackDriver);
         btnClearFeedback = (RelativeLayout) findViewById(R.id.btnFeedback);
         btnSaran = (TextView) findViewById(R.id.btnSaran);
         txtRate = (RatingBar) findViewById(R.id.rateDriver);
         wrapperRegister = (RelativeLayout) findViewById(R.id.wrapperRegister);
-
+        imgDriver = (CircleImageView) findViewById(R.id.imgDriver);
 
         txtFeedback.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 
@@ -262,7 +264,12 @@ public class ActivityRate extends ActionBarActivity {
                     txtWaktu.setText(order.getDuration());
                     txtPrice.setText("Rp." + order.getPrice());
                     txtPembayaran.setText(order.getPayment());
-
+                    try {
+                        if (ApplicationData.driver.getImage() != null)
+                            Picasso.with(ActivityRate.this).load(ApplicationData.driver.getImage()).into(imgDriver);
+                    }catch (Exception e){
+                        Picasso.with(ActivityRate.this).load(R.drawable.img_driver_default).into(imgDriver);
+                    }
                     if(order.getPayment().toLowerCase().contains("mandiri")&& !ApplicationData.release){
                         try {
                             Context ctx = ActivityRate.this;
@@ -313,7 +320,12 @@ public class ActivityRate extends ActionBarActivity {
             txtWaktu.setText(order.getDuration());
             txtPrice.setText("Rp."+ order.getPrice());
             txtPembayaran.setText(order.getPayment());
-
+            try {
+                if (ApplicationData.driver.getImage() != null)
+                    Picasso.with(ActivityRate.this).load(ApplicationData.driver.getImage()).into(imgDriver);
+            }catch (Exception e){
+                Picasso.with(ActivityRate.this).load(R.drawable.img_driver_default).into(imgDriver);
+            }
             if(order.getPayment().toLowerCase().contains("mandiri")&& !ApplicationData.release){
                 try {
                     Context ctx = ActivityRate.this;

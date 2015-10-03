@@ -51,7 +51,7 @@
                         android:id="@+id/imgDriver"
                         android:layout_width="140dp"
                         android:layout_height="140dp"
-                        android:background="@drawable/driver_photo"/>
+                        android:background="@drawable/img_driver_default"/>
 
                     <RelativeLayout
                         android:layout_width="match_parent"
