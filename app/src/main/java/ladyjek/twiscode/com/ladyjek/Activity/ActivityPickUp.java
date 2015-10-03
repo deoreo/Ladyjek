@@ -26,6 +26,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
@@ -42,6 +43,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 import org.w3c.dom.Document;
@@ -71,6 +73,7 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
     private Marker markerFrom, markerDriver;
     private Button btnCall, btnSMS;
     private TextView txtEstimate, txtName, txtRate, txtNopol, btnCancel;
+    private ImageView imgDriver;
     private ApplicationManager appManager;
     private final String TAG_FROM = "FROM";
     private final String TAG_DRIVER = "DRIVER";
@@ -98,6 +101,7 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
         txtName = (TextView) findViewById(R.id.nameDriver);
         txtNopol = (TextView) findViewById(R.id.platDriver);
         txtRate = (TextView) findViewById(R.id.rateDriver);
+        imgDriver = (ImageView) findViewById(R.id.imgDriver);
         //mHandler = new Handler();
         appManager = new ApplicationManager(ActivityPickUp.this);
         socketManager = ApplicationData.socketManager;
@@ -153,7 +157,7 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
             public void onClick(View v) {
                 if (isPhone) {
                     Intent callIntent = new Intent(Intent.ACTION_DIAL);
-                    callIntent.setData(Uri.parse("tel:" + "0"+ApplicationData.driver.getPhone()));
+                    callIntent.setData(Uri.parse("tel:" + ApplicationData.driver.getPhone()));
                     startActivity(callIntent);
                 }
 
@@ -167,7 +171,7 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
                     try {
 
                         Intent sendIntent = new Intent(Intent.ACTION_VIEW);
-                        sendIntent.putExtra("address", "0"+ApplicationData.driver.getPhone());
+                        sendIntent.putExtra("address", ApplicationData.driver.getPhone());
                         sendIntent.putExtra("sms_body", "Halo cantik, jemput aku dong !");
                         sendIntent.setType("vnd.android-dir/mms-sms");
                         startActivity(sendIntent);
@@ -325,6 +329,10 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
                     txtName.setText(ApplicationData.driver.getName());
                     txtNopol.setText(ApplicationData.driver.getNopol());
                     txtRate.setText(ApplicationData.driver.getRate());
+                    if(ApplicationData.driver.getImage()!=null)
+                        Picasso.with(ActivityPickUp.this).load(ApplicationData.driver.getImage()).into(imgDriver);
+                    else
+                        Picasso.with(ActivityPickUp.this).load(R.drawable.ladyjek_icon).into(imgDriver);
                 } else {
                     Log.d("getdriver", "false");
                 }
@@ -339,6 +347,10 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
             txtName.setText(ApplicationData.driver.getName());
             txtNopol.setText(ApplicationData.driver.getNopol());
             txtRate.setText(ApplicationData.driver.getRate());
+            if(ApplicationData.driver.getImage()!=null)
+                Picasso.with(ActivityPickUp.this).load(ApplicationData.driver.getImage()).into(imgDriver);
+            else
+                Picasso.with(ActivityPickUp.this).load(R.drawable.ladyjek_icon).into(imgDriver);
         } else {
             Log.d("driver", "null");
             if (NetworkManager.getInstance(ActivityPickUp.this).isConnectedInternet()) {

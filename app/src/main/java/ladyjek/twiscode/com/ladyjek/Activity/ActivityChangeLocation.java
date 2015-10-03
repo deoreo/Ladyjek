@@ -328,6 +328,13 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
 
     @Override
     public void onMapClick(LatLng latLng) {
+        final ProgressDialog progressDialog;
+        progressDialog = new ProgressDialog(mActivity);
+        progressDialog.setMessage("Memuat lokasi anda. . .");
+        progressDialog.setIndeterminate(false);
+        progressDialog.setCancelable(false);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.show();
         googleMap.clear();
         posTemp = latLng;
         float zoom = googleMap.getCameraPosition().zoom;
@@ -355,6 +362,7 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
                     ApplicationData.officeAddress = address;
                     ApplicationData.officeAddressDetail = detail;
                 }
+                progressDialog.dismiss();
             }
 
             @Override
@@ -577,7 +585,7 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
     public class GetSuggestion extends AsyncTask<String, Void, JSONArray> {
         String address, tag;
         Activity activity;
-LatLng latLng;
+        LatLng latLng;
         public GetSuggestion(Activity activity, String address) {
             this.address = address;
             this.tag = tag;
@@ -657,7 +665,7 @@ LatLng latLng;
                             }
                         layoutSuggestion.setVisibility(GONE);
                         hideKeyboard();
-                        ModelGeocode geocode = GoogleAPIManager.geocode(selectedPlace.getAddress());
+                        ModelGeocode geocode = GoogleAPIManager.geocode(description);
                         latLng = new LatLng(geocode.getLat(), geocode.getLon());
                         markerTemp = googleMap.addMarker(
                                 new MarkerOptions()

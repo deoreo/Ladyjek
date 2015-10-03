@@ -169,7 +169,7 @@ public class GoogleAPIManager {
                 + "origin=" + start.latitude + "," + start.longitude
                 + "&destination=" + end.latitude + "," + end.longitude
                 + "&sensor=false&units=metric&mode=driving"
-                + "&provideRouteAlternatives=true&avoidHighways=true&avoidTolls=true&region=id";
+                + "&alternatives=false&avoid=highways&avoid=tolls&avoid=ferries&region=id";
         Log.d("url", url);
         try {
             HttpClient httpClient = new DefaultHttpClient();

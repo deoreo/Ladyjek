@@ -34,7 +34,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Transaksi dengan "
+                    android:text="Mohon maaf, saldo "
                     android:textColor="@color/black_color"
                     android:textStyle="bold"
                     fontPath="@string/GothamRndMedium"
@@ -60,7 +60,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="telah gagal"
+                    android:text="anda saat ini tidak mencukupi"
                     android:textColor="@color/black_color"
                     android:textStyle="bold"
                     fontPath="@string/GothamRndMedium"

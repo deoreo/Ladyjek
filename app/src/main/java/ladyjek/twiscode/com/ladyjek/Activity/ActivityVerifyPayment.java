@@ -27,6 +27,7 @@ import android.webkit.WebView;
 import android.webkit.WebView.HitTestResult;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -44,32 +45,35 @@ import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.SocketManager;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
+import static android.view.View.*;
+
 public class ActivityVerifyPayment extends Activity {
 
     RelativeLayout wrapperPopup;
     private ProgressBar mProgressBar;
     private Activity act;
-    private String mUsername;
-    private String mPassword;
-    private int mComeFrom;
-    private boolean mAlreadyEverGiveCredential = false;
     private final String TAG = "ActivityVerifyPayment";
-    private final String TAG_ACCESS_CODE = "code";
     ApplicationManager applicationManager;
     ModelOrder order;
     private SocketManager socketManager;
     private BroadcastReceiver doVerify;
-    PopupWindow popupWindow;
+    private RelativeLayout layoutVerifying;
+    private LinearLayout layoutWebview;
+    private WebView webview;
+    //PopupWindow popupWindow;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verify_payment);
         wrapperPopup = (RelativeLayout)findViewById(R.id.wrapperPopup);
+        layoutVerifying = (RelativeLayout)findViewById(R.id.layoutVerifying);
+        layoutWebview = (LinearLayout)findViewById(R.id.layoutWebview);
+        webview = (WebView) findViewById(R.id.webview);
+        mProgressBar = (ProgressBar)findViewById(R.id.webviewProgress);
         act = this;
         applicationManager = new ApplicationManager(act);
         order = applicationManager.getOrder();
         socketManager = ApplicationData.socketManager;
-        Dummy();
 
         doVerify  = new BroadcastReceiver() {
             @Override
@@ -77,15 +81,10 @@ public class ActivityVerifyPayment extends Activity {
                 // Extract data included in the Intent
                 String message = intent.getStringExtra("message");
                 Log.d("doCreateOrder", message);
-                DialogManager.DismissLoading(context);
+                //DialogManager.DismissLoading(ActivityVerifyPayment.this);
+                //popupWindow.dismiss();
                 if(message=="true") {
-                    /*
-                    ApplicationData.socketManager = socketManager;
-                    Intent i = new Intent(getBaseContext(), ActivityLoading.class);
-                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(i);
-                    finish();
-                    */
+
                     popupSuccess();
                 }
                 else {
@@ -101,13 +100,24 @@ public class ActivityVerifyPayment extends Activity {
 
 
     }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+        Dummy();
+    }
+
+
     private void Dummy(){
         new CountDownTimer(2000, 1000) {
             public void onTick(long millisUntilFinished) {
 
             }
             public void onFinish() {
-                popupWebview();
+                //popupWebview();
+                layoutVerifying.setVisibility(GONE);
+                layoutWebview.setVisibility(VISIBLE);
+                showwebview();
             }
         }.start();
     }
@@ -126,11 +136,10 @@ public class ActivityVerifyPayment extends Activity {
     private void popupWebview(){
         LayoutInflater layoutInflater  = (LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE);
         final View popupView = layoutInflater.inflate(R.layout.popup_webview, null);
-        popupWindow = new PopupWindow(
+        final PopupWindow popupWindow = new PopupWindow(
                 popupView,
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
-        CookieSyncManager.createInstance(this);
 
         WebView webview = (WebView) popupView.findViewById(R.id.webview);
         mProgressBar = (ProgressBar)popupView.findViewById(R.id.webviewProgress);
@@ -148,13 +157,14 @@ public class ActivityVerifyPayment extends Activity {
             public void onProgressChanged(WebView view, int newProgress) {
                 super.onProgressChanged(view, newProgress);
                 mProgressBar.setProgress(newProgress);
-                if (newProgress == 100) mProgressBar.setVisibility(View.GONE);
+                if (newProgress == 100)
+                    mProgressBar.setVisibility(GONE);
             }
 
             
 
         });
-        webview.setOnTouchListener(new View.OnTouchListener() {
+        webview.setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
@@ -169,31 +179,30 @@ public class ActivityVerifyPayment extends Activity {
                 return false;
             }
         });
-        String orderUrl = order.getUrl();
-        Log.d(TAG, orderUrl);
-        if(orderUrl == ""){
-            popupFailed();
-        }
-        else {
-            webview.loadUrl(order.getUrl());
-        }
+
+        webview.loadUrl(order.getUrl());
+
 
         popupWindow.setFocusable(true);
-        popupWindow.showAtLocation(findViewById(R.id.wrapperPopup), Gravity.CENTER, 0, 0);
+        try {
+            popupWindow.showAtLocation(findViewById(R.id.wrapperPopup), Gravity.CENTER, 0, 0);
+        }
+        catch (Exception e){
+            wrapperPopup = (RelativeLayout)findViewById(R.id.wrapperPopup);
+            popupWindow.showAtLocation(findViewById(R.id.wrapperPopup), Gravity.CENTER, 0, 0);
+        }
 
     }
-
 
     private void popupFailed(){
         LayoutInflater layoutInflater  = (LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE);
         final View popupView = layoutInflater.inflate(R.layout.popup_failed_ecash, null);
-        popupWindow = new PopupWindow(
+        final PopupWindow popupWindow = new PopupWindow(
                 popupView,
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
 
         TextView btnJemput = (TextView)popupView.findViewById(R.id.btnConfirm);
-        ImageView btnClose = (ImageView)popupView.findViewById(R.id.btnClose);
 
 
         btnJemput.setOnClickListener(new RelativeLayout.OnClickListener() {
@@ -209,34 +218,26 @@ public class ActivityVerifyPayment extends Activity {
 
             }
         });
-        btnClose.setOnClickListener(new RelativeLayout.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-                /*
-                Intent i = new Intent(getBaseContext(), ActivityConfirm.class);
-                ApplicationManager um = new ApplicationManager(ActivityVerifyPayment.this);
-                startActivity(i);
-                finish();
-                popupWindow.dismiss();
-                */
-                popupWindow.dismiss();
-            }
-        });
 
-        popupWindow.showAtLocation(findViewById(R.id.wrapperPopup), Gravity.CENTER, 0, 0);
+
+        try {
+            popupWindow.showAtLocation(findViewById(R.id.wrapperPopup), Gravity.CENTER, 0, 0);
+        }
+        catch (Exception e){
+            wrapperPopup = (RelativeLayout)findViewById(R.id.wrapperPopup);
+            popupWindow.showAtLocation(findViewById(R.id.wrapperPopup), Gravity.CENTER, 0, 0);
+        }
     }
 
     private void popupSuccess(){
         LayoutInflater layoutInflater  = (LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE);
         final View popupView = layoutInflater.inflate(R.layout.popup_payment_confirmation, null);
-        popupWindow = new PopupWindow(
+        final PopupWindow popupWindow = new PopupWindow(
                 popupView,
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
 
         TextView btnJemput = (TextView)popupView.findViewById(R.id.btnConfirm);
-        ImageView btnClose = (ImageView)popupView.findViewById(R.id.btnClose);
 
 
         btnJemput.setOnClickListener(new RelativeLayout.OnClickListener() {
@@ -253,29 +254,21 @@ public class ActivityVerifyPayment extends Activity {
 
             }
         });
-        btnClose.setOnClickListener(new RelativeLayout.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-                /*
-                Intent i = new Intent(getBaseContext(), ActivityConfirm.class);
-                ApplicationManager um = new ApplicationManager(ActivityVerifyPayment.this);
-                startActivity(i);
-                finish();
-                popupWindow.dismiss();
-                */
-                finish();
-            }
-        });
 
-        popupWindow.showAtLocation(findViewById(R.id.wrapperPopup), Gravity.CENTER, 0, 0);
+        try {
+            popupWindow.showAtLocation(findViewById(R.id.wrapperPopup), Gravity.CENTER, 0, 0);
+        }
+        catch (Exception e){
+            wrapperPopup = (RelativeLayout)findViewById(R.id.wrapperPopup);
+            popupWindow.showAtLocation(findViewById(R.id.wrapperPopup), Gravity.CENTER, 0, 0);
+        }
     }
 
     public class myWebClient extends WebViewClient {
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
-            mProgressBar.setVisibility(View.VISIBLE);
+            mProgressBar.setVisibility(VISIBLE);
             verifyURL(url);
             Log.d(TAG, "onPageStarted :"+url);
 
@@ -307,15 +300,57 @@ public class ActivityVerifyPayment extends Activity {
             code = uri.getQueryParameter("id");
             Log.v(TAG, "verifyURL: " + url);
             if(url.contains("payment-callback/mandiriecash") && code!= null){
-                popupWindow.dismiss();
+                //popupWindow.dismiss();
                 Log.v(TAG, "code detected :" + code);
-                DialogManager.ShowLoading(act, "Verifying...");
+                //DialogManager.ShowLoading(act, "Verifying...");
                 socketManager.VerifyEcash(code);
             }
         }
 
     }
 
+    private void showwebview(){
+        webview.setWebViewClient(new myWebClient() {
+            public void onPageFinished(WebView view, String url) {
+            }
+        });
+        webview.getSettings().setSavePassword(false);
+        webview.getSettings().setJavaScriptEnabled(true);
+        webview.getSettings().setSaveFormData(false);
+        webview.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+
+        webview.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public void onProgressChanged(WebView view, int newProgress) {
+                super.onProgressChanged(view, newProgress);
+                mProgressBar.setProgress(newProgress);
+                if (newProgress == 100)
+                    mProgressBar.setVisibility(GONE);
+            }
+
+
+        });
+        webview.setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+
+                    case MotionEvent.ACTION_DOWN:
+                    case MotionEvent.ACTION_UP:
+                        if (!v.hasFocus()) {
+                            v.requestFocus();
+                        }
+                        break;
+                }
+                return false;
+            }
+        });
+
+        webview.loadUrl(order.getUrl());
+
+
+
+    }
 
 
 

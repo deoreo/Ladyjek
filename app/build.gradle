@@ -15,7 +15,7 @@ android {
         applicationId "ladyjek.twiscode.com.ladyjek"
         minSdkVersion 18
         targetSdkVersion 22
-        versionCode 7
+        versionCode 9
         versionName "1.4"
         signingConfig signingConfigs.apksigkey
     }
@@ -46,4 +46,5 @@ dependencies {
     compile 'me.relex:circleindicator:1.1.5@aar'
     compile 'com.github.tosslife:pullloadview:1.1.0'
     compile 'uk.co.chrisjenx:calligraphy:2.1.0'
+    compile 'com.squareup.picasso:picasso:2.5.2'
 }
