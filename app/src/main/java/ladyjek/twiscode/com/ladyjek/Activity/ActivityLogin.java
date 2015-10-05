@@ -503,9 +503,7 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
                     finish();
                     break;
                 case "OK":
-                    Intent i = new Intent(getBaseContext(), Main.class);
-                    startActivity(i);
-                    finish();
+                    new CheckPromo(activity).execute();
                     break;
             }
 
@@ -535,6 +533,84 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
+
+    private class CheckPromo extends AsyncTask<String, Void, String> {
+        private Activity activity;
+        private Context context;
+        private Resources resources;
+        private ProgressDialog progressDialog;
+
+        public CheckPromo(Activity activity) {
+            super();
+            this.activity = activity;
+            this.context = activity.getApplicationContext();
+            this.resources = activity.getResources();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+                JSONControl jsControl = new JSONControl();
+                JSONObject response = jsControl.postPromo();
+                Log.d("json promo", response.toString());
+                if(response!=null){
+                    try{
+                        String url = response.getString("url");
+                        ApplicationData.promo_url = url;
+                        ApplicationData.promo_images = new JSONArray();
+                        return "OK";
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
+                        try{
+                            JSONArray url = response.getJSONArray("images");
+                            ApplicationData.promo_images = url;
+                            ApplicationData.promo_url = "";
+                            return "OK";
+                        }
+                        catch (Exception ex){
+                            ex.printStackTrace();
+                        }
+                    }
+
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return "FAIL";
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            Intent i = new Intent();
+            switch (result) {
+                case "OK":
+                    i = new Intent(getBaseContext(), ActivityPromoWebView.class);
+                    startActivity(i);
+                    finish();
+                    break;
+                case "FAIL":
+                    i = new Intent(getBaseContext(), Main.class);
+                    startActivity(i);
+                    finish();
+                    break;
+            }
+        }
+
+
+    }
+
+
 
 }
 
