@@ -341,10 +341,17 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
         if(zoom<=15){
             zoom=15;
         }
-        markerTemp = googleMap.addMarker(
-                new MarkerOptions()
-                        .position(latLng)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
+        if(ApplicationData.editHome) {
+            Marker markerFrom = googleMap.addMarker(
+                    new MarkerOptions()
+                            .position(latLng)
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
+        }else{
+            Marker markerFrom = googleMap.addMarker(
+                    new MarkerOptions()
+                            .position(latLng)
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_destination)));
+        }
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom), new GoogleMap.CancelableCallback() {
             @Override
             public void onFinish() {
@@ -374,10 +381,17 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
     public void GetUserLocation(LatLng latLng){
         googleMap.clear();
         posTemp = latLng;
-        markerTemp = googleMap.addMarker(
-                new MarkerOptions()
-                        .position(latLng)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
+        if(ApplicationData.editHome) {
+            markerTemp = googleMap.addMarker(
+                    new MarkerOptions()
+                            .position(latLng)
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
+        }else{
+            markerTemp = googleMap.addMarker(
+                    new MarkerOptions()
+                            .position(latLng)
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_destination)));
+        }
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15), new GoogleMap.CancelableCallback() {
             @Override
             public void onFinish() {
@@ -518,10 +532,19 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
                         LatLng currentLocation = serviceLocation.updateLocation(activity);
                         googleMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
                         googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
-                        Marker markerFrom = googleMap.addMarker(
-                                new MarkerOptions()
-                                        .position(currentLocation)
-                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
+                        Marker markerFrom ;
+                        if(ApplicationData.editHome) {
+                            markerFrom = googleMap.addMarker(
+                                    new MarkerOptions()
+                                            .position(currentLocation)
+                                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
+                        }else{
+                            markerFrom = googleMap.addMarker(
+                                    new MarkerOptions()
+                                            .position(currentLocation)
+                                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_destination)));
+                        }
+
                         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(currentLocation, 15);
 
 

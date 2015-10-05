@@ -524,6 +524,33 @@ public class SocketManager {
         });
     }
 
+    public void EmergencyCall() {
+        Log.d(TAG, "emergency");
+        socket.emit("post emergency call", new Ack() {
+            @Override
+            public void call(Object... args) {
+                try {
+                    Log.d(TAG, "emergency args:" + args[0]);
+                    String order = args[0].toString();
+                    if (order == null) {
+                        Log.d(TAG, "emergency true");
+                        SendBroadcast("doEmergency", "true");
+                    } else {
+                        Log.d(TAG, "emergency false");
+                        SendBroadcast("doEmergency", "false");
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    SendBroadcast("doEmergency", "true");
+                }
+
+            }
+
+        });
+    }
+
+
+
     public void CreateOrder(LatLng from, LatLng destination, final String pay) {
         Log.d(TAG, "create order");
         JSONObject objs = new JSONObject();

@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import ladyjek.twiscode.com.ladyjek.Adapter.ColorPagerAdapter;
+import ladyjek.twiscode.com.ladyjek.Adapter.PromoPagerAdapter;
 import ladyjek.twiscode.com.ladyjek.R;
 import me.relex.circleindicator.CircleIndicator;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;

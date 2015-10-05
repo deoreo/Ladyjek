@@ -49,6 +49,7 @@ import ladyjek.twiscode.com.ladyjek.Model.ModelOrder;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Service.ServiceLocation;
 import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
+import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.GoogleAPIManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.NetworkManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.SocketManager;
@@ -70,7 +71,7 @@ public class ActivityTracking extends ActionBarActivity implements LocationListe
     private Runnable mRunnable;
     private Handler mHandler;
     private final int AUTOUPDATE_INTERVAL_TIME =  15 * 1000; // 15 detik
-    private BroadcastReceiver start,end;
+    private BroadcastReceiver start,end, doEmergency;
     private Boolean isStart = false,isEnd = false;
     private SocketManager socketManager;
 
@@ -78,6 +79,7 @@ public class ActivityTracking extends ActionBarActivity implements LocationListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tracking);
+
         socketManager = ApplicationData.socketManager;
         start  = new BroadcastReceiver() {
             @Override
@@ -114,6 +116,24 @@ public class ActivityTracking extends ActionBarActivity implements LocationListe
                     Log.d("cant end","");
                 }
                 isEnd = false;
+
+            }
+        };
+
+        doEmergency  = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                // Extract data included in the Intent
+                String message = intent.getStringExtra("message");
+                Log.d("doEmergency", message);
+                DialogManager.DismissLoading(ActivityTracking.this);
+                if(message=="true"){
+                    DialogManager.showDialog(mActivity, "Informasi", "Emergency Call Anda telah diterima");
+                }
+                else {
+                    Log.d("cant doEmergency","");
+                }
+                isStart = false;
 
             }
         };
@@ -168,6 +188,14 @@ public class ActivityTracking extends ActionBarActivity implements LocationListe
             }
         };
         mRunnable.run();
+
+        wrapperRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogManager.ShowLoading(ActivityTracking.this, "Calling...");
+                socketManager.EmergencyCall();
+            }
+        });
 
     }
 
@@ -294,6 +322,8 @@ public class ActivityTracking extends ActionBarActivity implements LocationListe
                 new IntentFilter("goStart"));
         LocalBroadcastManager.getInstance(this).registerReceiver(end,
                 new IntentFilter("goEnd"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(doEmergency,
+                new IntentFilter("doEmergency"));
     }
 
     @Override
@@ -301,6 +331,7 @@ public class ActivityTracking extends ActionBarActivity implements LocationListe
         super.onDestroy();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(start);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(end);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(doEmergency);
     }
 
     @Override

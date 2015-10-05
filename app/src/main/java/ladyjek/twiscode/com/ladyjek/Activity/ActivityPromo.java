@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import ladyjek.twiscode.com.ladyjek.Adapter.ColorPagerAdapter;
+import ladyjek.twiscode.com.ladyjek.Adapter.PromoPagerAdapter;
 import ladyjek.twiscode.com.ladyjek.R;
 import me.relex.circleindicator.CircleIndicator;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
@@ -42,38 +43,13 @@ public class ActivityPromo extends FragmentActivity {
 
         ViewPager defaultViewpager = (ViewPager) findViewById(R.id.viewpager_default);
         CircleIndicator defaultIndicator = (CircleIndicator) findViewById(R.id.indicator_default);
-        ColorPagerAdapter defaultPagerAdapter = new ColorPagerAdapter(getSupportFragmentManager(),5);
+        //ColorPagerAdapter defaultPagerAdapter = new ColorPagerAdapter(getSupportFragmentManager(),5);
+        PromoPagerAdapter defaultPagerAdapter = new PromoPagerAdapter(getSupportFragmentManager(),null,5);
         defaultViewpager.setAdapter(defaultPagerAdapter);
         defaultIndicator.setViewPager(defaultViewpager);
-
-
-
-
-
-
+        
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_activity_splash_screen, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
     @Override
     public void onBackPressed()
@@ -85,5 +61,4 @@ public class ActivityPromo extends FragmentActivity {
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
-
 }
