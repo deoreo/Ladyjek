@@ -221,6 +221,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         if (ApplicationData.socketManager == null) {
             socketManager = new SocketManager();
             socketManager.InitSocket(mActivity);
+            DialogManager.ShowLoading(mActivity, "Loading...");
             socketManager.Connect();
 
             ApplicationData.socketManager = socketManager;
@@ -614,6 +615,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
             public void onReceive(Context context, Intent intent) {
                 // Extract data included in the Intent
                 Log.v(TAG, "broadcast lastOrder");
+                DialogManager.DismissLoading(mActivity);
                 String message = intent.getStringExtra("message");
                 Intent i = null;
                 String pref = appManager.getActivity();

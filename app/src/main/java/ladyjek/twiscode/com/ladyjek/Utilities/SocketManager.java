@@ -526,7 +526,7 @@ public class SocketManager {
 
     public void EmergencyCall() {
         Log.d(TAG, "emergency");
-        socket.emit("post emergency call", new Ack() {
+        socket.emit("post emergency call", 0, new Ack() {
             @Override
             public void call(Object... args) {
                 try {

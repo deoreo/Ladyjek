@@ -305,11 +305,11 @@ public class ServiceLocation implements LocationListener {
 
         @Override
         public void onLocationChanged(Location location) {
-            Message msg = new Message();
+            /*Message msg = new Message();
             handler.sendMessage(msg);
             if (mUserLocationHandler != null) {
                 mUserLocationHandler.getLooper().quit();
-            }
+            }*/
         }
 
         @Override

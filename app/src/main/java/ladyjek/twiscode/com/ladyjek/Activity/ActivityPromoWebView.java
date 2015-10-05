@@ -21,6 +21,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 import ladyjek.twiscode.com.ladyjek.Adapter.ColorPagerAdapter;
 import ladyjek.twiscode.com.ladyjek.Adapter.PromoSliderAdapter;
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
@@ -89,9 +94,12 @@ public class ActivityPromoWebView extends FragmentActivity {
         btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getBaseContext(), Main.class);
-                startActivity(i);
-                finish();
+                    Intent i = new Intent(getBaseContext(), Main.class);
+                    startActivity(i);
+                    finish();
+                }else{
+                    finish();
+                }
             }
         });
 
@@ -152,6 +160,32 @@ public class ActivityPromoWebView extends FragmentActivity {
             
         }
 
+    }
+
+    private boolean checkDate(){
+        try{
+
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+            Calendar c = Calendar.getInstance();
+
+            SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+            String formattedDate = df.format(c.getTime());
+
+            String str1 = formattedDate;
+            Date date1 = formatter.parse(str1);
+
+            String str2 = "05/10/2015";
+            Date date2 = formatter.parse(str2);
+
+            if (date1.compareTo(date2)==0)
+            {
+                return true;
+            }
+
+        }catch (ParseException e1){
+            e1.printStackTrace();
+        }
+        return false;
     }
 
 
