@@ -260,6 +260,20 @@ public class JSONControl {
 
     }
 
+    public JSONObject getHelp() {
+        JSONObject jsonObj = null;
+
+        try {
+            jsonObj = _JSONResponse.GETResponse(ConfigManager.HELP);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return jsonObj;
+
+    }
+
 
 
 
