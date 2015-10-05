@@ -1,15 +1,24 @@
 package ladyjek.twiscode.com.ladyjek.Activity;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ProgressBar;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import ladyjek.twiscode.com.ladyjek.Control.JSONControl;
 import ladyjek.twiscode.com.ladyjek.Database.DatabaseHandler;
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
+import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.SocketManager;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
@@ -45,39 +54,11 @@ public class ActivitySplashScreen extends Activity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } finally {
-                    ///socketManager.InitSocket(ActivitySplashScreen.this);
-                    //socketManager.Connect();
+
                     int countUser = db.getUserCount();
                     if(countUser > 0) {
-                        ApplicationManager um = new ApplicationManager(ActivitySplashScreen.this);
-                        String pref = um.getActivity();
-                        Intent i = new Intent(getBaseContext(), Main.class);
-                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(i);
-                        /*
-                        if(pref==""){
-                            Intent i = new Intent(getBaseContext(), Main.class);
-                            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(i);
-                        }
-                        else {
-                            Intent i = null;
-                            if(pref.equalsIgnoreCase("ActivityLoading")){
-                                i = new Intent(getBaseContext(), ActivityLoading.class);
-                            }
-                            else if(pref.equalsIgnoreCase("ActivityPickUp")){
-                                i = new Intent(getBaseContext(), ActivityPickUp.class);
-                            }
-                            else if(pref.equalsIgnoreCase("ActivityTracking")){
-                                i = new Intent(getBaseContext(), ActivityTracking.class);
-                            }
-                            else if(pref.equalsIgnoreCase("ActivityRate")){
-                                i = new Intent(getBaseContext(), Main.class);
-                            }
-                            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(i);
-                        }
-                        */
+
+                        new CheckPromo(ActivitySplashScreen.this).execute();
 
                     }
                     else{
@@ -103,5 +84,89 @@ public class ActivitySplashScreen extends Activity {
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
+
+    void GoHome(){
+        ApplicationManager um = new ApplicationManager(ActivitySplashScreen.this);
+        String pref = um.getActivity();
+        Intent i = new Intent(getBaseContext(), Main.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(i);
+    }
+
+    private class CheckPromo extends AsyncTask<String, Void, String> {
+        private Activity activity;
+        private Context context;
+        private Resources resources;
+        private ProgressDialog progressDialog;
+
+        public CheckPromo(Activity activity) {
+            super();
+            this.activity = activity;
+            this.context = activity.getApplicationContext();
+            this.resources = activity.getResources();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+                JSONControl jsControl = new JSONControl();
+                JSONObject response = jsControl.postPromo();
+                Log.d("json promo", response.toString());
+                if(response!=null){
+                    try{
+                        String url = response.getString("url");
+                        ApplicationData.promo_url = url;
+                        ApplicationData.promo_images = new JSONArray();
+                        return "OK";
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
+                        try{
+                            JSONArray url = response.getJSONArray("images");
+                            ApplicationData.promo_images = url;
+                            ApplicationData.promo_url = "";
+                            return "OK";
+                        }
+                        catch (Exception ex){
+                            ex.printStackTrace();
+                        }
+                    }
+
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return "FAIL";
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            Intent i = new Intent();
+            switch (result) {
+                case "OK":
+                    i = new Intent(getBaseContext(), ActivityPromoWebView.class);
+                    startActivity(i);
+                    //finish();
+                    break;
+                case "FAIL":
+                    i = new Intent(getBaseContext(), Main.class);
+                    startActivity(i);
+                    finish();
+                    break;
+            }
+        }
+
+
     }
 }

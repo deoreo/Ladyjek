@@ -232,6 +232,20 @@ public class JSONControl {
         return jsonObj;
     }
 
+    public JSONObject postPromo() {
+        JSONObject jsonObj = null;
+
+        try {
+            jsonObj = _JSONResponse.GETResponse(ConfigManager.PROMO);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return jsonObj;
+
+    }
+
 
 
 

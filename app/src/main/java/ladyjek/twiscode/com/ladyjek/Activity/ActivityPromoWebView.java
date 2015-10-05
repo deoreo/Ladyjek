@@ -1,8 +1,11 @@
 package ladyjek.twiscode.com.ladyjek.Activity;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,16 +17,25 @@ import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
+import ladyjek.twiscode.com.ladyjek.Adapter.ColorPagerAdapter;
+import ladyjek.twiscode.com.ladyjek.Adapter.PromoSliderAdapter;
+import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
+import me.relex.circleindicator.CircleIndicator;
 
-public class ActivityPromoWebView extends AppCompatActivity {
+public class ActivityPromoWebView extends FragmentActivity {
 
     private WebView webview;
     private ProgressBar mProgressBar;
     private final String TAG = "ActivityPromoWebView";
+    ImageView btnClose;
+    LinearLayout imageSlide;
+
 
 
     @Override
@@ -31,6 +43,11 @@ public class ActivityPromoWebView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_promo_web_view);
         webview = (WebView) findViewById(R.id.webview);
+        btnClose = (ImageView) findViewById(R.id.btnClose);
+        imageSlide = (LinearLayout) findViewById(R.id.imageslide);
+        ViewPager defaultViewpager = (ViewPager) findViewById(R.id.viewpager_default);
+        CircleIndicator defaultIndicator = (CircleIndicator) findViewById(R.id.indicator_default);
+
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
         webview.setWebViewClient(new myWebClient() {
             public void onPageFinished(WebView view, String url) {
@@ -67,7 +84,30 @@ public class ActivityPromoWebView extends AppCompatActivity {
             }
         });
 
-            webview.loadUrl("http://www.ladyjek.com/");
+        btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getBaseContext(), Main.class);
+                startActivity(i);
+                finish();
+            }
+        });
+
+
+        if(ApplicationData.promo_url!=""){
+            imageSlide.setVisibility(View.GONE);
+            webview.setVisibility(View.VISIBLE);
+            webview.loadUrl(ApplicationData.promo_url);
+
+        }
+        else{
+            imageSlide.setVisibility(View.VISIBLE);
+            webview.setVisibility(View.GONE);
+            PromoSliderAdapter defaultPagerAdapter = new PromoSliderAdapter(getSupportFragmentManager(),ApplicationData.promo_images);
+            defaultViewpager.setAdapter(defaultPagerAdapter);
+            defaultIndicator.setViewPager(defaultViewpager);
+        }
+
 
     }
 

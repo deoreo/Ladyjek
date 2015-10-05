@@ -88,4 +88,6 @@ public class ApplicationData {
     public static ModelHistory detail = new ModelHistory();
     public static String smsCode;
     public static boolean release = false;
+    public static String promo_url = "";
+    public static JSONArray promo_images = new JSONArray();
 }
