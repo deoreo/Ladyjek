@@ -42,13 +42,15 @@ public class ActivityPromoWebView extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_promo_web_view);
+
         webview = (WebView) findViewById(R.id.webview);
         btnClose = (ImageView) findViewById(R.id.btnClose);
         imageSlide = (LinearLayout) findViewById(R.id.imageslide);
         ViewPager defaultViewpager = (ViewPager) findViewById(R.id.viewpager_default);
         CircleIndicator defaultIndicator = (CircleIndicator) findViewById(R.id.indicator_default);
 
-        mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
+        mProgressBar = (ProgressBar) findViewById(R.id.webviewProgress);
+
         webview.setWebViewClient(new myWebClient() {
             public void onPageFinished(WebView view, String url) {
             }
@@ -101,12 +103,13 @@ public class ActivityPromoWebView extends FragmentActivity {
 
         }
         else{
-            imageSlide.setVisibility(View.VISIBLE);
             webview.setVisibility(View.GONE);
+            imageSlide.setVisibility(View.VISIBLE);
             PromoSliderAdapter defaultPagerAdapter = new PromoSliderAdapter(getSupportFragmentManager(),ApplicationData.promo_images);
             defaultViewpager.setAdapter(defaultPagerAdapter);
             defaultIndicator.setViewPager(defaultViewpager);
         }
+
 
 
     }

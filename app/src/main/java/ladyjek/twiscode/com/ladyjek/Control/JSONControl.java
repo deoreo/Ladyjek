@@ -246,6 +246,20 @@ public class JSONControl {
 
     }
 
+    public JSONObject postPromoImage() {
+        JSONObject jsonObj = null;
+
+        try {
+            jsonObj = _JSONResponse.GETResponse(ConfigManager.PROMO_IMAGE);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return jsonObj;
+
+    }
+
 
 
 

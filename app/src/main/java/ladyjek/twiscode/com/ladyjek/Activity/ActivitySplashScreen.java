@@ -152,17 +152,17 @@ public class ActivitySplashScreen extends Activity {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
-            Intent i = new Intent();
+
             switch (result) {
                 case "OK":
-                    i = new Intent(getBaseContext(), ActivityPromoWebView.class);
+                    Intent i = new Intent(getBaseContext(), ActivityPromoWebView.class);
                     startActivity(i);
                     //finish();
                     break;
                 case "FAIL":
-                    i = new Intent(getBaseContext(), Main.class);
-                    startActivity(i);
-                    finish();
+                    Intent y = new Intent(getBaseContext(), Main.class);
+                    startActivity(y);
+                    //finish();
                     break;
             }
         }
