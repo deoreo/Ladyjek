@@ -24,6 +24,7 @@ public class ConfigManager {
     public static final String LOGOUT_ALL = SERVER+"/logout-all";
     public static final String PROMO = SERVER+"/promo/init";
     public static final String PROMO_IMAGE = SERVER+"/promo/page";
+    public static final String HELP = SERVER+"/help";
     //public static final String SERVER_SOCKET = "https://playpal.id:5051/";
     public static final String SERVER_SOCKET = "https://ladyjek.com:2096/";
 }
