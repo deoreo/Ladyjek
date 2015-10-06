@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import org.json.JSONArray;
 
+import ladyjek.twiscode.com.ladyjek.Fragment.HelpSliderFragment;
 import ladyjek.twiscode.com.ladyjek.Fragment.PromoSliderFragment;
 
 /**
@@ -31,7 +32,7 @@ public class HelpSliderAdapter extends FragmentPagerAdapter {
         catch (Exception e){
 
         }
-        return PromoSliderFragment.newInstance(url);
+        return HelpSliderFragment.newInstance(url);
     }
 
     @Override public int getCount() {
