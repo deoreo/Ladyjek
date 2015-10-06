@@ -295,6 +295,7 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
                 }
 
 
+
             }
         });
 
@@ -342,12 +343,12 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
             zoom=15;
         }
         if(ApplicationData.editHome) {
-            Marker markerFrom = googleMap.addMarker(
+            googleMap.addMarker(
                     new MarkerOptions()
                             .position(latLng)
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
         }else{
-            Marker markerFrom = googleMap.addMarker(
+            googleMap.addMarker(
                     new MarkerOptions()
                             .position(latLng)
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_destination)));
@@ -376,6 +377,7 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
             public void onCancel() {
             }
         });
+        layoutSuggestion.setVisibility(GONE);
     }
 
     public void GetUserLocation(LatLng latLng){
@@ -532,14 +534,14 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
                         LatLng currentLocation = serviceLocation.updateLocation(activity);
                         googleMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
                         googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
-                        Marker markerFrom ;
+
                         if(ApplicationData.editHome) {
-                            markerFrom = googleMap.addMarker(
+                      googleMap.addMarker(
                                     new MarkerOptions()
                                             .position(currentLocation)
                                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
                         }else{
-                            markerFrom = googleMap.addMarker(
+                             googleMap.addMarker(
                                     new MarkerOptions()
                                             .position(currentLocation)
                                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_destination)));
@@ -690,15 +692,22 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
                         hideKeyboard();
                         ModelGeocode geocode = GoogleAPIManager.geocode(description);
                         latLng = new LatLng(geocode.getLat(), geocode.getLon());
-                        markerTemp = googleMap.addMarker(
-                                new MarkerOptions()
-                                        .position(latLng)
-                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
+                        if(ApplicationData.editHome) {
+                            markerTemp =  googleMap.addMarker(
+                                    new MarkerOptions()
+                                            .position(latLng)
+                                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
+                        }else{
+                            markerTemp = googleMap.addMarker(
+                                    new MarkerOptions()
+                                            .position(latLng)
+                                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_destination)));
+                        }
                         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15), new GoogleMap.CancelableCallback() {
                             @Override
                             public void onFinish() {
 
-                                String address = getAddress(mActivity, latLng);
+                                String address = getAddress(activity, latLng);
                                 String detail = strDetail;
                                 txtAddress.setText(address);
                                 if (ApplicationData.editHome) {
@@ -719,6 +728,8 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
 
 
                     } catch (Exception e) {
+                        layoutSuggestion.setVisibility(GONE);
+                        hideKeyboard();
                     }
                 }
             });

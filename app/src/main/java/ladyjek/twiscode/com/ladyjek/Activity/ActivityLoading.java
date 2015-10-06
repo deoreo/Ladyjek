@@ -77,7 +77,7 @@ public class ActivityLoading extends Activity {
                     try {
                         Context ctx = ActivityLoading.this;
                         new MaterialDialog.Builder(ctx)
-                                .title("Tidak menemukan driver ladyjek")
+                                .title("Tidak menemukan driver LadyJek")
                                 .positiveText("OK")
                                 .callback(new MaterialDialog.ButtonCallback() {
                                     @Override
@@ -116,7 +116,7 @@ public class ActivityLoading extends Activity {
                     try {
                         Context ctx = ActivityLoading.this;
                         new MaterialDialog.Builder(ctx)
-                                .title("Driver ladyjek sedang menjemput Anda")
+                                .title("Driver LadyJek sedang menjemput Anda")
                                 .positiveText("OK")
                                 .callback(new MaterialDialog.ButtonCallback() {
                                     @Override

@@ -26,6 +26,8 @@ import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import org.droidparts.widget.ClearableEditText;
+
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -59,6 +61,8 @@ public class ActivityConfirm extends ActionBarActivity {
     private DecimalFormat decimalFormat;
     private SocketManager socketManager;
     private BroadcastReceiver doCreateOrder;
+    private ClearableEditText txtPromo;
+    private Button btnPromo;
 
     int pembayaran = 0;
     @Override
@@ -86,7 +90,9 @@ public class ActivityConfirm extends ActionBarActivity {
         txtTotal = (TextView) findViewById(R.id.txtTotal);
         txtDetailFrom = (TextView) findViewById(R.id.txtDetailFrom);
         txtDetailDestination = (TextView) findViewById(R.id.txtDetailDestination);
+        txtPromo = (ClearableEditText) findViewById(R.id.txtPromo);
         btnBack = (ImageView) findViewById(R.id.btnBack);
+        btnPromo = (Button) findViewById(R.id.btnPromo);
         wrapperRegister = (RelativeLayout) findViewById(R.id.wrapperRegister);
 
 
@@ -168,32 +174,20 @@ public class ActivityConfirm extends ActionBarActivity {
             }
         });
 
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_activity_splash_screen, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        switch (id) {
-            case android.R.id.home:
-                // app icon in action bar clicked; goto parent activity.
-                finish();
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+        btnPromo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(txtPromo.getText().toString().isEmpty()){
+                    DialogManager.showDialog(ActivityConfirm.this, "Peringatan", "Masukkan kode promo Anda!");
+                }else {
+                    DialogManager.showDialog(ActivityConfirm.this, "Informasi", "Maaf, kode promo Anda tidak berlaku");
+                }
+            }
+        });
 
     }
+
+
 
     private void SetActionBar() {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);

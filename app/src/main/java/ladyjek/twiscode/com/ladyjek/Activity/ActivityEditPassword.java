@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 
+import ladyjek.twiscode.com.ladyjek.Database.DatabaseHandler;
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
@@ -40,12 +41,12 @@ public class ActivityEditPassword extends Activity {
     private ImageView btnBack;
     private TextView btnSimpan;
     private EditText oldpass,newpass,confirmpass;
-    private RelativeLayout btnClearOldPass, btnClearNewPass, btnClearConfirmPass;
+    private RelativeLayout btnClearOldPass, btnClearNewPass, btnClearConfirmPass, wrapperRegister;
     SocketManager socketManager;
     private BroadcastReceiver editPassword;
     boolean isClick = false;
     ProgressDialog progressDialog;
-
+    private DatabaseHandler db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,7 +54,7 @@ public class ActivityEditPassword extends Activity {
 
         act = this;
         socketManager = ApplicationData.socketManager;
-
+        db = new DatabaseHandler(act);
         btnSimpan = (TextView) findViewById(R.id.btnSimpan);
 
         oldpass = (EditText) findViewById(R.id.txtSandiLama);
@@ -65,6 +66,7 @@ public class ActivityEditPassword extends Activity {
         btnClearConfirmPass = (RelativeLayout) findViewById(R.id.btnConfirmPass);
 
         btnBack = (ImageView) findViewById(R.id.btnBack);
+        wrapperRegister = (RelativeLayout) findViewById(R.id.wrapperRegister);
 
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,20 +82,53 @@ public class ActivityEditPassword extends Activity {
                 String npass = newpass.getText().toString();
                 String cpass = confirmpass.getText().toString();
                 if (opass == null || npass == null || cpass == null || opass.trim().isEmpty() || cpass.trim().isEmpty() || npass.trim().isEmpty()) {
-                    DialogManager.showDialog(act, "Warning", "Please fill all data!");
+                    DialogManager.showDialog(act, "Peringtan", "Silahkan isi password Anda");
 
                 } else if (!npass.equals(cpass)) {
-                    DialogManager.showDialog(act, "Warning", "Confirm password not match");
+                    DialogManager.showDialog(act, "Peringatan", "Konfirmasi password tidak sama");
                 } else {
-                    /*
-                    if(opass.equals(ApplicationData.modelUserOrder.password)){
-                        ApplicationData.modelUserOrder.password = npass;
-                        finish();
+
+                    Log.d("deviceToken",ApplicationData.PARSE_DEVICE_TOKEN);
+                    if(!isClick){
+                        if(ApplicationData.PARSE_DEVICE_TOKEN != null){
+                            if(NetworkManager.getInstance(ActivityEditPassword.this).isConnectedInternet()){
+                                progressDialog = new ProgressDialog(act);
+                                progressDialog.setMessage("Loading. . .");
+                                progressDialog.setIndeterminate(false);
+                                progressDialog.setCancelable(false);
+                                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                                progressDialog.show();
+                                socketManager.EditPassword(opass, npass, ApplicationData.PARSE_DEVICE_TOKEN);
+                                isClick = true;
+                            }
+                            else {
+                                DialogManager.showDialog(ActivityEditPassword.this, "Peringatan", "Tidak ada koneksi internet!");
+                            }
+                        }
+                        else{
+                            DialogManager.showDialog(ActivityEditPassword.this, "Peringatan", "Device Token null!");
+                        }
                     }
-                    else {
-                        DialogManager.showDialog(act, "Warning", "Wrong old password");
-                    }
-                    */
+
+
+
+                }
+            }
+        });
+
+        wrapperRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String opass = oldpass.getText().toString();
+                String npass = newpass.getText().toString();
+                String cpass = confirmpass.getText().toString();
+                if (opass == null || npass == null || cpass == null || opass.trim().isEmpty() || cpass.trim().isEmpty() || npass.trim().isEmpty()) {
+                    DialogManager.showDialog(act, "Peringtan", "Silahkan isi password Anda");
+
+                } else if (!npass.equals(cpass)) {
+                    DialogManager.showDialog(act, "Peringatan", "Konfirmasi password tidak sama");
+                } else {
+
                     Log.d("deviceToken",ApplicationData.PARSE_DEVICE_TOKEN);
                     if(!isClick){
                         if(ApplicationData.PARSE_DEVICE_TOKEN != null){
@@ -269,15 +304,18 @@ public class ActivityEditPassword extends Activity {
                 }
                 if (message.equals("true")) {
                     new AlertDialogWrapper.Builder(ActivityEditPassword.this)
-                            .setTitle("Edit Password Sukses!")
+                            .setTitle("Success")
+                            .setMessage("Silahkan login lagi!")
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
-                                    Intent i = new Intent(getBaseContext(), ActivityInformasiPribadi.class);
+                                    db.logout();
+                                    Intent i = new Intent(act, ActivityLogin.class);
                                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                                     startActivity(i);
                                     finish();
+
                                 }
                             })
                             .setIcon(R.drawable.ladyjek_icon)
@@ -285,7 +323,8 @@ public class ActivityEditPassword extends Activity {
                 }
                 else {
                     new AlertDialogWrapper.Builder(ActivityEditPassword.this)
-                            .setTitle("Edit Password gagal!")
+                            .setTitle("Fail")
+                            .setMessage("Password gagal diubah!")
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {

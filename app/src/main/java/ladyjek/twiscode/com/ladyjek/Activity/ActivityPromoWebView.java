@@ -1,5 +1,6 @@
 package ladyjek.twiscode.com.ladyjek.Activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -32,6 +33,7 @@ import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
 import me.relex.circleindicator.CircleIndicator;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class ActivityPromoWebView extends FragmentActivity {
 
@@ -97,9 +99,7 @@ public class ActivityPromoWebView extends FragmentActivity {
                     Intent i = new Intent(getBaseContext(), Main.class);
                     startActivity(i);
                     finish();
-                }else{
-                    finish();
-                }
+
             }
         });
 
@@ -187,7 +187,10 @@ public class ActivityPromoWebView extends FragmentActivity {
         }
         return false;
     }
-
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
 
 
 }

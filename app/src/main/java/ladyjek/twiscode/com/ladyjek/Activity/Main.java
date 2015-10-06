@@ -59,7 +59,7 @@ public class Main extends AppCompatActivity implements FragmentDrawer.FragmentDr
         setContentView(R.layout.activity_main);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         SpannableString s = new SpannableString("ORDER LADYJEK");
-        s.setSpan(new CustomTypefaceSpan("", Typeface.createFromAsset(getAssets(),"fonts/GothamRnd-Bold.otf")), 0, s.length(),
+        s.setSpan(new CustomTypefaceSpan("", Typeface.createFromAsset(getAssets(), "fonts/GothamRnd-Bold.otf")), 0, s.length(),
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         s.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.bg_grad_2)), 0, s.length(),
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);

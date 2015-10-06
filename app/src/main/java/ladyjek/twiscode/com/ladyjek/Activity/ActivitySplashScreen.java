@@ -95,16 +95,10 @@ public class ActivitySplashScreen extends Activity {
     }
 
     private class CheckPromo extends AsyncTask<String, Void, String> {
-        private Activity activity;
-        private Context context;
-        private Resources resources;
-        private ProgressDialog progressDialog;
+
 
         public CheckPromo(Activity activity) {
             super();
-            this.activity = activity;
-            this.context = activity.getApplicationContext();
-            this.resources = activity.getResources();
         }
 
         @Override

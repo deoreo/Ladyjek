@@ -221,7 +221,6 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         if (ApplicationData.socketManager == null) {
             socketManager = new SocketManager();
             socketManager.InitSocket(mActivity);
-            DialogManager.ShowLoading(mActivity, "Loading...");
             socketManager.Connect();
 
             ApplicationData.socketManager = socketManager;
@@ -660,6 +659,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                     }
 
                 } else {
+                    DialogManager.DismissLoading(mActivity);
                     Log.v(TAG, "Ga ada last order coy...");
                 }
 
