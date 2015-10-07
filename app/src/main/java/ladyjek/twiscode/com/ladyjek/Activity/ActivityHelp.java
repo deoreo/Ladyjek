@@ -206,7 +206,7 @@ public class ActivityHelp extends FragmentActivity {
             try {
                 JSONControl jsControl = new JSONControl();
                 JSONObject response = jsControl.getHelp();
-                Log.d("json promo", response.toString());
+                Log.d("json help", response.toString());
                 if(response!=null){
                     try{
                         String url = response.getString("url");

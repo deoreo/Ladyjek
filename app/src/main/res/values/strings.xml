@@ -68,11 +68,53 @@
         <![CDATA[
             <p><b>Cara Top-up saldo</b></p>
             <br/>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam non pharetra diam, et dapibus nulla. Vestibulum dictum quis turpis non eleifend. Morbi sit amet tincidunt nulla.</p>
+            <p><u>A. Melalui Mandiri ATM</u></p>
             <br/>
-              <p>1. sapien neque, blandit et orci eu, elementum blandit risus. In scelerisque condimentum ipsum</p>
-              <p>2. bibendum feugiat lectus. Sed sagittis, turpis in placerat elementum</p>
-              <p>2. ex metus fermentum mauris, sed gravida odio odio quis mauris</p>
+              <p>1. Masukkan Mandiri Debit ke Mandiri ATM</p>
+              <p>2. Pilih menu uang elektronik</p>
+              <p>3. Pilih menu mandiri e-cash</p>
+              <p>4. Pilih menu isi ulang</p>
+              <p>5. Masukkan nomor ponsel</p>
+              <p>6. Masukkan nominal isi ulang</p>
+            <br>
+            <p><u>B. Melalui Mandiri SMS</u></p>
+            <br/>
+              <p>1. Akses *141*6#</p>
+              <p>2. Pilih menu transfer</p>
+              <p>3. Pilih menu e-cash</p>
+              <p>4. Masukkan nomor ponsel</p>
+              <p>5. Masukkan nominal isi ulang</p>
+            <br>
+            <p><u>C. Melalui Mandiri Internet</u></p>
+            <br/>
+              <p>1. Login ke Mandiri Internet</p>
+              <p>2. Pilih menu uang elektronik</p>
+              <p>3. Pilih menu mandiri e-cash</p>
+              <p>4. Pilih menu isi ulang</p>
+              <p>5. Masukkan nomor ponsel</p>
+              <p>6. Masukkan nominal isi ulang</p>
+            <br>
+            <p><u>D. Melalui Mandiri Clickpay</u></p>
+            <br/>
+              <p>1. Login ke Aplikasi Mandiri e-cash</p>
+              <p>2. Pilih menu isi e-cash</p>
+              <p>3. Isi nomor Mandiri kartu debit</p>
+              <p>4. Masukkan nomor ponsel</p>
+              <p>5. Masukkan nominal isi ulang</p>
+            <br>
+            <p><u>E. Melalui Transfer Bank lain</u></p>
+            <br/>
+              <p>1. Akses e-channel bank lain</p>
+              <p>2. Transfer ke bank Mandiri (008)</p>
+              <p>3. Masukkan nomor rekening tujuan dengan format "80+nomor handphone"</p>
+              <p>4. Masukkan nominal isi ulang</p>
+              <br>
+            <p><u>F. Melalui Toko Ritel</u></p>
+            <br/>
+              <p>1. Datang ke toko yang telah bekerjasama</p>
+              <p>2. Infokan nomor handphone yang akan diisikan</p>
+              <p>3. Setorkan dana sebesar isi ulang</p>
+            <br>
 
         ]]>
     </string>
