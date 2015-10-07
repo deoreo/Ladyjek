@@ -42,10 +42,10 @@ public class HelpSliderFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.promo_slider_fragment, container, false);
+        View v = inflater.inflate(R.layout.help_slider_fragment, container, false);
         ImageView img = (ImageView) v.findViewById(R.id.imgPromo);
 
-        Picasso.with(getActivity()).load(mColor).into(img);
+        Picasso.with(getActivity()).load(mColor).fit().into(img);
 
         return v;
     }

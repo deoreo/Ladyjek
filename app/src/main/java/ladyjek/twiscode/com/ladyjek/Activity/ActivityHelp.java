@@ -20,6 +20,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -40,7 +41,7 @@ public class ActivityHelp extends FragmentActivity {
     CircleIndicator defaultIndicator;
     ViewPager defaultViewpager;
     private WebView webview;
-    LinearLayout imageSlide;
+    RelativeLayout imageSlide;
     private final String TAG = "ActivityPromoWebView";
     TextView noPromo;
 
@@ -52,7 +53,7 @@ public class ActivityHelp extends FragmentActivity {
         btnBack = (ImageView) findViewById(R.id.btnBack);
         defaultViewpager = (ViewPager) findViewById(R.id.viewpager_default);
         defaultIndicator = (CircleIndicator) findViewById(R.id.indicator_default);
-        imageSlide = (LinearLayout) findViewById(R.id.imageslide);
+        imageSlide = (RelativeLayout) findViewById(R.id.imageslide);
         webview = (WebView) findViewById(R.id.webview);
         noPromo = (TextView) findViewById(R.id.txtNoPromo);
 
