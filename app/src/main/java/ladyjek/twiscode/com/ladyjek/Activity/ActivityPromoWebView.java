@@ -21,6 +21,7 @@ import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -41,7 +42,7 @@ public class ActivityPromoWebView extends FragmentActivity {
     private ProgressBar mProgressBar;
     private final String TAG = "ActivityPromoWebView";
     ImageView btnClose;
-    LinearLayout imageSlide;
+    RelativeLayout imageSlide;
 
 
 
@@ -52,7 +53,7 @@ public class ActivityPromoWebView extends FragmentActivity {
 
         webview = (WebView) findViewById(R.id.webview);
         btnClose = (ImageView) findViewById(R.id.btnClose);
-        imageSlide = (LinearLayout) findViewById(R.id.imageslide);
+        imageSlide = (RelativeLayout) findViewById(R.id.imageslide);
         ViewPager defaultViewpager = (ViewPager) findViewById(R.id.viewpager_default);
         CircleIndicator defaultIndicator = (CircleIndicator) findViewById(R.id.indicator_default);
 
