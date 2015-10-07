@@ -145,21 +145,6 @@ public class SocketManager {
     }
 
 
-    public void Disconnect() {
-        Log.d(TAG, "Disconnect");
-        socket.off(Socket.EVENT_CONNECT, onConnected);
-        socket.off(Socket.EVENT_DISCONNECT, onDisconnected);
-        socket.off("authenticated", onAuthenticated);
-        socket.off("unauthorized", onUnauthorized);
-        socket.off("last order", onLastOrder);
-        socket.on("order taken", onOrderTaken);
-        socket.off("order canceled", onOrderCanceled);
-        socket.off("driver location change", onDriverChangeLocation);
-        socket.off("order pickedup", onOrderPickUp);
-        socket.off("order started", onOrderStarted);
-        socket.off("order ended", onOrderEnded);
-        socket.disconnect();
-    }
 
     private Emitter.Listener onConnected = new Emitter.Listener() {
         @Override
@@ -506,8 +491,8 @@ public class SocketManager {
             public void call(Object... args) {
                 try {
                     Log.d(TAG, "cancel args:" + args[0]);
-                    String order = args[0].toString();
-                    if (order == null) {
+                    //String order = args[0].toString();
+                    if (args[0] == null) {
                         Log.d(TAG, "cancel true");
                         SendBroadcast("doCancel", "true");
                     } else {
@@ -840,6 +825,7 @@ public class SocketManager {
                 @Override
                 public void call(Object... args) {
                     try {
+                        Log.d("args 0:", args[0].toString());
                         JSONObject err = (JSONObject) args[0];
                         if (err == null) {
                             Log.d(TAG, "getfeedback true");
@@ -1208,6 +1194,7 @@ public class SocketManager {
                 @Override
                 public void call(Object... args) {
                     try {
+                        Log.d("args 0:", args[0].toString());
                         JSONObject err = (JSONObject) args[0];
                         if (err == null) {
                             Log.d(TAG, "confirm true");
@@ -1217,8 +1204,7 @@ public class SocketManager {
                             SendBroadcast("confirmPayment", "false");
                         }
                     } catch (Exception ex) {
-                        Log.d(TAG, "confirm error");
-                        ex.printStackTrace();
+                        Log.d(TAG, "confirm error :");
                         SendBroadcast("confirmPayment", "false");
                     }
 

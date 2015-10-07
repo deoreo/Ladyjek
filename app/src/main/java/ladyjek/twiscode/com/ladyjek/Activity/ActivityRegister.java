@@ -390,7 +390,7 @@ public class ActivityRegister extends ActionBarActivity {
                 String phoneNumber = params[1];
                 String password = params[2];
                 JSONControl jsControl = new JSONControl();
-                JSONObject responseRegister = jsControl.postRegister("Ladyjek",phoneNumber, password);
+                JSONObject responseRegister = jsControl.postRegister(name,phoneNumber, password);
                 Log.d("json responseRegister", responseRegister.toString());
                 try {
                     String token = responseRegister.getString("token");

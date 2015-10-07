@@ -11,6 +11,7 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -70,9 +71,9 @@ public class ActivityTracking extends ActionBarActivity implements LocationListe
     private ServiceLocation serviceLocation;
     private Runnable mRunnable;
     private Handler mHandler;
-    private final int AUTOUPDATE_INTERVAL_TIME =  15 * 1000; // 15 detik
-    private BroadcastReceiver start,end, doEmergency;
-    private Boolean isStart = false,isEnd = false;
+    private final int AUTOUPDATE_INTERVAL_TIME = 15 * 1000; // 15 detik
+    private BroadcastReceiver start, end, doEmergency;
+    private Boolean isStart = false, isEnd = false;
     private SocketManager socketManager;
 
     @Override
@@ -81,57 +82,54 @@ public class ActivityTracking extends ActionBarActivity implements LocationListe
         setContentView(R.layout.activity_tracking);
 
         socketManager = ApplicationData.socketManager;
-        start  = new BroadcastReceiver() {
+        start = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 // Extract data included in the Intent
                 String message = intent.getStringExtra("message");
                 Log.d("start", message);
-                if(message=="true"){
+                if (message == "true") {
                     appManager.setTrip("end");
-                }
-                else {
-                    Log.d("cant start","");
+                } else {
+                    Log.d("cant start", "");
                 }
                 isStart = false;
 
             }
         };
 
-        end  = new BroadcastReceiver() {
+        end = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 // Extract data included in the Intent
                 String message = intent.getStringExtra("message");
                 Log.d("end", message);
-                if(message=="true"){
+                if (message == "true") {
                     ApplicationData.socketManager = socketManager;
                     appManager.setTrip("");
                     appManager.setActivity("ActivityRate");
                     Intent i = new Intent(mActivity, ActivityRate.class);
                     startActivity(i);
                     finish();
-                }
-                else {
-                    Log.d("cant end","");
+                } else {
+                    Log.d("cant end", "");
                 }
                 isEnd = false;
 
             }
         };
 
-        doEmergency  = new BroadcastReceiver() {
+        doEmergency = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 // Extract data included in the Intent
                 String message = intent.getStringExtra("message");
                 Log.d("doEmergency", message);
                 DialogManager.DismissLoading(ActivityTracking.this);
-                if(message=="true"){
+                if (message == "true") {
                     DialogManager.showDialog(mActivity, "Informasi", "Emergency Call Anda telah diterima");
-                }
-                else {
-                    Log.d("cant doEmergency","");
+                } else {
+                    Log.d("cant doEmergency", "");
                 }
                 isStart = false;
 
@@ -143,20 +141,18 @@ public class ActivityTracking extends ActionBarActivity implements LocationListe
         appManager = new ApplicationManager(ActivityTracking.this);
         mHandler = new Handler();
         serviceLocation = new ServiceLocation();
-        if(appManager.getUserFrom()!=null) {
+        if (appManager.getUserFrom() != null) {
             latFrom = appManager.getUserFrom().getLatitude();
             lonFrom = appManager.getUserFrom().getLongitude();
-        }
-        else{
+        } else {
             latFrom = Double.parseDouble(ApplicationData.order.getFromLatitude());
             lonFrom = Double.parseDouble(ApplicationData.order.getFromLongitude());
         }
 
-        if(appManager.getUserDestination()!=null) {
+        if (appManager.getUserDestination() != null) {
             latDest = appManager.getUserDestination().getLatitude();
             lonDest = appManager.getUserDestination().getLongitude();
-        }
-        else{
+        } else {
             latDest = Double.parseDouble(ApplicationData.order.getToLatitude());
             lonDest = Double.parseDouble(ApplicationData.order.getToLongitude());
         }
@@ -164,18 +160,18 @@ public class ActivityTracking extends ActionBarActivity implements LocationListe
         posDest = new LatLng(latDest, lonDest);
 
         int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());
-        if(status!= ConnectionResult.SUCCESS){
+        if (status != ConnectionResult.SUCCESS) {
             int requestCode = 10;
             Dialog dialog = GooglePlayServicesUtil.getErrorDialog(status, this, requestCode);
             dialog.show();
-        }else {
+        } else {
 
             SupportMapFragment fm = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapView);
             googleMap = fm.getMap();
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(-6.1995921,106.872451), 10f));
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(-6.1995921, 106.872451), 10f));
             drawNewMarker(posFrom, TAG_FROM);
             drawNewMarker(posDest, TAG_DESTINATION);
-            drawDriveLine(googleMap , posFrom , posDest);
+            drawDriveLine(googleMap, posFrom, posDest);
         }
         mRunnable = new Runnable() {
             @Override
@@ -192,8 +188,39 @@ public class ActivityTracking extends ActionBarActivity implements LocationListe
         wrapperRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogManager.ShowLoading(ActivityTracking.this, "Calling...");
-                socketManager.EmergencyCall();
+                //DialogManager.ShowLoading(ActivityTracking.this, "Calling...");
+                //socketManager.EmergencyCall();
+                try {
+                    Context ctx = ActivityTracking.this;
+                    DialogManager.DismissLoading(ctx);
+                    new MaterialDialog.Builder(ActivityTracking.this)
+                            .title("Emrgency Call")
+                            .content("Anda yakin menghubungi (021)29568696 ?")
+                            .positiveText("OK")
+                            .callback(new MaterialDialog.ButtonCallback() {
+                                @Override
+                                public void onPositive(MaterialDialog dialog) {
+                                    Intent callIntent = new Intent(Intent.ACTION_DIAL);
+                                    callIntent.setData(Uri.parse("tel: 02129568696"));
+                                    startActivity(callIntent);
+                                    dialog.dismiss();
+                                }
+                            })
+                            .negativeText("Cancel")
+                            .callback(new MaterialDialog.ButtonCallback() {
+                                @Override
+                                public void onNegative(MaterialDialog dialog) {
+                                    dialog.dismiss();
+                                }
+                            })
+                            .icon(getResources().getDrawable(R.drawable.ladyjek_icon))
+                            .cancelable(false)
+                            .typeface("GothamRnd-Medium.otf", "Gotham.ttf")
+                            .show();
+                } catch (Exception e) {
+
+                }
+
             }
         });
 
@@ -215,12 +242,12 @@ public class ActivityTracking extends ActionBarActivity implements LocationListe
             }
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(posFrom, 12);
             googleMap.animateCamera(cameraUpdate);
-        } catch (Exception e){
+        } catch (Exception e) {
 
         }
     }
 
-    private void drawDriveLine(GoogleMap gMap, LatLng pFrom, LatLng pDest){
+    private void drawDriveLine(GoogleMap gMap, LatLng pFrom, LatLng pDest) {
         try {
             Document doc = GoogleAPIManager.getRoute(pFrom, pDest, "driving");
 
@@ -231,15 +258,10 @@ public class ActivityTracking extends ActionBarActivity implements LocationListe
                 rectLine.add(directionPoint.get(i));
             }
             gMap.addPolyline(rectLine);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
 
         }
     }
-
-
-
-
 
 
     @Override
@@ -345,6 +367,7 @@ public class ActivityTracking extends ActionBarActivity implements LocationListe
         }
         super.onPause();
     }
+
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));

@@ -58,7 +58,12 @@ public class ActivitySplashScreen extends Activity {
                     int countUser = db.getUserCount();
                     if(countUser > 0) {
 
-                        new CheckPromo(ActivitySplashScreen.this).execute();
+                        //new CheckPromo().execute();
+                        Intent i = new Intent(getBaseContext(), ActivityPromoWebView.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        startActivity(i);
+                        overridePendingTransition(0, 0);
+
 
                     }
                     else{
@@ -96,9 +101,7 @@ public class ActivitySplashScreen extends Activity {
 
     private class CheckPromo extends AsyncTask<String, Void, String> {
 
-
-        public CheckPromo(Activity activity) {
-            super();
+        public CheckPromo() {
         }
 
         @Override
@@ -145,12 +148,13 @@ public class ActivitySplashScreen extends Activity {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-
-
             switch (result) {
                 case "OK":
                     Intent i = new Intent(getBaseContext(), ActivityPromoWebView.class);
+                    i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(i);
+                    overridePendingTransition(0, 0);
+
                     //finish();
                     break;
                 case "FAIL":
