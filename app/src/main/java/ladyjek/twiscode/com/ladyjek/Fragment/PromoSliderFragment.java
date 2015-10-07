@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.squareup.picasso.Picasso;
 
@@ -17,7 +18,7 @@ import ladyjek.twiscode.com.ladyjek.R;
  */
 public class PromoSliderFragment extends Fragment {
     private static final String ARG_COLOR = "color";
-
+    ProgressBar progressBar;
     private String mColor;
 
     public static PromoSliderFragment newInstance(String param1) {
@@ -46,7 +47,21 @@ public class PromoSliderFragment extends Fragment {
         View v = inflater.inflate(R.layout.promo_slider_fragment, container, false);
         ImageView img = (ImageView) v.findViewById(R.id.imgPromo);
 
-        Picasso.with(getActivity()).load(mColor).into(img);
+        progressBar = (ProgressBar) v.findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.VISIBLE);
+        Picasso.with(getActivity()).load(mColor).into(img, new com.squareup.picasso.Callback() {
+            @Override
+            public void onSuccess() {
+                if (progressBar != null) {
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onError() {
+
+            }
+        });
 
         return v;
     }
