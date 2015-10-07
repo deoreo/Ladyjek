@@ -130,15 +130,18 @@ public class ActivityConfirm extends ActionBarActivity {
                     DialogManager.ShowLoading(ActivityConfirm.this, "Loading...");
                     socketManager.CreateOrder(ApplicationData.posFrom, ApplicationData.posDestination,"cash");
                 } else if (pembayaran == 1) {
-                    /*
-                    Intent i = new Intent(getBaseContext(), ActivityVerifyPayment.class);
-                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    ApplicationManager um = new ApplicationManager(ActivityConfirm.this);
-                    startActivity(i);
-                    finish();
-                    */
+                   /*
                     DialogManager.ShowLoading(ActivityConfirm.this, "Loading...");
                     socketManager.CreateOrder(ApplicationData.posFrom, ApplicationData.posDestination,"mandiriecash");
+                    */
+                    DialogManager.showDialog(ActivityConfirm.this, "Informasi", "Fitur Mandiri e-Cash akan segera hadir");
+                }
+                else if (pembayaran == 2) {
+                   /*
+                    DialogManager.ShowLoading(ActivityConfirm.this, "Loading...");
+                    socketManager.CreateOrder(ApplicationData.posFrom, ApplicationData.posDestination,"mandiriecash");
+                    */
+                    DialogManager.showDialog(ActivityConfirm.this, "Informasi", "Fitur XL Tunai akan segera hadir");
                 }
 
             }

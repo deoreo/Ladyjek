@@ -16,6 +16,7 @@
     <string-array name="payList">
         <item>Tunai</item>
         <item>Mandiri e-Cash</item>
+        <item>XL Tunai</item>
     </string-array>
     <string name="title_activity_activity_transport">Masukan lokasi awal dan akhir</string>
     <string name="title_activity_change_location_rumah">Lokasi rumah</string>

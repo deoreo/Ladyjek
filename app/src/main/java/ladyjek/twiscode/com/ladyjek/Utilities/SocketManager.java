@@ -825,9 +825,9 @@ public class SocketManager {
                 @Override
                 public void call(Object... args) {
                     try {
-                        Log.d("args 0:", args[0].toString());
-                        JSONObject err = (JSONObject) args[0];
-                        if (err == null) {
+                        //Log.d("args 0:", args[0].toString());
+                        //JSONObject err = (JSONObject) args[0];
+                        if (args[0] == null) {
                             Log.d(TAG, "getfeedback true");
                             SendBroadcast("doFeedback", "true");
                         } else {
@@ -861,8 +861,8 @@ public class SocketManager {
                 @Override
                 public void call(Object... args) {
                     try {
-                        JSONObject err = (JSONObject) args[0];
-                        if (err == null) {
+                        //JSONObject err = (JSONObject) args[0];
+                        if (args[0] == null) {
                             Log.d(TAG, "editPassword true");
                             SendBroadcast("editPassword", "true");
                         } else {
@@ -894,8 +894,8 @@ public class SocketManager {
                 @Override
                 public void call(Object... args) {
                     try {
-                        JSONObject err = (JSONObject) args[0];
-                        if (err == null) {
+                        //JSONObject err = (JSONObject) args[0];
+                        if (args[0] == null) {
                             Log.d(TAG, "editName true");
                             SendBroadcast("editName", "true");
                         } else {
@@ -925,8 +925,8 @@ public class SocketManager {
                 @Override
                 public void call(Object... args) {
                     try {
-                        JSONObject err = (JSONObject) args[0];
-                        if (err == null) {
+                        //JSONObject err = (JSONObject) args[0];
+                        if (args[0] == null) {
                             Log.d(TAG, "editEmail true");
                             SendBroadcast("editEmail", "true");
                         } else {
@@ -958,8 +958,8 @@ public class SocketManager {
                 @Override
                 public void call(Object... args) {
                     try {
-                        JSONObject err = (JSONObject) args[0];
-                        if (err == null) {
+                        //JSONObject err = (JSONObject) args[0];
+                        if (args[0] == null) {
                             Log.d(TAG, "editHP true");
                             SendBroadcast("editHP", "true");
                         } else {
@@ -996,8 +996,8 @@ public class SocketManager {
             public void call(Object... args) {
                 try {
                     try {
-                        JSONObject err = (JSONObject) args[0];
-                        if (err == null) {
+                        //JSONObject err = (JSONObject) args[0];
+                        if (args[0] == null) {
                             Log.d(TAG, "change location true");
                             SendBroadcast("changeHouseLocation", "true");
                         } else {
@@ -1032,8 +1032,8 @@ public class SocketManager {
             public void call(Object... args) {
                 try {
                     try {
-                        JSONObject err = (JSONObject) args[0];
-                        if (err == null) {
+                        //JSONObject err = (JSONObject) args[0];
+                        if (args[0] == null) {
                             Log.d(TAG, "change location true");
                             SendBroadcast("changeOfficeLocation", "true");
                         } else {
@@ -1063,8 +1063,8 @@ public class SocketManager {
             public void call(Object... args) {
                 try {
                     try {
-                        JSONObject err = (JSONObject) args[0];
-                        if (err == null) {
+                        //JSONObject err = (JSONObject) args[0];
+                        if (args[0] == null) {
                             JSONArray data = (JSONArray) args[1];
                             Log.d(TAG, "getHistory ; " + data.length());
                             if(data.length() > 0){
@@ -1155,8 +1155,8 @@ public class SocketManager {
             public void call(Object... args) {
                 try {
                     try {
-                        JSONObject err = (JSONObject) args[0];
-                        if (err == null) {
+                        //JSONObject err = (JSONObject) args[0];
+                        if (args[0] == null) {
 
                             JSONObject obj = (JSONObject) args[1];
                             String status = obj.getString("status");
@@ -1194,9 +1194,9 @@ public class SocketManager {
                 @Override
                 public void call(Object... args) {
                     try {
-                        Log.d("args 0:", args[0].toString());
-                        JSONObject err = (JSONObject) args[0];
-                        if (err == null) {
+                       // Log.d("args 0:", args[0].toString());
+                        //JSONObject err = (JSONObject) args[0];
+                        if (args[0] == null) {
                             Log.d(TAG, "confirm true");
                             SendBroadcast("confirmPayment", "true");
                         } else {
