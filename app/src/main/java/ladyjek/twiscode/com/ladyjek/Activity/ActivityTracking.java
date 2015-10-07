@@ -201,7 +201,7 @@ public class ActivityTracking extends ActionBarActivity implements LocationListe
                                 @Override
                                 public void onPositive(MaterialDialog dialog) {
                                     Intent callIntent = new Intent(Intent.ACTION_DIAL);
-                                    callIntent.setData(Uri.parse("tel: 02129568696"));
+                                    callIntent.setData(Uri.parse("tel:02129568696"));
                                     startActivity(callIntent);
                                     dialog.dismiss();
                                 }

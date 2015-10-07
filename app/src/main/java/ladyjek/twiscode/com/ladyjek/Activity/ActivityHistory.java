@@ -75,7 +75,7 @@ public class ActivityHistory extends FragmentActivity {
         mRecyclerView = mPullToLoadView.getRecyclerView();
 
         data = new ArrayList<>();
-        data.add(new ModelHistory("1","","","","","","","","","",""));
+        //data.add(new ModelHistory("1","","","","","","","","","",""));
         adapter = new AdapterHistory(act,data,isNull);
         mRecyclerView.setAdapter(adapter);
         data = new ArrayList<>();
