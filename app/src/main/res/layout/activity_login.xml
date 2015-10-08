@@ -70,7 +70,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_centerHorizontal="true"
-                                    android:text="Sign in ke Ladyjek"
+                                    android:text="Masuk ke Ladyjek"
                                     android:textColor="@color/white_color"
                                     android:textSize="20dp"
                                     android:textStyle="bold"
@@ -262,7 +262,7 @@
                             android:layout_centerHorizontal="true"
                             android:layout_marginTop="30dp"
                             android:gravity="center"
-                            android:text="atau\nAnda ingin sign up?"
+                            android:text="atau\nAnda ingin daftar?"
                             android:textColor="@color/bg_grad_2"
                             android:textSize="15sp" />
 

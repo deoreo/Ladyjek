@@ -77,14 +77,23 @@ public class ActivityRegister extends ActionBarActivity {
                     Log.d("phone num", num);
                     Log.d("phone", phoneNumber);
                     if (num.contains("0")) {
-                        phoneNumber = phoneNumber.substring(1);
                         Log.d("phone 1", phoneNumber);
+                        /*
+                        phoneNumber = phoneNumber.substring(1);
+
+                        */
+                        DialogManager.showDialog(act,"Informasi","Masukkan nomor ponsel seperti berikut : 085959084701");
+
                     }
-                    new DoRegister(act).execute(
-                            name,
-                            phoneNumber,
-                            password
-                    );
+                    else {
+                        phoneNumber = "8"+phoneNumber;
+                        new DoRegister(act).execute(
+                                name,
+                                phoneNumber,
+                                password
+                        );
+                    }
+
                 }
 
             }
