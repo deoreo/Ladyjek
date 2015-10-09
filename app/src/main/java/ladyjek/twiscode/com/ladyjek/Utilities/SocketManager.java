@@ -191,10 +191,14 @@ public class SocketManager {
                 Log.d(TAG, "send unverify");
             }
             if(onAuth && doLogout==0){
+                Log.d(TAG, "reconnect");
                 socket.connect();
             }
             else {
                 onAuth = false;
+                Log.d(TAG, "send logout");
+                SendBroadcast("logout", "true");
+
             }
         }
     };
@@ -544,7 +548,7 @@ public class SocketManager {
         try {
             fr.put(0, from.longitude);
             fr.put(1, from.latitude);
-            dt.put(0, destination.longitude);
+            dt.put(0, destination. longitude);
             dt.put(1, destination.latitude);
             objs.put("fromGeo", fr);
             objs.put("toGeo", dt);
@@ -556,12 +560,14 @@ public class SocketManager {
                     try {
                         //Log.d(TAG, "order args:" + args[1]);
 
-                        JSONObject obj = (JSONObject) args[1];
-                        JSONObject err = (JSONObject) args[0];
-                        if(err != null){
-                            Log.d("error create order", err.toString());
+
+                        //JSONObject err = (JSONObject) args[0];
+                        if(args[0] != null){
+                            Log.d(TAG, "cancel false");
+                            SendBroadcast("createOrder", "false");
                         }
-                        if (err == null) {
+                        else{
+                            JSONObject obj = (JSONObject) args[1];
                             if(pay=="mandiriecash"){
                                 Log.d(TAG, "order url:" + args[2]);
                             }
@@ -619,13 +625,67 @@ public class SocketManager {
                                 SendBroadcast("createOrder", "mandiri");
                             }
 
-                        } else {
-                            Log.d(TAG, "cancel false");
-                            SendBroadcast("createOrder", "false");
                         }
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
+
+                }
+
+            });
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void CalculateOrder(LatLng from, LatLng destination) {
+        Log.d(TAG, "calculate order");
+        JSONObject objs = new JSONObject();
+        JSONArray fr = new JSONArray();
+        JSONArray dt = new JSONArray();
+        try {
+            fr.put(0, from.longitude);
+            fr.put(1, from.latitude);
+            dt.put(0, destination.longitude);
+            dt.put(1, destination.latitude);
+            objs.put("fromGeo", fr);
+            objs.put("toGeo", dt);
+            Log.d("calculate order", objs.toString());
+            socket.emit("pre calculate order", objs, new Ack() {
+                @Override
+                public void call(Object... args) {
+                    try {
+                        //Log.d(TAG, "order args:" + args[1]);
+
+
+                        //JSONObject err = (JSONObject) args[0];
+                        if(args[0] != null){
+                            Log.d(TAG, "calculate false");
+                            SendBroadcast("calculate", "false");
+                        }
+                        else {
+                            try {
+                                JSONObject obj = (JSONObject) args[1];
+                                Log.d(TAG, "calculate:" + obj.toString());
+                                ApplicationData.distance = obj.getJSONObject("distance").getString("text");
+                                ApplicationData.duration = obj.getJSONObject("duration").getString("text");
+                                ApplicationData.price = obj.getString("price");
+                                SendBroadcast("calculate", "true");
+                            }
+                            catch (Exception e){
+                                e.printStackTrace();
+                                Log.d(TAG, "calculate false");
+                                SendBroadcast("calculate", "false");
+                            }
+
+
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        SendBroadcast("calculate", "false");
+                    }
+
 
                 }
 

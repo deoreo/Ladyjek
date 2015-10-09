@@ -41,6 +41,7 @@ import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.GoogleAPIManager;
+import ladyjek.twiscode.com.ladyjek.Utilities.NetworkManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.SocketManager;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
@@ -60,7 +61,7 @@ public class ActivityConfirm extends ActionBarActivity {
     private NumberFormat numberFormat;
     private DecimalFormat decimalFormat;
     private SocketManager socketManager;
-    private BroadcastReceiver doCreateOrder;
+    private BroadcastReceiver doCreateOrder,doCalculate;
     private ClearableEditText txtPromo;
     private Button btnPromo;
 
@@ -79,6 +80,7 @@ public class ActivityConfirm extends ActionBarActivity {
         decimalFormat.setDecimalFormatSymbols(otherSymbols);
         //SetActionBar();
         SetPaySpinner();
+
         new GetInfoOrder(mActivity).execute();
 
 
@@ -123,6 +125,24 @@ public class ActivityConfirm extends ActionBarActivity {
             }
         };
 
+        doCalculate  = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                // Extract data included in the Intent
+                String message = intent.getStringExtra("message");
+                Log.d("doCalculate", message);
+                DialogManager.DismissLoading(context);
+                if(message=="true"){
+                    ApplicationData.socketManager = socketManager;
+                    txtDistance.setText(ApplicationData.distance);
+                    txtDuration.setText(ApplicationData.duration);
+                    int harga = Integer.parseInt(ApplicationData.price);
+                    txtTotal.setText("Rp " + decimalFormat.format(harga));
+                }
+
+
+            }
+        };
         txtConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -187,6 +207,14 @@ public class ActivityConfirm extends ActionBarActivity {
                 }
             }
         });
+
+        if(NetworkManager.getInstance(mActivity).isConnectedInternet()){
+            DialogManager.ShowLoading(ActivityConfirm.this, "Loading...");
+            socketManager.CalculateOrder(ApplicationData.posFrom, ApplicationData.posDestination);
+        }
+        else {
+            DialogManager.showDialog(mActivity,"Informasi","Tidak ada koneksi internet");
+        }
 
     }
 
@@ -323,9 +351,9 @@ public class ActivityConfirm extends ActionBarActivity {
                     txtDestination.setText(strDest);
                     txtDetailFrom.setText(strDetailFrom);
                     txtDetailDestination.setText(strDetailDest);
-                    txtDistance.setText(strDistance);
-                    txtDuration.setText(strDuration);
-                    txtTotal.setText("Rp " + decimalFormat.format(totalPrice));
+                    //txtDistance.setText(strDistance);
+                    //txtDuration.setText(strDuration);
+                    //txtTotal.setText("Rp " + decimalFormat.format(totalPrice));
                     ApplicationData.price = txtTotal.getText().toString();
                     break;
             }
@@ -339,6 +367,8 @@ public class ActivityConfirm extends ActionBarActivity {
         super.onResume();
         LocalBroadcastManager.getInstance(this).registerReceiver(doCreateOrder,
                 new IntentFilter("createOrder"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(doCalculate,
+                new IntentFilter("calculate"));
 
     }
 

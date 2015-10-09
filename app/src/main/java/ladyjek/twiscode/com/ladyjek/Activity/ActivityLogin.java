@@ -176,14 +176,23 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
                     String num=email.substring(0,1);
                     Log.d("phone num",num);
                     Log.d("phone", email);
-                    if(num.contains("0")){
-                        email = email.substring(1);
-                        Log.d("phone 1",email);
+                    if (num.contains("0")) {
+                        Log.d("phone 1", email);
+                        /*
+                        phoneNumber = phoneNumber.substring(1);
+
+                        */
+                        DialogManager.showDialog(mActivity, "Informasi", "Masukkan nomor ponsel seperti berikut : 085959084701");
+
                     }
-                    new DoLogin(mActivity).execute(
-                            email,
-                            password
-                    );
+                    else {
+                        email = "8"+email;
+                        new DoLogin(mActivity).execute(
+                                email,
+                                password
+                        );
+                    }
+
                 }
             }
         });

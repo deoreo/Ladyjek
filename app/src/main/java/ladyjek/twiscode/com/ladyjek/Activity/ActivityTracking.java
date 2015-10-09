@@ -188,8 +188,13 @@ public class ActivityTracking extends ActionBarActivity implements LocationListe
         wrapperRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent callIntent = new Intent(Intent.ACTION_DIAL);
+                callIntent.setData(Uri.parse("tel:02129568696"));
+                startActivity(callIntent);
+
                 //DialogManager.ShowLoading(ActivityTracking.this, "Calling...");
                 //socketManager.EmergencyCall();
+                /*
                 try {
                     Context ctx = ActivityTracking.this;
                     DialogManager.DismissLoading(ctx);
@@ -219,7 +224,7 @@ public class ActivityTracking extends ActionBarActivity implements LocationListe
                             .show();
                 } catch (Exception e) {
 
-                }
+                }*/
 
             }
         });
