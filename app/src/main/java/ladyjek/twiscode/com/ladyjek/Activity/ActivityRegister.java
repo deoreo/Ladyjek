@@ -440,7 +440,7 @@ public class ActivityRegister extends ActionBarActivity {
                     e.printStackTrace();
                     error = responseRegister.getJSONObject("message").getJSONObject("phoneNumbers").getString("message");
                     if(error.contains("already exist")){
-                        error = "nomor telah terdaftar. Silahkan login!";
+                        error = "nomor anda telah terregistrasi. Silahkan sign in!";
                     }
                     Log.d("error", error);
                 }
