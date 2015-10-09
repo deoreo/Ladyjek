@@ -3,6 +3,7 @@ package ladyjek.twiscode.com.ladyjek.Adapter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.util.Log;
 
 import org.json.JSONArray;
 
@@ -29,6 +30,7 @@ public class PromoSliderAdapter extends FragmentPagerAdapter {
         String url = "";
         try{
             url = data.getString(i);
+            Log.d("promo url images",url);
 
         }
         catch (Exception e){

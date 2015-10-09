@@ -2,6 +2,7 @@ package ladyjek.twiscode.com.ladyjek.Fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,7 +50,8 @@ public class PromoSliderFragment extends Fragment {
 
         progressBar = (ProgressBar) v.findViewById(R.id.progressBar);
         progressBar.setVisibility(View.VISIBLE);
-        Picasso.with(getActivity()).load(mColor).into(img, new com.squareup.picasso.Callback() {
+        Log.d("promo url images 1", mColor);
+        Picasso.with(getActivity()).load(mColor).fit().into(img, new com.squareup.picasso.Callback() {
             @Override
             public void onSuccess() {
                 if (progressBar != null) {
