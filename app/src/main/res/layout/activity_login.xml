@@ -99,6 +99,7 @@
                                     android:textColor="@color/white_color"
                                     android:textColorHint="@color/white_color"
                                     android:textStyle="bold"
+                                    fontPath="@string/GothamRndMedium"
                                     android:editable="false"/>
 
                                 <View

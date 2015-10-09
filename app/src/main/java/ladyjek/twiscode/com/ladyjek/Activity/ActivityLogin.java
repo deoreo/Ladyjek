@@ -211,13 +211,16 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
                     Log.d("phone num",num);
                     Log.d("phone", email);
                     if(num.contains("0")){
-                        email = email.substring(1);
-                        Log.d("phone 1",email);
+                        DialogManager.showDialog(mActivity, "Informasi", "Masukkan nomor ponsel seperti berikut : 085959084701");
                     }
-                    new DoLogin(mActivity).execute(
-                            email,
-                            password
-                    );
+                    else {
+                        email = "8"+email;
+                        new DoLogin(mActivity).execute(
+                                email,
+                                password
+                        );
+                    }
+
                 }
             }
         });
@@ -386,95 +389,103 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
                 String password = params[1];
 
                 JSONControl jsControl = new JSONControl();
-                JSONObject response = jsControl.postLogin(phoneNumber,password);
+                JSONObject response = jsControl.postLogin(phoneNumber, password);
                 Log.d("json response", response.toString());
-                JSONObject responseUser = response.getJSONObject("user");
-                String token = response.getString("token");
-                appManager.setUserToken(token);
-
-
                 try {
-                    String _verified = responseUser.getString("verified");
-                    String _id = responseUser.getString("_id");
-                    Log.d("json response id",_id.toString());
-                    if(_id!=null && _verified.equals("true")){
-                        String name = responseUser.getString("name");
-                        String email = "";
-                        try {
-                            email = responseUser.getString("email");
-                        }
-                        catch (Exception ex){
-                            email="";
-                        }
-                        JSONObject rumah = responseUser.getJSONObject("houseGeo");
-
-                        JSONArray latlgRumah = rumah.getJSONArray("coordinates");
-                        String latRumah = latlgRumah.getString(1);
-                        String lonRumah = latlgRumah.getString(0);
-                        String addressRumah = "";
-                        if(!latRumah.equals("0") && !lonRumah.equals("0")) {
-                            addressRumah = getAddress(new LatLng(Double.parseDouble(latRumah), Double.parseDouble(lonRumah)));
-                        }
-                        JSONObject kantor = responseUser.getJSONObject("officeGeo");
-
-                        JSONArray latlgKantor = kantor.getJSONArray("coordinates");
-                        String latKantor = latlgKantor.getString(1);
-                        String lonKantor = latlgKantor.getString(0);
-                        String addressKantor = "";
-                        if(!latKantor.equals("0") && !lonKantor.equals("0")) {
-                            addressKantor = getAddress(new LatLng(Double.parseDouble(latKantor), Double.parseDouble(lonKantor)));
-                        }
-                        JSONArray phNumbers = responseUser.getJSONArray("phoneNumbers");
-                        String hp2nd="";
-                        if(phNumbers.length()==2){
-                            hp2nd = phNumbers.getString(1).substring(3);
-                        }
-                        userLogin = new ModelUserOrder();
-                        userLogin.setPhone(phoneNumber);
-                        userLogin.setPassword(password);
-                        userLogin.setId(_id);
-                        userLogin.setEmail(email);
-                        userLogin.setName(name);
-                        userLogin.setAddressHome(addressRumah);
-                        userLogin.setHomeLat(latRumah);
-                        userLogin.setHomeLon(lonRumah);
-                        userLogin.setRumah(new LatLng(Double.parseDouble(latRumah), Double.parseDouble(lonRumah)));
-                        userLogin.setAddressOffice(addressKantor);
-                        userLogin.setOfficeLat(latKantor);
-                        userLogin.setOfficeLat(lonKantor);
-                        userLogin.setKantor(new LatLng(Double.parseDouble(latKantor), Double.parseDouble(lonKantor)));
-                        userLogin.setPhone2nd(hp2nd);
-                        db.insertUser(userLogin);
-                        appManager.setUser(userLogin);
-                        ApplicationData.login_id = _id.toString();
-                        ApplicationData.userLogin = userLogin;
+                    JSONObject responseUser = response.getJSONObject("user");
+                    String token = response.getString("token");
+                    appManager.setUserToken(token);
 
 
-                        String deviceToken = ApplicationData.PARSE_DEVICE_TOKEN;
-                        ApplicationManager.getInstance(context).setUserToken(token);
-                        ApplicationData.registered_id = _id.toString();
-                        JSONControl jsonControl = new JSONControl();
-                        JSONObject objRefreshToken = jsonControl.postRefreshToken(ApplicationManager.getInstance(context).getUserToken());
-                        Log.d("refresh token", objRefreshToken.toString());
-                        String refreshToken = objRefreshToken.getString("token");
-                        ApplicationManager.getInstance(context).setUserToken(refreshToken);
-                        String responseDeviceToken = jsonControl.postDeviceToken(refreshToken, deviceToken);
-                        Log.d("json response phone", responseDeviceToken);
+                    try {
+                        String _verified = responseUser.getString("verified");
+                        String _id = responseUser.getString("_id");
+                        Log.d("json response id",_id.toString());
+                        if(_id!=null && _verified.equals("true")){
+                            String name = responseUser.getString("name");
+                            String email = "";
+                            try {
+                                email = responseUser.getString("email");
+                            }
+                            catch (Exception ex){
+                                email="";
+                            }
+                            JSONObject rumah = responseUser.getJSONObject("houseGeo");
 
-                        if(!responseDeviceToken.contains("jwt") && !responseDeviceToken.contains("error")){
-                            return "OK";
+                            JSONArray latlgRumah = rumah.getJSONArray("coordinates");
+                            String latRumah = latlgRumah.getString(1);
+                            String lonRumah = latlgRumah.getString(0);
+                            String addressRumah = "";
+                            if(!latRumah.equals("0") && !lonRumah.equals("0")) {
+                                addressRumah = getAddress(new LatLng(Double.parseDouble(latRumah), Double.parseDouble(lonRumah)));
+                            }
+                            JSONObject kantor = responseUser.getJSONObject("officeGeo");
+
+                            JSONArray latlgKantor = kantor.getJSONArray("coordinates");
+                            String latKantor = latlgKantor.getString(1);
+                            String lonKantor = latlgKantor.getString(0);
+                            String addressKantor = "";
+                            if(!latKantor.equals("0") && !lonKantor.equals("0")) {
+                                addressKantor = getAddress(new LatLng(Double.parseDouble(latKantor), Double.parseDouble(lonKantor)));
+                            }
+                            JSONArray phNumbers = responseUser.getJSONArray("phoneNumbers");
+                            String hp2nd="";
+                            if(phNumbers.length()==2){
+                                hp2nd = phNumbers.getString(1).substring(3);
+                            }
+                            userLogin = new ModelUserOrder();
+                            userLogin.setPhone(phoneNumber);
+                            userLogin.setPassword(password);
+                            userLogin.setId(_id);
+                            userLogin.setEmail(email);
+                            userLogin.setName(name);
+                            userLogin.setAddressHome(addressRumah);
+                            userLogin.setHomeLat(latRumah);
+                            userLogin.setHomeLon(lonRumah);
+                            userLogin.setRumah(new LatLng(Double.parseDouble(latRumah), Double.parseDouble(lonRumah)));
+                            userLogin.setAddressOffice(addressKantor);
+                            userLogin.setOfficeLat(latKantor);
+                            userLogin.setOfficeLat(lonKantor);
+                            userLogin.setKantor(new LatLng(Double.parseDouble(latKantor), Double.parseDouble(lonKantor)));
+                            userLogin.setPhone2nd(hp2nd);
+                            db.insertUser(userLogin);
+                            appManager.setUser(userLogin);
+                            ApplicationData.login_id = _id.toString();
+                            ApplicationData.userLogin = userLogin;
+
+
+                            String deviceToken = ApplicationData.PARSE_DEVICE_TOKEN;
+                            ApplicationManager.getInstance(context).setUserToken(token);
+                            ApplicationData.registered_id = _id.toString();
+                            JSONControl jsonControl = new JSONControl();
+                            JSONObject objRefreshToken = jsonControl.postRefreshToken(ApplicationManager.getInstance(context).getUserToken());
+                            Log.d("refresh token", objRefreshToken.toString());
+                            String refreshToken = objRefreshToken.getString("token");
+                            ApplicationManager.getInstance(context).setUserToken(refreshToken);
+                            String responseDeviceToken = jsonControl.postDeviceToken(refreshToken, deviceToken);
+                            Log.d("json response phone", responseDeviceToken);
+
+                            if(!responseDeviceToken.contains("jwt") && !responseDeviceToken.contains("error")){
+                                return "OK";
+                            }
+                        }
+                        else if(!_verified.contains("true")){
+                            return "VERIFY";
+                        }
+                        else {
+                            return "FAIL";
                         }
                     }
-                    else if(!_verified.contains("true")){
-                        return "VERIFY";
-                    }
-                    else {
-                        return "FAIL";
+                    catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
-                catch (Exception e) {
-                    e.printStackTrace();
+                catch (Exception e){
+                    if(response.toString().contains("invalid_credentials")){
+                        return "INVALID";
+                    }
                 }
+
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -510,6 +521,9 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
                     Intent verify = new Intent(getBaseContext(), ActivityHandphoneKonfirmasi.class);
                     startActivity(verify);
                     finish();
+                    break;
+                case "INVALID":
+                    DialogManager.showDialog(activity,"Mohon Maaf","password anda salah!");
                     break;
                 case "OK":
                     new CheckPromo(activity).execute();
@@ -592,6 +606,7 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
 
             } catch (Exception e) {
                 e.printStackTrace();
+
             }
             return "FAIL";
 
