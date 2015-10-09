@@ -203,18 +203,19 @@ public class ActivityPromoWebView extends FragmentActivity {
             try {
                 JSONControl jsControl = new JSONControl();
                 JSONObject response = jsControl.postPromo();
-                Log.d("json promo", response.toString());
                 if(response!=null){
                     try{
                         String url = response.getString("url");
                         ApplicationData.promo_url = url;
                         ApplicationData.promo_images = new JSONArray();
+                        Log.d("json promo url", url);
                         return "OK";
                     }
                     catch (Exception e){
                         e.printStackTrace();
                         try{
                             JSONArray url = response.getJSONArray("images");
+                            Log.d("json promo images", url.toString());
                             ApplicationData.promo_images = url;
                             ApplicationData.promo_url = "";
                             return "OK";
@@ -239,42 +240,42 @@ public class ActivityPromoWebView extends FragmentActivity {
             progressDialog.dismiss();
             switch (result) {
                 case "OK":
-                    webview.setWebViewClient(new myWebClient() {
-                        public void onPageFinished(WebView view, String url) {
-                        }
-                    });
-                    webview.getSettings().setSavePassword(false);
-                    webview.getSettings().setJavaScriptEnabled(true);
-                    webview.getSettings().setSaveFormData(false);
-                    webview.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
-
-                    webview.setWebChromeClient(new WebChromeClient() {
-                        @Override
-                        public void onProgressChanged(WebView view, int newProgress) {
-                            super.onProgressChanged(view, newProgress);
-                            mProgressBar.setProgress(newProgress);
-                            if (newProgress == 100) mProgressBar.setVisibility(View.GONE);
-                        }
-
-
-                    });
-                    webview.setOnTouchListener(new View.OnTouchListener() {
-                        @Override
-                        public boolean onTouch(View v, MotionEvent event) {
-                            switch (event.getAction()) {
-
-                                case MotionEvent.ACTION_DOWN:
-                                case MotionEvent.ACTION_UP:
-                                    if (!v.hasFocus()) {
-                                        v.requestFocus();
-                                    }
-                                    break;
-                            }
-                            return false;
-                        }
-                    });
 
                     if(ApplicationData.promo_url!=""){
+                        webview.setWebViewClient(new myWebClient() {
+                            public void onPageFinished(WebView view, String url) {
+                            }
+                        });
+                        webview.getSettings().setSavePassword(false);
+                        webview.getSettings().setJavaScriptEnabled(true);
+                        webview.getSettings().setSaveFormData(false);
+                        webview.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+
+                        webview.setWebChromeClient(new WebChromeClient() {
+                            @Override
+                            public void onProgressChanged(WebView view, int newProgress) {
+                                super.onProgressChanged(view, newProgress);
+                                mProgressBar.setProgress(newProgress);
+                                if (newProgress == 100) mProgressBar.setVisibility(View.GONE);
+                            }
+
+
+                        });
+                        webview.setOnTouchListener(new View.OnTouchListener() {
+                            @Override
+                            public boolean onTouch(View v, MotionEvent event) {
+                                switch (event.getAction()) {
+
+                                    case MotionEvent.ACTION_DOWN:
+                                    case MotionEvent.ACTION_UP:
+                                        if (!v.hasFocus()) {
+                                            v.requestFocus();
+                                        }
+                                        break;
+                                }
+                                return false;
+                            }
+                        });
                         imageSlide.setVisibility(View.GONE);
                         webview.setVisibility(View.VISIBLE);
                         webview.loadUrl(ApplicationData.promo_url);

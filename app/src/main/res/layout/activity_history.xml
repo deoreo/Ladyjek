@@ -33,7 +33,7 @@
                     android:padding="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="riwayat traksaksi"
+                    android:text="riwayat transaksi"
                     android:textSize="18dp"
                     android:textStyle="bold"
                     android:textColor="@color/bg_grad_2"

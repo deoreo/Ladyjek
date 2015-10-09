@@ -128,6 +128,7 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
                 // Extract data included in the Intent
                 Log.d("broadcast", "changeHouseLocation");
                 String message = intent.getStringExtra("message");
+                DialogManager.DismissLoading(ActivityChangeLocation.this);
                 if (message.equals("true")) {
                     user.setRumah(ApplicationData.Home);
                     user.setAddressHome(ApplicationData.homeAddress);
@@ -140,7 +141,6 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
 
                 }
 
-                progressDialog.dismiss();
 
 
             }
@@ -152,7 +152,8 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
                 // Extract data included in the Intent
                 Log.d("broadcast", "changeOfficeLocation");
                 String message = intent.getStringExtra("message");
-                progressDialog.dismiss();
+                DialogManager.DismissLoading(ActivityChangeLocation.this);
+                //progressDialog.dismiss();
                 if (message.equals("true")) {
                     user.setKantor(ApplicationData.Office);
                     user.setAddressOffice(ApplicationData.officeAddress);
@@ -174,7 +175,11 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
 
         SupportMapFragment fm = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapView);
         googleMap = fm.getMap();
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(-6.2211361, 106.8665963), 10f));
+        try {
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(-6.2211361, 106.8665963), 10f));
+        }catch(Exception e){
+
+        }
         btnSimpan.setText(Html.fromHtml(getResources().getString(R.string.simpan)));
         serviceLocation = new ServiceLocation();
         LatLng rumah = user.getRumah();
@@ -183,7 +188,7 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
         if(ApplicationData.editHome) {
             lblChange.setText(R.string.title_activity_change_location_rumah);
             if (NetworkManager.getInstance(mActivity).isConnectedInternet()) {
-                if(rumah == null) {
+                if(rumah.latitude == 0 && rumah.longitude == 0) {
                     new GetMyLocation(mActivity, googleMap, serviceLocation).execute();
                 }else{
                     LatLng cPos = user.getRumah();
@@ -196,7 +201,7 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
         else{
             lblChange.setText(R.string.title_activity_change_location_kantor);
             if (NetworkManager.getInstance(mActivity).isConnectedInternet()) {
-                if(kantor == null) {
+                if (kantor.latitude == 0 && kantor.longitude == 0) {
                     new GetMyLocation(mActivity, googleMap, serviceLocation).execute();
                 }else{
                     LatLng cPos = user.getKantor();
@@ -224,7 +229,7 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
         btnSimpan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                OpenLoading();
+                DialogManager.ShowLoading(ActivityChangeLocation.this,"Loading...");
                 if(ApplicationData.editHome) {
                     socketManager.ChangeHouseLocation(ApplicationData.Home, ApplicationData.homeAddress);
                 } else{
@@ -237,7 +242,7 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
         wrapperSimpan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                OpenLoading();
+                DialogManager.ShowLoading(ActivityChangeLocation.this,"Loading...");
                 if(ApplicationData.editHome) {
                     socketManager.ChangeHouseLocation(ApplicationData.Home, ApplicationData.homeAddress);
                 } else{
@@ -598,14 +603,6 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
 
     }
 
-    void OpenLoading(){
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Loading. . .");
-        progressDialog.setIndeterminate(false);
-        progressDialog.setCancelable(false);
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        progressDialog.show();
-    }
 
     public class GetSuggestion extends AsyncTask<String, Void, JSONArray> {
         String address, tag;

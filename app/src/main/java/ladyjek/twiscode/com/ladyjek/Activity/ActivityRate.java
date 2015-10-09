@@ -130,9 +130,10 @@ public class ActivityRate extends ActionBarActivity {
 
                 int rate = 0;
 
-                if (txtRate.getRating() > 0 && txtFeedback.getText().length() > 0) {
+                if (txtRate.getRating() > 0) {
                     rate = Math.round(txtRate.getRating());
                     if (NetworkManager.getInstance(ActivityRate.this).isConnectedInternet()) {
+                        DialogManager.ShowLoading(ActivityRate.this,"Mengirim Feedback. . .");
                         socketManager.Feedback(rate, txtFeedback.getText().toString());
                     } else {
                         DialogManager.showDialog(ActivityRate.this, "Peringatan", "Tidak ada koneksi internet!");
@@ -148,7 +149,7 @@ public class ActivityRate extends ActionBarActivity {
                 // Extract data included in the Intent
                 Log.d("broadcast", "feedback");
                 String message = intent.getStringExtra("message");
-
+                DialogManager.DismissLoading(ActivityRate.this);
                 if (message.equals("true")) {
                     try {
                         Context ctx = ActivityRate.this;
@@ -160,6 +161,8 @@ public class ActivityRate extends ActionBarActivity {
                                     @Override
                                     public void onPositive(MaterialDialog dialog) {
                                         appManager.setActivity("");
+                                        ApplicationData.posFrom = null;
+                                        ApplicationData.posDestination = null;
                                         Intent i = new Intent(getBaseContext(), Main.class);
                                         ApplicationManager um = new ApplicationManager(ActivityRate.this);
                                         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -188,7 +191,7 @@ public class ActivityRate extends ActionBarActivity {
             public void onClick(View v) {
                 int rate = 0;
 
-                if(txtRate.getRating() > 0 && txtFeedback.getText().length()>0){
+                if(txtRate.getRating() > 0){
                     rate = Math.round(txtRate.getRating());
                     if(NetworkManager.getInstance(ActivityRate.this).isConnectedInternet()){
                         DialogManager.ShowLoading(ActivityRate.this , "Loading. . .");

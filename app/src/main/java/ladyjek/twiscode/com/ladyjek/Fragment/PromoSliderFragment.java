@@ -1,7 +1,11 @@
 package ladyjek.twiscode.com.ladyjek.Fragment;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.squareup.picasso.Picasso;
+
+import java.io.InputStream;
 
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.R;
@@ -49,7 +55,9 @@ public class PromoSliderFragment extends Fragment {
 
         progressBar = (ProgressBar) v.findViewById(R.id.progressBar);
         progressBar.setVisibility(View.VISIBLE);
-        Picasso.with(getActivity()).load(mColor).into(img, new com.squareup.picasso.Callback() {
+        Log.d("promo url images 1", mColor);
+
+        Picasso.with(getActivity()).load(mColor).fit().into(img, new com.squareup.picasso.Callback() {
             @Override
             public void onSuccess() {
                 if (progressBar != null) {
@@ -63,6 +71,38 @@ public class PromoSliderFragment extends Fragment {
             }
         });
 
+/*
+        new DownloadImageTask(img)
+                .execute(mColor);
+*/
         return v;
+    }
+
+    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
+
+        public DownloadImageTask(ImageView bmImage) {
+            this.bmImage = bmImage;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String urldisplay = urls[0];
+            Bitmap mIcon11 = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return mIcon11;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            bmImage.setImageBitmap(result);
+            if (progressBar != null) {
+                progressBar.setVisibility(View.GONE);
+            }
+        }
     }
 }

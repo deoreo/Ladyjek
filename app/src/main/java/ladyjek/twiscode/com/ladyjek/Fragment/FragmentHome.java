@@ -48,6 +48,7 @@ import ladyjek.twiscode.com.ladyjek.Activity.ActivityConfirm;
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityLoading;
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityLogin;
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityPickUp;
+import ladyjek.twiscode.com.ladyjek.Activity.ActivityPromoWebView;
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityRate;
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityTracking;
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityVerifyPayment;
@@ -168,6 +169,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
     private ProgressDialog progressDialog;
     private Circle mCircle;
     private Marker markerCurrent;
+    int count = 0;
 
     public FragmentHome() {
         // Required empty public constructor
@@ -182,6 +184,9 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         db = new DatabaseHandler(mActivity);
         posFrom = ApplicationData.posFrom;
         tagLocation = TAG_FROM;
+
+
+
 
 
     }
@@ -253,9 +258,18 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
             new GetMyLocation(mActivity, googleMap, socketManager).execute();
         }
         else{
-            DialogManager.showDialog(mActivity, "Peringatan", "Anda tidak terhubung internet!");
+            DialogManager.showDialog(mActivity, "Mohon Maaf", "Anda tidak terhubung internet!");
         }
 
+        if(ApplicationData.posFrom!=null && ApplicationData.posDestination!=null){
+            posFrom = ApplicationData.posFrom;
+            posDest = ApplicationData.posDestination;
+            txtFrom.setText(getAddress(ApplicationData.posFrom).toString());
+            txtDestination.setText(getAddress(ApplicationData.posDestination).toString());
+            drawLine();
+
+
+        }
 
 
 
@@ -265,7 +279,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
             @Override
             public void onClick(View v) {
                 if (strDistance.isEmpty() && strDuration.isEmpty()) {
-                    DialogManager.showDialog(mActivity, "Peringatan", "Tentukan lokasi awal dan akhir!");
+                    DialogManager.showDialog(mActivity, "Mohon Maaf", "Tentukan lokasi awal dan akhir!");
                 } else {
                     ApplicationData.addressFrom = txtFrom.getText().toString();
                     ApplicationData.addressDestination = txtDestination.getText().toString();
@@ -293,7 +307,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
             @Override
             public void onClick(View v) {
                 if (strDistance.isEmpty() && strDuration.isEmpty()) {
-                    DialogManager.showDialog(mActivity, "Peringatan", "Tentukan lokasi awal dan akhir!");
+                    DialogManager.showDialog(mActivity, "Mohon Maaf", "Tentukan lokasi awal dan akhir!");
                 } else {
                     ApplicationData.addressFrom = txtFrom.getText().toString();
                     ApplicationData.addressDestination = txtDestination.getText().toString();
@@ -377,7 +391,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                     new GetMyLocation(mActivity, googleMap, socketManager).execute();
                 }
                 else{
-                    DialogManager.showDialog(mActivity, "Peringatan", "Anda tidak terhubung internet!");
+                    DialogManager.showDialog(mActivity, "Mohon Maaf", "Anda tidak terhubung internet!");
                 }
             }
         });
@@ -661,10 +675,14 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                         startActivity(i);
                         getActivity().finish();
                     }
+                    else {
+                        //GetNearestDriver(mActivity);
+                    }
 
                 } else {
                     DialogManager.DismissLoading(mActivity);
                     Log.v(TAG, "Ga ada last order coy...");
+                    //GetNearestDriver(mActivity);
                 }
 
             }
@@ -708,12 +726,18 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                                 ApplicationData.posDrivers[i] = new LatLng(lon, lat);
                                 //Log.d(TAG, "getNearestDrivers ApplicationData.posDrivers["+i+"] : " + ApplicationData.posDrivers[i]);
                             }
-
+/*
                             for (int i = 0; i < ApplicationData.posDrivers.length; i++) {
                                 drawMarkerNearestDriver(posFrom, ApplicationData.posDrivers[i]);
                             }
+*/
+
+
                         }
                         DialogManager.DismissLoading(mActivity);
+                        if(ApplicationData.posDrivers.length > 0){
+                            DoDraw();
+                        }
                     }catch (Exception e){
 
                     }
@@ -728,21 +752,27 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                 Log.v(TAG, "broadcast logout");
                 String message = intent.getStringExtra("message");
                 if (message.equalsIgnoreCase("true")) {
-                    new AlertDialogWrapper.Builder(mActivity)
-                            .setTitle("Token expired! silahkan login kembali")
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    appManager.logoutUser();
-                                    db.logout();
-                                    Intent i = new Intent(getActivity(), ActivityLogin.class);
-                                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    startActivity(i);
-                                    getActivity().finish();
-                                }
-                            })
-                            .setIcon(R.drawable.ladyjek_icon)
-                            .show();
+                    try {
+                        new AlertDialogWrapper.Builder(mActivity)
+                                .setTitle("Token expired! silahkan login kembali")
+                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        appManager.logoutUser();
+                                        db.logout();
+                                        Intent i = new Intent(getActivity(), ActivityLogin.class);
+                                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        startActivity(i);
+                                        getActivity().finish();
+                                    }
+                                })
+                                .setIcon(R.drawable.ladyjek_icon)
+                                .show();
+                    }
+                    catch (Exception ex){
+
+                    }
+
 
                 }
             }
@@ -814,7 +844,48 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
     }
 
 
-    public void drawMarkerNearestDriver(LatLng pFrom, LatLng locationMarker) {
+    public void drawLine() {
+        float zoom = googleMap.getCameraPosition().zoom;
+        if(zoom<=15){
+            zoom=15;
+        }
+        try {
+            if (driveLine != null) {
+                driveLine.remove();
+            }
+                markerFrom = googleMap.addMarker(
+                        new MarkerOptions()
+                                .position(posFrom)
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
+
+
+                markerDestination = googleMap.addMarker(
+                        new MarkerOptions()
+                                .position(posDest)
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_destination)));
+
+            Document doc = GoogleAPIManager.getRoute(posFrom, posDest, "driving");
+
+            ArrayList<LatLng> directionPoint = GoogleAPIManager.getDirection(doc);
+            PolylineOptions rectLine = new PolylineOptions().width(15).color(getResources().getColor(R.color.bg_grad_2));
+
+            for (int i = 0; i < directionPoint.size(); i++) {
+                rectLine.add(directionPoint.get(i));
+            }
+            strDistance = "" + GoogleAPIManager.getDistanceText(doc);
+            strDuration = "" + GoogleAPIManager.getDurationText(doc);
+            driveLine = googleMap.addPolyline(rectLine);
+
+        } catch (Exception e) {
+
+        }
+
+    }
+
+
+
+
+    public void drawMarkerNearestDriver(LatLng pFrom, LatLng locationMarker, int index) {
         Log.v(TAG, "drawMarkerNearestDriver " + locationMarker.toString());
 
         try {
@@ -836,6 +907,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
             }
             txtDriverTime.setText("Estimasi waktu menunggu : "+ Html.fromHtml("<b>"+duration+" menit</b>"));
             isGetNearestDrivers = true;
+            drawMarkerNearestDriver(posFrom, ApplicationData.posDrivers[index+1],index+1);
         } catch (Exception e) {
             Log.v(TAG, "catch drawMarkerNearestDriver ");
         }
@@ -1156,6 +1228,10 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         @Override
         protected String doInBackground(String... params) {
             Log.v(TAG, "GetMyLocation doInBackground");
+
+
+
+
             try {
                 try {
                     int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(mActivity);
@@ -1190,7 +1266,8 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                         }
                     }
 
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                 }
                 return "OK";
             } catch (Exception e) {
@@ -1207,7 +1284,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
 
             switch (result) {
                 case "FAIL":
-                    DialogManager.showDialog(activity, "Peringatan", "Tidak dapat menemukan lokasi Anda!");
+                    DialogManager.showDialog(activity, "Mohon Maaf", "Tidak dapat menemukan lokasi Anda!");
                     break;
                 case "OK":
                     try {
@@ -1296,6 +1373,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
             Log.v(TAG, "Running");
 
             try {
+
                 socketManager.GetNearestDrivers(posFrom);
 
                 Log.v(TAG, "Running GetNearestDrivers");
@@ -1306,6 +1384,12 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
 
         }
     }
+
+    void DoDraw(){
+        drawMarkerNearestDriver(posFrom, ApplicationData.posDrivers[0],0);
+    }
+
+
 
 
 }
