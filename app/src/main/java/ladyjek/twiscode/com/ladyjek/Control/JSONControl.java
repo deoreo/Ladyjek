@@ -69,7 +69,7 @@ public class JSONControl {
                 params.add(new BasicNameValuePair("name", name));
                 params.add(new BasicNameValuePair("phoneNumber", email));
                 params.add(new BasicNameValuePair("password", password));
-                jsonObj = _JSONResponse.POSTRegister(ConfigManager.REGISTER, ConfigManager.DUKUHKUPANG, params);
+                jsonObj = _JSONResponse.POSTResponse(ConfigManager.REGISTER, ConfigManager.DUKUHKUPANG, params);
 
         } catch (Exception e) {
             e.printStackTrace();
