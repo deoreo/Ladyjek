@@ -178,6 +178,18 @@
                                 android:gravity="center_vertical"
                                 android:text="lupa password kamu?"
                                 />
+                            <TextView
+                                android:id="@+id/btnRegisteronLogin"
+                                android:layout_width="wrap_content"
+                                android:layout_height="50dp"
+                                android:textColor="@color/white_color"
+                                android:textStyle="bold"
+                                android:padding="10dp"
+                                android:textSize="16dp"
+                                android:gravity="center_vertical"
+                                android:text="Anda sudah mendaftar?"
+                                fontPath="@string/GothamRndMedium"
+                                />
                         </LinearLayout>
                     </RelativeLayout>
                 </RelativeLayout>
@@ -187,6 +199,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/white_color"
+                    android:visibility="gone"
                     android:padding="20dp">
 
 
@@ -244,7 +257,7 @@
                             android:layout_height="wrap_content"
                             android:layout_centerHorizontal="true"
                             android:layout_marginTop="5dp"
-                            android:text="@string/login"
+                            android:text="Masuk"
                             android:textColor="@color/bg_grad_2"
                             android:textSize="18dp"
                             android:textAllCaps="true"
@@ -254,17 +267,7 @@
 
 
 
-                        <TextView
-                            android:id="@+id/btnRegisteronLogin"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignTop="@+id/btnLogin"
-                            android:layout_centerHorizontal="true"
-                            android:layout_marginTop="30dp"
-                            android:gravity="center"
-                            android:text="atau\nAnda ingin sign up?"
-                            android:textColor="@color/bg_grad_2"
-                            android:textSize="15sp" />
+
 
                         <ImageView
                             android:layout_width="42dp"

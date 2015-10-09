@@ -333,13 +333,13 @@ public class ActivityLogin extends Activity  implements KeyboardManager.Listener
     public void onSoftKeyboardShown(boolean isShowing) {
         String email = txtEmail.getText().toString();
         String password = txtPassword.getText().toString();
-        if (isShowing || !email.isEmpty()|| !password.isEmpty()) {
+        /*if (isShowing || !email.isEmpty()|| !password.isEmpty()) {
             wrapperLogin.setVisibility(VISIBLE);
             wrapperRegister.setVisibility(GONE);
         } else {
             wrapperLogin.setVisibility(GONE);
-            wrapperRegister.setVisibility(VISIBLE);
-        }
+            wrapperRegister.setVisibility(GONE);
+        }*/
     }
 
 
