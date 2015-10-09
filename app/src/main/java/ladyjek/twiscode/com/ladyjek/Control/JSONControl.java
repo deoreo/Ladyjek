@@ -51,7 +51,7 @@ public class JSONControl {
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             params.add(new BasicNameValuePair("phoneNumber", phoneNumber));
             params.add(new BasicNameValuePair("password", password));
-            jsonObj = _JSONResponse.POSTResponse(ConfigManager.LOGIN, params);
+            jsonObj = _JSONResponse.POSTResponse(ConfigManager.LOGIN, ConfigManager.DUKUHKUPANG, params);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -69,7 +69,7 @@ public class JSONControl {
                 params.add(new BasicNameValuePair("name", name));
                 params.add(new BasicNameValuePair("phoneNumber", email));
                 params.add(new BasicNameValuePair("password", password));
-                jsonObj = _JSONResponse.POSTResponse(ConfigManager.REGISTER, params);
+                jsonObj = _JSONResponse.POSTRegister(ConfigManager.REGISTER, ConfigManager.DUKUHKUPANG, params);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -84,7 +84,7 @@ public class JSONControl {
         try {
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             params.add(new BasicNameValuePair("phoneNumber", phone));
-            jsonObj = _JSONResponse.POSTPhone(ConfigManager.PHONE_NUMBER, token, params);
+            jsonObj = _JSONResponse.POSTPhone(ConfigManager.PHONE_NUMBER, token, ConfigManager.DUKUHKUPANG, params);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -99,7 +99,7 @@ public class JSONControl {
         try {
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             params.add(new BasicNameValuePair("verificationCode", verificationCode));
-            jsonObj = _JSONResponse.POSTPhone(ConfigManager.VERIFY_PHONE_NUMBER, token, params);
+            jsonObj = _JSONResponse.POSTPhone(ConfigManager.VERIFY_PHONE_NUMBER, token, ConfigManager.DUKUHKUPANG, params);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -113,7 +113,7 @@ public class JSONControl {
         try {
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             params.add(new BasicNameValuePair("token", token));
-            jsonObj = _JSONResponse.POSTResponse(ConfigManager.REFRESH_TOKEN, params);
+            jsonObj = _JSONResponse.POSTResponse(ConfigManager.REFRESH_TOKEN, ConfigManager.DUKUHKUPANG, params);
 
 
         } catch (Exception e) {
@@ -133,7 +133,7 @@ public class JSONControl {
         try {
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             params.add(new BasicNameValuePair("deviceToken", deviceToken));
-            jsonObj = _JSONResponse.POSTDeviceToken(ConfigManager.DEVICE_TOKEN, token, params);
+            jsonObj = _JSONResponse.POSTDeviceToken(ConfigManager.DEVICE_TOKEN, token, ConfigManager.DUKUHKUPANG, params);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -147,7 +147,7 @@ public class JSONControl {
 
         try {
             List<NameValuePair> params = new ArrayList<NameValuePair>();
-            jsonObj = _JSONResponse.POSTResendVerifyCode(ConfigManager.RESEND_VERIFY_CODE, token, params);
+            jsonObj = _JSONResponse.POSTResendVerifyCode(ConfigManager.RESEND_VERIFY_CODE, token, ConfigManager.DUKUHKUPANG, params);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -162,7 +162,7 @@ public class JSONControl {
         try {
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             params.add(new BasicNameValuePair("phoneNumber", phone));
-            jsonObj = _JSONResponse.POSTForgotPassword(ConfigManager.FORGOT_PASSWORD, params);
+            jsonObj = _JSONResponse.POSTForgotPassword(ConfigManager.FORGOT_PASSWORD, ConfigManager.DUKUHKUPANG, params);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -178,7 +178,7 @@ public class JSONControl {
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             params.add(new BasicNameValuePair("phoneNumber", phone));
             params.add(new BasicNameValuePair("token", token));
-            jsonObj = _JSONResponse.POSTForgotPassword(ConfigManager.CHECK_RESET_PASSWORD, params);
+            jsonObj = _JSONResponse.POSTForgotPassword(ConfigManager.CHECK_RESET_PASSWORD, ConfigManager.DUKUHKUPANG, params);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -193,7 +193,7 @@ public class JSONControl {
         try {
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             params.add(new BasicNameValuePair("phoneNumber", phone));
-            jsonObj = _JSONResponse.POSTForgotPassword(ConfigManager.RESEND_RESET_PASSWORD, params);
+            jsonObj = _JSONResponse.POSTForgotPassword(ConfigManager.RESEND_RESET_PASSWORD, ConfigManager.DUKUHKUPANG, params);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -210,7 +210,7 @@ public class JSONControl {
             params.add(new BasicNameValuePair("phoneNumber", phone));
             params.add(new BasicNameValuePair("token", token));
             params.add(new BasicNameValuePair("password", password));
-            jsonObj = _JSONResponse.POSTForgotPassword(ConfigManager.RESET_PASSWORD, params);
+            jsonObj = _JSONResponse.POSTForgotPassword(ConfigManager.RESET_PASSWORD, ConfigManager.DUKUHKUPANG, params);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -224,7 +224,7 @@ public class JSONControl {
 
         try {
             List<NameValuePair> params = new ArrayList<NameValuePair>();
-            jsonObj = _JSONResponse.POSTLogoutAll(ConfigManager.LOGOUT_ALL, token, params);
+            jsonObj = _JSONResponse.POSTLogoutAll(ConfigManager.LOGOUT_ALL, token, ConfigManager.DUKUHKUPANG, params);
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -114,12 +114,13 @@ public class JSONResponse {
         return _jObj;
     }
 
-    public JSONObject POSTResponse(String url, List<NameValuePair> params) {
+    public JSONObject POSTRegister(String url, String apptoken, List<NameValuePair> params) {
 
         try {
             DefaultHttpClient  httpClient = (DefaultHttpClient)createDevelopmentHttpClientInstance();
             HttpPost httpPost = new HttpPost(url);
             httpPost.setEntity(new UrlEncodedFormEntity(params));
+            httpPost.setHeader("x-app-token", apptoken);
             HttpResponse httpResponse = httpClient.execute(httpPost);
             HttpEntity httpEntity = httpResponse.getEntity();
             _inputStream = httpEntity.getContent();
@@ -159,13 +160,60 @@ public class JSONResponse {
 
     }
 
-    public String POSTPhone(String url, String token, List<NameValuePair> params) {
+    public JSONObject POSTResponse(String url, String apptoken, List<NameValuePair> params) {
+
+        try {
+            DefaultHttpClient  httpClient = (DefaultHttpClient)createDevelopmentHttpClientInstance();
+            HttpPost httpPost = new HttpPost(url);
+            httpPost.setEntity(new UrlEncodedFormEntity(params));
+            httpPost.setHeader("x-app-token", apptoken);
+            HttpResponse httpResponse = httpClient.execute(httpPost);
+            HttpEntity httpEntity = httpResponse.getEntity();
+            _inputStream = httpEntity.getContent();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    _inputStream, "iso-8859-1"), 8);
+            StringBuilder sb = new StringBuilder();
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line + "\n");
+            }
+            _inputStream.close();
+            _json = sb.toString();
+
+        } catch (Exception e) {
+            Log.e("Buffer Error", "Error converting result " + e.toString());
+        }
+
+        // try parse the string to a JSON object
+        try {
+            _jObj = new JSONObject(_json);
+        } catch (JSONException e) {
+            Log.e("JSON Parser", "Error parsing data " + e.toString());
+        }
+
+        // return JSON String
+        return _jObj;
+
+    }
+
+    public String POSTPhone(String url, String token, String apptoken, List<NameValuePair> params) {
         try {
 
             DefaultHttpClient  httpClient = (DefaultHttpClient)createDevelopmentHttpClientInstance();
             HttpPost httpPost = new HttpPost(url);
             httpPost.setEntity(new UrlEncodedFormEntity(params));
             httpPost.setHeader("x-access-token", token);
+            httpPost.setHeader("x-app-token", apptoken);
             HttpResponse httpResponse = httpClient.execute(httpPost);
             HttpEntity httpEntity = httpResponse.getEntity();
             _inputStream = httpEntity.getContent();
@@ -198,13 +246,14 @@ public class JSONResponse {
 
     }
 
-    public String POSTDeviceToken(String url, String token, List<NameValuePair> params) {
+    public String POSTDeviceToken(String url, String token, String apptoken, List<NameValuePair> params) {
         try {
 
             DefaultHttpClient  httpClient = (DefaultHttpClient)createDevelopmentHttpClientInstance();
             HttpPost httpPost = new HttpPost(url);
             httpPost.setEntity(new UrlEncodedFormEntity(params));
             httpPost.setHeader("x-access-token", token);
+            httpPost.setHeader("x-app-token", apptoken);
             HttpResponse httpResponse = httpClient.execute(httpPost);
             HttpEntity httpEntity = httpResponse.getEntity();
             _inputStream = httpEntity.getContent();
@@ -237,50 +286,13 @@ public class JSONResponse {
 
     }
 
-    public String POSTResendVerifyCode(String url, String token, List<NameValuePair> params) {
+    public String POSTResendVerifyCode(String url, String token,String apptoken, List<NameValuePair> params) {
         try {
 
             DefaultHttpClient  httpClient = (DefaultHttpClient)createDevelopmentHttpClientInstance();
             HttpPost httpPost = new HttpPost(url);
             httpPost.setHeader("x-access-token", token);
-            httpPost.setEntity(new UrlEncodedFormEntity(params));
-            HttpResponse httpResponse = httpClient.execute(httpPost);
-            HttpEntity httpEntity = httpResponse.getEntity();
-            _inputStream = httpEntity.getContent();
-
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    _inputStream, "iso-8859-1"), 8);
-            StringBuilder sb = new StringBuilder();
-            String line = null;
-            while ((line = reader.readLine()) != null) {
-                sb.append(line + "\n");
-            }
-            _inputStream.close();
-            _json = sb.toString();
-
-        } catch (Exception e) {
-            Log.e("Buffer Error", "Error converting result " + e.toString());
-        }
-
-        // return JSON String
-        return _json;
-
-    }
-
-    public String POSTForgotPassword(String url, List<NameValuePair> params) {
-        try {
-
-            DefaultHttpClient  httpClient = (DefaultHttpClient)createDevelopmentHttpClientInstance();
-            HttpPost httpPost = new HttpPost(url);
+            httpPost.setHeader("x-app-token", apptoken);
             httpPost.setEntity(new UrlEncodedFormEntity(params));
             HttpResponse httpResponse = httpClient.execute(httpPost);
             HttpEntity httpEntity = httpResponse.getEntity();
@@ -314,12 +326,52 @@ public class JSONResponse {
 
     }
 
-    public String POSTLogoutAll(String url, String token, List<NameValuePair> params) {
+    public String POSTForgotPassword(String url, String apptoken, List<NameValuePair> params) {
+        try {
+
+            DefaultHttpClient  httpClient = (DefaultHttpClient)createDevelopmentHttpClientInstance();
+            HttpPost httpPost = new HttpPost(url);
+            httpPost.setEntity(new UrlEncodedFormEntity(params));
+            httpPost.setHeader("x-app-token", apptoken);
+            HttpResponse httpResponse = httpClient.execute(httpPost);
+            HttpEntity httpEntity = httpResponse.getEntity();
+            _inputStream = httpEntity.getContent();
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    _inputStream, "iso-8859-1"), 8);
+            StringBuilder sb = new StringBuilder();
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line + "\n");
+            }
+            _inputStream.close();
+            _json = sb.toString();
+
+        } catch (Exception e) {
+            Log.e("Buffer Error", "Error converting result " + e.toString());
+        }
+
+        // return JSON String
+        return _json;
+
+    }
+
+    public String POSTLogoutAll(String url, String token, String apptoken, List<NameValuePair> params) {
         try {
 
             DefaultHttpClient  httpClient = (DefaultHttpClient)createDevelopmentHttpClientInstance();
             HttpPost httpPost = new HttpPost(url);
             httpPost.setHeader("x-access-token", token);
+            httpPost.setHeader("x-app-token", apptoken);
             httpPost.setEntity(new UrlEncodedFormEntity(params));
             HttpResponse httpResponse = httpClient.execute(httpPost);
             HttpEntity httpEntity = httpResponse.getEntity();
