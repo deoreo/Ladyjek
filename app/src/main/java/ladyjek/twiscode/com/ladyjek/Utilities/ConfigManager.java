@@ -1,6 +1,7 @@
 package ladyjek.twiscode.com.ladyjek.Utilities;
 
 public class ConfigManager {
+    public static final int VERSION = 25;
     public static final String PLACES_API_BASE = "https://maps.googleapis.com/maps/api/place";
     public static final String GEOCODE_API_BASE = "https://maps.googleapis.com/maps/api/geocode";
     public static final String TYPE_AUTOCOMPLETE = "/autocomplete";
@@ -25,6 +26,7 @@ public class ConfigManager {
     public static final String PROMO = SERVER+"/promo/init";
     public static final String PROMO_IMAGE = SERVER+"/promo/page";
     public static final String HELP = SERVER+"/help";
+    public static final String CHECK_VERSION = SERVER+"/app/init";
     //public static final String SERVER_SOCKET = "https://playpal.id:5051/";
     public static final String SERVER_SOCKET = "https://ladyjek.com:2096/";
     public static final String DUKUHKUPANG = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhcHBQYXNzd29yZCI6Ii8hPTxKVVY5S35zdGtUPFYiLCJpYXQiOjE0NDQ0MTIxODAsImV4cCI6MTQ0NzAwNDE4MH0.WpK0u4-CYMrkvxXjDVCjjzTBA8jC1cnSh-QWm0lFmYM";
