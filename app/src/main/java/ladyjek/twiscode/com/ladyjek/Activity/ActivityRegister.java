@@ -20,6 +20,8 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+
 import org.json.JSONObject;
 
 import ladyjek.twiscode.com.ladyjek.Control.JSONControl;
@@ -28,6 +30,7 @@ import ladyjek.twiscode.com.ladyjek.Parse.ParseManager;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
+import ladyjek.twiscode.com.ladyjek.Utilities.NetworkManager;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 import static android.view.View.GONE;
@@ -372,6 +375,7 @@ public class ActivityRegister extends ActionBarActivity {
         private Context context;
         private Resources resources;
         private ProgressDialog progressDialog;
+        String error = "";
 
         public DoRegister(Activity activity) {
             super();
@@ -434,6 +438,11 @@ public class ActivityRegister extends ActionBarActivity {
                 }
                 catch (Exception e) {
                     e.printStackTrace();
+                    error = responseRegister.getJSONObject("message").getJSONObject("phoneNumbers").getString("message");
+                    if(error.contains("already exist")){
+                        error = "Akun telah tersedia. Silahkan login!";
+                    }
+                    Log.d("error", error);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -449,7 +458,34 @@ public class ActivityRegister extends ActionBarActivity {
             progressDialog.dismiss();
             switch (result) {
                 case "FAIL":
-                    DialogManager.showDialog(activity, "Warning", "Tidak dapat registrasi!");
+                    if(error==""){
+                        DialogManager.showDialog(activity, "Warning", "Tidak dapat registrasi!");
+                    }
+                    else {
+                        try {
+                            Context ctx = ActivityRegister.this;
+                            new MaterialDialog.Builder(ActivityRegister.this)
+                                    .title(error)
+                                    .positiveText("OK")
+                                    .callback(new MaterialDialog.ButtonCallback() {
+                                        @Override
+                                        public void onPositive(MaterialDialog dialog) {
+                                            //dialog.dismiss();
+                                            Intent i = new Intent(getBaseContext(), ActivityLogin.class);
+                                            startActivity(i);
+                                            finish();
+
+                                        }
+                                    })
+                                    .icon(getResources().getDrawable(R.drawable.ladyjek_icon))
+                                    .cancelable(false)
+                                    .typeface("GothamRnd-Medium.otf", "Gotham.ttf")
+                                    .show();
+                        }catch(Exception e){
+
+                        }
+                    }
+
                     break;
                 case "OK":
                     Intent i = new Intent(getBaseContext(), ActivityHandphoneKonfirmasi.class);
