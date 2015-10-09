@@ -414,7 +414,7 @@ public class ActivityHandphoneKonfirmasi extends Activity {
                     break;
                 case "OK":
                     new AlertDialogWrapper.Builder(ActivityHandphoneKonfirmasi.this)
-                            .setTitle("Success register!")
+                            .setTitle("Berhasil registrasi!")
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
