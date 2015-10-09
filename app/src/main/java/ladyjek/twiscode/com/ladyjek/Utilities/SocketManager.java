@@ -191,10 +191,14 @@ public class SocketManager {
                 Log.d(TAG, "send unverify");
             }
             if(onAuth && doLogout==0){
+                Log.d(TAG, "reconnect");
                 socket.connect();
             }
             else {
                 onAuth = false;
+                Log.d(TAG, "send logout");
+                SendBroadcast("logout", "true");
+
             }
         }
     };

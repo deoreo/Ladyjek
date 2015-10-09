@@ -79,6 +79,7 @@ public class ActivityPromoWebView extends FragmentActivity {
             }
         });
 
+        webview.clearCache(true);
         new CheckPromo(ActivityPromoWebView.this).execute();
 
         /*
