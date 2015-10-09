@@ -172,10 +172,12 @@ public class SocketManager {
             try {
                 String err = args[0].toString();
                 Log.d(TAG, "onDisconnected : " + err);
+                socket.connect();
             }
             catch (Exception ex){
                 ex.printStackTrace();
             }
+            /*
             Log.d(TAG, "onDisconnected " + onAuth);
 
             if (!onAuth) {
@@ -200,6 +202,7 @@ public class SocketManager {
                 SendBroadcast("logout", "true");
 
             }
+            */
         }
     };
 
