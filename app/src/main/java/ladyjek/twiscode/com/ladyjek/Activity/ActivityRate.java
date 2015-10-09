@@ -265,7 +265,7 @@ public class ActivityRate extends ActionBarActivity {
                     txtName.setText(ApplicationData.driver.getName());
                     txtJarak.setText(order.getDistance());
                     txtWaktu.setText(order.getDuration());
-                    txtPrice.setText("Rp." + order.getPrice());
+                    txtPrice.setText(order.getPrice());
                     txtPembayaran.setText(order.getPayment());
                     try {
                         if (ApplicationData.driver.getImage() != null)
@@ -321,7 +321,7 @@ public class ActivityRate extends ActionBarActivity {
             txtName.setText(ApplicationData.driver.getName());
             txtJarak.setText(order.getDistance());
             txtWaktu.setText(order.getDuration());
-            txtPrice.setText("Rp."+ order.getPrice());
+            txtPrice.setText(order.getPrice());
             txtPembayaran.setText(order.getPayment());
             try {
                 if (ApplicationData.driver.getImage() != null)

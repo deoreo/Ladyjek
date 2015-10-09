@@ -27,6 +27,5 @@ public class ConfigManager {
     public static final String HELP = SERVER+"/help";
     //public static final String SERVER_SOCKET = "https://playpal.id:5051/";
     public static final String SERVER_SOCKET = "https://ladyjek.com:2096/";
-    public static final String DUKUHKUPANG = "\n" +
-            "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhcHBQYXNzd29yZCI6Ii8hPTxKVVY5S35zdGtUPFYiLCJpYXQiOjE0NDQ0MTIxODAsImV4cCI6MTQ0NzAwNDE4MH0.WpK0u4-CYMrkvxXjDVCjjzTBA8jC1cnSh-QWm0lFmYM";
+    public static final String DUKUHKUPANG = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhcHBQYXNzd29yZCI6Ii8hPTxKVVY5S35zdGtUPFYiLCJpYXQiOjE0NDQ0MTIxODAsImV4cCI6MTQ0NzAwNDE4MH0.WpK0u4-CYMrkvxXjDVCjjzTBA8jC1cnSh-QWm0lFmYM";
 }
