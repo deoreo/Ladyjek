@@ -276,6 +276,21 @@ public class JSONControl {
 
 
 
+    public JSONObject getVersion() {
+        JSONObject jsonObj = null;
+        try{
+            jsonObj = _JSONResponse.GETVersion(ConfigManager.CHECK_VERSION, ConfigManager.DUKUHKUPANG);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return jsonObj;
+
+
+    }
+
+
+
 
 
 }

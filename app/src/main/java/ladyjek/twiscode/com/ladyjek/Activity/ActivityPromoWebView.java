@@ -80,9 +80,9 @@ public class ActivityPromoWebView extends FragmentActivity {
         });
 
         webview.clearCache(true);
-        new CheckPromo(ActivityPromoWebView.this).execute();
+        //new CheckPromo(ActivityPromoWebView.this).execute();
 
-        /*
+
 
         if(ApplicationData.promo_url!=""){
             imageSlide.setVisibility(View.GONE);
@@ -98,7 +98,7 @@ public class ActivityPromoWebView extends FragmentActivity {
             defaultIndicator.setViewPager(defaultViewpager);
         }
 
-*/
+
 
 
     }
