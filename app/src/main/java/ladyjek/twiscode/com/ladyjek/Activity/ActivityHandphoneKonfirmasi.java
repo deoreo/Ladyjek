@@ -418,7 +418,8 @@ public class ActivityHandphoneKonfirmasi extends Activity {
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Intent i = new Intent(ActivityHandphoneKonfirmasi.this, ActivityLogin.class);
+                                    Intent i = new Intent(ActivityHandphoneKonfirmasi.this, ActivityPromoWebView
+                                            .class);
                                     startActivity(i);
                                     finish();
                                     dialog.dismiss();

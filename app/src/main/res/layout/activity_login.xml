@@ -70,13 +70,42 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_centerHorizontal="true"
-                                    android:text="Sign in ke Ladyjek"
+                                    android:text="Masuk ke Ladyjek"
                                     android:textColor="@color/white_color"
                                     android:textSize="20dp"
                                     android:textStyle="bold"
                                     />
                             </RelativeLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:orientation="horizontal">
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:layout_marginTop="20dp">
 
+                                <EditText
+                                    android:id="@+id/txtCountryCode"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="50dp"
+                                    android:text="08"
+                                    android:paddingTop="10dp"
+                                    android:paddingBottom="10dp"
+                                    android:paddingLeft="10dp"
+                                    android:background="@null"
+                                    android:textColor="@color/white_color"
+                                    android:textColorHint="@color/white_color"
+                                    android:textStyle="bold"
+                                    android:editable="false"/>
+
+                                <View
+                                    android:layout_width="match_parent"
+                                    android:layout_height="2dp"
+                                    android:background="@color/white_color" />
+                            </LinearLayout>
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -93,9 +122,8 @@
                                         android:layout_weight="1"
                                         android:layout_height="50dp"
                                         android:background="@null"
-                                        android:hint="nomor ponsel"
-                                        android:inputType="phone"
-                                        android:padding="10dp"
+                                        android:hint="xxxxxxx"
+                                        android:inputType="number"
                                         android:textColor="@color/white_color"
                                         android:textColorHint="@drawable/hint_selector_white"
                                         android:textStyle="bold"
@@ -122,6 +150,9 @@
                                     android:layout_height="2dp"
                                     android:background="@color/white_color" />
                             </LinearLayout>
+                        </LinearLayout>
+
+
 
                             <LinearLayout
                                 android:layout_width="match_parent"
@@ -178,7 +209,32 @@
                                 android:gravity="center_vertical"
                                 android:text="lupa password kamu?"
                                 />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="50dp"
+                                android:textColor="@color/white_color"
+                                android:textStyle="bold"
+                                android:padding="10dp"
+                                android:textSize="16dp"
+                                android:gravity="center_vertical"
+                                android:text="atau"
+                                />
+
+                            <TextView
+                                android:id="@+id/btnRegisteronLogin"
+                                android:layout_width="wrap_content"
+                                android:layout_height="50dp"
+                                android:textColor="@color/white_color"
+                                android:textStyle="bold"
+                                android:padding="10dp"
+                                android:textSize="16dp"
+                                android:gravity="center_vertical"
+                                android:text="Anda belum mendaftar?"
+                                fontPath="@string/GothamRndMedium"
+                                />
                         </LinearLayout>
+
                     </RelativeLayout>
                 </RelativeLayout>
 
@@ -187,6 +243,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/white_color"
+                    android:visibility="gone"
                     android:padding="20dp">
 
 
@@ -244,7 +301,7 @@
                             android:layout_height="wrap_content"
                             android:layout_centerHorizontal="true"
                             android:layout_marginTop="5dp"
-                            android:text="@string/login"
+                            android:text="Masuk"
                             android:textColor="@color/bg_grad_2"
                             android:textSize="18dp"
                             android:textAllCaps="true"
@@ -254,17 +311,7 @@
 
 
 
-                        <TextView
-                            android:id="@+id/btnRegisteronLogin"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignTop="@+id/btnLogin"
-                            android:layout_centerHorizontal="true"
-                            android:layout_marginTop="30dp"
-                            android:gravity="center"
-                            android:text="atau\nAnda ingin sign up?"
-                            android:textColor="@color/bg_grad_2"
-                            android:textSize="15sp" />
+
 
                         <ImageView
                             android:layout_width="42dp"
