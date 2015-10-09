@@ -440,7 +440,7 @@ public class ActivityRegister extends ActionBarActivity {
                     e.printStackTrace();
                     error = responseRegister.getJSONObject("message").getJSONObject("phoneNumbers").getString("message");
                     if(error.contains("already exist")){
-                        error = "Akun telah tersedia. Silahkan login!";
+                        error = "nomor anda telah terregistrasi. Silahkan sign in!";
                     }
                     Log.d("error", error);
                 }
@@ -459,7 +459,7 @@ public class ActivityRegister extends ActionBarActivity {
             switch (result) {
                 case "FAIL":
                     if(error==""){
-                        DialogManager.showDialog(activity, "Warning", "Tidak dapat registrasi!");
+                        DialogManager.showDialog(activity, "Warning", "Request Time Out!");
                     }
                     else {
                         try {
