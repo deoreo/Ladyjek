@@ -9,14 +9,14 @@ android {
             storePassword 'kiasu123'
         }
     }
-    compileSdkVersion 22
+    compileSdkVersion 23
     buildToolsVersion '22.0.1'
     defaultConfig {
         applicationId "ladyjek.twiscode.com.ladyjek"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 19
-        versionName "1.0"
+        versionCode 22
+        versionName "1.0.1"
         signingConfig signingConfigs.apksigkey
     }
     buildTypes {
