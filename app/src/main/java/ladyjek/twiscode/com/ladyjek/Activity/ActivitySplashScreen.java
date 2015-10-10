@@ -59,7 +59,7 @@ public class ActivitySplashScreen extends Activity {
                     e.printStackTrace();
                 } finally {
 
-                    new CheckVersion().execute();
+                    CheckLogin();
 
 
 

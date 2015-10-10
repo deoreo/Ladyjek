@@ -80,10 +80,10 @@ public class ActivityPromoWebView extends FragmentActivity {
         });
 
         webview.clearCache(true);
-        //new CheckPromo(ActivityPromoWebView.this).execute();
+        new CheckPromo(ActivityPromoWebView.this).execute();
 
 
-
+/*
         if(ApplicationData.promo_url!=""){
             imageSlide.setVisibility(View.GONE);
             webview.setVisibility(View.VISIBLE);
@@ -98,7 +98,7 @@ public class ActivityPromoWebView extends FragmentActivity {
             defaultIndicator.setViewPager(defaultViewpager);
         }
 
-
+*/
 
 
     }
@@ -143,31 +143,6 @@ public class ActivityPromoWebView extends FragmentActivity {
 
     }
 
-    private boolean checkDate(){
-        try{
-
-            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-            Calendar c = Calendar.getInstance();
-
-            SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-            String formattedDate = df.format(c.getTime());
-
-            String str1 = formattedDate;
-            Date date1 = formatter.parse(str1);
-
-            String str2 = "05/10/2015";
-            Date date2 = formatter.parse(str2);
-
-            if (date1.compareTo(date2)==0)
-            {
-                return true;
-            }
-
-        }catch (ParseException e1){
-            e1.printStackTrace();
-        }
-        return false;
-    }
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));

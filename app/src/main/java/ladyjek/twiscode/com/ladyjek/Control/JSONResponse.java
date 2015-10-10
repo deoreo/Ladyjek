@@ -39,6 +39,7 @@ import java.net.Socket;
 import javax.net.ssl.SSLSocketFactory;
 
 import ladyjek.twiscode.com.ladyjek.Utilities.MySSLSocketFactoryManager;
+import ladyjek.twiscode.com.ladyjek.Utilities.TlsSniFactory;
 
 public class JSONResponse {
     static InputStream _inputStream = null;
@@ -63,6 +64,7 @@ public class JSONResponse {
             SchemeRegistry registry = new SchemeRegistry();
             registry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
             registry.register(new Scheme("https", sf, 443));
+            registry.register(new Scheme("https", new TlsSniFactory(),443));
 
             ClientConnectionManager ccm = new ThreadSafeClientConnManager(params, registry);
 
@@ -75,9 +77,8 @@ public class JSONResponse {
     public JSONObject GETResponse(String url) throws ConnectException {
         try {
 
-            DefaultHttpClient httpClient = new DefaultHttpClient();
+            DefaultHttpClient httpClient = (DefaultHttpClient)createDevelopmentHttpClientInstance();
             HttpGet httpGet = new HttpGet(url);
-
             HttpResponse httpResponse = httpClient.execute(httpGet);
             HttpEntity httpEntity = httpResponse.getEntity();
             _inputStream = httpEntity.getContent();
@@ -114,26 +115,28 @@ public class JSONResponse {
         return _jObj;
     }
 
-    public JSONObject POSTRegister(String url, String apptoken, List<NameValuePair> params) {
-
+    public JSONObject GETResponseApp(String url, String apptoken) throws ConnectException {
         try {
-            DefaultHttpClient  httpClient = (DefaultHttpClient)createDevelopmentHttpClientInstance();
-            HttpPost httpPost = new HttpPost(url);
-            httpPost.setEntity(new UrlEncodedFormEntity(params));
-            httpPost.setHeader("x-app-token", apptoken);
-            HttpResponse httpResponse = httpClient.execute(httpPost);
+
+            DefaultHttpClient httpClient = (DefaultHttpClient)createDevelopmentHttpClientInstance();
+            HttpGet httpGet = new HttpGet(url);
+            httpGet.setHeader("x-app-token", apptoken);
+            HttpResponse httpResponse = httpClient.execute(httpGet);
             HttpEntity httpEntity = httpResponse.getEntity();
             _inputStream = httpEntity.getContent();
+        }
+        catch(ConnectException e){
+            throw e;
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (ClientProtocolException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (Exception e){
+            e.printStackTrace();
         }
-
         try {
-
             BufferedReader reader = new BufferedReader(new InputStreamReader(
                     _inputStream, "iso-8859-1"), 8);
             StringBuilder sb = new StringBuilder();
@@ -143,22 +146,17 @@ public class JSONResponse {
             }
             _inputStream.close();
             _json = sb.toString();
-
         } catch (Exception e) {
             Log.e("Buffer Error", "Error converting result " + e.toString());
         }
-
-        // try parse the string to a JSON object
         try {
             _jObj = new JSONObject(_json);
         } catch (JSONException e) {
             Log.e("JSON Parser", "Error parsing data " + e.toString());
         }
-
-        // return JSON String
         return _jObj;
-
     }
+
 
     public JSONObject POSTResponse(String url, String apptoken, List<NameValuePair> params) {
 
