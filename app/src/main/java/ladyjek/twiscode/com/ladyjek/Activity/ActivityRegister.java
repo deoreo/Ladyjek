@@ -26,6 +26,7 @@ import org.json.JSONObject;
 
 import ladyjek.twiscode.com.ladyjek.Control.JSONControl;
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
+import ladyjek.twiscode.com.ladyjek.Model.ModelUserOrder;
 import ladyjek.twiscode.com.ladyjek.Parse.ParseManager;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
@@ -421,7 +422,10 @@ public class ActivityRegister extends ActionBarActivity {
                         Log.d("refresh token", objRefreshToken.toString());
                         String refreshToken = objRefreshToken.getString("token");
                         ApplicationManager.getInstance(context).setUserToken(refreshToken);
-
+                        ModelUserOrder newuser = new ModelUserOrder();
+                        newuser.setPhone(phoneNumber);
+                        newuser.setName(name);
+                        ApplicationData.userLogin = newuser;
                         String response = jsonControl.postDeviceToken(refreshToken, deviceToken);
                         Log.d("json response phone", response);
                         if(response.contains("true") && !response.contains("jwt") && !response.contains("error")){

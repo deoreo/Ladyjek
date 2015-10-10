@@ -59,7 +59,8 @@ public class ActivitySplashScreen extends Activity {
                     e.printStackTrace();
                 } finally {
 
-                    CheckLogin();
+                    //CheckLogin();
+                    new CheckVersion().execute();
 
 
 
@@ -217,7 +218,7 @@ public class ActivitySplashScreen extends Activity {
                 case "true":
                     try {
                         new MaterialDialog.Builder(ActivitySplashScreen.this)
-                                .title("Silahkan update aplikasi LadyJek!")
+                                .title("Silahkan update aplikasi LadyJek versi terbaru!")
                                 .positiveText("OK")
                                 .callback(new MaterialDialog.ButtonCallback() {
                                     @Override

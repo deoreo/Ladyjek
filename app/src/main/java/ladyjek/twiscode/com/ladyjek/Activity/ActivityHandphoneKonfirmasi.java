@@ -31,7 +31,9 @@ import com.afollestad.materialdialogs.AlertDialogWrapper;
 import org.json.JSONObject;
 
 import ladyjek.twiscode.com.ladyjek.Control.JSONControl;
+import ladyjek.twiscode.com.ladyjek.Database.DatabaseHandler;
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
+import ladyjek.twiscode.com.ladyjek.Model.ModelUserOrder;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
@@ -418,6 +420,8 @@ public class ActivityHandphoneKonfirmasi extends Activity {
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
+                                    DatabaseHandler db = new DatabaseHandler(ActivityHandphoneKonfirmasi.this);
+                                    db.insertUser(ApplicationData.userLogin);
                                     Intent i = new Intent(ActivityHandphoneKonfirmasi.this, ActivityPromoWebView
                                             .class);
                                     startActivity(i);
