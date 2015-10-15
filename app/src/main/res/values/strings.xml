@@ -64,6 +64,7 @@
     <string name="GothamBook">fonts/Gotham.ttf</string>
     <string name="GothamRndBold">fonts/GothamRnd-Bold.otf</string>
     <string name="GothamRndMedium">fonts/GothamRnd-Medium.otf</string>
+    <string name="GothamRndIta">fonts/GothamRnd-BookIta.otf</string>
 
     <string name="topup">
         <![CDATA[
