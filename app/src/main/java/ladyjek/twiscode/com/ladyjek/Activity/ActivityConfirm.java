@@ -146,6 +146,7 @@ public class ActivityConfirm extends ActionBarActivity {
         txtConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                int harga = Integer.parseInt(ApplicationData.price);
                 if (pembayaran == 0) {
                     DialogManager.ShowLoading(ActivityConfirm.this, "Loading...");
                     socketManager.CreateOrder(ApplicationData.posFrom, ApplicationData.posDestination,"cash");
@@ -154,7 +155,14 @@ public class ActivityConfirm extends ActionBarActivity {
                     DialogManager.ShowLoading(ActivityConfirm.this, "Loading...");
                     socketManager.CreateOrder(ApplicationData.posFrom, ApplicationData.posDestination,"mandiriecash");
                     */
-                    DialogManager.showDialog(ActivityConfirm.this, "Informasi", "Fitur Mandiri e-Cash akan segera hadir");
+                    if(harga > 0){
+                        DialogManager.ShowLoading(ActivityConfirm.this, "Loading...");
+                        socketManager.CreateOrder(ApplicationData.posFrom, ApplicationData.posDestination,"mandiriecash");
+                    }
+                    else {
+                        DialogManager.showDialog(ActivityConfirm.this, "Informasi", "Pembayaran harus menggunakan tunai apabila Rp. 0");
+                    }
+
                 }
                 else if (pembayaran == 2) {
                    /*
