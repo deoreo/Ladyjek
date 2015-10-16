@@ -97,6 +97,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -125,6 +126,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
     private final String TAG_FROM = "FROM";
     private final String TAG_DESTINATION = "DESTINATION";
     private ClearableEditText txtFrom, txtDestination;
+    private TextView txtHint;
     private String add, tagLocation;
     private String placeId = "", description = "", strDistance = "", strDuration = "", strDetailFrom = "a", strDetailDestination = "b";
 
@@ -186,9 +188,6 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         tagLocation = TAG_FROM;
 
 
-
-
-
     }
 
     @Override
@@ -221,6 +220,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         txtDriverTime = (TextView) rootView.findViewById(R.id.txtDriverTime);
         txtLocationFrom = (TextView) rootView.findViewById(R.id.txtLocationFrom);
         btnRequestRide.setText(Html.fromHtml(getResources().getString(R.string.pesan)));
+        txtHint= (TextView) rootView.findViewById(R.id.txtHint);
 
 
         if (ApplicationData.socketManager == null) {
@@ -248,20 +248,19 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         googleMap = fm.getMap();
         try {
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(-6.1995921, 106.872451), 10f));
-        }catch(Exception e){
+        } catch (Exception e) {
 
         }
         mHandler = new Handler();
         //serviceLocation = new ServiceLocation(mActivity);
 
-        if(NetworkManager.getInstance(mActivity).isConnectedInternet()) {
+        if (NetworkManager.getInstance(mActivity).isConnectedInternet()) {
             new GetMyLocation(mActivity, googleMap, socketManager).execute();
-        }
-        else{
+        } else {
             DialogManager.showDialog(mActivity, "Mohon Maaf", "Anda tidak terhubung internet!");
         }
 
-        if(ApplicationData.posFrom!=null && ApplicationData.posDestination!=null){
+        if (ApplicationData.posFrom != null && ApplicationData.posDestination != null) {
             posFrom = ApplicationData.posFrom;
             posDest = ApplicationData.posDestination;
             txtFrom.setText(getAddress(ApplicationData.posFrom).toString());
@@ -270,9 +269,6 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
 
 
         }
-
-
-
 
 
         wrapperRegister.setOnClickListener(new View.OnClickListener() {
@@ -330,6 +326,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                     //do stuff here
                     tagLocation = TAG_FROM;
                     mTouchMap = false;
+                    txtHint.setText("Click pada map untuk memilih lokasi awal");
                     Log.v(TAG, tagLocation);
 
                 }
@@ -346,6 +343,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                     //do stuff here
                     tagLocation = TAG_DESTINATION;
                     mTouchMap = false;
+                    txtHint.setText("Click pada map untuk memilih lokasi akhir");
                     Log.v(TAG, tagLocation);
                 }
 
@@ -383,14 +381,13 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
             public void onClick(View v) {
                 Log.d(TAG, "btnCurrent click");
                 isSearchCurrent = true;
-                if(!socketManager.isConnected()){
+                if (!socketManager.isConnected()) {
                     socketManager.Connect();
                 }
 
-                if(NetworkManager.getInstance(mActivity).isConnectedInternet()) {
+                if (NetworkManager.getInstance(mActivity).isConnectedInternet()) {
                     new GetMyLocation(mActivity, googleMap, socketManager).execute();
-                }
-                else{
+                } else {
                     DialogManager.showDialog(mActivity, "Mohon Maaf", "Anda tidak terhubung internet!");
                 }
             }
@@ -433,7 +430,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                                       int before, int count) {
                 if (!mTouchMap) {
                     if (s.length() >= 3) {
-                        if(NetworkManager.getInstance(mActivity).isConnectedInternet()) {
+                        if (NetworkManager.getInstance(mActivity).isConnectedInternet()) {
                             new GetSuggestion(s.toString(), tagLocation).execute();
                         }
                     } else if (s.length() == 0) {
@@ -469,7 +466,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                                                                             int before, int count) {
                                                       if (!mTouchMap) {
                                                           if (s.length() >= 3) {
-                                                              if(NetworkManager.getInstance(mActivity).isConnectedInternet()) {
+                                                              if (NetworkManager.getInstance(mActivity).isConnectedInternet()) {
                                                                   new GetSuggestion(s.toString(), tagLocation).execute();
                                                               }
                                                           } else if (s.length() == 0) {
@@ -626,7 +623,6 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         );
 
 
-
         lastOrder = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -662,20 +658,18 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(i);
                         getActivity().finish();
-                    }
-                    else if (ApplicationData.order.getStatus().contains("pending")) {
+                    } else if (ApplicationData.order.getStatus().contains("pending")) {
                         i = new Intent(getActivity(), ActivityVerifyPayment.class);
                         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(i);
                         getActivity().finish();
-                    }else if (ApplicationData.order.getStatus().contains("ended")) {
+                    } else if (ApplicationData.order.getStatus().contains("ended")) {
                         i = new Intent(getActivity(), ActivityRate.class);
                         appManager.setTrip("");
                         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(i);
                         getActivity().finish();
-                    }
-                    else {
+                    } else {
                         //GetNearestDriver(mActivity);
                     }
 
@@ -735,10 +729,10 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
 
                         }
                         DialogManager.DismissLoading(mActivity);
-                        if(ApplicationData.posDrivers.length > 0){
+                        if (ApplicationData.posDrivers.length > 0) {
                             DoDraw();
                         }
-                    }catch (Exception e){
+                    } catch (Exception e) {
 
                     }
                 }
@@ -768,8 +762,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                                 })
                                 .setIcon(R.drawable.ladyjek_icon)
                                 .show();
-                    }
-                    catch (Exception ex){
+                    } catch (Exception ex) {
 
                     }
 
@@ -795,34 +788,33 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
     }
 
 
-    public void drawNewMarker(String address) {
-        Log.v(TAG, "drawNewMarker " + address);
+    public void drawNewMarker() {
         float zoom = googleMap.getCameraPosition().zoom;
-        if(zoom<=15){
-            zoom=15;
+        if (zoom <= 15) {
+            zoom = 15;
         }
         try {
-            ModelGeocode geocode = GoogleAPIManager.geocode(address);
-            LatLng locationMarker = new LatLng(geocode.getLat(), geocode.getLon());
+            //ModelGeocode geocode = GoogleAPIManager.geocode(address);
+            //LatLng locationMarker = new LatLng(geocode.getLat(), geocode.getLon());
             if (driveLine != null) {
                 driveLine.remove();
             }
             if (tagLocation.equals(TAG_FROM)) {
-                posFrom = locationMarker;
+                posFrom = ApplicationData.posFrom;
                 markerFrom = googleMap.addMarker(
                         new MarkerOptions()
                                 .position(posFrom)
                                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
 
-                cameraUpdate = CameraUpdateFactory.newLatLngZoom(locationMarker, zoom);
+                cameraUpdate = CameraUpdateFactory.newLatLngZoom(posFrom, zoom);
                 googleMap.animateCamera(cameraUpdate);
             } else if (tagLocation.equals(TAG_DESTINATION)) {
-                posDest = locationMarker;
+                posDest = ApplicationData.posDestination;
                 markerDestination = googleMap.addMarker(
                         new MarkerOptions()
                                 .position(posDest)
                                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_destination)));
-                cameraUpdate = CameraUpdateFactory.newLatLngZoom(locationMarker, zoom);
+                cameraUpdate = CameraUpdateFactory.newLatLngZoom(posDest, zoom);
                 googleMap.animateCamera(cameraUpdate);
             }
             Document doc = GoogleAPIManager.getRoute(posFrom, posDest, "driving");
@@ -846,23 +838,23 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
 
     public void drawLine() {
         float zoom = googleMap.getCameraPosition().zoom;
-        if(zoom<=15){
-            zoom=15;
+        if (zoom <= 15) {
+            zoom = 15;
         }
         try {
             if (driveLine != null) {
                 driveLine.remove();
             }
-                markerFrom = googleMap.addMarker(
-                        new MarkerOptions()
-                                .position(posFrom)
-                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
+            markerFrom = googleMap.addMarker(
+                    new MarkerOptions()
+                            .position(posFrom)
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
 
 
-                markerDestination = googleMap.addMarker(
-                        new MarkerOptions()
-                                .position(posDest)
-                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_destination)));
+            markerDestination = googleMap.addMarker(
+                    new MarkerOptions()
+                            .position(posDest)
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_destination)));
 
             Document doc = GoogleAPIManager.getRoute(posFrom, posDest, "driving");
 
@@ -883,8 +875,6 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
     }
 
 
-
-
     public void drawMarkerNearestDriver(LatLng pFrom, LatLng locationMarker, int index) {
         Log.v(TAG, "drawMarkerNearestDriver " + locationMarker.toString());
 
@@ -899,15 +889,15 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
             String strDurationDriver = "" + GoogleAPIManager.getDurationText(doc);
             String[] strDist = strDurationDriver.split(" ");
             int tempDuration = Integer.parseInt(strDist[0]);
-            if(tempDuration<duration){
+            if (tempDuration < duration) {
                 duration = tempDuration;
-                if(duration<0){
-                    duration=1;
+                if (duration < 0) {
+                    duration = 1;
                 }
             }
-            txtDriverTime.setText("Estimasi waktu menunggu : "+ Html.fromHtml("<b>"+duration+" menit</b>"));
+            txtDriverTime.setText("Estimasi waktu menunggu : " + Html.fromHtml("<b>" + duration + " menit</b>"));
             isGetNearestDrivers = true;
-            drawMarkerNearestDriver(posFrom, ApplicationData.posDrivers[index+1],index+1);
+            drawMarkerNearestDriver(posFrom, ApplicationData.posDrivers[index + 1], index + 1);
         } catch (Exception e) {
             Log.v(TAG, "catch drawMarkerNearestDriver ");
         }
@@ -953,8 +943,8 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         //drawNewMarker
         isSearchCurrent = false;
         float zoom = googleMap.getCameraPosition().zoom;
-        if(zoom<=15){
-            zoom=15;
+        if (zoom <= 15) {
+            zoom = 15;
         }
         if (tagLocation.equals(TAG_FROM)) {
             //posFrom=latLng;
@@ -1076,26 +1066,28 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                         if (tag.equals(TAG_FROM)) {
                             txtFrom.setText(selectedPlace.getAddress());
                             strDetailFrom = selectedPlace.getAddressDetail();
+                            String alamat = selectedPlace.getAddress()+","+selectedPlace.getAddressDetail();
                             if (markerFrom != null) {
                                 markerFrom.remove();
                             }
-                            ModelGeocode geocode = GoogleAPIManager.geocode(description);
+                            ModelGeocode geocode = GoogleAPIManager.geocode(alamat);
                             ApplicationData.posFrom = new LatLng(geocode.getLat(), geocode.getLon());
                             appManager.setUserFrom(new ModelPlace(geocode.getLat(), geocode.getLon()));
 
                         } else if (tag.equals(TAG_DESTINATION)) {
                             txtDestination.setText(selectedPlace.getAddress());
                             strDetailDestination = selectedPlace.getAddressDetail();
+                            String alamat = selectedPlace.getAddress()+","+selectedPlace.getAddressDetail();
                             if (markerDestination != null) {
                                 markerDestination.remove();
                             }
-                            ModelGeocode geocode = GoogleAPIManager.geocode(description);
+                            ModelGeocode geocode = GoogleAPIManager.geocode(alamat);
                             ApplicationData.posDestination = new LatLng(geocode.getLat(), geocode.getLon());
                             appManager.setUserDestination(new ModelPlace(geocode.getLat(), geocode.getLon()));
                         }
                         layoutSuggestion.setVisibility(GONE);
                         hideKeyboard();
-                        drawNewMarker(description);
+                        drawNewMarker();
                     } catch (Exception e) {
                         layoutSuggestion.setVisibility(GONE);
                         hideKeyboard();
@@ -1105,7 +1097,6 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
 
         }
     }
-
 
 
     @Override
@@ -1170,9 +1161,9 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
 
         //mHandler.removeCallbacks(mRunnable);
         //PowerManager powerManager = (PowerManager) mActivity.getSystemService(mActivity.POWER_SERVICE);
-       // boolean isScreenOn = powerManager.isScreenOn();
+        // boolean isScreenOn = powerManager.isScreenOn();
         //if (!isScreenOn) {
-       //     mRunnable.run();
+        //     mRunnable.run();
         //}
         super.onPause();
     }
@@ -1187,7 +1178,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         //longRunningTaskFuture.cancel(true);
     }
 
-    void OpenLoading(){
+    void OpenLoading() {
         progressDialog = new ProgressDialog(mActivity);
         progressDialog.setMessage("Loading. . .");
         progressDialog.setIndeterminate(false);
@@ -1230,8 +1221,6 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
             Log.v(TAG, "GetMyLocation doInBackground");
 
 
-
-
             try {
                 try {
                     int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(mActivity);
@@ -1262,12 +1251,26 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                                     }
                                 }
                             }
+                            if (isGPSEnabled) {
+                                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this, Looper.getMainLooper());
+                                Log.v("locationManager", "Network");
+                                if (locationManager != null) {
+                                    location = locationManager
+                                            .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                                    if (location != null) {
+                                        latitude = location.getLatitude();
+                                        longitude = location.getLongitude();
+                                        posFrom = new LatLng(latitude, longitude);
+                                        ApplicationData.posFrom = posFrom;
+                                        appManager.setUserFrom(new ModelPlace(posFrom.latitude, posFrom.longitude));
+                                    }
+                                }
+                            }
 
                         }
                     }
 
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                 }
                 return "OK";
             } catch (Exception e) {
@@ -1290,18 +1293,18 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                     try {
                         LatLng pFrom = ApplicationData.posFrom;
                         float zoom = googleMap.getCameraPosition().zoom;
-                        if(zoom<=15){
-                            zoom=15;
+                        if (zoom <= 15) {
+                            zoom = 15;
                         }
                         double radiusInMeters = 5 * 100.0;
                         int strokeColor = 0xffffffff;
                         int shadeColor = 0x3366ffff;
 
-                        if(mCircle !=null){
+                        if (mCircle != null) {
                             mCircle.remove();
                         }
 
-                        if(markerCurrent !=null){
+                        if (markerCurrent != null) {
                             markerCurrent.remove();
                         }
 
@@ -1313,20 +1316,20 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                                 .strokeWidth(10);
                         mCircle = googleMap.addCircle(circleOptions);
                         cameraUpdate = CameraUpdateFactory.newLatLngZoom(pFrom, zoom);
-                        if(!isSearchCurrent) {
+                        //if (!isSearchCurrent) {
                             markerFrom = googleMap.addMarker(
                                     new MarkerOptions()
                                             .position(pFrom)
                                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
                             txtFrom.setText(getAddress(pFrom));
                             googleMap.animateCamera(cameraUpdate);
-                        }else{
+                        /*} else {
                             markerCurrent = googleMap.addMarker(
                                     new MarkerOptions()
                                             .position(pFrom)
                                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
                             googleMap.moveCamera(cameraUpdate);
-                        }
+                        }*/
 
 
                         Log.v("posisi gps", pFrom.toString());
@@ -1345,7 +1348,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         public void onLocationChanged(Location location) {
             try {
                 LatLng pFrom = new LatLng(latitude, longitude);
-                ApplicationData.posFrom = pFrom;
+                //ApplicationData.posFrom = pFrom;
             } catch (Exception e) {
                 Log.v("FragmentHome", "OnLocationChange");
             }
@@ -1367,7 +1370,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         }
     }
 
-    public void GetNearestDriver(Activity activity){
+    public void GetNearestDriver(Activity activity) {
 
         if (NetworkManager.getInstance(activity).isConnectedInternet()) {
             Log.v(TAG, "Running");
@@ -1385,11 +1388,9 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         }
     }
 
-    void DoDraw(){
-        drawMarkerNearestDriver(posFrom, ApplicationData.posDrivers[0],0);
+    void DoDraw() {
+        drawMarkerNearestDriver(posFrom, ApplicationData.posDrivers[0], 0);
     }
-
-
 
 
 }
