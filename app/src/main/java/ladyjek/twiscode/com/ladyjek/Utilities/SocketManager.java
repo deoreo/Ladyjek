@@ -894,11 +894,19 @@ public class SocketManager {
                             Log.d(TAG, "getfeedback true");
                             SendBroadcast("doFeedback", "true");
                         } else {
-                            Log.d(TAG, "getfeedback false");
+                            try{
+                                Log.d(TAG, "getfeedback false : "+args[0].toString());
+                            }
+                            catch (Exception e){
+                                JSONObject err = (JSONObject) args[0];
+                                Log.d(TAG, "getfeedback false : "+err.toString());
+                            }
+                            SendBroadcast("doFeedback", "false");
                         }
                     } catch (Exception ex) {
                         Log.d(TAG, "getfeedback error");
                         ex.printStackTrace();
+                        SendBroadcast("doFeedback", "false");
                     }
 
                 }

@@ -91,11 +91,34 @@
             android:weightSum="2"
 
             >
+
+
             <ImageView
                 android:id="@+id/btnCurrent"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:background="@drawable/currentlocation"
+                />
+
+        </RelativeLayout>
+        <RelativeLayout
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/wrapperBottom"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="25dp"
+            android:gravity="right"
+            android:weightSum="2"
+            >
+            <TextView
+                android:id="@+id/txtHint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Click pada map untuk memilih lokasi awal"
+                android:textSize="12sp"
+                android:textColor="@color/bg_grad_2"
+                fontPath="@string/GothamRndIta"
                 />
 
         </RelativeLayout>
