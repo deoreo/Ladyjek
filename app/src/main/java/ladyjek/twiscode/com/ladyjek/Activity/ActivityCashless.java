@@ -57,7 +57,11 @@ public class ActivityCashless extends FragmentActivity {
             }
         });
 
-        lblMandiri.setText("0"+applicationManager.getUser().getPhone());
+        try {
+            lblMandiri.setText("0" + applicationManager.getUser().getPhone());
+        }catch (Exception e){
+            lblMandiri.setText("-");
+        }
 
 
 

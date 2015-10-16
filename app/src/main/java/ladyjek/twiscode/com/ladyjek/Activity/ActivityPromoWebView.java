@@ -267,7 +267,7 @@ public class ActivityPromoWebView extends FragmentActivity {
                 case "FAIL":
                     Intent y = new Intent(getBaseContext(), Main.class);
                     startActivity(y);
-                    //finish();
+                    finish();
                     break;
             }
         }

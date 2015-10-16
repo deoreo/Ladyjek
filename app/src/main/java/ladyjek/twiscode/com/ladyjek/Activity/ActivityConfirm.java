@@ -150,7 +150,7 @@ public class ActivityConfirm extends ActionBarActivity {
                     DialogManager.ShowLoading(ActivityConfirm.this, "Loading...");
                     socketManager.CreateOrder(ApplicationData.posFrom, ApplicationData.posDestination,"cash");
                 } else if (pembayaran == 1) {
-                   /*
+                    /*
                     DialogManager.ShowLoading(ActivityConfirm.this, "Loading...");
                     socketManager.CreateOrder(ApplicationData.posFrom, ApplicationData.posDestination,"mandiriecash");
                     */
