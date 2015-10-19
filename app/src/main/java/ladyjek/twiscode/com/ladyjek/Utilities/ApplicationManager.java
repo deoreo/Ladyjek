@@ -57,6 +57,10 @@ public class ApplicationManager {
      *
      * @return true if user already has access token, false if otherwise
      */
+    public void Clear(){
+        mEditor.clear();
+        mEditor.commit();
+    }
     public boolean isLoggedIn() {
         if (!getUserMail().isEmpty())
             return true;

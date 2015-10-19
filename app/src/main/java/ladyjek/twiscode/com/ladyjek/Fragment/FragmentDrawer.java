@@ -70,6 +70,7 @@ public class FragmentDrawer extends android.support.v4.app.Fragment {
     private DatabaseHandler db;
     private Dialog dialog;
     private ProgressDialog progressDialog;
+    ApplicationManager applicationgeManager;
 
     void InitProgress(){
         progressDialog = new ProgressDialog(getActivity());
@@ -108,6 +109,7 @@ public class FragmentDrawer extends android.support.v4.app.Fragment {
         // drawer labels
         titles = getActivity().getResources().getStringArray(R.array.nav_drawer_labels);
         db = new DatabaseHandler(getActivity());
+        applicationgeManager = new ApplicationManager(getActivity());
     }
 
     @Override
@@ -268,6 +270,7 @@ public class FragmentDrawer extends android.support.v4.app.Fragment {
             @Override
             public void onClick(View v) {
                 db.logout();
+                applicationgeManager.Clear();
                 Intent i = new Intent(getActivity(), ActivityLogin.class);
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(i);
@@ -356,6 +359,7 @@ public class FragmentDrawer extends android.support.v4.app.Fragment {
 
                 case "OK":
                     db.logout();
+                    applicationgeManager.Clear();
                     Intent i = new Intent(getActivity(), ActivityLogin.class);
                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(i);
