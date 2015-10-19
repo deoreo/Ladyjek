@@ -45,11 +45,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityConfirm;
+import ladyjek.twiscode.com.ladyjek.Activity.ActivityHandphoneKonfirmasi;
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityLoading;
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityLogin;
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityPickUp;
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityPromoWebView;
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityRate;
+import ladyjek.twiscode.com.ladyjek.Activity.ActivityRegister;
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityTracking;
 import ladyjek.twiscode.com.ladyjek.Activity.ActivityVerifyPayment;
 import ladyjek.twiscode.com.ladyjek.Activity.Main;
@@ -62,6 +64,7 @@ import ladyjek.twiscode.com.ladyjek.Model.ModelDriver;
 import ladyjek.twiscode.com.ladyjek.Model.ModelGeocode;
 import ladyjek.twiscode.com.ladyjek.Model.ModelOrder;
 import ladyjek.twiscode.com.ladyjek.Model.ModelPlace;
+import ladyjek.twiscode.com.ladyjek.Model.ModelUserOrder;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
 import ladyjek.twiscode.com.ladyjek.Utilities.GoogleAPIManager;
@@ -326,6 +329,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                     //do stuff here
                     tagLocation = TAG_FROM;
                     mTouchMap = false;
+                    isSearchCurrent = false;
                     txtHint.setText("Click pada map untuk memilih lokasi awal");
                     Log.v(TAG, tagLocation);
 
@@ -343,6 +347,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                     //do stuff here
                     tagLocation = TAG_DESTINATION;
                     mTouchMap = false;
+                    isSearchCurrent = false;
                     txtHint.setText("Click pada map untuk memilih lokasi akhir");
                     Log.v(TAG, tagLocation);
                 }
@@ -541,17 +546,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                                                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
 
                                                    if (posFrom != null && posDest != null) {
-                                                       Document doc = GoogleAPIManager.getRoute(posFrom, posDest, "driving");
-
-                                                       ArrayList<LatLng> directionPoint = GoogleAPIManager.getDirection(doc);
-                                                       PolylineOptions rectLine = new PolylineOptions().width(15).color(getResources().getColor(R.color.bg_grad_2));
-
-                                                       for (int i = 0; i < directionPoint.size(); i++) {
-                                                           rectLine.add(directionPoint.get(i));
-                                                       }
-                                                       strDistance = "" + GoogleAPIManager.getDistanceText(doc);
-                                                       strDuration = "" + GoogleAPIManager.getDurationText(doc);
-                                                       driveLine = googleMap.addPolyline(rectLine);
+                                                       new DoDrawRute(mActivity,posFrom,posDest,googleMap).execute();
                                                    }
 
                                                }
@@ -587,17 +582,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                                                                           .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_destination)));
 
                                                           if (posFrom != null && posDest != null) {
-                                                              Document doc = GoogleAPIManager.getRoute(posFrom, posDest, "driving");
-
-                                                              ArrayList<LatLng> directionPoint = GoogleAPIManager.getDirection(doc);
-                                                              PolylineOptions rectLine = new PolylineOptions().width(15).color(getResources().getColor(R.color.bg_grad_2));
-
-                                                              for (int i = 0; i < directionPoint.size(); i++) {
-                                                                  rectLine.add(directionPoint.get(i));
-                                                              }
-                                                              strDistance = "" + GoogleAPIManager.getDistanceText(doc);
-                                                              strDuration = "" + GoogleAPIManager.getDurationText(doc);
-                                                              driveLine = googleMap.addPolyline(rectLine);
+                                                              new DoDrawRute(mActivity,posFrom,posDest,googleMap).execute();
                                                           }
 
                                                       }
@@ -817,17 +802,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                 cameraUpdate = CameraUpdateFactory.newLatLngZoom(posDest, zoom);
                 googleMap.animateCamera(cameraUpdate);
             }
-            Document doc = GoogleAPIManager.getRoute(posFrom, posDest, "driving");
-
-            ArrayList<LatLng> directionPoint = GoogleAPIManager.getDirection(doc);
-            PolylineOptions rectLine = new PolylineOptions().width(15).color(getResources().getColor(R.color.bg_grad_2));
-
-            for (int i = 0; i < directionPoint.size(); i++) {
-                rectLine.add(directionPoint.get(i));
-            }
-            strDistance = "" + GoogleAPIManager.getDistanceText(doc);
-            strDuration = "" + GoogleAPIManager.getDurationText(doc);
-            driveLine = googleMap.addPolyline(rectLine);
+            new DoDrawRute(mActivity,posFrom,posDest,googleMap).execute();
 
         } catch (Exception e) {
 
@@ -856,17 +831,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                             .position(posDest)
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_destination)));
 
-            Document doc = GoogleAPIManager.getRoute(posFrom, posDest, "driving");
-
-            ArrayList<LatLng> directionPoint = GoogleAPIManager.getDirection(doc);
-            PolylineOptions rectLine = new PolylineOptions().width(15).color(getResources().getColor(R.color.bg_grad_2));
-
-            for (int i = 0; i < directionPoint.size(); i++) {
-                rectLine.add(directionPoint.get(i));
-            }
-            strDistance = "" + GoogleAPIManager.getDistanceText(doc);
-            strDuration = "" + GoogleAPIManager.getDurationText(doc);
-            driveLine = googleMap.addPolyline(rectLine);
+            new DoDrawRute(mActivity,posFrom,posDest,googleMap).execute();
 
         } catch (Exception e) {
 
@@ -1245,9 +1210,11 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                                     if (location != null) {
                                         latitude = location.getLatitude();
                                         longitude = location.getLongitude();
-                                        posFrom = new LatLng(latitude, longitude);
-                                        ApplicationData.posFrom = posFrom;
-                                        appManager.setUserFrom(new ModelPlace(posFrom.latitude, posFrom.longitude));
+                                        //if(!isSearchCurrent) {
+                                            posFrom = new LatLng(latitude, longitude);
+                                            ApplicationData.posFrom = posFrom;
+                                            appManager.setUserFrom(new ModelPlace(posFrom.latitude, posFrom.longitude));
+                                        //}
                                     }
                                 }
                             }
@@ -1260,9 +1227,11 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                                     if (location != null) {
                                         latitude = location.getLatitude();
                                         longitude = location.getLongitude();
-                                        posFrom = new LatLng(latitude, longitude);
-                                        ApplicationData.posFrom = posFrom;
-                                        appManager.setUserFrom(new ModelPlace(posFrom.latitude, posFrom.longitude));
+                                        //if(!isSearchCurrent) {
+                                            posFrom = new LatLng(latitude, longitude);
+                                            ApplicationData.posFrom = posFrom;
+                                            appManager.setUserFrom(new ModelPlace(posFrom.latitude, posFrom.longitude));
+                                        //}
                                     }
                                 }
                             }
@@ -1390,6 +1359,78 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
 
     void DoDraw() {
         drawMarkerNearestDriver(posFrom, ApplicationData.posDrivers[0], 0);
+    }
+
+
+    private class DoDrawRute extends AsyncTask<String, Void, String> {
+        private Activity activity;
+        private Context context;
+        private Resources resources;
+        private ProgressDialog progressDialog;
+        private GoogleMap googleMap;
+        private PolylineOptions  rectLine;
+        private LatLng posFrom, posDest;
+
+        public DoDrawRute(Activity activity, LatLng posFrom, LatLng posDest, GoogleMap googleMap) {
+            super();
+            this.activity = activity;
+            this.context = activity.getApplicationContext();
+            this.resources = activity.getResources();
+            this.googleMap = googleMap;
+            this.posFrom = posFrom;
+            this.posDest = posDest;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = new ProgressDialog(activity);
+            progressDialog.setMessage("Mencari Rute. . .");
+            progressDialog.setIndeterminate(false);
+            progressDialog.setCancelable(false);
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressDialog.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+                Document doc = GoogleAPIManager.getRoute(posFrom, posDest, "driving");
+                rectLine = new PolylineOptions().width(15).color(getResources().getColor(R.color.bg_grad_2));
+                ArrayList<LatLng> directionPoint = GoogleAPIManager.getDirection(doc);
+                for (int i = 0; i < directionPoint.size(); i++) {
+                    rectLine.add(directionPoint.get(i));
+                }
+                strDistance = "" + GoogleAPIManager.getDistanceText(doc);
+                strDuration = "" + GoogleAPIManager.getDurationText(doc);
+                return "OK";
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return "FAIL";
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            progressDialog.dismiss();
+            switch (result) {
+                case "FAIL":
+                    break;
+                case "OK":
+                    if (driveLine != null) {
+                        driveLine.remove();
+                    }
+                    driveLine = googleMap.addPolyline(rectLine);
+                    break;
+            }
+
+
+        }
+
+
     }
 
 

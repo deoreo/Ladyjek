@@ -466,28 +466,6 @@ public class SocketManager {
         }
     };
 
-    public void PostLocation(LatLng pos) {
-        Log.d(TAG, "PostLocation");
-        JSONArray loc = new JSONArray();
-        try {
-            loc.put(0, pos.longitude);
-            loc.put(1, pos.latitude);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        socket.emit("post location", loc, new Ack() {
-            @Override
-            public void call(Object... args) {
-                try {
-                    //Log.d(TAG, "PostLocation" + args[0].toString());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
-
-
 
 
 
@@ -712,6 +690,29 @@ public class SocketManager {
 
         }
     };
+
+
+    public void PostLocation(LatLng pos){
+        Log.d(TAG, "PostLocationUser");
+        JSONArray loc = new JSONArray();
+        try {
+            loc.put(0, pos.longitude);
+            loc.put(1, pos.latitude);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        socket.emit("post location", loc, new Ack() {
+            @Override
+            public void call(Object... args) {
+                try {
+                    //Log.d(TAG, "PostLocationDriver"+args[0].toString());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
 
     public void GetNearestDrivers(LatLng pos) {
 
