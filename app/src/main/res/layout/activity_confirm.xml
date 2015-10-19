@@ -231,7 +231,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/black_color"
-                        android:text="Subtotal"
+                        android:text="Harga awal"
                         android:textSize="16dp"
                         android:layout_alignParentBottom="true"
                         />
