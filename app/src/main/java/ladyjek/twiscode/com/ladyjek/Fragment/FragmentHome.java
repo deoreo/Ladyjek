@@ -1277,6 +1277,10 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                             markerCurrent.remove();
                         }
 
+                        if (markerFrom != null) {
+                            markerFrom.remove();
+                        }
+
                         circleOptions = new CircleOptions()
                                 .center(pFrom)
                                 .radius(radiusInMeters)
@@ -1300,6 +1304,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                             googleMap.moveCamera(cameraUpdate);
                         }*/
 
+                        new DoDrawRute(activity,pFrom,posDest,googleMap).execute();
 
                         Log.v("posisi gps", pFrom.toString());
                     } catch (Exception e) {
