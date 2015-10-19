@@ -178,6 +178,7 @@ public class ActivityPromoWebView extends FragmentActivity {
             try {
                 JSONControl jsControl = new JSONControl();
                 JSONObject response = jsControl.postPromo();
+                Log.d("json promo init",response.toString());
                 if(response!=null){
                     try{
                         String url = response.getString("url");

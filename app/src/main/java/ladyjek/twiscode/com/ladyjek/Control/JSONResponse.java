@@ -115,6 +115,86 @@ public class JSONResponse {
         return _jObj;
     }
 
+    public JSONObject GETResponseHeader(String url,String apptoken) throws ConnectException {
+        try {
+
+            DefaultHttpClient httpClient = (DefaultHttpClient)createDevelopmentHttpClientInstance();
+            HttpGet httpGet = new HttpGet(url);
+            httpGet.setHeader("x-app-token", apptoken);
+            HttpResponse httpResponse = httpClient.execute(httpGet);
+            HttpEntity httpEntity = httpResponse.getEntity();
+            _inputStream = httpEntity.getContent();
+        }
+        catch(ConnectException e){
+            throw e;
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    _inputStream, "iso-8859-1"), 8);
+            StringBuilder sb = new StringBuilder();
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line + "\n");
+            }
+            _inputStream.close();
+            _json = sb.toString();
+        } catch (Exception e) {
+            Log.e("Buffer Error", "Error converting result " + e.toString());
+        }
+        try {
+            _jObj = new JSONObject(_json);
+        } catch (JSONException e) {
+            Log.e("JSON Parser", "Error parsing data " + e.toString());
+        }
+        return _jObj;
+    }
+
+    public String GETResponseHeaderString(String url,String apptoken) throws ConnectException {
+        try {
+
+            DefaultHttpClient httpClient = (DefaultHttpClient)createDevelopmentHttpClientInstance();
+            HttpGet httpGet = new HttpGet(url);
+            httpGet.setHeader("x-app-token", apptoken);
+            HttpResponse httpResponse = httpClient.execute(httpGet);
+            HttpEntity httpEntity = httpResponse.getEntity();
+            _inputStream = httpEntity.getContent();
+        }
+        catch(ConnectException e){
+            throw e;
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    _inputStream, "iso-8859-1"), 8);
+            StringBuilder sb = new StringBuilder();
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line + "\n");
+            }
+            _inputStream.close();
+            _json = sb.toString();
+        } catch (Exception e) {
+            Log.e("Buffer Error", "Error converting result " + e.toString());
+        }
+
+        return _json;
+    }
+
     public JSONObject GETResponseApp(String url, String apptoken) throws ConnectException {
         try {
 
