@@ -211,6 +211,7 @@ public class ActivityPromo extends FragmentActivity {
                 JSONControl jsControl = new JSONControl();
                 JSONObject response = jsControl.postPromoImage();
                 Log.d("json promo", response.toString());
+
                 if(response!=null){
                     try{
                         String url = response.getString("url");
@@ -232,6 +233,7 @@ public class ActivityPromo extends FragmentActivity {
                     }
 
                 }
+
 
             } catch (Exception e) {
                 e.printStackTrace();

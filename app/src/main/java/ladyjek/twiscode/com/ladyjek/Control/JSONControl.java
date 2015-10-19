@@ -236,7 +236,7 @@ public class JSONControl {
         JSONObject jsonObj = null;
 
         try {
-            jsonObj = _JSONResponse.GETResponseApp(ConfigManager.PROMO, ConfigManager.DUKUHKUPANG);
+            jsonObj = _JSONResponse.GETResponseHeader(ConfigManager.PROMO, ConfigManager.DUKUHKUPANG);
 
 
         } catch (Exception e) {
@@ -250,7 +250,8 @@ public class JSONControl {
         JSONObject jsonObj = null;
 
         try {
-            jsonObj = _JSONResponse.GETResponse(ConfigManager.PROMO_IMAGE);
+            Log.d("json url promo:",ConfigManager.PROMO_IMAGE);
+            jsonObj = _JSONResponse.GETResponseHeader(ConfigManager.PROMO_IMAGE, ConfigManager.DUKUHKUPANG);
 
 
         } catch (Exception e) {
