@@ -187,16 +187,46 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (NetworkManager.getInstance(ActivityPickUp.this).isConnectedInternet()) {
-                    if (!isCancel) {
-                        DialogManager.ShowLoading(ActivityPickUp.this, "Membatalkan pemesanan. . .");
-                        socketManager.CancelOrder();
-                        isCancel = true;
-                    }
+                btnCancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        try {
+                            Context ctx = ActivityPickUp.this;
+                            new MaterialDialog.Builder(ctx)
+                                    .title("Anda yakin membatalkan order?")
+                                    .positiveText("OK")
+                                    .callback(new MaterialDialog.ButtonCallback() {
+                                        @Override
+                                        public void onPositive(MaterialDialog dialog) {
+                                            if (NetworkManager.getInstance(ActivityPickUp.this).isConnectedInternet()) {
+                                                if (!isCancel) {
+                                                    DialogManager.ShowLoading(ActivityPickUp.this, "Membatalkan pemesanan. . .");
+                                                    socketManager.CancelOrder();
+                                                    isCancel = true;
+                                                }
 
-                } else {
-                    DialogManager.showDialog(ActivityPickUp.this, "Peringatan", "Tidak ada koneksi internet!");
-                }
+                                            } else {
+                                                DialogManager.showDialog(ActivityPickUp.this, "Peringatan", "Tidak ada koneksi internet!");
+                                            }
+                                            dialog.dismiss();
+                                        }
+                                    })
+                                    .negativeText("Tidak")
+                                    .icon(getResources().getDrawable(R.drawable.ladyjek_icon))
+                                    .cancelable(false)
+                                    .typeface("GothamRnd-Medium.otf", "Gotham.ttf")
+                                    .show();
+                        } catch (Exception e) {
+
+                        }
+                    }
+                });
+
+
+
+
+
+
             }
         });
 
