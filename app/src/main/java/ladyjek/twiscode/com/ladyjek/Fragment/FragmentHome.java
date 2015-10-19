@@ -277,21 +277,25 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         wrapperRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String txtJarak = strDistance.split(" ")[0];
+                float distance = Float.parseFloat(txtJarak);
                 if (strDistance.isEmpty() && strDuration.isEmpty()) {
                     DialogManager.showDialog(mActivity, "Mohon Maaf", "Tentukan lokasi awal dan akhir!");
                 } else {
-                    ApplicationData.addressFrom = txtFrom.getText().toString();
-                    ApplicationData.addressDestination = txtDestination.getText().toString();
-                    ApplicationData.detailFrom = strDetailFrom;
-                    ApplicationData.detailDestination = strDetailDestination;
-                    ApplicationData.distance = strDistance;
-                    ApplicationData.duration = strDuration;
-                    Intent intent = new Intent(mActivity, ActivityConfirm.class);
-                    mActivity.startActivity(intent);
-                    mActivity.finish();
-
-
-                    // /new DoPesan(mActivity,socketManager, posFrom, posDest);
+                    if(distance > 40){
+                        DialogManager.showDialog(mActivity, "Mohon Maaf", "Maksimal jarak 40 km!");
+                    }
+                    else {
+                        ApplicationData.addressFrom = txtFrom.getText().toString();
+                        ApplicationData.addressDestination = txtDestination.getText().toString();
+                        ApplicationData.detailFrom = strDetailFrom;
+                        ApplicationData.detailDestination = strDetailDestination;
+                        ApplicationData.distance = strDistance;
+                        ApplicationData.duration = strDuration;
+                        Intent intent = new Intent(mActivity, ActivityConfirm.class);
+                        startActivity(intent);
+                        getActivity().finish();
+                    }
                 }
             }
         });
@@ -305,18 +309,26 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         btnRequestRide.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String txtJarak = strDistance.split(" ")[0];
+                float distance = Float.parseFloat(txtJarak);
                 if (strDistance.isEmpty() && strDuration.isEmpty()) {
                     DialogManager.showDialog(mActivity, "Mohon Maaf", "Tentukan lokasi awal dan akhir!");
                 } else {
-                    ApplicationData.addressFrom = txtFrom.getText().toString();
-                    ApplicationData.addressDestination = txtDestination.getText().toString();
-                    ApplicationData.detailFrom = strDetailFrom;
-                    ApplicationData.detailDestination = strDetailDestination;
-                    ApplicationData.distance = strDistance;
-                    ApplicationData.duration = strDuration;
-                    Intent intent = new Intent(mActivity, ActivityConfirm.class);
-                    startActivity(intent);
-                    getActivity().finish();
+                    if(distance > 40){
+                        DialogManager.showDialog(mActivity, "Mohon Maaf", "Maksimal jarak 40 km!");
+                    }
+                    else {
+                        ApplicationData.addressFrom = txtFrom.getText().toString();
+                        ApplicationData.addressDestination = txtDestination.getText().toString();
+                        ApplicationData.detailFrom = strDetailFrom;
+                        ApplicationData.detailDestination = strDetailDestination;
+                        ApplicationData.distance = strDistance;
+                        ApplicationData.duration = strDuration;
+                        Intent intent = new Intent(mActivity, ActivityConfirm.class);
+                        startActivity(intent);
+                        getActivity().finish();
+                    }
+
                 }
             }
         });

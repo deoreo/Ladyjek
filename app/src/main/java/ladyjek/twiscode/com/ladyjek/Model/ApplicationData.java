@@ -90,4 +90,6 @@ public class ApplicationData {
     public static boolean release = false;
     public static String promo_url = "";
     public static JSONArray promo_images = new JSONArray();
+    public static JSONObject calculate = new JSONObject();
+    public static String firstTrip = "";
 }

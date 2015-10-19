@@ -649,9 +649,11 @@ public class SocketManager {
                             try {
                                 JSONObject obj = (JSONObject) args[1];
                                 Log.d(TAG, "calculate:" + obj.toString());
+                                ApplicationData.calculate = obj;
                                 ApplicationData.distance = obj.getJSONObject("distance").getString("text");
                                 ApplicationData.duration = obj.getJSONObject("duration").getString("text");
                                 ApplicationData.price = obj.getString("price");
+                                ApplicationData.firstTrip = obj.getString("firstTrip");
                                 SendBroadcast("calculate", "true");
                             }
                             catch (Exception e){

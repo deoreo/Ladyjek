@@ -54,7 +54,7 @@ public class ActivityConfirm extends ActionBarActivity {
     private ArrayAdapter<CharSequence> adapterPay;
     private ImageView btnBack;
     private RelativeLayout wrapperRegister;
-    private TextView txtConfirm, txtFrom, txtDestination, txtDistance, txtDuration, txtTotal, txtDetailFrom, txtDetailDestination;
+    private TextView txtConfirm, txtFrom, txtDestination, txtDistance, txtDuration, txtTotal, txtDetailFrom, txtDetailDestination, txtSubtotal,txtDiskon;
     private String strFrom = "", strDest = "", strDistance = "",
             strDuration = "", strDetailFrom = "",strDetailDest="" ;
     private int totalPrice = 0;
@@ -64,8 +64,7 @@ public class ActivityConfirm extends ActionBarActivity {
     private BroadcastReceiver doCreateOrder,doCalculate;
     private ClearableEditText txtPromo;
     private Button btnPromo;
-
-    int pembayaran = 0;
+    int pembayaran = 0,subtotal=0,diskon=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,6 +88,8 @@ public class ActivityConfirm extends ActionBarActivity {
         txtDestination = (TextView) findViewById(R.id.txtDestination);
         txtDistance = (TextView) findViewById(R.id.txtDistance);
         txtDuration = (TextView) findViewById(R.id.txtDuration);
+        txtSubtotal = (TextView) findViewById(R.id.txtSubtotal);
+        txtDiskon = (TextView) findViewById(R.id.txtDiskon);
         txtTotal = (TextView) findViewById(R.id.txtTotal);
         txtDetailFrom = (TextView) findViewById(R.id.txtDetailFrom);
         txtDetailDestination = (TextView) findViewById(R.id.txtDetailDestination);
@@ -137,6 +138,15 @@ public class ActivityConfirm extends ActionBarActivity {
                     txtDistance.setText(ApplicationData.distance);
                     txtDuration.setText(ApplicationData.duration);
                     int harga = Integer.parseInt(ApplicationData.price);
+                    if(ApplicationData.firstTrip.contains("true")){
+                        diskon = 25000;
+                    }
+                    else {
+                        diskon = 0;
+                    }
+                    subtotal = harga+diskon;
+                    txtSubtotal.setText("Rp " + decimalFormat.format(subtotal));
+                    txtDiskon.setText("Rp " + decimalFormat.format(diskon));
                     txtTotal.setText("Rp " + decimalFormat.format(harga));
                 }
 
