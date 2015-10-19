@@ -271,6 +271,7 @@ public class FragmentDrawer extends android.support.v4.app.Fragment {
             public void onClick(View v) {
                 db.logout();
                 applicationgeManager.Clear();
+                ApplicationData.posDestination = null;
                 Intent i = new Intent(getActivity(), ActivityLogin.class);
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(i);
@@ -360,6 +361,7 @@ public class FragmentDrawer extends android.support.v4.app.Fragment {
                 case "OK":
                     db.logout();
                     applicationgeManager.Clear();
+                    ApplicationData.posDestination = null;
                     Intent i = new Intent(getActivity(), ActivityLogin.class);
                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(i);
