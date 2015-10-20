@@ -9,10 +9,30 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-
-        <include
-            android:id="@+id/toolbar"
-            layout="@layout/toolbar" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ImageView
+                android:padding="5dp"
+                android:id="@+id/btnBack"
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/back_pink"/>
+            <TextView
+                android:layout_toRightOf="@id/btnBack"
+                android:padding="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="INBOX NOTIFIKASI"
+                android:textSize="18dp"
+                android:textStyle="bold"
+                android:textColor="@color/bg_grad_2"
+                android:layout_centerVertical="true"
+                android:textAllCaps="true"
+                fontPath="@string/GothamRndBold"
+                />
+        </RelativeLayout>
     </LinearLayout>
 
     <ListView

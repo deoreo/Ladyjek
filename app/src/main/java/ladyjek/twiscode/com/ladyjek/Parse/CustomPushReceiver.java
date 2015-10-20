@@ -9,7 +9,6 @@ import com.parse.ParsePushBroadcastReceiver;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import ladyjek.twiscode.com.ladyjek.Activity.Main;
 
 public class CustomPushReceiver extends ParsePushBroadcastReceiver {
     private final String TAG = CustomPushReceiver.class.getSimpleName();
@@ -31,12 +30,9 @@ public class CustomPushReceiver extends ParsePushBroadcastReceiver {
 
         try {
             JSONObject json = new JSONObject(intent.getExtras().getString("com.parse.Data"));
-
             Log.e(TAG, "Push received: " + json);
-
             parseIntent = intent;
-
-            parsePushJson(context, json);
+            parsePushJsonCustom(context, json);
 
         } catch (JSONException e) {
             Log.e(TAG, "Push message json exception: " + e.getMessage());
@@ -51,6 +47,11 @@ public class CustomPushReceiver extends ParsePushBroadcastReceiver {
     @Override
     protected void onPushOpen(Context context, Intent intent) {
         super.onPushOpen(context, intent);
+        Log.e("Push", "Clicked");
+        Intent i = new Intent(context, ActivityNotif.class);
+        i.putExtras(intent.getExtras());
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(i);
     }
 
     /**
@@ -61,15 +62,14 @@ public class CustomPushReceiver extends ParsePushBroadcastReceiver {
      */
     private void parsePushJson(Context context, JSONObject json) {
         try {
-            boolean isBackground = json.getBoolean("is_background");
+
             JSONObject data = json.getJSONObject("data");
             String title = data.getString("title");
             String message = data.getString("message");
 
-            if (!isBackground) {
-                Intent resultIntent = new Intent(context, Main.class);
-                showNotificationMessage(context, title, message, resultIntent);
-            }
+            Intent resultIntent = new Intent(context, ActivityNotif.class);
+            showNotificationMessage(context, title, message, resultIntent);
+
         } catch (JSONException e) {
             Log.e(TAG, "Push message json exception: " + e.getMessage());
         }
@@ -89,5 +89,21 @@ public class CustomPushReceiver extends ParsePushBroadcastReceiver {
         intent.putExtras(parseIntent.getExtras());
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         notificationManager.showNotificationMessage(title, message, intent);
+    }
+
+
+    private void parsePushJsonCustom(Context context, JSONObject json) {
+        try {
+
+
+            String message = json.getString("alert");
+
+
+            Intent resultIntent = new Intent(context, ActivityNotif.class);
+            showNotificationMessage(context, "Notifikasi LadyJek", message , resultIntent);
+
+        } catch (JSONException e) {
+            Log.e(TAG, "Push message json exception: " + e.getMessage());
+        }
     }
 }

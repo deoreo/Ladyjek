@@ -19,13 +19,12 @@ import java.util.List;
 
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 
 public class ActivityNotif extends AppCompatActivity {
 
     private static String TAG = ActivityNotif.class.getSimpleName();
-
-    private Toolbar mToolbar;
     private ListView listView;
     private List<Message> listMessages = new ArrayList<>();
     private MessageAdapter adapter;
@@ -34,26 +33,17 @@ public class ActivityNotif extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
+        setContentView(R.layout.activity_notif);
         listView = (ListView) findViewById(R.id.list_view);
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
-
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-
-        adapter = new MessageAdapter(this);
-        pref = new ApplicationManager(getApplicationContext());
-
-        listView.setAdapter(adapter);
-
+        adapter = new MessageAdapter(ActivityNotif.this);
+        //pref = new ApplicationManager(getApplicationContext());
+        //listView.setAdapter(adapter);
         Intent intent = getIntent();
-
-        String email = intent.getStringExtra("email");
-
-        if (email != null) {
-            ParseManager.subscribeWithEmail(pref.getUserMail());
-        }
+        String message = intent.getStringExtra("message");
+        Message m = new Message(message, System.currentTimeMillis());
+        listMessages.add(0, m);
+        adapter.notifyDataSetChanged();
+        listView.setAdapter(adapter);
     }
 
     @Override
@@ -111,4 +101,8 @@ public class ActivityNotif extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
 }

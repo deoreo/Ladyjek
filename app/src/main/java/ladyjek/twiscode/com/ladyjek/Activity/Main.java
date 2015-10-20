@@ -32,6 +32,7 @@ import android.view.View;
 import ladyjek.twiscode.com.ladyjek.Fragment.FragmentDrawer;
 import ladyjek.twiscode.com.ladyjek.Fragment.FragmentHome;
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
+import ladyjek.twiscode.com.ladyjek.Parse.ActivityNotif;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.CustomTypefaceSpan;
 import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
@@ -45,12 +46,16 @@ public class Main extends AppCompatActivity implements FragmentDrawer.FragmentDr
 
     private Toolbar mToolbar;
     private FragmentDrawer drawerFragment;
-
-
     private final String TAG = "Main";
-
     private ActionBar actionBarCustom;
     private SocketManager socketManager;
+    private final int INFORMASI_PRIBADI = 1;
+    private final int RIWAYAT_TRANSAKSI = 2;
+    private final int CASHLESS = 3;
+    private final int PROMO = 4;
+    private final int INBOX = 5;
+    private final int TENTANG_LADYJEK = 6;
+    private final int BANTUAN = 7;
 
 
     @Override
@@ -111,27 +116,32 @@ public class Main extends AppCompatActivity implements FragmentDrawer.FragmentDr
 
             }
         } else {
-            if (position == 1) {
+            if (position == INFORMASI_PRIBADI) {
                 Intent i = new Intent(getBaseContext(), ActivityInformasiPribadi.class);
                 startActivity(i);
             }
-            else if (position == 2) {
+            else if (position == RIWAYAT_TRANSAKSI) {
                 Intent i = new Intent(getBaseContext(), ActivityHistory.class);
                 startActivity(i);
             }
-            else if (position == 3) {
+            else if (position == CASHLESS) {
                 Intent i = new Intent(getBaseContext(), ActivityCashless.class);
                 startActivity(i);
             }
-            else if (position == 4) {
+            else if (position == PROMO) {
                 Intent i = new Intent(getBaseContext(), ActivityPromo.class);
                 startActivity(i);
             }
-            else if (position == 5) {
+            else if (position == INBOX) {
+                //DialogManager.showDialog(Main.this, "Inbox", "Tidak Ada Inbox");
+                Intent i = new Intent(getBaseContext(), ActivityNotif.class);
+                startActivity(i);
+            }
+            else if (position == TENTANG_LADYJEK) {
                 Intent i = new Intent(getBaseContext(), ActivityAbout.class);
                 startActivity(i);
             }
-            else if (position == 6) {
+            else if (position == BANTUAN) {
                 Intent i = new Intent(getBaseContext(), ActivityHelp.class);
                 startActivity(i);
             }
