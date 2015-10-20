@@ -9,6 +9,7 @@ import ladyjek.twiscode.com.ladyjek.Model.ModelGeocode;
 import ladyjek.twiscode.com.ladyjek.Model.ModelOrder;
 import ladyjek.twiscode.com.ladyjek.Model.ModelPlace;
 import ladyjek.twiscode.com.ladyjek.Model.ModelUserOrder;
+import ladyjek.twiscode.com.ladyjek.Parse.Message;
 
 /**
  * Created by User on 8/11/2015.
@@ -36,6 +37,7 @@ public class ApplicationManager {
     private static final String KEY_TRIP = "trip";
     private static final String KEY_USER = "user";
     private static final String KEY_POS_DRIVER = "trip";
+    private static final String KEY_MESSAGE = "messageinbox";
     private Context mContext;
 
 
@@ -227,6 +229,22 @@ public class ApplicationManager {
         Gson gson = new Gson();
         String json = mPref.getString(KEY_POS_DRIVER, " ");
         ModelGeocode obj = gson.fromJson(json,ModelGeocode.class);
+        return obj;
+    }
+
+
+    public void setMessage(Message msg){
+        Gson gson = new Gson();
+        String dataJson = gson.toJson(msg);
+        mEditor.putString(KEY_MESSAGE, dataJson);
+        mEditor.commit();
+
+    }
+
+    public Message getMessage(){
+        Gson gson = new Gson();
+        String json = mPref.getString(KEY_MESSAGE, "");
+        Message obj = gson.fromJson(json, Message.class);
         return obj;
     }
 

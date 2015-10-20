@@ -1,12 +1,17 @@
 package ladyjek.twiscode.com.ladyjek.Parse;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,11 +19,24 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.AlertDialogWrapper;
+import com.google.android.gms.maps.model.LatLng;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import ladyjek.twiscode.com.ladyjek.Activity.ActivityHandphoneKonfirmasi;
+import ladyjek.twiscode.com.ladyjek.Activity.ActivityRegister;
+import ladyjek.twiscode.com.ladyjek.Adapter.AdapterMessage;
+import ladyjek.twiscode.com.ladyjek.Control.JSONControl;
+import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
+import ladyjek.twiscode.com.ladyjek.Model.ModelUserOrder;
 import ladyjek.twiscode.com.ladyjek.R;
 import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
+import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 
@@ -26,22 +44,19 @@ public class ActivityNotif extends AppCompatActivity {
 
     private static String TAG = ActivityNotif.class.getSimpleName();
     private ListView listView;
-    private List<Message> listMessages = new ArrayList<>();
-    private MessageAdapter adapter;
-    private ApplicationManager pref;
+    private AdapterMessage adapter;
+    private ApplicationManager appManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notif);
         listView = (ListView) findViewById(R.id.list_view);
-        adapter = new MessageAdapter(ActivityNotif.this);
-        //pref = new ApplicationManager(getApplicationContext());
-        //listView.setAdapter(adapter);
+        adapter = new AdapterMessage(ActivityNotif.this);
         Intent intent = getIntent();
         String message = intent.getStringExtra("message");
         Message m = new Message(message, System.currentTimeMillis());
-        listMessages.add(0, m);
+
         adapter.notifyDataSetChanged();
         listView.setAdapter(adapter);
     }
@@ -50,59 +65,74 @@ public class ActivityNotif extends AppCompatActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         String message = intent.getStringExtra("message");
-
         Message m = new Message(message, System.currentTimeMillis());
-        listMessages.add(0, m);
         adapter.notifyDataSetChanged();
-    }
-
-    private class MessageAdapter extends BaseAdapter {
-
-        LayoutInflater inflater;
-
-        public MessageAdapter(Activity activity) {
-            inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        }
-
-        @Override
-        public int getCount() {
-            return listMessages.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return listMessages.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            View view = convertView;
-            if (view == null) {
-                view = inflater.inflate(R.layout.list_row, null);
-            }
-
-            TextView txtMessage = (TextView) view.findViewById(R.id.message);
-            TextView txtTimestamp = (TextView) view.findViewById(R.id.timestamp);
-
-            Message message = listMessages.get(position);
-            txtMessage.setText(message.getMessage());
-
-            CharSequence ago = DateUtils.getRelativeTimeSpanString(message.getTimestamp(), System.currentTimeMillis(),
-                    0L, DateUtils.FORMAT_ABBREV_ALL);
-
-            txtTimestamp.setText(String.valueOf(ago));
-
-            return view;
-        }
     }
 
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
+
+    private class GetMessage extends AsyncTask<String, Void, String> {
+        private Activity activity;
+        private Context context;
+        private Resources resources;
+        private ProgressDialog progressDialog;
+        private ArrayList<Message> listmessage;
+
+        public GetMessage(Activity activity) {
+            super();
+            this.activity = activity;
+            this.context = activity.getApplicationContext();
+            this.resources = activity.getResources();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = new ProgressDialog(activity);
+            progressDialog.setMessage("Membuka inbox. . .");
+            progressDialog.setIndeterminate(false);
+            progressDialog.setCancelable(false);
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressDialog.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+                ApplicationManager appManager = new ApplicationManager(activity);
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return "FAIL";
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            progressDialog.dismiss();
+            switch (result) {
+                case "FAIL":
+
+
+                    break;
+
+                case "OK":
+                   
+                    break;
+            }
+
+
+        }
+
+
+    }
+
+
 }
