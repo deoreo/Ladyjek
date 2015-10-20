@@ -21,9 +21,10 @@ public class AdapterMessage extends BaseAdapter {
 
     LayoutInflater inflater;
 
-    private List<Message> listMessages = new ArrayList<>();
-    public AdapterMessage(Activity activity) {
+    private List<Message> listMessages;
+    public AdapterMessage(Activity activity,List<Message> listMessages) {
         inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.listMessages = listMessages;
     }
 
     @Override

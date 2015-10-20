@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -46,27 +47,28 @@ public class ActivityNotif extends AppCompatActivity {
     private ListView listView;
     private AdapterMessage adapter;
     private ApplicationManager appManager;
+    private TextView noItems;
+    private ImageView btnBack;
+    List<Message> messages = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notif);
+        btnBack = (ImageView) findViewById(R.id.btnBack);
+        noItems = (TextView) findViewById(R.id.noItems);
         listView = (ListView) findViewById(R.id.list_view);
-        adapter = new AdapterMessage(ActivityNotif.this);
-        Intent intent = getIntent();
-        String message = intent.getStringExtra("message");
-        Message m = new Message(message, System.currentTimeMillis());
 
-        adapter.notifyDataSetChanged();
-        listView.setAdapter(adapter);
-    }
 
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        String message = intent.getStringExtra("message");
-        Message m = new Message(message, System.currentTimeMillis());
-        adapter.notifyDataSetChanged();
+
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
+         new GetMessage(this).execute();
     }
 
     @Override
@@ -103,6 +105,13 @@ public class ActivityNotif extends AppCompatActivity {
         protected String doInBackground(String... params) {
             try {
                 ApplicationManager appManager = new ApplicationManager(activity);
+                //messages = appManager.ge
+                if(messages.size()>0){
+                    return "OK";
+                }
+                else {
+                    return "FAIL";
+                }
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -118,10 +127,14 @@ public class ActivityNotif extends AppCompatActivity {
             progressDialog.dismiss();
             switch (result) {
                 case "FAIL":
-
+                    listView.setVisibility(View.GONE);
+                    noItems.setVisibility(View.VISIBLE);
                     break;
                 case "OK":
-
+                    adapter = new AdapterMessage(ActivityNotif.this,messages);
+                    listView.setAdapter(adapter);
+                    listView.setVisibility(View.VISIBLE);
+                    noItems.setVisibility(View.GONE);
                     break;
             }
 
