@@ -104,7 +104,6 @@ public class ActivityNotif extends AppCompatActivity {
             try {
                 ApplicationManager appManager = new ApplicationManager(activity);
 
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -120,11 +119,9 @@ public class ActivityNotif extends AppCompatActivity {
             switch (result) {
                 case "FAIL":
 
-
                     break;
-
                 case "OK":
-                   
+
                     break;
             }
 

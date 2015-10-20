@@ -9,6 +9,10 @@ import com.parse.ParsePushBroadcastReceiver;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.sql.Time;
+
+import ladyjek.twiscode.com.ladyjek.Utilities.ApplicationManager;
+
 
 public class CustomPushReceiver extends ParsePushBroadcastReceiver {
     private final String TAG = CustomPushReceiver.class.getSimpleName();
@@ -95,13 +99,13 @@ public class CustomPushReceiver extends ParsePushBroadcastReceiver {
 
     private void parsePushJsonCustom(Context context, JSONObject json) {
         try {
-
-
             String message = json.getString("alert");
-
-
             Intent resultIntent = new Intent(context, ActivityNotif.class);
-            showNotificationMessage(context, "Notifikasi LadyJek", message , resultIntent);
+            showNotificationMessage(context, "Notifikasi LadyJek", message, resultIntent);
+            Message msg = new Message();
+            msg.setMessage(message);
+            msg.setTimestamp(new Time(System.currentTimeMillis()).getHours());
+            ApplicationManager.getInstance(context).setMessage(msg);
 
         } catch (JSONException e) {
             Log.e(TAG, "Push message json exception: " + e.getMessage());
