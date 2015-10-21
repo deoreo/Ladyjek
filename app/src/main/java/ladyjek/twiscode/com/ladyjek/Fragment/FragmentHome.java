@@ -191,6 +191,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         tagLocation = TAG_FROM;
 
 
+
     }
 
     @Override
@@ -201,6 +202,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         StrictMode.setThreadPolicy(policy);
         Log.v(TAG, "OnCreateView");
         ApplicationData.driver = new ModelDriver();
+        DummyData();
         btnRequestRide = (TextView) rootView.findViewById(R.id.btnRequestRide);
         txtFrom = (ClearableEditText) rootView.findViewById(R.id.txtFrom);
         txtDestination = (ClearableEditText) rootView.findViewById(R.id.txtDestination);
@@ -1326,7 +1328,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
 
             }
             DialogManager.DismissLoading(mActivity);
-            GetNearestDriver(activity);
+            GetNearestDriverDummy(activity); //code
         }
 
 
@@ -1364,6 +1366,45 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
             try {
 
                 socketManager.GetNearestDrivers(posFrom);
+
+                Log.v(TAG, "Running GetNearestDrivers");
+            } catch (Exception e) {
+                Log.v(TAG, "Not Running GetNearestDrivers");
+            }
+
+
+        }
+    }
+
+    public void GetNearestDriverDummy(Activity activity) {
+
+        if (NetworkManager.getInstance(activity).isConnectedInternet()) {
+            Log.v(TAG, "Running");
+
+            try {
+
+                JSONArray drivers = ApplicationData.nearestDrivers;
+                ApplicationData.posDrivers = new LatLng[ApplicationData.nearestDrivers.length()];
+
+                if (ApplicationData.posDrivers != null) {
+                    for (int i = 0; i < ApplicationData.posDrivers.length; i++) {
+                        Double lon = drivers.getJSONArray(i).getDouble(1);
+                        Double lat = drivers.getJSONArray(i).getDouble(0);
+                        ApplicationData.posDrivers[i] = new LatLng(lon, lat);
+                        //Log.d(TAG, "getNearestDrivers ApplicationData.posDrivers["+i+"] : " + ApplicationData.posDrivers[i]);
+                    }
+/*
+                            for (int i = 0; i < ApplicationData.posDrivers.length; i++) {
+                                drawMarkerNearestDriver(posFrom, ApplicationData.posDrivers[i]);
+                            }
+*/
+
+
+                }
+                DialogManager.DismissLoading(mActivity);
+                if (ApplicationData.posDrivers.length > 0) {
+                    DoDraw();
+                }
 
                 Log.v(TAG, "Running GetNearestDrivers");
             } catch (Exception e) {
@@ -1448,6 +1489,23 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         }
 
 
+    }
+
+    private void DummyData(){
+        try{
+            double [] a = {112.767,-7.298};
+            double [] b = {112.709, -7.297};
+            List<double[]> list = new ArrayList<>();
+            list.add(a);
+            list.add(b);
+            JSONArray arr = new JSONArray(list);
+            ApplicationData.nearestDrivers = arr;
+            Log.d("jsonarray",""+arr.toString());
+            Log.d("jumlah jsonarray",""+arr.length());
+        }
+        catch (Exception ex){
+            ex.printStackTrace();
+        }
     }
 
 
