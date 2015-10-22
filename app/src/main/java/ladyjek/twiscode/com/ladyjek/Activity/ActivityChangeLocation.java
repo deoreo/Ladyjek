@@ -182,8 +182,15 @@ public class ActivityChangeLocation extends FragmentActivity implements GoogleMa
         }
         btnSimpan.setText(Html.fromHtml(getResources().getString(R.string.simpan)));
         serviceLocation = new ServiceLocation();
-        LatLng rumah = user.getRumah();
-        LatLng kantor = user.getKantor();
+        LatLng rumah = new LatLng(0,0);
+        LatLng kantor = new LatLng(0,0);
+        try{
+            rumah = user.getRumah();
+            kantor = user.getKantor();
+        }
+        catch (Exception ex){
+
+        }
 
         if(ApplicationData.editHome) {
             lblChange.setText(R.string.title_activity_change_location_rumah);
