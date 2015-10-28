@@ -122,6 +122,15 @@ public class ActivityConfirm extends ActionBarActivity {
                     startActivity(i);
                     finish();
                 }
+                else if(message=="xl"){
+                    ApplicationData.socketManager = socketManager;
+                    Intent i = new Intent(getBaseContext(), ActivityVerifyPayment.class);
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    ApplicationManager um = new ApplicationManager(ActivityConfirm.this);
+                    startActivity(i);
+                    finish();
+                }
+
 
             }
         };

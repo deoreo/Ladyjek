@@ -30,9 +30,6 @@
         android:glEsVersion="0x00020000"
         android:required="true" />
 
-    <permission
-        android:name="com.example.permission.MAPS_RECEIVE"
-        android:protectionLevel="signature" />
 
     <application
         android:name=".Parse.MyApplication"

@@ -265,7 +265,7 @@ public class JSONControl {
         JSONObject jsonObj = null;
 
         try {
-            jsonObj = _JSONResponse.GETResponseApp(ConfigManager.HELP,ConfigManager.DUKUHKUPANG);
+            jsonObj = _JSONResponse.GETResponseApp(ConfigManager.HELP, ConfigManager.DUKUHKUPANG);
 
 
         } catch (Exception e) {
@@ -290,6 +290,30 @@ public class JSONControl {
 
     }
 
+
+    public JSONObject postXLTunai(String request_id, String partner_id, String customer_msisdn, String partner_tx_id, String amount, String created_on, String channel_id, String partner_pin, String parter_alias) {
+        JSONObject jsonObj = null;
+
+        try {
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new BasicNameValuePair("customer_msisdn", customer_msisdn));
+            params.add(new BasicNameValuePair("partner_tx_id", partner_tx_id));
+            params.add(new BasicNameValuePair("amount", amount));
+            params.add(new BasicNameValuePair("customer_msisdn", customer_msisdn));
+            params.add(new BasicNameValuePair("created_on", created_on));
+            params.add(new BasicNameValuePair("channel_id", channel_id));
+            params.add(new BasicNameValuePair("partner_pin", partner_pin));
+            params.add(new BasicNameValuePair("parter_alias", parter_alias));
+            jsonObj = _JSONResponse.POSTXLResponse(ConfigManager.XL_TUNAI, request_id, partner_id, ConfigManager.DUKUHKUPANG, params);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return jsonObj;
+
+    }
 
 
 

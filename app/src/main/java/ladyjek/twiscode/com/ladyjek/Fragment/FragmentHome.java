@@ -1492,12 +1492,21 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
     }
 
     private void DummyData(){
+        double lon = 102.767;
+        double lat = -7.297;
+        List<double[]> list = new ArrayList<>();
         try{
-            double [] a = {112.767,-7.298};
-            double [] b = {112.709, -7.297};
-            List<double[]> list = new ArrayList<>();
-            list.add(a);
-            list.add(b);
+
+            for(int i = 0;i<150;i++){
+                double rnd = Math.random();
+                double range = 10 - 0.001;
+                double random = (rnd * range) + 0.001;
+                lat -=random;
+                lon +=random;
+                double[] dummydata = {lon, lat};
+                list.add(dummydata);
+            }
+
             JSONArray arr = new JSONArray(list);
             ApplicationData.nearestDrivers = arr;
             Log.d("jsonarray",""+arr.toString());
