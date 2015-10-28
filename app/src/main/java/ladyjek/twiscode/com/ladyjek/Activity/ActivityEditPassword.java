@@ -129,7 +129,7 @@ public class ActivityEditPassword extends Activity {
                     DialogManager.showDialog(act, "Peringatan", "Konfirmasi password tidak sama");
                 } else {
 
-                    Log.d("deviceToken",ApplicationData.PARSE_DEVICE_TOKEN);
+                    //Log.d("deviceToken",ApplicationData.PARSE_DEVICE_TOKEN);
                     if(!isClick){
                         if(ApplicationData.PARSE_DEVICE_TOKEN != null){
                             if(NetworkManager.getInstance(ActivityEditPassword.this).isConnectedInternet()){

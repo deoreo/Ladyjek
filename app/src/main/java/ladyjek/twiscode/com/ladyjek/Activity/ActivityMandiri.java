@@ -44,8 +44,14 @@ public class ActivityMandiri extends FragmentActivity {
 
         String formattedText = getString(R.string.topup);
         txtTopUp.setText(Html.fromHtml(formattedText));
-        txtPhone.setText(applicationManager.getUser().getPhone());
-        txtNama.setText(applicationManager.getUser().getName());
+        try{
+            txtPhone.setText(applicationManager.getUser().getPhone());
+            txtNama.setText(applicationManager.getUser().getName());
+        }
+        catch (Exception ex){
+
+        }
+
 
 
 

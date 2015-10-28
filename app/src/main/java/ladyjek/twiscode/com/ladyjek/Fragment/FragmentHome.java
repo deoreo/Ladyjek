@@ -280,7 +280,14 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
             @Override
             public void onClick(View v) {
                 String txtJarak = strDistance.split(" ")[0];
-                float distance = Float.parseFloat(txtJarak);
+                float distance = 0;
+                try{
+                    distance = Float.parseFloat(txtJarak);
+                }
+                catch (Exception ex){
+                    ex.printStackTrace();
+                }
+
                 if (strDistance.isEmpty() && strDuration.isEmpty()) {
                     DialogManager.showDialog(mActivity, "Mohon Maaf", "Tentukan lokasi awal dan akhir!");
                 } else {
@@ -312,7 +319,13 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
             @Override
             public void onClick(View v) {
                 String txtJarak = strDistance.split(" ")[0];
-                float distance = Float.parseFloat(txtJarak);
+                float distance = 0;
+                try{
+                    distance = Float.parseFloat(txtJarak);
+                }
+                catch (Exception ex){
+                    ex.printStackTrace();
+                }
                 if (strDistance.isEmpty() && strDuration.isEmpty()) {
                     DialogManager.showDialog(mActivity, "Mohon Maaf", "Tentukan lokasi awal dan akhir!");
                 } else {
