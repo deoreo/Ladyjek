@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -89,6 +90,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -132,7 +134,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
     private final String TAG_DESTINATION = "DESTINATION";
     private ClearableEditText txtFrom, txtDestination;
     private TextView txtHint;
-    private String add, tagLocation;
+    private String tagLocation;
     private String placeId = "", description = "", strDistance = "", strDuration = "", strDetailFrom = "a", strDetailDestination = "b";
 
     private LatLng mapCenter, posFrom, posDest, posTemp, posDriver;
@@ -805,21 +807,27 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
 
         }
         googleMap.setOnMapClickListener(this);
-        googleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener()
+        googleMap.setOnCameraChangeListener
+                (new GoogleMap.OnCameraChangeListener()
+                 {
+                     @Override
+                     public void onCameraChange(CameraPosition cameraPosition) {
+                         LatLngBounds bounds = googleMap.getProjection().getVisibleRegion().latLngBounds;
+                     }
+                 }
 
-                                            {
-                                                @Override
-                                                public void onCameraChange(CameraPosition cameraPosition) {
-                                                    mapCenter = googleMap.getCameraPosition().target;
-                                                    add = getAddress(mapCenter);
-                                                    txtLocationFrom.setText(add);
-                                                    txtLocationDestination.setText(add);
-                                                    progressMapFrom.setVisibility(View.GONE);
-                                                    progressMapDestination.setVisibility(View.GONE);
-                                                }
-                                            }
+                );
+        googleMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+            @Override
+            public void onMapLoaded() {
+                googleMap.snapshot(new GoogleMap.SnapshotReadyCallback()
+                {
+                    public void onSnapshotReady(Bitmap bitmap){
 
-        );
+                    }
+                });
+            }
+        });
     }
 
 
