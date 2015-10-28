@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 
 /**
@@ -33,4 +34,6 @@ public class MySupportMapFragment extends SupportMapFragment {
         Log.d(TAG, "getView");
         return mOriginalContentView;
     }
+
+
 }
