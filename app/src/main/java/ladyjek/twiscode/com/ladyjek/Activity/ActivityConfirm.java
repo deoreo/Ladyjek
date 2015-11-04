@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
@@ -25,6 +27,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 
 import org.droidparts.widget.ClearableEditText;
 
@@ -32,6 +35,7 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
+import java.util.List;
 import java.util.Locale;
 
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
@@ -55,18 +59,20 @@ public class ActivityConfirm extends ActionBarActivity {
     private ImageView btnBack;
     private RelativeLayout wrapperRegister;
     private TextView txtConfirm, txtFrom, txtDestination,
-            txtDistance, txtDuration, txtTotal, txtDetailFrom, txtDetailDestination, txtSubtotal,txtDiskon,
+            txtDistance, txtDuration, txtTotal, txtDetailFrom, txtDetailDestination, txtSubtotal, txtDiskon,
             txtNote;
     private String strFrom = "", strDest = "", strDistance = "",
-            strDuration = "", strDetailFrom = "",strDetailDest="" ;
+            strDuration = "", strDetailFrom = "", strDetailDest = "";
     private int totalPrice = 0;
     private NumberFormat numberFormat;
     private DecimalFormat decimalFormat;
     private SocketManager socketManager;
-    private BroadcastReceiver doCreateOrder,doCalculate;
+    private BroadcastReceiver doCreateOrder, doCalculate;
     private ClearableEditText txtPromo;
     private Button btnPromo;
-    int pembayaran = 0,subtotal=0,diskon=0;
+    int pembayaran = 0, subtotal = 0, diskon = 0;
+    boolean isSurabaya = false, isJakarta = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,23 +108,21 @@ public class ActivityConfirm extends ActionBarActivity {
         wrapperRegister = (RelativeLayout) findViewById(R.id.wrapperRegister);
 
 
-
-        doCreateOrder  = new BroadcastReceiver() {
+        doCreateOrder = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 // Extract data included in the Intent
                 String message = intent.getStringExtra("message");
                 Log.d("doCreateOrder", message);
                 DialogManager.DismissLoading(context);
-                if(message=="true"){
+                if (message == "true") {
                     ApplicationData.socketManager = socketManager;
                     Intent i = new Intent(getBaseContext(), ActivityLoading.class);
                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     ApplicationManager um = new ApplicationManager(ActivityConfirm.this);
                     startActivity(i);
                     finish();
-                }
-                else if(message=="mandiri"){
+                } else if (message == "mandiri") {
                     ApplicationData.socketManager = socketManager;
                     Intent i = new Intent(getBaseContext(), ActivityVerifyPayment.class);
                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -130,25 +134,24 @@ public class ActivityConfirm extends ActionBarActivity {
             }
         };
 
-        doCalculate  = new BroadcastReceiver() {
+        doCalculate = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 // Extract data included in the Intent
                 String message = intent.getStringExtra("message");
                 Log.d("doCalculate", message);
                 DialogManager.DismissLoading(context);
-                if(message=="true"){
+                if (message == "true") {
                     ApplicationData.socketManager = socketManager;
                     txtDistance.setText(ApplicationData.distance);
                     txtDuration.setText(ApplicationData.duration);
                     int harga = Integer.parseInt(ApplicationData.price);
-                    if(ApplicationData.firstTrip.contains("true")){
+                    if (ApplicationData.firstTrip.contains("true")) {
                         diskon = 25000;
-                    }
-                    else {
+                    } else {
                         diskon = 0;
                     }
-                    subtotal = harga+diskon;
+                    subtotal = harga + diskon;
                     txtSubtotal.setText("Rp " + decimalFormat.format(subtotal));
                     txtDiskon.setText("Rp " + decimalFormat.format(diskon));
                     txtTotal.setText("Rp " + decimalFormat.format(harga));
@@ -165,22 +168,20 @@ public class ActivityConfirm extends ActionBarActivity {
                 String note = txtNote.getText().toString();
                 if (pembayaran == 0) {
                     DialogManager.ShowLoading(ActivityConfirm.this, "Loading...");
-                    socketManager.CreateOrder(codeCoupon, note, ApplicationData.posFrom, ApplicationData.posDestination,"cash");
+                    socketManager.CreateOrder(codeCoupon, note, ApplicationData.posFrom, ApplicationData.posDestination, "cash");
                 } else if (pembayaran == 1) {
                     /*
                     DialogManager.ShowLoading(ActivityConfirm.this, "Loading...");
                     socketManager.CreateOrder(ApplicationData.posFrom, ApplicationData.posDestination,"mandiriecash");
                     */
-                    if(harga > 0){
+                    if (harga > 0) {
                         DialogManager.ShowLoading(ActivityConfirm.this, "Loading...");
-                        socketManager.CreateOrder(codeCoupon, note,ApplicationData.posFrom, ApplicationData.posDestination,"mandiriecash");
-                    }
-                    else {
+                        socketManager.CreateOrder(codeCoupon, note, ApplicationData.posFrom, ApplicationData.posDestination, "mandiriecash");
+                    } else {
                         DialogManager.showDialog(ActivityConfirm.this, "Informasi", "Pembayaran harus menggunakan tunai apabila Rp. 0");
                     }
 
-                }
-                else if (pembayaran == 2) {
+                } else if (pembayaran == 2) {
                    /*
                     DialogManager.ShowLoading(ActivityConfirm.this, "Loading...");
                     socketManager.CreateOrder(ApplicationData.posFrom, ApplicationData.posDestination,"mandiriecash");
@@ -198,7 +199,7 @@ public class ActivityConfirm extends ActionBarActivity {
                 String note = txtNote.getText().toString();
                 if (pembayaran == 0) {
                     DialogManager.ShowLoading(ActivityConfirm.this, "Loading...");
-                    socketManager.CreateOrder(codeCoupon, note,ApplicationData.posFrom, ApplicationData.posDestination,"cash");
+                    socketManager.CreateOrder(codeCoupon, note, ApplicationData.posFrom, ApplicationData.posDestination, "cash");
 
                 } else if (pembayaran == 1) {
                     /*
@@ -209,11 +210,10 @@ public class ActivityConfirm extends ActionBarActivity {
                     finish();
                     */
                     DialogManager.ShowLoading(ActivityConfirm.this, "Loading...");
-                    socketManager.CreateOrder(codeCoupon, note,ApplicationData.posFrom, ApplicationData.posDestination,"mandiriecash");
+                    socketManager.CreateOrder(codeCoupon, note, ApplicationData.posFrom, ApplicationData.posDestination, "mandiriecash");
                 }
             }
         });
-
 
 
         btnBack.setOnClickListener(new View.OnClickListener() {
@@ -226,24 +226,26 @@ public class ActivityConfirm extends ActionBarActivity {
         btnPromo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(txtPromo.getText().toString().isEmpty()){
+                if (txtPromo.getText().toString().isEmpty()) {
                     DialogManager.showDialog(ActivityConfirm.this, "Peringatan", "Masukkan kode promo Anda!");
-                }else {
+                } else {
+                    if(isSurabaya && txtPromo.getText().toString().equalsIgnoreCase("SBY3000")){
+
+                    }
+                    else if(isJakarta && txtPromo.getText().toString().equalsIgnoreCase("JKT4000"))
                     DialogManager.showDialog(ActivityConfirm.this, "Informasi", "Maaf, kode promo Anda tidak berlaku");
                 }
             }
         });
 
-        if(NetworkManager.getInstance(mActivity).isConnectedInternet()){
+        if (NetworkManager.getInstance(mActivity).isConnectedInternet()) {
             DialogManager.ShowLoading(ActivityConfirm.this, "Loading...");
-            socketManager.CalculateOrder("","",ApplicationData.posFrom, ApplicationData.posDestination);
-        }
-        else {
-            DialogManager.showDialog(mActivity,"Informasi","Tidak ada koneksi internet");
+            socketManager.CalculateOrder("", "", ApplicationData.posFrom, ApplicationData.posDestination);
+        } else {
+            DialogManager.showDialog(mActivity, "Informasi", "Tidak ada koneksi internet");
         }
 
     }
-
 
 
     private void SetActionBar() {
@@ -277,8 +279,7 @@ public class ActivityConfirm extends ActionBarActivity {
     }
 
     @Override
-    public void onBackPressed()
-    {
+    public void onBackPressed() {
         super.onBackPressed();
         Intent i = new Intent(getBaseContext(), Main.class);
         startActivity(i);
@@ -315,26 +316,51 @@ public class ActivityConfirm extends ActionBarActivity {
             try {
                 //order = ApplicationManager.getInstance(activity).getOrder();
                 //if(order == null) {
-                    strFrom = ApplicationData.addressFrom;
-                    strDest = ApplicationData.addressDestination;
-                    strDetailFrom = ApplicationData.detailFrom;
-                    strDetailDest = ApplicationData.detailDestination;
-                    strDistance = ApplicationData.distance;
-                    strDuration = ApplicationData.duration;
+                strFrom = ApplicationData.addressFrom;
+                strDest = ApplicationData.addressDestination;
+                strDetailFrom = ApplicationData.detailFrom;
+                strDetailDest = ApplicationData.detailDestination;
+                strDistance = ApplicationData.distance;
+                strDuration = ApplicationData.duration;
 
-                    String[] strDist = strDistance.split(" ");
-                    float distance = Float.parseFloat(strDist[0]);
-                    if(distance<=6.0) {
-                        totalPrice = 25000;
-                        //totalPrice = 4000 * Math.round(distance);
-                    }
-                    else{
-                        float selisih = distance-6;
-                        float harga = selisih*4000;
-                        int roundHarga = Math.round(harga/1000)*1000;
-                        totalPrice = 25000+roundHarga;
-                        Log.d("total price : ",""+distance+"-"+selisih+"-"+harga+"-"+roundHarga+"-"+totalPrice);
-                    }
+
+                LatLngBounds SURABAYA = new LatLngBounds(
+                        new LatLng(-7.38, 112.60), new LatLng(-7.19, 112.84));
+                LatLngBounds JAKARTA = new LatLngBounds(
+                        new LatLng(-6.43, 106.56), new LatLng(-5.91, 107.27));
+                Double lat = ApplicationData.posFrom.latitude;
+                Double lon = ApplicationData.posFrom.longitude;
+                if (SURABAYA.contains(new LatLng(lat,lon))){
+                    Log.d("KOTA", "Masuk Surabaya");
+                    isSurabaya = true;
+                    isJakarta = false;
+                }
+                else if (JAKARTA.contains(new LatLng(lat,lon))){
+                    Log.d("KOTA", "Masuk Jakarta");
+                    isSurabaya = false;
+                    isJakarta = true;
+                }
+                else{
+                    Log.d("KOTA", "Bukan Surabaya");
+                    isSurabaya = false;
+                    isJakarta = false;
+                }
+
+
+
+
+                String[] strDist = strDistance.split(" ");
+                float distance = Float.parseFloat(strDist[0]);
+                if (distance <= 6.0) {
+                    totalPrice = 25000;
+                    //totalPrice = 4000 * Math.round(distance);
+                } else {
+                    float selisih = distance - 6;
+                    float harga = selisih * 4000;
+                    int roundHarga = Math.round(harga / 1000) * 1000;
+                    totalPrice = 25000 + roundHarga;
+                    Log.d("total price : ", "" + distance + "-" + selisih + "-" + harga + "-" + roundHarga + "-" + totalPrice);
+                }
                 //}
                 /*
                 else{
@@ -373,6 +399,10 @@ public class ActivityConfirm extends ActionBarActivity {
 
                     break;
                 case "OK":
+                    if(isSurabaya)
+                        txtPromo.setHint("contoh : SBY3000");
+                    else
+                        txtPromo.setHint("contoh : JKT4000");
                     txtFrom.setText(strFrom);
                     txtDestination.setText(strDest);
                     txtDetailFrom.setText(strDetailFrom);
@@ -389,6 +419,7 @@ public class ActivityConfirm extends ActionBarActivity {
 
 
     }
+
     public void onResume() {
         super.onResume();
         LocalBroadcastManager.getInstance(this).registerReceiver(doCreateOrder,

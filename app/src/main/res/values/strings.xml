@@ -160,7 +160,7 @@
         ]]>
     </string>
     <string name="title_activity_activity_promo_web_view">ActivityPromoWebView</string>
-
+    <string name="hint1"><i>isi detail lokasi tempat penjemputan anda, \ncontoh : nomor rumah, warna baju, dll</i></string>
     <string name="hello_world">Hello world!</string>
 
     </resources>
