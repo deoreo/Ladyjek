@@ -54,7 +54,9 @@ public class ActivityConfirm extends ActionBarActivity {
     private ArrayAdapter<CharSequence> adapterPay;
     private ImageView btnBack;
     private RelativeLayout wrapperRegister;
-    private TextView txtConfirm, txtFrom, txtDestination, txtDistance, txtDuration, txtTotal, txtDetailFrom, txtDetailDestination, txtSubtotal,txtDiskon;
+    private TextView txtConfirm, txtFrom, txtDestination,
+            txtDistance, txtDuration, txtTotal, txtDetailFrom, txtDetailDestination, txtSubtotal,txtDiskon,
+            txtNote;
     private String strFrom = "", strDest = "", strDistance = "",
             strDuration = "", strDetailFrom = "",strDetailDest="" ;
     private int totalPrice = 0;
@@ -94,9 +96,11 @@ public class ActivityConfirm extends ActionBarActivity {
         txtDetailFrom = (TextView) findViewById(R.id.txtDetailFrom);
         txtDetailDestination = (TextView) findViewById(R.id.txtDetailDestination);
         txtPromo = (ClearableEditText) findViewById(R.id.txtPromo);
+        txtNote = (ClearableEditText) findViewById(R.id.txtNote);
         btnBack = (ImageView) findViewById(R.id.btnBack);
         btnPromo = (Button) findViewById(R.id.btnPromo);
         wrapperRegister = (RelativeLayout) findViewById(R.id.wrapperRegister);
+
 
 
         doCreateOrder  = new BroadcastReceiver() {
@@ -157,9 +161,11 @@ public class ActivityConfirm extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 int harga = Integer.parseInt(ApplicationData.price);
+                String codeCoupon = txtPromo.getText().toString();
+                String note = txtNote.getText().toString();
                 if (pembayaran == 0) {
                     DialogManager.ShowLoading(ActivityConfirm.this, "Loading...");
-                    socketManager.CreateOrder(ApplicationData.posFrom, ApplicationData.posDestination,"cash");
+                    socketManager.CreateOrder(codeCoupon, note, ApplicationData.posFrom, ApplicationData.posDestination,"cash");
                 } else if (pembayaran == 1) {
                     /*
                     DialogManager.ShowLoading(ActivityConfirm.this, "Loading...");
@@ -167,7 +173,7 @@ public class ActivityConfirm extends ActionBarActivity {
                     */
                     if(harga > 0){
                         DialogManager.ShowLoading(ActivityConfirm.this, "Loading...");
-                        socketManager.CreateOrder(ApplicationData.posFrom, ApplicationData.posDestination,"mandiriecash");
+                        socketManager.CreateOrder(codeCoupon, note,ApplicationData.posFrom, ApplicationData.posDestination,"mandiriecash");
                     }
                     else {
                         DialogManager.showDialog(ActivityConfirm.this, "Informasi", "Pembayaran harus menggunakan tunai apabila Rp. 0");
@@ -188,9 +194,11 @@ public class ActivityConfirm extends ActionBarActivity {
         wrapperRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String codeCoupon = txtPromo.getText().toString();
+                String note = txtNote.getText().toString();
                 if (pembayaran == 0) {
                     DialogManager.ShowLoading(ActivityConfirm.this, "Loading...");
-                    socketManager.CreateOrder(ApplicationData.posFrom, ApplicationData.posDestination,"cash");
+                    socketManager.CreateOrder(codeCoupon, note,ApplicationData.posFrom, ApplicationData.posDestination,"cash");
 
                 } else if (pembayaran == 1) {
                     /*
@@ -201,7 +209,7 @@ public class ActivityConfirm extends ActionBarActivity {
                     finish();
                     */
                     DialogManager.ShowLoading(ActivityConfirm.this, "Loading...");
-                    socketManager.CreateOrder(ApplicationData.posFrom, ApplicationData.posDestination,"mandiriecash");
+                    socketManager.CreateOrder(codeCoupon, note,ApplicationData.posFrom, ApplicationData.posDestination,"mandiriecash");
                 }
             }
         });
@@ -228,7 +236,7 @@ public class ActivityConfirm extends ActionBarActivity {
 
         if(NetworkManager.getInstance(mActivity).isConnectedInternet()){
             DialogManager.ShowLoading(ActivityConfirm.this, "Loading...");
-            socketManager.CalculateOrder(ApplicationData.posFrom, ApplicationData.posDestination);
+            socketManager.CalculateOrder("","",ApplicationData.posFrom, ApplicationData.posDestination);
         }
         else {
             DialogManager.showDialog(mActivity,"Informasi","Tidak ada koneksi internet");

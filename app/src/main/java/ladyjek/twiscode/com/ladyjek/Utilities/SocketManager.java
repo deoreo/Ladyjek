@@ -521,7 +521,7 @@ public class SocketManager {
 
 
 
-    public void CreateOrder(LatLng from, LatLng destination, final String pay) {
+    public void CreateOrder(String couponCode, String note, LatLng from, LatLng destination, final String pay) {
         Log.d(TAG, "create order");
         JSONObject objs = new JSONObject();
         JSONArray fr = new JSONArray();
@@ -531,6 +531,8 @@ public class SocketManager {
             fr.put(1, from.latitude);
             dt.put(0, destination. longitude);
             dt.put(1, destination.latitude);
+            objs.put("couponCode", couponCode);
+            objs.put("note", note);
             objs.put("fromGeo", fr);
             objs.put("toGeo", dt);
             objs.put("paymentMethod", pay);
@@ -620,7 +622,7 @@ public class SocketManager {
 
     }
 
-    public void CalculateOrder(LatLng from, LatLng destination) {
+    public void CalculateOrder(String couponCode, String note, LatLng from, LatLng destination) {
         Log.d(TAG, "calculate order");
         JSONObject objs = new JSONObject();
         JSONArray fr = new JSONArray();
@@ -630,6 +632,8 @@ public class SocketManager {
             fr.put(1, from.latitude);
             dt.put(0, destination.longitude);
             dt.put(1, destination.latitude);
+            objs.put("couponCode", couponCode);
+            objs.put("note", note);
             objs.put("fromGeo", fr);
             objs.put("toGeo", dt);
             Log.d("calculate order", objs.toString());

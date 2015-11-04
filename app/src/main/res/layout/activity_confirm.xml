@@ -169,6 +169,35 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Note"
+                        android:textSize="16dp"
+                        android:textStyle="bold"
+                        android:textColor="@color/black_color"
+                        fontPath="@string/GothamRndMedium"
+                        android:layout_alignParentBottom="true"
+                        />
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <org.droidparts.widget.ClearableEditText
+                            android:id="@+id/txtNote"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:textSize="12sp"
+                            android:layout_marginBottom="25dp"
+                            android:hint="isi detail lokasi anda, contoh : nomor rumah, warna baju, dll "
+                            android:drawableRight="@drawable/ic_erase1"
+                            android:layout_gravity="right"/>
+                    </RelativeLayout>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     >
                     <TextView
