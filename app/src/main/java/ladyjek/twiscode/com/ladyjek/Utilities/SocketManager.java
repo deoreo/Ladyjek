@@ -155,6 +155,7 @@ public class SocketManager {
             JSONObject obj = new JSONObject();
             try {
                 obj.put("token", appManager.getUserToken());
+                obj.put("socketVersion", 2);
                 Log.d(TAG, "onConnected token:" + obj.toString());
                 socket.emit("authentication", obj);
                 Log.d(TAG, "emit authentication");
@@ -633,7 +634,7 @@ public class SocketManager {
             dt.put(0, destination.longitude);
             dt.put(1, destination.latitude);
             objs.put("couponCode", couponCode);
-            objs.put("note", note);
+            //objs.put("note", note);
             objs.put("fromGeo", fr);
             objs.put("toGeo", dt);
             Log.d("calculate order", objs.toString());
@@ -642,8 +643,6 @@ public class SocketManager {
                 public void call(Object... args) {
                     try {
                         //Log.d(TAG, "order args:" + args[1]);
-
-
                         //JSONObject err = (JSONObject) args[0];
                         if(args[0] != null){
                             Log.d(TAG, "calculate false");
@@ -658,6 +657,7 @@ public class SocketManager {
                                 ApplicationData.duration = obj.getJSONObject("duration").getString("text");
                                 ApplicationData.price = obj.getString("price");
                                 ApplicationData.firstTrip = obj.getString("firstTrip");
+                                ApplicationData.promoHint = obj.getString("couponHint");
                                 SendBroadcast("calculate", "true");
                             }
                             catch (Exception e){

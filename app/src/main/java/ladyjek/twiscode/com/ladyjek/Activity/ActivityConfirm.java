@@ -60,9 +60,9 @@ public class ActivityConfirm extends ActionBarActivity {
     private RelativeLayout wrapperRegister;
     private TextView txtConfirm, txtFrom, txtDestination,
             txtDistance, txtDuration, txtTotal, txtDetailFrom, txtDetailDestination, txtSubtotal, txtDiskon,
-            txtNote;
+            txtNote, txtPromoHint;
     private String strFrom = "", strDest = "", strDistance = "",
-            strDuration = "", strDetailFrom = "", strDetailDest = "";
+            strDuration = "", strDetailFrom = "", strDetailDest = "", strPromoHint = "";
     private int totalPrice = 0;
     private NumberFormat numberFormat;
     private DecimalFormat decimalFormat;
@@ -103,6 +103,7 @@ public class ActivityConfirm extends ActionBarActivity {
         txtDetailDestination = (TextView) findViewById(R.id.txtDetailDestination);
         txtPromo = (ClearableEditText) findViewById(R.id.txtPromo);
         txtNote = (ClearableEditText) findViewById(R.id.txtNote);
+        txtPromoHint = (TextView) findViewById(R.id.txtPromoHint);
         btnBack = (ImageView) findViewById(R.id.btnBack);
         btnPromo = (Button) findViewById(R.id.btnPromo);
         wrapperRegister = (RelativeLayout) findViewById(R.id.wrapperRegister);
@@ -146,15 +147,21 @@ public class ActivityConfirm extends ActionBarActivity {
                     txtDistance.setText(ApplicationData.distance);
                     txtDuration.setText(ApplicationData.duration);
                     int harga = Integer.parseInt(ApplicationData.price);
+                    /*
                     if (ApplicationData.firstTrip.contains("true")) {
                         diskon = 25000;
                     } else {
                         diskon = 0;
                     }
-                    subtotal = harga + diskon;
+                    */
+                    subtotal = harga+diskon;
                     txtSubtotal.setText("Rp " + decimalFormat.format(subtotal));
                     txtDiskon.setText("Rp " + decimalFormat.format(diskon));
                     txtTotal.setText("Rp " + decimalFormat.format(harga));
+                    txtPromoHint.setText(ApplicationData.promoHint);
+                }
+                else{
+                    DialogManager.showDialog(ActivityConfirm.this, "Informasi", "Maaf, kode promo Anda tidak berlaku");
                 }
 
 
@@ -229,12 +236,20 @@ public class ActivityConfirm extends ActionBarActivity {
                 if (txtPromo.getText().toString().isEmpty()) {
                     DialogManager.showDialog(ActivityConfirm.this, "Peringatan", "Masukkan kode promo Anda!");
                 } else {
-                    if(isSurabaya && txtPromo.getText().toString().equalsIgnoreCase("SBY3000")){
-
+                    String couponCode = txtPromo.getText().toString();
+                    String note = txtNote.getText().toString();
+                        if (NetworkManager.getInstance(mActivity).isConnectedInternet()) {
+                            DialogManager.ShowLoading(ActivityConfirm.this, "Loading...");
+                            socketManager.CalculateOrder(couponCode, note, ApplicationData.posFrom, ApplicationData.posDestination);
+                        } else {
+                            DialogManager.showDialog(mActivity, "Informasi", "Tidak ada koneksi internet");
+                        }
                     }
-                    else if(isJakarta && txtPromo.getText().toString().equalsIgnoreCase("JKT4000"))
-                    DialogManager.showDialog(ActivityConfirm.this, "Informasi", "Maaf, kode promo Anda tidak berlaku");
-                }
+                /*
+                    else {
+                        DialogManager.showDialog(ActivityConfirm.this, "Informasi", "Maaf, kode promo Anda tidak berlaku");
+                    }*/
+
             }
         });
 
@@ -322,6 +337,7 @@ public class ActivityConfirm extends ActionBarActivity {
                 strDetailDest = ApplicationData.detailDestination;
                 strDistance = ApplicationData.distance;
                 strDuration = ApplicationData.duration;
+                strPromoHint = ApplicationData.promoHint;
 
 
                 LatLngBounds SURABAYA = new LatLngBounds(
@@ -332,6 +348,7 @@ public class ActivityConfirm extends ActionBarActivity {
                 Double lon = ApplicationData.posFrom.longitude;
                 if (SURABAYA.contains(new LatLng(lat,lon))){
                     Log.d("KOTA", "Masuk Surabaya");
+
                     isSurabaya = true;
                     isJakarta = false;
                 }
@@ -399,10 +416,8 @@ public class ActivityConfirm extends ActionBarActivity {
 
                     break;
                 case "OK":
-                    if(isSurabaya)
-                        txtPromo.setHint("contoh : SBY3000");
-                    else
-                        txtPromo.setHint("contoh : JKT4000");
+
+                    txtPromoHint.setText(strPromoHint);
                     txtFrom.setText(strFrom);
                     txtDestination.setText(strDest);
                     txtDetailFrom.setText(strDetailFrom);

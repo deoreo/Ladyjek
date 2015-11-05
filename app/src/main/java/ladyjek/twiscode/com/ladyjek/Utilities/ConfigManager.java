@@ -10,10 +10,11 @@ public class ConfigManager {
     public static final String URL_SUGGESTION = PLACES_API_BASE +"/autocomplete/json?components=country:id&key="+API_KEY+"&input=";
 
     //SERVER PRODUCTION
-    public static final String SERVER = "https://ladyjek.com:2053/ladyjek/api";
+    //public static final String SERVER = "https://ladyjek.com:2053/ladyjek/api";
     //SERVER TES
-    //public static final String SERVER = "https://ladyjek.com:2083/ladyjek/api";
-
+    public static final String SERVER = "https://ladyjek.com:2083/ladyjek/api";
+    //LOCAL TES
+    //public static final String SERVER = "https://192.168.0.110:2053/ladyjek/api";
 
     public static final String LOGIN = SERVER+"/authenticate";
 
@@ -33,10 +34,11 @@ public class ConfigManager {
     public static final String HELP = SERVER+"/help";
     public static final String CHECK_VERSION = SERVER+"/app/init";
     //SERVER PRODUCTION
-    public static final String SERVER_SOCKET = "https://ladyjek.com:2096/"; //public
+    //public static final String SERVER_SOCKET = "https://ladyjek.com:2096/"; //public
     //SERVER TES
-    //public static final String SERVER_SOCKET = "https://ladyjek.com:2087/";
-
+    public static final String SERVER_SOCKET = "https://ladyjek.com:2087/";
+    //LOCAL TES
+    //public static final String SERVER_SOCKET = "https://192.168.0.110:2096/";
 
     public static final String DUKUHKUPANG = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhcHBQYXNzd29yZCI6Ii8hPTxKVVY5S35zdGtUPFYiLCJpYXQiOjE0NDQ0MTIxODAsImV4cCI6MTQ0NzAwNDE4MH0.WpK0u4-CYMrkvxXjDVCjjzTBA8jC1cnSh-QWm0lFmYM";
 }

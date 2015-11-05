@@ -94,4 +94,5 @@ public class ApplicationData {
     public static JSONArray promo_images = new JSONArray();
     public static JSONObject calculate = new JSONObject();
     public static String firstTrip = "";
+    public static String promoHint = "";
 }

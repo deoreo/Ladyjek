@@ -134,7 +134,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
     private final String TAG_DESTINATION = "DESTINATION";
     private ClearableEditText txtFrom, txtDestination;
     private TextView txtHint;
-    private String tagLocation;
+    private String add, tagLocation;
     private String placeId = "", description = "", strDistance = "", strDuration = "", strDetailFrom = "a", strDetailDestination = "b";
 
     private LatLng mapCenter, posFrom, posDest, posTemp, posDriver;
@@ -813,6 +813,26 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                      @Override
                      public void onCameraChange(CameraPosition cameraPosition) {
                          LatLngBounds bounds = googleMap.getProjection().getVisibleRegion().latLngBounds;
+                         if(layoutMarkerDestination.getVisibility() == VISIBLE || layoutMarkerFrom.getVisibility() == VISIBLE) {
+                             try {
+                                 if (NetworkManager.getInstance(mActivity).isConnectedInternet()) {
+                                     mapCenter = googleMap.getCameraPosition().target;
+                                     add = getAddress(mapCenter);
+                                     txtLocationFrom.setText(add);
+                                     txtLocationDestination.setText(add);
+                                     progressMapFrom.setVisibility(View.GONE);
+                                     progressMapDestination.setVisibility(View.GONE);
+                                 }
+                                 else{
+                                     layoutMarkerFrom.setVisibility(GONE);
+                                     layoutMarkerDestination.setVisibility(GONE);
+                                     DialogManager.showDialog(mActivity, "Mohon Maaf", "Anda tidak terhubung internet!");
+                                 }
+                             }catch (Exception e){
+                                 e.printStackTrace();
+                             }
+                         }
+
                      }
                  }
 
@@ -930,7 +950,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
     }
 
     public String getAddress(LatLng latlng) {
-        Geocoder geocoder = new Geocoder(mActivity, Locale.getDefault());
+        Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
         double lat = latlng.latitude;
         double lng = latlng.longitude;
         String addressLine = "";
@@ -1374,6 +1394,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
 
             }
             DialogManager.DismissLoading(mActivity);
+            socketManager.PostLocation(posFrom);
             GetNearestDriver(activity); //code
         }
 
