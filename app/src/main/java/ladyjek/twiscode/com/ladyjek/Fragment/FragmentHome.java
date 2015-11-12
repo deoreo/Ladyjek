@@ -449,6 +449,15 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                         driveLine.remove();
                     }
                 }
+                if (!mTouchMap) {
+                    if (s.length() >= 3) {
+                        if (NetworkManager.getInstance(mActivity).isConnectedInternet()) {
+                            new GetSuggestion(s.toString(), tagLocation).execute();
+                        }
+                    } else if (s.length() == 0) {
+                        layoutSuggestion.setVisibility(GONE);
+                    }
+                }
             }
 
             @Override
@@ -459,21 +468,12 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
             @Override
             public void onTextChanged(CharSequence s, int start,
                                       int before, int count) {
-                if (!mTouchMap) {
-                    if (s.length() >= 3) {
-                        if (NetworkManager.getInstance(mActivity).isConnectedInternet()) {
-                            new GetSuggestion(s.toString(), tagLocation).execute();
-                        }
-                    } else if (s.length() == 0) {
-                        layoutSuggestion.setVisibility(GONE);
-                    }
-                }
+
 
 
             }
         });
         txtDestination.addTextChangedListener(new TextWatcher() {
-
                                                   @Override
                                                   public void afterTextChanged(Editable s) {
                                                       if (txtDestination.getText().toString().equals("")) {
@@ -485,16 +485,6 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                                                               driveLine.remove();
                                                           }
                                                       }
-                                                  }
-
-                                                  @Override
-                                                  public void beforeTextChanged(CharSequence s, int start,
-                                                                                int count, int after) {
-                                                  }
-
-                                                  @Override
-                                                  public void onTextChanged(CharSequence s, int start,
-                                                                            int before, int count) {
                                                       if (!mTouchMap) {
                                                           if (s.length() >= 3) {
                                                               if (NetworkManager.getInstance(mActivity).isConnectedInternet()) {
@@ -511,6 +501,17 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
 
                                                           }
                                                       }
+                                                  }
+
+                                                  @Override
+                                                  public void beforeTextChanged(CharSequence s, int start,
+                                                                                int count, int after) {
+                                                  }
+
+                                                  @Override
+                                                  public void onTextChanged(CharSequence s, int start,
+                                                                            int before, int count) {
+
                                                   }
 
 
