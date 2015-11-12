@@ -13,13 +13,18 @@ public class DialogManager {
     private static ProgressDialog progressDialog;
 
     public static void showDialog(Context ctx, String title, String content){
-        MaterialDialog dialog = new MaterialDialog.Builder(ctx)
-                .title(title)
-                .content(content)
-                .positiveText("OK")
-                .cancelable(false)
-                .typeface("GothamRnd-Medium.otf", "Gotham.ttf")
-                .show();
+        try {
+            MaterialDialog dialog = new MaterialDialog.Builder(ctx)
+                    .title(title)
+                    .content(content)
+                    .positiveText("OK")
+                    .cancelable(false)
+                    .typeface("GothamRnd-Medium.otf", "Gotham.ttf")
+                    .show();
+        }
+        catch (Exception e){
+
+        }
     }
 
     public static void showProgressDialog(Context ctx, String title, String content){

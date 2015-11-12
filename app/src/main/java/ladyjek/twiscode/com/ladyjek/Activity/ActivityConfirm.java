@@ -158,10 +158,10 @@ public class ActivityConfirm extends ActionBarActivity {
                     txtSubtotal.setText("Rp " + decimalFormat.format(subtotal));
                     txtDiskon.setText("Rp " + decimalFormat.format(diskon));
                     txtTotal.setText("Rp " + decimalFormat.format(harga));
-                    txtPromoHint.setText(ApplicationData.promoHint);
+                    txtPromoHint.setText("\""+ApplicationData.promoHint+"\"");
                 }
                 else{
-                    DialogManager.showDialog(ActivityConfirm.this, "Informasi", "Maaf, kode promo Anda tidak berlaku");
+                    DialogManager.showDialog(ActivityConfirm.this, "Mohon maaf", "Kode promo Anda tidak berlaku");
                 }
 
 
@@ -185,7 +185,7 @@ public class ActivityConfirm extends ActionBarActivity {
                         DialogManager.ShowLoading(ActivityConfirm.this, "Loading...");
                         socketManager.CreateOrder(codeCoupon, note, ApplicationData.posFrom, ApplicationData.posDestination, "mandiriecash");
                     } else {
-                        DialogManager.showDialog(ActivityConfirm.this, "Informasi", "Pembayaran harus menggunakan tunai apabila Rp. 0");
+                        DialogManager.showDialog(ActivityConfirm.this, "Mohon maaf", "Pembayaran harus menggunakan tunai apabila Rp. 0");
                     }
 
                 } else if (pembayaran == 2) {
@@ -193,7 +193,7 @@ public class ActivityConfirm extends ActionBarActivity {
                     DialogManager.ShowLoading(ActivityConfirm.this, "Loading...");
                     socketManager.CreateOrder(ApplicationData.posFrom, ApplicationData.posDestination,"mandiriecash");
                     */
-                    DialogManager.showDialog(ActivityConfirm.this, "Informasi", "Fitur XL Tunai akan segera hadir");
+                    DialogManager.showDialog(ActivityConfirm.this, "Mohon maaf", "Fitur XL Tunai akan segera hadir");
                 }
 
             }
@@ -234,7 +234,7 @@ public class ActivityConfirm extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 if (txtPromo.getText().toString().isEmpty()) {
-                    DialogManager.showDialog(ActivityConfirm.this, "Peringatan", "Masukkan kode promo Anda!");
+                    DialogManager.showDialog(ActivityConfirm.this, "Mohon maaf", "Masukkan kode promo Anda!");
                 } else {
                     String couponCode = txtPromo.getText().toString();
                     String note = txtNote.getText().toString();
@@ -242,7 +242,7 @@ public class ActivityConfirm extends ActionBarActivity {
                             DialogManager.ShowLoading(ActivityConfirm.this, "Loading...");
                             socketManager.CalculateOrder(couponCode, note, ApplicationData.posFrom, ApplicationData.posDestination);
                         } else {
-                            DialogManager.showDialog(mActivity, "Informasi", "Tidak ada koneksi internet");
+                            DialogManager.showDialog(mActivity, "Mohon maaf", "Tidak ada koneksi internet");
                         }
                     }
                 /*
@@ -257,7 +257,7 @@ public class ActivityConfirm extends ActionBarActivity {
             DialogManager.ShowLoading(ActivityConfirm.this, "Loading...");
             socketManager.CalculateOrder("", "", ApplicationData.posFrom, ApplicationData.posDestination);
         } else {
-            DialogManager.showDialog(mActivity, "Informasi", "Tidak ada koneksi internet");
+            DialogManager.showDialog(mActivity, "Mohon maaf", "Tidak ada koneksi internet");
         }
 
     }

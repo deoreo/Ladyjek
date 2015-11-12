@@ -128,7 +128,7 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_marginBottom="100dp"
-                    android:src="@drawable/blue_marker" />
+                    android:src="@drawable/marker_from" />
             </LinearLayout>
 
             <LinearLayout

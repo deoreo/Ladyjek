@@ -1383,7 +1383,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
                             googleMap.moveCamera(cameraUpdate);
                         }*/
-
+                        socketManager.PostLocation(pFrom);
                         new DoDrawRute(activity,pFrom,posDest,googleMap).execute();
 
                         Log.v("posisi gps", pFrom.toString());
@@ -1394,7 +1394,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
 
             }
             DialogManager.DismissLoading(mActivity);
-            socketManager.PostLocation(posFrom);
+
             GetNearestDriver(activity); //code
         }
 
