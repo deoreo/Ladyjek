@@ -393,6 +393,7 @@
                             android:textSize="14sp"
                             android:gravity="center"
                             android:hint="masukkan kode promo"
+
                             android:layout_gravity="right"/>
 
                         <Button
@@ -401,7 +402,8 @@
                             android:layout_height="40dp"
                             android:layout_gravity="right"
                             android:textColor="@color/white_color"
-                            android:text="Apply"
+                            android:text="Submit"
+                            android:visibility="gone"
                             android:background="@drawable/rounded_grad_1"/>
 
                     </LinearLayout>

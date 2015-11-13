@@ -15,9 +15,11 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -26,6 +28,7 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 
@@ -71,7 +74,7 @@ public class ActivityConfirm extends ActionBarActivity {
     private ClearableEditText txtPromo;
     private Button btnPromo;
     int pembayaran = 0, subtotal = 0, diskon = 0;
-    boolean isSurabaya = false, isJakarta = false;
+    boolean isSurabaya = false, isJakarta = false, isPromoClicked = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,13 +157,16 @@ public class ActivityConfirm extends ActionBarActivity {
                         diskon = 0;
                     }
                     */
-                    subtotal = harga+diskon;
+                    subtotal = harga + diskon;
                     txtSubtotal.setText("Rp " + decimalFormat.format(subtotal));
                     txtDiskon.setText("Rp " + decimalFormat.format(diskon));
                     txtTotal.setText("Rp " + decimalFormat.format(harga));
-                    txtPromoHint.setText("\""+ApplicationData.promoHint+"\"");
-                }
-                else{
+                    txtPromoHint.setText("\"" + ApplicationData.promoHint + "\"");
+                    if (isPromoClicked) {
+                        DialogManager.showDialog(ActivityConfirm.this, "Terima kasih", "Anda sudah menggunakan kode promo " + txtPromo.getText().toString().toUpperCase());
+                    }
+                } else {
+                    isPromoClicked = false;
                     DialogManager.showDialog(ActivityConfirm.this, "Mohon maaf", "Kode promo Anda tidak berlaku");
                 }
 
@@ -170,31 +176,56 @@ public class ActivityConfirm extends ActionBarActivity {
         txtConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int harga = Integer.parseInt(ApplicationData.price);
-                String codeCoupon = txtPromo.getText().toString();
-                String note = txtNote.getText().toString();
-                if (pembayaran == 0) {
-                    DialogManager.ShowLoading(ActivityConfirm.this, "Loading...");
-                    socketManager.CreateOrder(codeCoupon, note, ApplicationData.posFrom, ApplicationData.posDestination, "cash");
-                } else if (pembayaran == 1) {
+                final int harga = Integer.parseInt(ApplicationData.price);
+                final String codeCoupon = txtPromo.getText().toString();
+                final String note = txtNote.getText().toString();
+
+                try {
+                    Context ctx = ActivityConfirm.this;
+                    new MaterialDialog.Builder(ctx)
+                            .title("Anda yakin pesan sekarang?")
+                            .positiveText("OK")
+                            .callback(new MaterialDialog.ButtonCallback() {
+                                @Override
+                                public void onPositive(MaterialDialog dialog) {
+                                    if (NetworkManager.getInstance(ActivityConfirm.this).isConnectedInternet()) {
+                                        if (pembayaran == 0) {
+                                            DialogManager.ShowLoading(ActivityConfirm.this, "Loading...");
+                                            socketManager.CreateOrder(codeCoupon, note, ApplicationData.posFrom, ApplicationData.posDestination, "cash");
+                                        } else if (pembayaran == 1) {
                     /*
                     DialogManager.ShowLoading(ActivityConfirm.this, "Loading...");
                     socketManager.CreateOrder(ApplicationData.posFrom, ApplicationData.posDestination,"mandiriecash");
                     */
-                    if (harga > 0) {
-                        DialogManager.ShowLoading(ActivityConfirm.this, "Loading...");
-                        socketManager.CreateOrder(codeCoupon, note, ApplicationData.posFrom, ApplicationData.posDestination, "mandiriecash");
-                    } else {
-                        DialogManager.showDialog(ActivityConfirm.this, "Mohon maaf", "Pembayaran harus menggunakan tunai apabila Rp. 0");
-                    }
+                                            if (harga > 0) {
+                                                DialogManager.ShowLoading(ActivityConfirm.this, "Loading...");
+                                                socketManager.CreateOrder(codeCoupon, note, ApplicationData.posFrom, ApplicationData.posDestination, "mandiriecash");
+                                            } else {
+                                                DialogManager.showDialog(ActivityConfirm.this, "Mohon maaf", "Pembayaran harus menggunakan tunai apabila Rp. 0");
+                                            }
 
-                } else if (pembayaran == 2) {
+                                        } else if (pembayaran == 2) {
                    /*
                     DialogManager.ShowLoading(ActivityConfirm.this, "Loading...");
                     socketManager.CreateOrder(ApplicationData.posFrom, ApplicationData.posDestination,"mandiriecash");
                     */
-                    DialogManager.showDialog(ActivityConfirm.this, "Mohon maaf", "Fitur XL Tunai akan segera hadir");
+                                            DialogManager.showDialog(ActivityConfirm.this, "Mohon maaf", "Fitur XL Tunai akan segera hadir");
+                                        }
+                                    } else {
+                                        DialogManager.showDialog(ActivityConfirm.this, "Peringatan", "Tidak ada koneksi internet!");
+                                    }
+                                    dialog.dismiss();
+                                }
+                            })
+                            .negativeText("Tidak")
+                            .icon(getResources().getDrawable(R.drawable.ladyjek_icon))
+                            .cancelable(false)
+                            .typeface("GothamRnd-Medium.otf", "Gotham.ttf")
+                            .show();
+                } catch (Exception e) {
+
                 }
+
 
             }
         });
@@ -202,22 +233,54 @@ public class ActivityConfirm extends ActionBarActivity {
         wrapperRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String codeCoupon = txtPromo.getText().toString();
-                String note = txtNote.getText().toString();
-                if (pembayaran == 0) {
-                    DialogManager.ShowLoading(ActivityConfirm.this, "Loading...");
-                    socketManager.CreateOrder(codeCoupon, note, ApplicationData.posFrom, ApplicationData.posDestination, "cash");
+                final int harga = Integer.parseInt(ApplicationData.price);
+                final String codeCoupon = txtPromo.getText().toString();
+                final String note = txtNote.getText().toString();
 
-                } else if (pembayaran == 1) {
+                try {
+                    Context ctx = ActivityConfirm.this;
+                    new MaterialDialog.Builder(ctx)
+                            .title("Anda yakin pesan sekarang?")
+                            .positiveText("OK")
+                            .callback(new MaterialDialog.ButtonCallback() {
+                                @Override
+                                public void onPositive(MaterialDialog dialog) {
+                                    if (NetworkManager.getInstance(ActivityConfirm.this).isConnectedInternet()) {
+                                        if (pembayaran == 0) {
+                                            DialogManager.ShowLoading(ActivityConfirm.this, "Loading...");
+                                            socketManager.CreateOrder(codeCoupon, note, ApplicationData.posFrom, ApplicationData.posDestination, "cash");
+                                        } else if (pembayaran == 1) {
                     /*
-                    Intent i = new Intent(getBaseContext(), ActivityVerifyPayment.class);
-                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    ApplicationManager um = new ApplicationManager(ActivityConfirm.this);
-                    startActivity(i);
-                    finish();
-                    */
                     DialogManager.ShowLoading(ActivityConfirm.this, "Loading...");
-                    socketManager.CreateOrder(codeCoupon, note, ApplicationData.posFrom, ApplicationData.posDestination, "mandiriecash");
+                    socketManager.CreateOrder(ApplicationData.posFrom, ApplicationData.posDestination,"mandiriecash");
+                    */
+                                            if (harga > 0) {
+                                                DialogManager.ShowLoading(ActivityConfirm.this, "Loading...");
+                                                socketManager.CreateOrder(codeCoupon, note, ApplicationData.posFrom, ApplicationData.posDestination, "mandiriecash");
+                                            } else {
+                                                DialogManager.showDialog(ActivityConfirm.this, "Mohon maaf", "Pembayaran harus menggunakan tunai apabila Rp. 0");
+                                            }
+
+                                        } else if (pembayaran == 2) {
+                   /*
+                    DialogManager.ShowLoading(ActivityConfirm.this, "Loading...");
+                    socketManager.CreateOrder(ApplicationData.posFrom, ApplicationData.posDestination,"mandiriecash");
+                    */
+                                            DialogManager.showDialog(ActivityConfirm.this, "Mohon maaf", "Fitur XL Tunai akan segera hadir");
+                                        }
+                                    } else {
+                                        DialogManager.showDialog(ActivityConfirm.this, "Peringatan", "Tidak ada koneksi internet!");
+                                    }
+                                    dialog.dismiss();
+                                }
+                            })
+                            .negativeText("Tidak")
+                            .icon(getResources().getDrawable(R.drawable.ladyjek_icon))
+                            .cancelable(false)
+                            .typeface("GothamRnd-Medium.otf", "Gotham.ttf")
+                            .show();
+                } catch (Exception e) {
+
                 }
             }
         });
@@ -230,6 +293,33 @@ public class ActivityConfirm extends ActionBarActivity {
             }
         });
 
+        txtPromo.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH ||
+                        actionId == EditorInfo.IME_ACTION_DONE ||
+                        event.getAction() == KeyEvent.ACTION_DOWN &&
+                                event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                    isPromoClicked = true;
+                    if (txtPromo.getText().toString().isEmpty()) {
+                        DialogManager.showDialog(ActivityConfirm.this, "Mohon maaf", "Masukkan kode promo Anda!");
+                    } else {
+                        String couponCode = txtPromo.getText().toString();
+                        String note = txtNote.getText().toString();
+                        if (NetworkManager.getInstance(mActivity).isConnectedInternet()) {
+
+                            DialogManager.ShowLoading(ActivityConfirm.this, "Loading...");
+                            socketManager.CalculateOrder(couponCode, note, ApplicationData.posFrom, ApplicationData.posDestination);
+                        } else {
+                            DialogManager.showDialog(mActivity, "Mohon maaf", "Tidak ada koneksi internet");
+                        }
+                    }
+                    return true;
+                }
+                return false;
+            }
+        });
+
         btnPromo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -238,13 +328,13 @@ public class ActivityConfirm extends ActionBarActivity {
                 } else {
                     String couponCode = txtPromo.getText().toString();
                     String note = txtNote.getText().toString();
-                        if (NetworkManager.getInstance(mActivity).isConnectedInternet()) {
-                            DialogManager.ShowLoading(ActivityConfirm.this, "Loading...");
-                            socketManager.CalculateOrder(couponCode, note, ApplicationData.posFrom, ApplicationData.posDestination);
-                        } else {
-                            DialogManager.showDialog(mActivity, "Mohon maaf", "Tidak ada koneksi internet");
-                        }
+                    if (NetworkManager.getInstance(mActivity).isConnectedInternet()) {
+                        DialogManager.ShowLoading(ActivityConfirm.this, "Loading...");
+                        socketManager.CalculateOrder(couponCode, note, ApplicationData.posFrom, ApplicationData.posDestination);
+                    } else {
+                        DialogManager.showDialog(mActivity, "Mohon maaf", "Tidak ada koneksi internet");
                     }
+                }
                 /*
                     else {
                         DialogManager.showDialog(ActivityConfirm.this, "Informasi", "Maaf, kode promo Anda tidak berlaku");
@@ -346,24 +436,20 @@ public class ActivityConfirm extends ActionBarActivity {
                         new LatLng(-6.43, 106.56), new LatLng(-5.91, 107.27));
                 Double lat = ApplicationData.posFrom.latitude;
                 Double lon = ApplicationData.posFrom.longitude;
-                if (SURABAYA.contains(new LatLng(lat,lon))){
+                if (SURABAYA.contains(new LatLng(lat, lon))) {
                     Log.d("KOTA", "Masuk Surabaya");
 
                     isSurabaya = true;
                     isJakarta = false;
-                }
-                else if (JAKARTA.contains(new LatLng(lat,lon))){
+                } else if (JAKARTA.contains(new LatLng(lat, lon))) {
                     Log.d("KOTA", "Masuk Jakarta");
                     isSurabaya = false;
                     isJakarta = true;
-                }
-                else{
+                } else {
                     Log.d("KOTA", "Bukan Surabaya");
                     isSurabaya = false;
                     isJakarta = false;
                 }
-
-
 
 
                 String[] strDist = strDistance.split(" ");

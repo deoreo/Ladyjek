@@ -15,8 +15,8 @@ android {
         applicationId "ladyjek.twiscode.com.ladyjek"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 38
-        versionName "1.1.11"
+        versionCode 40
+        versionName "1.1.13"
         signingConfig signingConfigs.apksigkey
     }
     buildTypes {
