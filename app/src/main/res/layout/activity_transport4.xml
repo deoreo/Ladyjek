@@ -129,7 +129,7 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:gravity="center"
-            android:layout_marginBottom="120dp"
+            android:layout_marginBottom="125dp"
             android:visibility="gone"
             >
             <Button
@@ -176,7 +176,7 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:gravity="center"
-            android:layout_marginBottom="120dp"
+            android:layout_marginBottom="125dp"
             android:visibility="gone"
             >
             <Button
@@ -279,6 +279,7 @@
                             android:src="@drawable/ic_erase" />
                     </RelativeLayout>
                     <RelativeLayout
+                        android:id="@+id/btnSearchFrom"
                         android:layout_marginTop="10dp"
                         android:layout_width="32dp"
                         android:layout_height="32dp">
@@ -341,6 +342,7 @@
                             android:src="@drawable/ic_erase" />
                     </RelativeLayout>
                     <RelativeLayout
+                        android:id="@+id/btnSearchDestination"
                         android:layout_marginTop="10dp"
                         android:layout_width="32dp"
                         android:layout_height="32dp">

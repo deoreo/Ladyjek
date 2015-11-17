@@ -66,7 +66,7 @@
     <string name="GothamRndBold">fonts/GothamRnd-Bold.otf</string>
     <string name="GothamRndMedium">fonts/GothamRnd-Medium.otf</string>
     <string name="GothamRndIta">fonts/GothamRnd-BookIta.otf</string>
-
+    <string name="GothamRndMediumIta">fonts/GothamRnd-MediumIta.otf</string>
     <string name="topup">
         <![CDATA[
             <p><b>Cara Top-up saldo</b></p>
@@ -160,7 +160,7 @@
         ]]>
     </string>
     <string name="title_activity_activity_promo_web_view">ActivityPromoWebView</string>
-    <string name="hint1"><i>isi detail lokasi tempat penjemputan anda, \ncontoh : nomor rumah, warna baju, dll</i></string>
+    <string name="hint1"><i>isi detail lokasi tempat penjemputan anda</i></string>
     <string name="hello_world">Hello world!</string>
 
     </resources>

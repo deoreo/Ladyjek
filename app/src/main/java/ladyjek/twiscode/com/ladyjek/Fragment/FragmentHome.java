@@ -18,6 +18,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
+import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -125,8 +126,6 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
     private List<ModelPlace> LIST_PLACE = null;
     private static final String KEY_ID = "place_id";
     private static final String KEY_DESCRIPTION = "description";
-    private static final String KEY_ADDRESS = "address";
-    private static final String KEY_DETAIL = "detail";
 
     private GoogleMap googleMap;
     private TextView btnRequestRide, txtAddressCurrent;
@@ -138,7 +137,6 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
     private String placeId = "", description = "", strDistance = "", strDuration = "", strDetailFrom = "a", strDetailDestination = "b";
 
     private LatLng mapCenter, posFrom, posDest, posTemp, posDriver;
-    private AdapterAddress mPlaceArrayAdapter;
     private Marker markerFrom, markerDestination = null, markerDrivers;
     public static Marker markerTemp;
     private CameraUpdate cameraUpdate;
@@ -179,6 +177,8 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
     private Circle mCircle;
     private Marker markerCurrent;
     int count = 0;
+    Handler handler;
+    Runnable delayedAction;
 
     public FragmentHome() {
         // Required empty public constructor
@@ -206,6 +206,9 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         StrictMode.setThreadPolicy(policy);
         Log.v(TAG, "OnCreateView");
         ApplicationData.driver = new ModelDriver();
+        handler = new Handler();
+        delayedAction = null;
+        handler.removeCallbacks(delayedAction);
         //DummyData();
         btnRequestRide = (TextView) rootView.findViewById(R.id.btnRequestRide);
         txtFrom = (ClearableEditText) rootView.findViewById(R.id.txtFrom);
@@ -230,6 +233,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         txtLocationFrom = (TextView) rootView.findViewById(R.id.txtLocationFrom);
         btnRequestRide.setText(Html.fromHtml(getResources().getString(R.string.pesan)));
         txtHint= (TextView) rootView.findViewById(R.id.txtHint);
+
 
 
         if (ApplicationData.socketManager == null) {
@@ -270,6 +274,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         }
         */
         mHandler = new Handler();
+
         //serviceLocation = new ServiceLocation(mActivity);
 
 
@@ -389,8 +394,10 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
             public boolean onTouch(View v, MotionEvent event) {
                 // TODO Auto-generated method stub
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    if (itemCurrent.getVisibility() == GONE)
+                    if (itemCurrent.getVisibility() == GONE) {
                         layoutSuggestion.setVisibility(GONE);
+                        handler.removeCallbacks(delayedAction);
+                    }
                 }
                 return false;
             }
@@ -436,19 +443,60 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
             }
         });
 
+
+
         txtFrom.addTextChangedListener(new TextWatcher() {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (txtFrom.getText().toString().equals("")) {
-                    if (markerFrom != null) {
-                        markerFrom.remove();
-                        posFrom = null;
-                    }
-                    if (driveLine != null) {
-                        driveLine.remove();
-                    }
+                final Editable txtSuggest = s;
+
+                if (delayedAction != null)
+                {
+                    handler.removeCallbacks(delayedAction);
                 }
+
+                //define a new search
+                delayedAction = new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        //start your search
+                        if (txtSuggest.equals("")) {
+                            if (markerFrom != null) {
+                                markerFrom.remove();
+                                posFrom = null;
+                            }
+                            if (driveLine != null) {
+                                driveLine.remove();
+                            }
+                        }
+                        if (!mTouchMap) {
+                            if (txtSuggest.length() >= 5) {
+                                if (NetworkManager.getInstance(mActivity).isConnectedInternet()) {
+                                    new GetSuggestion(txtSuggest.toString(), tagLocation).execute();
+                                }
+                            } else if (txtSuggest.length() == 0) {
+                                layoutSuggestion.setVisibility(GONE);
+                                handler.removeCallbacks(delayedAction);
+                            }
+                        }
+                    }
+                };
+
+                //delay this new search by one second
+                handler.postDelayed(delayedAction, 1000);
+
+
+
+
+
+
+
+
+
+
             }
 
             @Override
@@ -459,64 +507,89 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
             @Override
             public void onTextChanged(CharSequence s, int start,
                                       int before, int count) {
-                if (!mTouchMap) {
-                    if (s.length() >= 3) {
-                        if (NetworkManager.getInstance(mActivity).isConnectedInternet()) {
-                            new GetSuggestion(s.toString(), tagLocation).execute();
-                        }
-                    } else if (s.length() == 0) {
-                        layoutSuggestion.setVisibility(GONE);
-                    }
+                pSuggestion.setVisibility(VISIBLE);
+                itemCurrent.setVisibility(GONE);
+                mListView.setVisibility(GONE);
+                mListView.setAdapter(null);
+            }
+        });
+
+        txtDestination.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                final Editable txtSuggest = s;
+
+                if (delayedAction != null)
+                {
+                    handler.removeCallbacks(delayedAction);
                 }
+
+                //define a new search
+                delayedAction = new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        //start your search
+                        if (txtDestination.getText().toString().equals("")) {
+                            if (markerDestination != null) {
+                                markerDestination.remove();
+                                posDest = null;
+                            }
+                            if (driveLine != null) {
+                                driveLine.remove();
+                            }
+                        }
+                        if (!mTouchMap) {
+                            if (txtSuggest.length() >= 5) {
+                                if (NetworkManager.getInstance(mActivity).isConnectedInternet()) {
+                                    new GetSuggestion(txtSuggest.toString(), tagLocation).execute();
+                                }
+                            } else if (txtSuggest.length() == 0) {
+                                layoutSuggestion.setVisibility(GONE);
+                                handler.removeCallbacks(delayedAction);
+                                if (markerDestination != null) {
+                                    markerDestination.remove();
+                                }
+                                if (driveLine != null) {
+                                    driveLine.remove();
+                                }
+
+                            }
+                        }
+
+                    }
+                };
+
+                //delay this new search by one second
+                handler.postDelayed(delayedAction, 1000);
+
+
 
 
             }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+                pSuggestion.setVisibility(VISIBLE);
+                itemCurrent.setVisibility(GONE);
+                mListView.setVisibility(GONE);
+                mListView.setAdapter(null);
+            }
+
+
         });
-        txtDestination.addTextChangedListener(new TextWatcher() {
-
-                                                  @Override
-                                                  public void afterTextChanged(Editable s) {
-                                                      if (txtDestination.getText().toString().equals("")) {
-                                                          if (markerDestination != null) {
-                                                              markerDestination.remove();
-                                                              posDest = null;
-                                                          }
-                                                          if (driveLine != null) {
-                                                              driveLine.remove();
-                                                          }
-                                                      }
-                                                  }
-
-                                                  @Override
-                                                  public void beforeTextChanged(CharSequence s, int start,
-                                                                                int count, int after) {
-                                                  }
-
-                                                  @Override
-                                                  public void onTextChanged(CharSequence s, int start,
-                                                                            int before, int count) {
-                                                      if (!mTouchMap) {
-                                                          if (s.length() >= 3) {
-                                                              if (NetworkManager.getInstance(mActivity).isConnectedInternet()) {
-                                                                  new GetSuggestion(s.toString(), tagLocation).execute();
-                                                              }
-                                                          } else if (s.length() == 0) {
-                                                              layoutSuggestion.setVisibility(GONE);
-                                                              if (markerDestination != null) {
-                                                                  markerDestination.remove();
-                                                              }
-                                                              if (driveLine != null) {
-                                                                  driveLine.remove();
-                                                              }
-
-                                                          }
-                                                      }
-                                                  }
 
 
-                                              }
 
-        );
+
 
 
         itemCurrent.setOnClickListener(new View.OnClickListener()
@@ -536,6 +609,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                                                }
                                                hideKeyboard();
                                                layoutSuggestion.setVisibility(GONE);
+                                               handler.removeCallbacks(delayedAction);
 
                                            }
                                        }
@@ -852,13 +926,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
 
 
     public void drawNewMarker() {
-        float zoom = googleMap.getCameraPosition().zoom;
-        if (zoom <= 15) {
-            zoom = 15;
-        }
         try {
-            //ModelGeocode geocode = GoogleAPIManager.geocode(address);
-            //LatLng locationMarker = new LatLng(geocode.getLat(), geocode.getLon());
             if (driveLine != null) {
                 driveLine.remove();
             }
@@ -868,20 +936,14 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                         new MarkerOptions()
                                 .position(posFrom)
                                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
-
-                cameraUpdate = CameraUpdateFactory.newLatLngZoom(posFrom, zoom);
-                googleMap.animateCamera(cameraUpdate);
             } else if (tagLocation.equals(TAG_DESTINATION)) {
                 posDest = ApplicationData.posDestination;
                 markerDestination = googleMap.addMarker(
                         new MarkerOptions()
                                 .position(posDest)
                                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_destination)));
-                cameraUpdate = CameraUpdateFactory.newLatLngZoom(posDest, zoom);
-                googleMap.animateCamera(cameraUpdate);
             }
             new DoDrawRute(mActivity,posFrom,posDest,googleMap).execute();
-
         } catch (Exception e) {
 
         }
@@ -978,6 +1040,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
             InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             layoutSuggestion.setVisibility(GONE);
+            //handler.removeCallbacks(delayedAction);
         }
 
     }
@@ -998,7 +1061,8 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                     new MarkerOptions()
                             .position(latLng)
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom), new GoogleMap.CancelableCallback() {
+            cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, zoom);
+            googleMap.animateCamera(cameraUpdate, new GoogleMap.CancelableCallback() {
                 @Override
                 public void onFinish() {
                     layoutMarkerFrom.setVisibility(VISIBLE);
@@ -1017,7 +1081,8 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                     new MarkerOptions()
                             .position(latLng)
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_destination)));
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom), new GoogleMap.CancelableCallback() {
+            cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, zoom);
+            googleMap.animateCamera(cameraUpdate, new GoogleMap.CancelableCallback() {
                 @Override
                 public void onFinish() {
                     layoutMarkerFrom.setVisibility(GONE);
@@ -1047,7 +1112,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
             layoutSuggestion.setVisibility(VISIBLE);
             pSuggestion.setVisibility(VISIBLE);
             itemCurrent.setVisibility(GONE);
-            mListView.setVisibility(VISIBLE);
+            mListView.setVisibility(GONE);
             mListView.setAdapter(null);
         }
 
@@ -1101,8 +1166,8 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         protected void onPostExecute(final JSONArray json) {
             // TODO Auto-generated method stub
             super.onPostExecute(json);
-            pSuggestion.setVisibility(GONE);
             mListView.setAdapter(mAdapter);
+            mListView.setVisibility(VISIBLE);
             mListView.setOnItemClickListener(new OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -1111,34 +1176,38 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                         if (tag.equals(TAG_FROM)) {
                             txtFrom.setText(selectedPlace.getAddress());
                             strDetailFrom = selectedPlace.getAddressDetail();
-                            String alamat = selectedPlace.getAddress()+","+selectedPlace.getAddressDetail();
+                            String alamat = selectedPlace.getAddress() + "," + selectedPlace.getAddressDetail();
                             if (markerFrom != null) {
                                 markerFrom.remove();
                             }
-                            ModelGeocode geocode = GoogleAPIManager.geocode(alamat);
+                            ModelGeocode geocode = GoogleAPIManager.geocode(description);
                             ApplicationData.posFrom = new LatLng(geocode.getLat(), geocode.getLon());
                             appManager.setUserFrom(new ModelPlace(geocode.getLat(), geocode.getLon()));
 
                         } else if (tag.equals(TAG_DESTINATION)) {
                             txtDestination.setText(selectedPlace.getAddress());
                             strDetailDestination = selectedPlace.getAddressDetail();
-                            String alamat = selectedPlace.getAddress()+","+selectedPlace.getAddressDetail();
+                            String alamat = selectedPlace.getAddress() + "," + selectedPlace.getAddressDetail();
                             if (markerDestination != null) {
                                 markerDestination.remove();
                             }
-                            ModelGeocode geocode = GoogleAPIManager.geocode(alamat);
+                            ModelGeocode geocode = GoogleAPIManager.geocode(description);
                             ApplicationData.posDestination = new LatLng(geocode.getLat(), geocode.getLon());
                             appManager.setUserDestination(new ModelPlace(geocode.getLat(), geocode.getLon()));
                         }
                         layoutSuggestion.setVisibility(GONE);
+                        handler.removeCallbacks(delayedAction);
                         hideKeyboard();
                         drawNewMarker();
                     } catch (Exception e) {
+                        e.printStackTrace();
                         layoutSuggestion.setVisibility(GONE);
+                        handler.removeCallbacks(delayedAction);
                         hideKeyboard();
                     }
                 }
             });
+            pSuggestion.setVisibility(GONE);
 
         }
     }
@@ -1369,21 +1438,13 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                                 .strokeWidth(10);
                         mCircle = googleMap.addCircle(circleOptions);
                         cameraUpdate = CameraUpdateFactory.newLatLngZoom(pFrom, zoom);
-                        //if (!isSearchCurrent) {
-                            markerFrom = googleMap.addMarker(
-                                    new MarkerOptions()
-                                            .position(pFrom)
-                                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
-                            txtFrom.setText(getAddress(pFrom));
-                            googleMap.animateCamera(cameraUpdate);
-                        /*} else {
-                            markerCurrent = googleMap.addMarker(
-                                    new MarkerOptions()
-                                            .position(pFrom)
-                                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
-                            googleMap.moveCamera(cameraUpdate);
-                        }*/
-
+                        markerFrom = googleMap.addMarker(
+                                new MarkerOptions()
+                                        .position(pFrom)
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_from)));
+                        txtFrom.setText(getAddress(pFrom));
+                        googleMap.animateCamera(cameraUpdate);
+                        socketManager.PostLocation(pFrom);
                         new DoDrawRute(activity,pFrom,posDest,googleMap).execute();
 
                         Log.v("posisi gps", pFrom.toString());
@@ -1394,7 +1455,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
 
             }
             DialogManager.DismissLoading(mActivity);
-            socketManager.PostLocation(posFrom);
+
             GetNearestDriver(activity); //code
         }
 
@@ -1553,19 +1614,31 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                     }
                     driveLine = googleMap.addPolyline(rectLine);
                     */
+                    Display display=getActivity().getWindowManager().getDefaultDisplay();
+                    int h = display.getHeight();
+                    int w = display.getWidth();
+                    LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                    builder.include(posFrom);
+                    builder.include(posDest);
+                    LatLngBounds bounds = builder.build();
                     float distance = 0;
                     try {
                         distance = Float.parseFloat(strDistance.split(" ")[0]);
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
-                    if(distance <= 5)
-                    cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(posFrom.latitude-0.001, posFrom.longitude+0.001), 14);
-                    else if(distance >5){
-                        cameraUpdate = CameraUpdateFactory.newLatLngZoom(posFrom, 12);
+                    if(distance <= 10)
+                    //cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(posFrom.latitude-0.001, posFrom.longitude+0.001), 14);
+                        cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds,display.getWidth(),display.getHeight() - layoutfillForm.getHeight(), 360);
+                    else if(distance > 10){
+                        cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds,display.getWidth(),display.getHeight() - layoutfillForm.getHeight(), 400);
                     }
 
+
+
                     googleMap.animateCamera(cameraUpdate);
+
+
                     break;
             }
 
@@ -1574,24 +1647,5 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
 
 
     }
-
-/*
-    private void DummyData(){
-        try{
-            double [] a = {112.767,-7.298};
-            double [] b = {112.709, -7.297};
-            List<double[]> list = new ArrayList<>();
-            list.add(a);
-            list.add(b);
-            JSONArray arr = new JSONArray(list);
-            ApplicationData.nearestDrivers = arr;
-            Log.d("jsonarray",""+arr.toString());
-            Log.d("jumlah jsonarray",""+arr.length());
-        }
-        catch (Exception ex){
-            ex.printStackTrace();
-        }
-    }
-*/
 
 }

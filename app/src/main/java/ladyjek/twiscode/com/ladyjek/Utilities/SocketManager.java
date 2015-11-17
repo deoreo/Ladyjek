@@ -657,7 +657,11 @@ public class SocketManager {
                                 ApplicationData.duration = obj.getJSONObject("duration").getString("text");
                                 ApplicationData.price = obj.getString("price");
                                 ApplicationData.firstTrip = obj.getString("firstTrip");
-                                ApplicationData.promoHint = obj.getString("couponHint");
+                                try {
+                                    ApplicationData.promoHint = obj.getString("couponHint");
+                                }catch (Exception e){
+                                    ApplicationData.promoHint = "Untuk saat ini tidak ada kode promo yang berlaku";
+                                }
                                 SendBroadcast("calculate", "true");
                             }
                             catch (Exception e){
