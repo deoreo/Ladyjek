@@ -11,11 +11,8 @@ import android.net.http.SslError;
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.SslErrorHandler;
@@ -23,24 +20,16 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-
-import ladyjek.twiscode.com.ladyjek.Adapter.ColorPagerAdapter;
 import ladyjek.twiscode.com.ladyjek.Adapter.PromoSliderAdapter;
 import ladyjek.twiscode.com.ladyjek.Control.JSONControl;
 import ladyjek.twiscode.com.ladyjek.Model.ApplicationData;
 import ladyjek.twiscode.com.ladyjek.R;
-import ladyjek.twiscode.com.ladyjek.Utilities.DialogManager;
 import me.relex.circleindicator.CircleIndicator;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
@@ -80,25 +69,32 @@ public class ActivityPromoWebView extends FragmentActivity {
         });
 
         webview.clearCache(true);
-        new CheckPromo(ActivityPromoWebView.this).execute();
+        //new CheckPromo(ActivityPromoWebView.this).execute();
 
+        if(ApplicationData.promo_url!="" || ApplicationData.promo_images.length() > 0){
+            if(ApplicationData.promo_url!=""){
+                imageSlide.setVisibility(View.GONE);
+                webview.setVisibility(View.VISIBLE);
+                webview.loadUrl(ApplicationData.promo_url);
 
-/*
-        if(ApplicationData.promo_url!=""){
-            imageSlide.setVisibility(View.GONE);
-            webview.setVisibility(View.VISIBLE);
-            webview.loadUrl(ApplicationData.promo_url);
-
+            }
+            else{
+                webview.setVisibility(View.GONE);
+                imageSlide.setVisibility(View.VISIBLE);
+                PromoSliderAdapter defaultPagerAdapter = new PromoSliderAdapter(getSupportFragmentManager(),ApplicationData.promo_images);
+                defaultViewpager.setAdapter(defaultPagerAdapter);
+                defaultIndicator.setViewPager(defaultViewpager);
+            }
         }
         else{
-            webview.setVisibility(View.GONE);
-            imageSlide.setVisibility(View.VISIBLE);
-            PromoSliderAdapter defaultPagerAdapter = new PromoSliderAdapter(getSupportFragmentManager(),ApplicationData.promo_images);
-            defaultViewpager.setAdapter(defaultPagerAdapter);
-            defaultIndicator.setViewPager(defaultViewpager);
+            Intent y = new Intent(getBaseContext(), Main.class);
+            startActivity(y);
+            finish();
         }
 
-*/
+
+
+
 
 
     }
