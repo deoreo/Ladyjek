@@ -193,9 +193,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         db = new DatabaseHandler(mActivity);
         posFrom = ApplicationData.posFrom;
         tagLocation = TAG_FROM;
-
-
-
+        mTouchMap = true;
     }
 
     @Override
@@ -1627,19 +1625,26 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
-                    if(distance <= 10)
-                    //cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(posFrom.latitude-0.001, posFrom.longitude+0.001), 14);
-                        cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds,display.getWidth(),display.getHeight() - layoutfillForm.getHeight(), 360);
-                    else if(distance > 10){
-                        cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds,display.getWidth(),display.getHeight() - layoutfillForm.getHeight(), 400);
+
+                    try {
+                        if (distance <= 10)
+                            cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, display.getWidth(), display.getHeight() - layoutfillForm.getHeight(), 360);
+                        else if (distance > 10) {
+                            cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, display.getWidth(), display.getHeight() - layoutfillForm.getHeight(), 400);
+                        }
+                        googleMap.animateCamera(cameraUpdate);
+                    }
+                    catch (Exception e) {
+                        if (distance <= 5)
+                            cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(posFrom.latitude - 0.001, posFrom.longitude + 0.001), 14);
+                        else if (distance > 5) {
+                            cameraUpdate = CameraUpdateFactory.newLatLngZoom(posFrom, 12);
+                        }
+                        googleMap.animateCamera(cameraUpdate);
                     }
 
-
-
-                    googleMap.animateCamera(cameraUpdate);
-
-
                     break;
+
             }
 
 
