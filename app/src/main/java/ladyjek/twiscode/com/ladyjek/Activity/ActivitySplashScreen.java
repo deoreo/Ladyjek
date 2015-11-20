@@ -59,8 +59,8 @@ public class ActivitySplashScreen extends Activity {
                     e.printStackTrace();
                 } finally {
 
-                    CheckLogin();
-                    //new CheckVersion().execute();
+                    //CheckLogin();
+                    new CheckVersion().execute();
 
 
 
@@ -199,7 +199,7 @@ public class ActivitySplashScreen extends Activity {
                 Log.d("json version",Integer.toString(version));
                 String value = "false";
                 if(ConfigManager.VERSION < version){
-                    value ="true";
+                    value ="false";
                 }
                 return value;
 

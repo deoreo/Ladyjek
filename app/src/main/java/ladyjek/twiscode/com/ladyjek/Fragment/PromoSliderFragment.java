@@ -52,10 +52,11 @@ public class PromoSliderFragment extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.promo_slider_fragment, container, false);
         ImageView img = (ImageView) v.findViewById(R.id.imgPromo);
-
+        //mColor = "http://ladyjek.com/popup-img/bannerladyjek-01.jpg";
         progressBar = (ProgressBar) v.findViewById(R.id.progressBar);
         progressBar.setVisibility(View.VISIBLE);
-        Log.d("promo url images 1", mColor);
+        Log.d("promo slider", mColor);
+
 
         Picasso.with(getActivity()).load(mColor).fit().into(img, new com.squareup.picasso.Callback() {
             @Override
@@ -67,7 +68,7 @@ public class PromoSliderFragment extends Fragment {
 
             @Override
             public void onError() {
-
+                Log.d("error load image","error");
             }
         });
 
@@ -86,7 +87,8 @@ public class PromoSliderFragment extends Fragment {
         }
 
         protected Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
+            String urldisplay = "http://ladyjek.com/popup-img/bannerladyjek-01.jpg";//urls[0];
+            Log.d("url promo slider", urldisplay);
             Bitmap mIcon11 = null;
             try {
                 InputStream in = new java.net.URL(urldisplay).openStream();
