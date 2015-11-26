@@ -9,7 +9,7 @@ android {
             storePassword 'kiasu123'
         }
     }
-    compileSdkVersion 22
+    compileSdkVersion 23
     buildToolsVersion '22.0.1'
     defaultConfig {
         applicationId "ladyjek.twiscode.com.ladyjek"
@@ -44,10 +44,11 @@ dependencies {
     compile 'com.github.tosslife:pullloadview:1.1.0'
     compile 'uk.co.chrisjenx:calligraphy:2.1.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
-    compile 'com.afollestad:material-dialogs:0.7.8.0'
-   /* compile('com.afollestad.material-dialogs:core:0.8.2.0@aar') {
+    //compile 'com.afollestad:material-dialogs:0.7.8.0'
+    compile 'org.jbundle.util.osgi.wrapped:org.jbundle.util.osgi.wrapped.org.apache.http.client:4.1.2'
+    compile('com.afollestad.material-dialogs:core:0.8.5.1@aar') {
         transitive = true
-    }*/
+    }
 
 }
 

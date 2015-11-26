@@ -486,15 +486,6 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
                 //delay this new search by one second
                 handler.postDelayed(delayedAction, 1000);
 
-
-
-
-
-
-
-
-
-
             }
 
             @Override
