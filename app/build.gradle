@@ -9,14 +9,14 @@ android {
             storePassword 'kiasu123'
         }
     }
-    compileSdkVersion 23
+    compileSdkVersion 22
     buildToolsVersion '22.0.1'
     defaultConfig {
         applicationId "ladyjek.twiscode.com.ladyjek"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 41
-        versionName "1.1.14"
+        versionCode 42
+        versionName "1.1.15"
         signingConfig signingConfigs.apksigkey
     }
     buildTypes {
@@ -44,11 +44,13 @@ dependencies {
     compile 'com.github.tosslife:pullloadview:1.1.0'
     compile 'uk.co.chrisjenx:calligraphy:2.1.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
-    //compile 'com.afollestad:material-dialogs:0.7.8.0'
+    compile 'com.afollestad:material-dialogs:0.7.8.0'
     compile 'org.jbundle.util.osgi.wrapped:org.jbundle.util.osgi.wrapped.org.apache.http.client:4.1.2'
+/*
     compile('com.afollestad.material-dialogs:core:0.8.5.1@aar') {
         transitive = true
     }
+    */
 
 }
 
