@@ -271,6 +271,11 @@ public class ActivityPickUp extends ActionBarActivity implements LocationListene
                                     @Override
                                     public void onPositive(MaterialDialog dialog) {
                                         dialog.dismiss();
+                                        appManager.setTrip("end");
+                                        Intent i = new Intent(getBaseContext(), ActivityTracking.class);
+                                        startActivity(i);
+                                        finish();
+
                                     }
                                 })
                                 .icon(getResources().getDrawable(R.drawable.ladyjek_icon))

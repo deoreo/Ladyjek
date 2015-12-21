@@ -256,7 +256,7 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
 
 
         MySupportMapFragment fm = (MySupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapView);
-        //googleMap = fm.getMap();
+
         fm.getMapAsync(this);
 
         /*
@@ -274,11 +274,6 @@ public class FragmentHome extends Fragment implements GoogleMap.OnMapClickListen
         mHandler = new Handler();
 
         //serviceLocation = new ServiceLocation(mActivity);
-
-
-
-
-
 
         wrapperRegister.setOnClickListener(new View.OnClickListener() {
             @Override
